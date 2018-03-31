@@ -1,0 +1,42 @@
+buildscript {
+  ext {
+    kotlin_version = '1.2.31'
+    rx_version = "+"
+  }
+
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
+group 'org.swiften'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'kotlin'
+
+repositories {
+  mavenCentral()
+  maven { url = "https://jitpack.io" }
+}
+
+dependencies {
+  compile "com.github.protoman92:KotlinTreeState:master-SNAPSHOT"
+  compile "io.reactivex.rxjava2:rxkotlin:$rx_version"
+  testCompile "org.testng:testng:+"
+}
+
+compileKotlin {
+  kotlinOptions.jvmTarget = "1.6"
+}
+
+compileTestKotlin {
+  kotlinOptions.jvmTarget = "1.6"
+}
+
+test {
+  useTestNG()
+}
