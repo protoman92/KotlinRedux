@@ -10,6 +10,7 @@ import java.util.*
 /**
  * Created by haipham on 1/4/18.
  */
+private typealias State = TreeStateType<Int>
 
 class TreeStoreTest {
   enum class Action(val value: Int): ReduxActionType {
@@ -38,9 +39,8 @@ class TreeStoreTest {
     const val actionsPerIteration = 100
   }
 
-  class Reducer: ReduxReducer<TreeStateType<Int>> {
-    override operator fun invoke(previous: TreeStateType<Int>,
-                                 action: ReduxActionType): TreeStateType<Int> {
+  class Reducer: ReduxReducer<State> {
+    override operator fun invoke(previous: State, action: ReduxActionType): State {
       return when (action) {
         is Action -> previous.mapValue(path) {
           it.catchFailure(0).map { it + action.value }
@@ -51,7 +51,7 @@ class TreeStoreTest {
     }
   }
 
-  fun test_treeStore_shouldWork(store: ReduxStoreType<TreeStateType<Int>>): Int {
+  private fun test_treeStore_shouldWork(store: ReduxStoreType<State>): Int {
     /// Setup
     var original = 0
 

@@ -46,9 +46,9 @@ class RxGenericStore<State> private constructor(
   override val stateStream: Flowable<State> get() = statePc
 
   init {
-    val dummyAction = DefaultReduxAction.DUMMY
-    val actionSubject = BehaviorProcessor.createDefault<ReduxActionType>(dummyAction)
-    this.actionPc = ReduxProcessor(actionSubject)
+    val dummyAction: ReduxActionType = DefaultReduxAction.DUMMY
+    val actionProcessor = BehaviorProcessor.createDefault(dummyAction)
+    actionPc = ReduxProcessor(actionProcessor)
     statePc = BehaviorProcessor.createDefault(initial)
 
     reduceStream(reducer, initial)

@@ -39,8 +39,7 @@ interface RxReduxStoreType<State>: ReduxStoreType<State> {
 
 /**
  * Reduce [RxReduxStoreType.actionStream] with a [reducer] to produce a stream
- * of [State]. This stream can then be bound to a [io.reactivex.Observer] to
- * receive events.
+ * of [State]. This stream can then be bound to a [Subscriber] to receive events.
  */
 internal fun <State> RxReduxStoreType<State>
   .reduceStream(reducer: ReduxReducer<State>, initial: State): Flowable<State>

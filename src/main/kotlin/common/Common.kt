@@ -20,7 +20,7 @@ enum class DefaultReduxAction: ReduxActionType {
  * Represents a Redux store that can dispatch [ReduxActionType] to mutate some
  * internal [State].
  */
-interface ReduxStoreType<State> {
+interface ReduxStoreType<out State> {
   val lastState: State
 
   /**
