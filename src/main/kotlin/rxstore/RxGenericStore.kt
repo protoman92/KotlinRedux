@@ -22,6 +22,7 @@ class RxGenericStore<State> private constructor(
     /**
      * Create a [RxGenericStore] with a [reducer] and [initial] [State].
      */
+    @JvmStatic
     fun <State> create(reducer: ReduxReducer<State>,
                        initial: State): RxGenericStore<State> {
       return RxGenericStore(reducer, initial)

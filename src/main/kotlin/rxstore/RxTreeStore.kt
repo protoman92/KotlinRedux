@@ -20,6 +20,8 @@ class RxTreeStore<T> private constructor(
     /**
      * Create a [RxTreeStore] with [reducer] and [initial] state.
      */
+    @JvmStatic
+    @JvmOverloads
     fun <T> create(reducer: ReduxReducer<TreeStateType<T>>,
                    initial: TreeStateType<T> = TreeState.empty()): RxTreeStore<T> {
       val store = RxGenericStore.create(reducer, initial)

@@ -16,15 +16,14 @@ public final class AccessTest {
   @SuppressWarnings("ConstantConditions")
   public void test_accessKotlinCode_shouldWork() {
     /// Setup
-    int times = 1000;
+    int times = 100000;
     int actionPerIteration = 10;
     int totalTimes = times * actionPerIteration;
 
     ReduxReducer<TreeStateType<Integer>> reducer = (previous, action) ->
       previous.mapValue(PATH, prev -> prev.map(a -> a + 1).catchFailure(0));
 
-    TreeStateType<Integer> state = TreeState.Companion.empty();
-    RxTreeStore<Integer> store = RxTreeStore.Companion.create(reducer, state);
+    RxTreeStore<Integer> store = RxTreeStore.create(reducer);
 
     /// When
     for (int i = 0; i < times; i++) {
