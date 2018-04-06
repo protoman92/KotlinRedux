@@ -1,5 +1,6 @@
 package rxstore
 
+import Option
 import common.DefaultReduxAction
 import common.ReduxActionType
 import common.ReduxReducer
@@ -35,7 +36,7 @@ class RxGenericStore<State> private constructor(
   /**
    * This will never be null because we initialize with an initial [State].
    */
-  override val lastState: State get() = statePc.value
+  override val lastState: Option<State> get() = Option.wrap(statePc.value)
 
   override val actionStream: Flowable<ReduxActionType> get() {
     return actionPc.toFlowable()

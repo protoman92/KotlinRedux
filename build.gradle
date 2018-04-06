@@ -1,7 +1,7 @@
 buildscript {
   ext {
     kotlin_version = '1.2.31'
-    rx_version = "+"
+    rx_version = "2.1.12"
   }
 
   repositories {
@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
   compile "com.github.protoman92:KotlinTreeState:master-SNAPSHOT"
-  compile "io.reactivex.rxjava2:rxkotlin:$rx_version"
+  compile "io.reactivex.rxjava2:rxjava:$rx_version"
   testCompile "org.testng:testng:+"
 }
 

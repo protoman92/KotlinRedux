@@ -14,7 +14,7 @@ public final class AccessTest {
 
   @Test
   @SuppressWarnings("ConstantConditions")
-  public void test_accessKotlinCode_shouldWork() {
+  public void test_accessKotlinCode_shouldWork() throws Exception {
     /// Setup
     int times = 100000;
     int actionPerIteration = 10;
@@ -37,7 +37,7 @@ public final class AccessTest {
     }
 
     /// Then
-    TreeStateType<Integer> lastState = store.getLastState();
+    TreeStateType<Integer> lastState = store.getLastState().getOrThrow();
     Assert.assertEquals(lastState.valueAt(PATH).getValue().intValue(), totalTimes);
   }
 }

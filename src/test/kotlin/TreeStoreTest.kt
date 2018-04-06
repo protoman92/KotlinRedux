@@ -63,7 +63,7 @@ class TreeStoreTest {
     }
 
     /// Then
-    val lastState = store.lastState
+    val lastState = store.lastState.getOrThrow()
     Assert.assertEquals(lastState.valueAt(path).value, original)
     return original
   }
@@ -81,7 +81,7 @@ class TreeStoreTest {
     val finalValue = test_treeStore_shouldWork(store)
 
     /// Then
-    val lastState = stateProcessor.value
+    val lastState = stateProcessor.value!!
     val lastValue = valueProcessor.value
     Assert.assertEquals(lastState.valueAt(path).value, finalValue)
     Assert.assertEquals(lastValue, finalValue)

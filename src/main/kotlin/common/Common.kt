@@ -1,5 +1,7 @@
 package common
 
+import Option
+
 /**
  * Created by haipham on 31/3/18.
  */
@@ -20,8 +22,8 @@ enum class DefaultReduxAction: ReduxActionType {
  * Represents a Redux store that can dispatch [ReduxActionType] to mutate some
  * internal [State].
  */
-interface ReduxStoreType<out State> {
-  val lastState: State
+interface ReduxStoreType<State> {
+  val lastState: Option<State>
 
   /**
    * Dispatch [actions] to mutate some internal state.
