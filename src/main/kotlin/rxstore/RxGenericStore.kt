@@ -37,13 +37,8 @@ class RxGenericStore<State> private constructor(
    * This will never be null because we initialize with an initial [State].
    */
   override val lastState: Option<State> get() = Option.wrap(statePc.value)
-
-  override val actionStream: Flowable<ReduxActionType> get() {
-    return actionPc.toFlowable()
-  }
-
+  override val actionStream: Flowable<ReduxActionType> get() = actionPc.toFlowable()
   override val actionReceiver: Subscriber<ReduxActionType> get() = actionPc
-
   override val stateStream: Flowable<State> get() = statePc
 
   init {

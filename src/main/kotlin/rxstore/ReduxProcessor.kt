@@ -12,7 +12,10 @@ import org.reactivestreams.Subscriber
 /**
  * Wrapper for [Subscriber] that ignores [Subscriber.onError] and [Subscriber.onComplete].
  */
-class ReduxProcessor<T>(private val processor: FlowableProcessor<T>): Subscriber<T> by processor {
+class ReduxProcessor<T>(private val processor: FlowableProcessor<T>):
+  Subscriber<T> by processor,
+  MappableSubscriber<T>
+{
   fun toFlowable(): Flowable<T> = processor
 
   /**
@@ -24,4 +27,8 @@ class ReduxProcessor<T>(private val processor: FlowableProcessor<T>): Subscriber
    * Ignore [Observer.onComplete].
    */
   override fun onComplete() {}
+
+  override fun <R> mapArg(selector: (R) -> T): MappableSubscriber<R> {
+    return MappedSubscriber(this, selector)
+  }
 }
