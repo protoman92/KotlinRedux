@@ -7,7 +7,6 @@ import common.ReduxReducer
 import io.reactivex.Flowable
 import io.reactivex.processors.BehaviorProcessor
 import io.reactivex.schedulers.Schedulers
-import org.reactivestreams.Subscriber
 
 /**
  * Created by haipham on 31/3/18.
@@ -38,7 +37,7 @@ class RxGenericStore<State> private constructor(
    */
   override val lastState: Option<State> get() = Option.wrap(statePc.value)
   override val actionStream: Flowable<ReduxActionType> get() = actionPc.toFlowable()
-  override val actionReceiver: Subscriber<ReduxActionType> get() = actionPc
+  override val actionReceiver: MappableSubscriber<ReduxActionType> get() = actionPc
   override val stateStream: Flowable<State> get() = statePc
 
   init {

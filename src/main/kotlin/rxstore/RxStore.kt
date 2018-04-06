@@ -22,7 +22,7 @@ interface RxReduxStoreType<State>: ReduxStoreType<State> {
   /**
    * Represents a receiver of [ReduxActionType].
    */
-  val actionReceiver: Subscriber<ReduxActionType>
+  val actionReceiver: MappableSubscriber<ReduxActionType>
 
   /**
    * Represents a stream of [State].
