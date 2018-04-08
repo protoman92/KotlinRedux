@@ -14,8 +14,18 @@ interface ReduxActionType
 /**
  * Default [ReduxActionType].
  */
-enum class DefaultReduxAction: ReduxActionType {
-  DUMMY
+sealed class DefaultReduxAction: ReduxActionType {
+  object Dummy: DefaultReduxAction()
+
+  /**
+   * If this action is dispatched, replace the current state with [state].
+   * Beware that we will do a force-cast in [ReduxReducerWrapper] to expected
+   * State type, so it will throw a [ClassCastException] if [State] is not the
+   * correct type.
+   */
+  class ReplaceState<out State>(val state: State): DefaultReduxAction() {
+    override fun toString(): String = "Replacing state with $state"
+  }
 }
 
 /**
@@ -47,4 +57,25 @@ interface ReduxReducer<State> {
    * Reduce [action] onto [previous] to produce a new [State].
    */
   operator fun invoke(previous: State, action: ReduxActionType): State
+}
+
+/**
+ * Default wrapper to handle [DefaultReduxAction].
+ */
+internal class ReduxReducerWrapper<State>(private val reducer: ReduxReducer<State>):
+  ReduxReducer<State> by reducer
+{
+  @Suppress("UNCHECKED_CAST")
+  @Throws(ClassCastException::class)
+  override operator fun invoke(previous: State, action: ReduxActionType): State {
+    return when (action) {
+      is DefaultReduxAction ->
+        when (action) {
+          is DefaultReduxAction.Dummy -> previous
+          is DefaultReduxAction.ReplaceState<*> -> action.state as State
+        }
+
+      else -> reducer.invoke(previous, action)
+    }
+  }
 }

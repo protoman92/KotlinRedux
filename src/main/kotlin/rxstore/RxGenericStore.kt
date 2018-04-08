@@ -4,6 +4,7 @@ import Option
 import common.DefaultReduxAction
 import common.ReduxActionType
 import common.ReduxReducer
+import common.ReduxReducerWrapper
 import io.reactivex.Flowable
 import io.reactivex.processors.BehaviorProcessor
 import io.reactivex.schedulers.Schedulers
@@ -25,7 +26,8 @@ class RxGenericStore<State> private constructor(
     @JvmStatic
     fun <State> create(reducer: ReduxReducer<State>,
                        initial: State): RxGenericStore<State> {
-      return RxGenericStore(reducer, initial)
+      val wrapper = ReduxReducerWrapper(reducer)
+      return RxGenericStore(wrapper, initial)
     }
   }
 
@@ -41,7 +43,7 @@ class RxGenericStore<State> private constructor(
   override val stateStream: Flowable<State> get() = statePc
 
   init {
-    val dummyAction: ReduxActionType = DefaultReduxAction.DUMMY
+    val dummyAction: ReduxActionType = DefaultReduxAction.Dummy
     val actionProcessor = BehaviorProcessor.createDefault(dummyAction)
     actionPc = ReduxProcessor(actionProcessor)
     statePc = BehaviorProcessor.createDefault(initial)

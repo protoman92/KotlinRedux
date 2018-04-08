@@ -1,4 +1,3 @@
-import common.DefaultReduxAction;
 import common.ReduxActionType;
 import common.ReduxReducer;
 import org.jetbrains.annotations.NotNull;
@@ -16,12 +15,12 @@ public final class AccessTest {
   @SuppressWarnings("ConstantConditions")
   public void test_accessKotlinCode_shouldWork() throws Exception {
     /// Setup
-    int times = 100000;
+    int times = 10000;
     int actionPerIteration = 10;
     int totalTimes = times * actionPerIteration;
 
     ReduxReducer<TreeStateType<Integer>> reducer = (previous, action) ->
-      previous.mapValue(PATH, prev -> prev.map(a -> a + 1).catchFailure(0));
+      previous.mapValue(PATH, prev -> prev.map(a -> a + 1).catchFailure(1));
 
     RxTreeStore<Integer> store = RxTreeStore.create(reducer);
 
@@ -30,7 +29,7 @@ public final class AccessTest {
       ReduxActionType[] actions = new ReduxActionType[actionPerIteration];
 
       for (int j = 0; j < actionPerIteration; j++) {
-        actions[j] = DefaultReduxAction.DUMMY;
+        actions[j] = new ReduxActionType() {};
       }
 
       store.dispatch(actions);
