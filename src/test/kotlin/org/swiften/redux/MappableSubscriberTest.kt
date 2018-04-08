@@ -1,10 +1,10 @@
-
+package org.swiften.redux
 import io.reactivex.processors.PublishProcessor
 import io.reactivex.processors.ReplayProcessor
+import org.swiften.redux.rxstore.MappedSubscriber
+import org.swiften.redux.rxstore.ReduxProcessor
 import org.testng.Assert
 import org.testng.annotations.Test
-import rxstore.MappedSubscriber
-import rxstore.ReduxProcessor
 
 /**
  * Created by haipham on 6/4/18.

@@ -1,8 +1,8 @@
-package rxstore
+package org.swiften.redux.rxstore
 
-import common.ReduxActionType
-import common.ReduxReducer
-import common.ReduxStoreType
+import org.swiften.redux.common.ReduxActionType
+import org.swiften.redux.common.ReduxReducer
+import org.swiften.redux.common.ReduxStoreType
 import io.reactivex.Flowable
 import org.reactivestreams.Subscriber
 

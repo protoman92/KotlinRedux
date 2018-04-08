@@ -1,9 +1,12 @@
-import common.ReduxActionType;
-import common.ReduxReducer;
+package org.swiften.redux;
+
 import org.jetbrains.annotations.NotNull;
+import org.swiften.redux.common.ReduxActionType;
+import org.swiften.redux.common.ReduxReducer;
+import org.swiften.redux.rxstore.RxTreeStore;
+import org.swiften.treestate.TreeStateType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import rxstore.RxTreeStore;
 
 /**
  * Created by haipham on 31/3/18.

@@ -1,8 +1,8 @@
-
+package org.swiften.redux
 import io.reactivex.processors.BehaviorProcessor
 import org.testng.Assert
 import org.testng.annotations.Test
-import rxstore.ReduxProcessor
+import org.swiften.redux.rxstore.ReduxProcessor
 
 /**
  * Created by haipham on 1/4/18.

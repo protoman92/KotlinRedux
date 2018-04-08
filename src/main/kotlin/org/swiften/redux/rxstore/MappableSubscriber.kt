@@ -1,4 +1,4 @@
-package rxstore
+package org.swiften.redux.rxstore
 
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription

@@ -1,10 +1,14 @@
-import common.ReduxActionType
-import common.ReduxReducer
-import common.ReduxStoreType
+package org.swiften.redux
+
 import io.reactivex.processors.BehaviorProcessor
+import org.swiften.redux.common.ReduxActionType
+import org.swiften.redux.common.ReduxReducer
+import org.swiften.redux.common.ReduxStoreType
+import org.swiften.redux.rxstore.RxTreeStore
+import org.swiften.treestate.TreeState
+import org.swiften.treestate.TreeStateType
 import org.testng.Assert
 import org.testng.annotations.Test
-import rxstore.RxTreeStore
 import java.util.*
 
 /**

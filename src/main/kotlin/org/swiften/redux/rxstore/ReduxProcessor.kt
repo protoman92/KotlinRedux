@@ -1,4 +1,4 @@
-package rxstore
+package org.swiften.redux.rxstore
 
 import io.reactivex.Flowable
 import io.reactivex.Observer

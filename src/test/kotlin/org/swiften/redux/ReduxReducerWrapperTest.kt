@@ -1,7 +1,9 @@
-import common.DefaultReduxAction
-import common.ReduxActionType
-import common.ReduxReducer
-import common.ReduxReducerWrapper
+package org.swiften.redux
+
+import org.swiften.redux.common.DefaultReduxAction
+import org.swiften.redux.common.ReduxActionType
+import org.swiften.redux.common.ReduxReducer
+import org.swiften.redux.common.ReduxReducerWrapper
 import org.testng.Assert
 import org.testng.annotations.Test
 

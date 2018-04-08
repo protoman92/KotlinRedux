@@ -1,10 +1,10 @@
-package rxstore
+package org.swiften.redux.rxstore
 
-import TreeState
-import TreeStateType
-import Try
-import common.ReduxReducer
 import io.reactivex.Flowable
+import org.swiften.kotlinfp.Try
+import org.swiften.redux.common.ReduxReducer
+import org.swiften.treestate.TreeState
+import org.swiften.treestate.TreeStateType
 
 /**
  * Created by haipham on 31/3/18.

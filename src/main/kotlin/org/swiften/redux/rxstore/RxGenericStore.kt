@@ -1,13 +1,13 @@
-package rxstore
+package org.swiften.redux.rxstore
 
-import Option
-import common.DefaultReduxAction
-import common.ReduxActionType
-import common.ReduxReducer
-import common.ReduxReducerWrapper
 import io.reactivex.Flowable
 import io.reactivex.processors.BehaviorProcessor
 import io.reactivex.schedulers.Schedulers
+import org.swiften.kotlinfp.Option
+import org.swiften.redux.common.DefaultReduxAction
+import org.swiften.redux.common.ReduxActionType
+import org.swiften.redux.common.ReduxReducer
+import org.swiften.redux.common.ReduxReducerWrapper
 
 /**
  * Created by haipham on 31/3/18.

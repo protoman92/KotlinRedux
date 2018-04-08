@@ -1,6 +1,6 @@
-package common
+package org.swiften.redux.common
 
-import Option
+import org.swiften.kotlinfp.Option
 
 /**
  * Created by haipham on 31/3/18.
