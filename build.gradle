@@ -1,42 +1,38 @@
 buildscript {
   project.apply from: "${rootDir}/constants.gradle"
-
-  repositories {
-    mavenCentral()
-  }
 }
 
 plugins {
   id 'org.jetbrains.kotlin.jvm' version '1.3.10'
 }
 
-subprojects {
-  apply plugin: 'kotlin'
+repositories {
+  mavenCentral()
+  maven { url = "https://jitpack.io" }
+}
 
+subprojects {
   group 'org.swiften'
   version '1.0-SNAPSHOT'
 
-  repositories {
-    mavenCentral()
-    maven { url = "https://jitpack.io" }
-  }
+  apply plugin: 'kotlin'
 
   compileKotlin {
     kotlinOptions {
-      jvmTarget = "1.8"
+      jvmTarget = "1.6"
     }
   }
 
   compileTestKotlin {
     kotlinOptions {
-      jvmTarget = "1.8"
+      jvmTarget = "1.6"
     }
   }
 
   dependencies {
-    compile "com.github.protoman92:KotlinFP:master-SNAPSHOT"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    testCompile "org.testng:testng:+"
+    implementation "com.github.protoman92:KotlinFP:master-SNAPSHOT"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    testImplementation "org.testng:testng:+"
   }
 
   test {

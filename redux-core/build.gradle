@@ -1,2 +1,7 @@
 group 'org.swiften'
 version '1.0-SNAPSHOT'
+
+repositories {
+  jcenter()
+  maven { url = "https://jitpack.io" }
+}

@@ -6,7 +6,6 @@ import org.testng.annotations.Test
 /**
  * Created by haipham on 8/4/18.
  */
-
 class ReducerWrapperTest {
   @Test
   fun test_reducingDefaultActions_shouldWork() {
