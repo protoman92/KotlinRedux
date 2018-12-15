@@ -6,6 +6,7 @@ import org.swiften.kotlinfp.Option
  * Created by haipham on 31/3/18.
  */
 class Redux {
+
   /**
    * Represents a Redux action.
    */
@@ -27,10 +28,13 @@ class Redux {
    * internal [State].
    */
   interface IStore<State> {
-    val lastState: Option<State>
+    /**
+     * Get the last [State] instance.
+     */
+    fun lastState(): State
 
     /**
-     * Dispatch an [action] to mutate some internal state.
+     * Dispatch an [action] to mutate some internal [State].
      */
     fun dispatch(action: IAction)
   }
