@@ -1,5 +1,8 @@
 package org.swiften.redux
 
+/**
+ * Created by haipham on 2018/12/16.
+ */
 class ReduxPreset {
   /**
    * Default [Redux.IAction] implementation.

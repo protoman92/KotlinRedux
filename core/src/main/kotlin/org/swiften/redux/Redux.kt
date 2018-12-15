@@ -1,9 +1,7 @@
 package org.swiften.redux
 
-import org.swiften.kotlinfp.Option
-
 /**
- * Created by haipham on 31/3/18.
+ * Created by haipham on 2018/03/31.
  */
 class Redux {
   class Subscription(val unsubscribe: () -> Unit)
