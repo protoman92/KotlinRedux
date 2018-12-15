@@ -1,0 +1,11 @@
+repositories {
+  jcenter()
+  maven { url = "https://jitpack.io" }
+}
+
+project.group = 'org.swift.redux'
+
+dependencies {
+  api project(':core')
+  implementation "org.testng:testng:+"
+}

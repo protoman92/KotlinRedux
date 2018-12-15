@@ -1,2 +1,2 @@
 rootProject.name = 'redux'
-include ':core', ':simple-store'
+include ':core', ':simple-store', ':testing'
