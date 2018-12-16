@@ -1,0 +1,136 @@
+package org.swiften.redux
+
+import java.util.*
+import java.util.concurrent.locks.ReentrantLock
+
+/**
+ * Created by haipham on 2018-12-16.
+ */
+/**
+ * Top-level namespace for UI.
+ */
+class ReduxUI {
+  /**
+   * Represents a Redux compatible view.
+   * - [GlobalState] is the application's state implementation;
+   * - [OutProps] is the view's immutable property as dictated by its parent;
+   * - [StateProps] is the view's mutable state;
+   * - [ActionProps] is the view's interaction handlers.
+   */
+  interface ICompatibleView<GlobalState, OutProps, StateProps, ActionProps> {
+    /**
+     * This will only be set once after injection commences.
+     */
+    var staticProps: StaticProps<GlobalState>?
+
+    /**
+     * This will be set any time a [GlobalState] update is received.
+     */
+    var variableProps: VariableProps<StateProps, ActionProps>
+  }
+
+  /**
+   * Maps [GlobalState] to [StateProps] and [ActionProps] for a
+   * [ICompatibleView].
+   */
+  interface IPropMapper<GlobalState, OutProps, StateProps, ActionProps> {
+    /**
+     * Map [GlobalState] to [StateProps] using [OutProps].
+     */
+    fun mapState(state: GlobalState, outProps: OutProps): StateProps
+
+    /**
+     * Map [Redux.IDispatcher] to [ActionProps] using [GlobalState] and
+     * [OutProps].
+     */
+    fun mapAction(dispatch: Redux.IDispatcher,
+                  state: GlobalState,
+                  outProps: OutProps): ActionProps
+  }
+
+  /**
+   * Inject state and actions into an [ICompatibleView].
+   */
+  interface IPropInjector<State> {
+    /**
+     * Inject [StateProps] and [ActionProps] into an [ICompatibleView].
+     */
+    fun <OutProps, StateProps, ActionProps> injectProps(
+      view: ICompatibleView<State, OutProps, StateProps, ActionProps>,
+      outProps: OutProps,
+      mapper: IPropMapper<State, OutProps, StateProps, ActionProps>
+    ): Redux.Subscription
+  }
+
+  /**
+   * Container for an [ICompatibleView] static properties.
+   */
+  class StaticProps<State>(
+    val injector: IPropInjector<State>,
+    val subscription: Redux.Subscription
+  )
+
+  /**
+   * Container for an [ICompatibleView] mutable properties.
+   */
+  class VariableProps<StateProps, ActionProps>(
+    val previousState: StateProps?,
+    val nextState: StateProps,
+    val actions: ActionProps
+  )
+
+  /**
+   * A [IPropInjector] implementation.
+   */
+  class PropInjector<State>(
+    private val store: Redux.IStore<State>
+  ): IPropInjector<State> {
+    override fun <OutProps, StateProps, ActionProps> injectProps(
+      view: ICompatibleView<State, OutProps, StateProps, ActionProps>,
+      outProps: OutProps,
+      mapper: IPropMapper<State, OutProps, StateProps, ActionProps>
+    ): Redux.Subscription {
+      /**
+       * If [view] has received an injection before, unsubscribe from that.
+       */
+      view.staticProps?.apply { this.subscription.unsubscribe() }
+
+      /**
+       * It does not matter what the id is, as long as it is unique. This is
+       * because we will be passing along a [Redux.Subscription] to unsubscribe.
+       */
+      val subscriberId = "${view.javaClass.canonicalName}${Date().time}"
+      val lock = ReentrantLock()
+      var previousState: StateProps? = null
+
+      val setViewVariableProps: (StateProps, ActionProps) -> Unit = { s, a ->
+        try {
+          lock.lock()
+          view.variableProps = VariableProps(previousState, s, a)
+          previousState = s
+        } finally {
+          lock.unlock()
+        }
+      }
+
+      val onStateUpdate: (State) -> Unit = {
+        val nextState = mapper.mapState(it, outProps)
+
+        if (nextState != previousState) {
+          val actions = mapper.mapAction(this.store.dispatch, it, outProps)
+          setViewVariableProps(nextState, actions)
+        }
+      }
+
+      /**
+       * Immediately set [ICompatibleView.variableProps] based on [store]'s
+       * last [State], in case this [store] does not relay last [State] on
+       * subscription.
+       */
+      onStateUpdate(this.store.lastState())
+      val subscription = this.store.subscribe(subscriberId, onStateUpdate)
+      view.staticProps = StaticProps(this, subscription)
+      return subscription
+    }
+  }
+}
