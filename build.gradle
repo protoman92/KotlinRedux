@@ -9,6 +9,7 @@ buildscript {
 
 plugins {
   id 'org.jetbrains.kotlin.jvm' version '1.3.10'
+  id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 repositories {
@@ -24,23 +25,25 @@ subprojects {
 
   apply plugin: "kotlin"
   apply plugin: "jacoco"
-
+    
+  project.apply from: "${rootDir}/constants.gradle"
+    
   compileKotlin {
     kotlinOptions {
-      jvmTarget = "1.6"
+      jvmTarget = project.ext.jvmTarget
     }
   }
 
   compileTestKotlin {
     kotlinOptions {
-      jvmTarget = "1.6"
+      jvmTarget = project.ext.jvmTarget
     }
   }
 
   dependencies {
     implementation "com.github.protoman92:KotlinFP:master-SNAPSHOT"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.kotlinCoroutines"
     testImplementation "org.testng:testng:+"
   }
 

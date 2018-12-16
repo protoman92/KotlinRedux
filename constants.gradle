@@ -1,1 +1,4 @@
-project.ext {}
+project.ext {
+  jvmTarget = "1.6"
+  kotlinCoroutines = "1.0.1"
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/org.swift.redux.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/org.swift.redux.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/org.swift.redux.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/org.swift.redux.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/org.swift.redux.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/org.swift.redux.core.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware/org.swift.redux.middleware.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware/org.swift.redux.middleware.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware/org.swift.redux.middleware.main.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware/org.swift.redux.middleware.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware/org.swift.redux.middleware.test.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware/org.swift.redux.middleware.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/router-middleware/org.swift.redux.router-middleware.iml" filepath="$PROJECT_DIR$/.idea/modules/router-middleware/org.swift.redux.router-middleware.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/router-middleware/org.swift.redux.router-middleware.main.iml" filepath="$PROJECT_DIR$/.idea/modules/router-middleware/org.swift.redux.router-middleware.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/router-middleware/org.swift.redux.router-middleware.test.iml" filepath="$PROJECT_DIR$/.idea/modules/router-middleware/org.swift.redux.router-middleware.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple-store/org.swift.redux.simple-store.iml" filepath="$PROJECT_DIR$/.idea/modules/simple-store/org.swift.redux.simple-store.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple-store/org.swift.redux.simple-store.main.iml" filepath="$PROJECT_DIR$/.idea/modules/simple-store/org.swift.redux.simple-store.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple-store/org.swift.redux.simple-store.test.iml" filepath="$PROJECT_DIR$/.idea/modules/simple-store/org.swift.redux.simple-store.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testing/org.swift.redux.testing.iml" filepath="$PROJECT_DIR$/.idea/modules/testing/org.swift.redux.testing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testing/org.swift.redux.testing.main.iml" filepath="$PROJECT_DIR$/.idea/modules/testing/org.swift.redux.testing.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testing/org.swift.redux.testing.test.iml" filepath="$PROJECT_DIR$/.idea/modules/testing/org.swift.redux.testing.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/org.swift.redux.ui.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/org.swift.redux.ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/org.swift.redux.ui.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/org.swift.redux.ui.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/org.swift.redux.ui.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/org.swift.redux.ui.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux.iml" filepath="$PROJECT_DIR$/.idea/modules/redux.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux.main.iml" filepath="$PROJECT_DIR$/.idea/modules/redux.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux.test.iml" filepath="$PROJECT_DIR$/.idea/modules/redux.test.iml" />
+    </modules>
+  </component>
+</project>
