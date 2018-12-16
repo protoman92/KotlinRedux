@@ -19,26 +19,46 @@ class SimpleReduxStore<State>(
   private val lock = ReentrantReadWriteLock()
   private val subscribers = HashMap<String, (State) -> Unit>()
 
-  override fun lastState(): State {
-    return this.lock.read { this.state }
+  override val lastState = object : Redux.ILastState<State> {
+    override operator fun invoke(): State {
+      return this@SimpleReduxStore.lock.read { this@SimpleReduxStore.state }
+    }
   }
 
-  override fun dispatch(action: Redux.IAction) {
-    this.lock.write { this.state = this.reducer(this.state, action) }
-    return this.lock.read { this.subscribers.forEach { it.value(this.state) } }
+  override var dispatch = object : Redux.IDispatcher {
+    override operator fun invoke(action: Redux.IAction): Unit {
+      this@SimpleReduxStore.lock.write {
+        this@SimpleReduxStore.state =
+          this@SimpleReduxStore.reducer(this@SimpleReduxStore.state, action)
+      }
+
+      return this@SimpleReduxStore.lock.read {
+        this@SimpleReduxStore.subscribers.forEach {
+          it.value(this@SimpleReduxStore.state)
+        }
+      }
+    }
   }
 
-  override fun subscribe(
-    subscriberId: String,
-    callback: (State) -> Unit
-  ): Redux.Subscription {
-    this.lock.write { this.subscribers[subscriberId] = callback }
+  override val subscribe = object : Redux.ISubscribe<State> {
+    override operator fun invoke(
+      subscriberId: String,
+      callback: (State) -> Unit
+    ): Redux.Subscription {
+      this@SimpleReduxStore.lock.write {
+        this@SimpleReduxStore.subscribers[subscriberId] = callback
+      }
 
-    // Relay the last state to this subscriber.
-    this.lock.read { callback(this.state) }
+      /**
+       * Relay the last [State] to this subscriber.
+       */
+      this@SimpleReduxStore.lock.read { callback(this@SimpleReduxStore.state) }
 
-    return Redux.Subscription {
-      this.lock.write { this.subscribers.remove(subscriberId) }
+      return Redux.Subscription {
+        this@SimpleReduxStore.lock.write {
+          this@SimpleReduxStore.subscribers.remove(subscriberId)
+        }
+      }
     }
   }
 }
