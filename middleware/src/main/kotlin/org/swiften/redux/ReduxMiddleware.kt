@@ -93,5 +93,15 @@ class ReduxMiddleware {
         return EnhancedStore(store, wrapper.dispatch)
       }
     }
+
+    /**
+     * Apply [middlewares] to a [Redux.IStore] instance. This is a convenience
+     * method that uses varargs.
+     */
+    fun <State> applyMiddlewares(
+      vararg middlewares: IMiddleware<State>
+    ): (Redux.IStore<State>) -> Redux.IStore<State> {
+      return this.applyMiddlewares(middlewares.asList())
+    }
   }
 }

@@ -18,7 +18,7 @@ class ReduxMiddlewareTest {
 
     val ordering = arrayListOf<Int>()
 
-    val wrappedStore = ReduxMiddleware.applyMiddlewares<Int>(arrayListOf(
+    val wrappedStore = ReduxMiddleware.applyMiddlewares(
       object : ReduxMiddleware.IMiddleware<Int> {
         override operator fun invoke(
           input: ReduxMiddleware.Input<Int>
@@ -79,7 +79,7 @@ class ReduxMiddlewareTest {
           }
         }
       }
-    ))(store)
+    )(store)
 
     /// When
     wrappedStore.dispatch(ReduxPreset.DefaultAction.Dummy)
