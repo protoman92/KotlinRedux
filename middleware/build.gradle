@@ -7,4 +7,5 @@ project.group = 'org.swift.redux'
 
 dependencies {
   api project(':core')
+  testApi project(':simple-store')
 }
