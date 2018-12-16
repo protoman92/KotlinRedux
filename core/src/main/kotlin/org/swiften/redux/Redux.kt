@@ -13,7 +13,7 @@ class Redux {
   /**
    * Represents a Redux action.
    */
-  interface IAction {}
+  interface IAction
 
   /**
    * Represents a redux reducer that reduce a [IAction] onto a previous

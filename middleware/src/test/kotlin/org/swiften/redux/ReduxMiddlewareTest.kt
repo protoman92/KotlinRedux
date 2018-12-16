@@ -90,6 +90,7 @@ class ReduxMiddlewareTest {
     Assert.assertEquals(ordering, arrayListOf(3, 2, 1, 3, 2, 1, 3, 2, 1))
   }
 
+  @Test
   fun `Applying middlewares with empty middleware list`() {
     /// Setup
     val store = SimpleReduxStore(0, object : Redux.IReducer<Int> {

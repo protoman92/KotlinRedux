@@ -5,7 +5,6 @@ import kotlinx.coroutines.launch
 import org.testng.Assert
 import java.util.*
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
 /**
@@ -54,13 +53,13 @@ open class BaseReduxStoreTest {
     }
   }
 
-  val timeout: Long = 100
+  private val timeout: Long = 100
 
   fun reducer(): Redux.IReducer<Int> {
     return object : Redux.IReducer<Int> {
       override operator fun invoke(previous: Int, action: Redux.IAction): Int {
-        return when {
-          action is Action -> action(previous)
+        return when (action) {
+          is Action -> action(previous)
           else -> throw RuntimeException()
         }
       }

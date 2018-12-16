@@ -32,12 +32,11 @@ class ReduxPreset {
     @Suppress("UNCHECKED_CAST")
     @Throws(ClassCastException::class)
     override operator fun invoke(previous: State, action: Redux.IAction): State {
-      return when {
-        action is DefaultAction ->
-          when (action) {
-            is DefaultAction.Dummy -> previous
-            is DefaultAction.ReplaceState<*> -> action.state as State
-          }
+      return when (action) {
+        is DefaultAction -> when (action) {
+          is DefaultAction.Dummy -> previous
+          is DefaultAction.ReplaceState<*> -> action.state as State
+        }
         else -> reducer(previous, action)
       }
     }

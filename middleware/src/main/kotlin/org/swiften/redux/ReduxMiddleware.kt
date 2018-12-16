@@ -27,8 +27,7 @@ class ReduxMiddleware {
    */
   interface IProvider<State> {
     /**
-     * Wrap a [DispatchWrapper.dispatch] with [input] to provide extra
-     * functionalities.
+     * Wrap a [DispatchWrapper.dispatch] to provide extra functionalities.
      */
     val middleware: IMiddleware<State>
   }

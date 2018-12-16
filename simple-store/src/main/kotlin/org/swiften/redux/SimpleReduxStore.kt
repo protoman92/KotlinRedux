@@ -26,7 +26,7 @@ class SimpleReduxStore<State>(
   }
 
   override var dispatch = object : Redux.IDispatcher {
-    override operator fun invoke(action: Redux.IAction): Unit {
+    override operator fun invoke(action: Redux.IAction) {
       this@SimpleReduxStore.lock.write {
         this@SimpleReduxStore.state =
           this@SimpleReduxStore.reducer(this@SimpleReduxStore.state, action)
