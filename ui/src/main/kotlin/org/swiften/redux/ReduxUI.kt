@@ -1,10 +1,9 @@
 package org.swiften.redux
 
-import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
 /**
- * Created by haipham on 2018-12-16.
+ * Created by haipham on 2018/12/16.
  */
 /**
  * Top-level namespace for UI.
@@ -53,12 +52,15 @@ class ReduxUI {
    */
   interface IPropInjector<State> {
     /**
-     * Inject [StateProps] and [ActionProps] into an [ICompatibleView].
+     * Inject [StateProps] and [ActionProps] into [callback]. Classes that
+     * implement [IPropInjector] can override [callback] to introduce extra
+     * behaviors (e.g. invoking callback on main thread).
      */
     fun <OutProps, StateProps, ActionProps> injectProps(
-      view: ICompatibleView<State, OutProps, StateProps, ActionProps>,
+      subscribeId: String,
       outProps: OutProps,
-      mapper: IPropMapper<State, OutProps, StateProps, ActionProps>
+      mapper: IPropMapper<State, OutProps, StateProps, ActionProps>,
+      callback: (VariableProps<StateProps, ActionProps>) -> Unit
     ): Redux.Subscription
   }
 
@@ -86,27 +88,18 @@ class ReduxUI {
     private val store: Redux.IStore<State>
   ): IPropInjector<State> {
     override fun <OutProps, StateProps, ActionProps> injectProps(
-      view: ICompatibleView<State, OutProps, StateProps, ActionProps>,
+      subscribeId: String,
       outProps: OutProps,
-      mapper: IPropMapper<State, OutProps, StateProps, ActionProps>
+      mapper: IPropMapper<State, OutProps, StateProps, ActionProps>,
+      callback: (VariableProps<StateProps, ActionProps>) -> Unit
     ): Redux.Subscription {
-      /**
-       * If [view] has received an injection before, unsubscribe from that.
-       */
-      view.staticProps?.apply { this.subscription.unsubscribe() }
-
-      /**
-       * It does not matter what the id is, as long as it is unique. This is
-       * because we will be passing along a [Redux.Subscription] to unsubscribe.
-       */
-      val subscriberId = "${view.javaClass.canonicalName}${Date().time}"
       val lock = ReentrantLock()
       var previousState: StateProps? = null
 
       val setViewVariableProps: (StateProps, ActionProps) -> Unit = { s, a ->
         try {
           lock.lock()
-          view.variableProps = VariableProps(previousState, s, a)
+          callback(VariableProps(previousState, s, a))
           previousState = s
         } finally {
           lock.unlock()
@@ -128,9 +121,7 @@ class ReduxUI {
        * subscription.
        */
       onStateUpdate(this.store.lastState())
-      val subscription = this.store.subscribe(subscriberId, onStateUpdate)
-      view.staticProps = StaticProps(this, subscription)
-      return subscription
+      return this.store.subscribe(subscribeId, onStateUpdate)
     }
   }
 }
