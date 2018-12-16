@@ -3,7 +3,9 @@ package org.swiften.redux
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.testng.Assert
+import java.util.*
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
 /**
@@ -18,23 +20,27 @@ open class BaseReduxStoreTest {
     object AddOne : Action()
     object AddTwo : Action()
     object AddThree : Action()
-    object Double : Action()
     object Minus10 : Action()
     object Minus20: Action()
 
     companion object {
-      fun random(): Action {
-        val actions = arrayListOf(
-          Action.AddOne,
-          Action.AddTwo,
-          Action.AddThree,
-          Action.Double,
-          Action.Minus10,
-          Action.Minus20
-        )
+      private val random = Random()
 
-        return actions.shuffled().take(1)[0]
+      private val allActions = arrayListOf(
+        Action.AddOne,
+        Action.AddTwo,
+        Action.AddThree,
+        Action.Minus10,
+        Action.Minus20
+      )
+
+      fun random(): Action {
+        return this.allActions[this.random.nextInt(this.allActions.size)]
       }
+    }
+
+    override fun toString(): String {
+      return this.javaClass.simpleName
     }
 
     operator fun invoke(value: Int): Int {
@@ -42,7 +48,6 @@ open class BaseReduxStoreTest {
         is Action.AddOne -> value + 1
         is Action.AddTwo -> value + 2
         is Action.AddThree -> value + 3
-        is Action.Double -> value * 2
         is Action.Minus10 -> value - 10
         is Action.Minus20 -> value - 20
       }
@@ -68,11 +73,11 @@ open class BaseReduxStoreTest {
     var currentState = 0
     val latch = CountDownLatch(1)
 
-    for (i in 1..1000) {
+    for (i in 0 until 1000) {
       /// Setup
       val actions = arrayListOf<Action>()
 
-      for (j in 1..500) {
+      for (j in 0 until 500) {
         val action = Action.random()
         actions.add(action)
         currentState = action(currentState)
@@ -84,7 +89,7 @@ open class BaseReduxStoreTest {
     }
 
     GlobalScope.launch {
-      while (store.lastState() != currentState) {}
+      while (store.lastState() != currentState) { }
       latch.countDown()
     }
 
