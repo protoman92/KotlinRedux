@@ -1,7 +1,6 @@
 package org.swiften.redux
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.testng.Assert
 import java.util.*
 import java.util.concurrent.CountDownLatch
@@ -53,8 +52,6 @@ open class BaseReduxStoreTest {
     }
   }
 
-  private val timeout: Long = 100
-
   fun reducer(): Redux.IReducer<Int> {
     return object : Redux.IReducer<Int> {
       override operator fun invoke(previous: Int, action: Redux.IAction): Int {
@@ -70,13 +67,14 @@ open class BaseReduxStoreTest {
     store: Redux.IStore<Int>
   ) {
     var currentState = 0
+    val allDispatches = arrayListOf<Deferred<Unit>>()
     val latch = CountDownLatch(1)
 
-    for (i in 0 until 1000) {
+    for (i in 0 until 100) {
       /// Setup
       val actions = arrayListOf<Action>()
 
-      for (j in 0 until 500) {
+      for (j in 0 until 50) {
         val action = Action.random()
         actions.add(action)
         currentState = action(currentState)
@@ -84,15 +82,21 @@ open class BaseReduxStoreTest {
 
       /// When
       // Dispatch actions on multiple coroutines to check thread safety.
-      actions.forEach { a -> GlobalScope.launch { store.dispatch(a) } }
+      allDispatches.addAll(actions.map { a ->
+        GlobalScope.async(start = CoroutineStart.LAZY) {
+          store.dispatch(a)
+        }
+      })
     }
 
+    for (dispatch in allDispatches) { dispatch.start() }
+
     GlobalScope.launch {
-      while (store.lastState() != currentState) { }
+      while (store.lastState() != currentState) {}
       latch.countDown()
     }
 
-    latch.await(this.timeout, TimeUnit.SECONDS)
+    latch.await(20, TimeUnit.SECONDS)
 
     /// Then
     Assert.assertEquals(store.lastState(), currentState)
