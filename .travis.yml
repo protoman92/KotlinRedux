@@ -4,7 +4,7 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew clean test
+  - ./gradlew clean test --info
 
 after_success:
-  - ./gradlew jacocoTestReport coveralls
+  - ./gradlew jacocoFullReport coveralls

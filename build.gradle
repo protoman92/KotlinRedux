@@ -1,5 +1,10 @@
 buildscript {
   project.apply from: "${rootDir}/constants.gradle"
+
+  dependencies {
+    // https://github.com/palantir/gradle-jacoco-coverage
+    classpath 'com.palantir:jacoco-coverage:0.4.0'
+  }
 }
 
 plugins {
@@ -11,11 +16,14 @@ repositories {
   maven { url = "https://jitpack.io" }
 }
 
+apply plugin: "com.palantir.jacoco-full-report"
+
 subprojects {
   group 'org.swiften'
   version '1.0-SNAPSHOT'
 
-  apply plugin: 'kotlin'
+  apply plugin: "kotlin"
+  apply plugin: "jacoco"
 
   compileKotlin {
     kotlinOptions {
