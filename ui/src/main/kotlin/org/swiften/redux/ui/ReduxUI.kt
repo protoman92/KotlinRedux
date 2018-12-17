@@ -1,5 +1,6 @@
-package org.swiften.redux
+package org.swiften.redux.ui
 
+import org.swiften.redux.core.Redux
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
@@ -9,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock
 /**
  * Top-level namespace for UI.
  */
-class ReduxUI {
+object ReduxUI {
   /**
    * Represents a Redux compatible view.
    * - [GlobalState] is the application's state implementation;
@@ -100,7 +101,13 @@ class ReduxUI {
       val setViewVariableProps: (StateProps, ActionProps) -> Unit = { s, a ->
         try {
           lock.lock()
-          callback(VariableProps(previousState, s, a))
+          callback(
+            VariableProps(
+              previousState,
+              s,
+              a
+            )
+          )
           previousState = s
         } finally {
           lock.unlock()

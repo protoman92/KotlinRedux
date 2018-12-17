@@ -1,4 +1,4 @@
-package org.swiften.redux
+package org.swiften.redux.core
 
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read

@@ -1,5 +1,6 @@
-package org.swiften.redux
+package org.swiften.redux.core
 
+import org.swiften.redux.testing.BaseReduxStoreTest
 import org.testng.annotations.Test
 
 /**

@@ -2,18 +2,34 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="org.swift.redux.core.core.main" target="1.8" />
+      <module name="org.swift.redux.core.core.test" target="1.8" />
       <module name="org.swift.redux.core.main" target="1.8" />
+      <module name="org.swift.redux.core.simple-store.main" target="1.8" />
+      <module name="org.swift.redux.core.simple-store.test" target="1.8" />
       <module name="org.swift.redux.core.test" target="1.8" />
       <module name="org.swift.redux.middleware.main" target="1.8" />
+      <module name="org.swift.redux.middleware.middleware.main" target="1.8" />
+      <module name="org.swift.redux.middleware.middleware.test" target="1.8" />
       <module name="org.swift.redux.middleware.test" target="1.8" />
       <module name="org.swift.redux.router-middleware.main" target="1.8" />
+      <module name="org.swift.redux.router-middleware.router-middleware.main" target="1.8" />
+      <module name="org.swift.redux.router-middleware.router-middleware.test" target="1.8" />
       <module name="org.swift.redux.router-middleware.test" target="1.8" />
+      <module name="org.swift.redux.router.router-middleware.main" target="1.8" />
+      <module name="org.swift.redux.router.router-middleware.test" target="1.8" />
+      <module name="org.swift.redux.router.router.main" target="1.8" />
+      <module name="org.swift.redux.router.router.test" target="1.8" />
       <module name="org.swift.redux.simple-store.main" target="1.8" />
       <module name="org.swift.redux.simple-store.test" target="1.8" />
       <module name="org.swift.redux.testing.main" target="1.8" />
       <module name="org.swift.redux.testing.test" target="1.8" />
+      <module name="org.swift.redux.testing.testing.main" target="1.8" />
+      <module name="org.swift.redux.testing.testing.test" target="1.8" />
       <module name="org.swift.redux.ui.main" target="1.8" />
       <module name="org.swift.redux.ui.test" target="1.8" />
+      <module name="org.swift.redux.ui.ui.main" target="1.8" />
+      <module name="org.swift.redux.ui.ui.test" target="1.8" />
       <module name="redux.main" target="1.8" />
       <module name="redux.test" target="1.8" />
     </bytecodeTargetLevel>

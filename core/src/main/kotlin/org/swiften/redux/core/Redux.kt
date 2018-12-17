@@ -1,9 +1,12 @@
-package org.swiften.redux
+package org.swiften.redux.core
 
 /**
  * Created by haipham on 2018/03/31.
  */
-class Redux {
+/**
+ * Top-level namespace for Redux root components.
+ */
+object Redux {
   /**
    * Use this class to perform some [unsubscribe] logic. For e.g.: terminate
    * a [Subscription] from [IStore.subscribe].

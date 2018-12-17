@@ -1,6 +1,7 @@
-package org.swiften.redux
+package org.swiften.redux.testing
 
 import kotlinx.coroutines.*
+import org.swiften.redux.core.Redux
 import org.testng.Assert
 import java.util.*
 import java.util.concurrent.CountDownLatch
@@ -25,15 +26,16 @@ open class BaseReduxStoreTest {
       private val random = Random()
 
       private val allActions = arrayListOf(
-        Action.AddOne,
-        Action.AddTwo,
-        Action.AddThree,
-        Action.Minus10,
-        Action.Minus20
+        AddOne,
+        AddTwo,
+        AddThree,
+        Minus10,
+        Minus20
       )
 
       fun random(): Action {
-        return this.allActions[this.random.nextInt(this.allActions.size)]
+        return allActions[random.nextInt(
+          allActions.size)]
       }
     }
 
@@ -43,11 +45,11 @@ open class BaseReduxStoreTest {
 
     operator fun invoke(value: Int): Int {
       return when (this) {
-        is Action.AddOne -> value + 1
-        is Action.AddTwo -> value + 2
-        is Action.AddThree -> value + 3
-        is Action.Minus10 -> value - 10
-        is Action.Minus20 -> value - 20
+        is AddOne -> value + 1
+        is AddTwo -> value + 2
+        is AddThree -> value + 3
+        is Minus10 -> value - 10
+        is Minus20 -> value - 20
       }
     }
   }
@@ -75,7 +77,8 @@ open class BaseReduxStoreTest {
       val actions = arrayListOf<Action>()
 
       for (j in 0 until 50) {
-        val action = Action.random()
+        val action =
+          Action.random()
         actions.add(action)
         currentState = action(currentState)
       }

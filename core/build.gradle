@@ -3,4 +3,4 @@ repositories {
   maven { url = "https://jitpack.io" }
 }
 
-project.group = 'org.swift.redux'
+project.group = 'org.swift.redux.core'

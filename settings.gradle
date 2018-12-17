@@ -1,7 +1,7 @@
 rootProject.name = 'redux'
 include ':core'
 include ':middleware'
-include ':router-middleware'
+include ':router'
 include ':simple-store'
 include ':testing'
 include ':ui'

@@ -1,4 +1,4 @@
-package org.swiften.redux
+package org.swiften.redux.core
 
 import org.testng.Assert
 import org.testng.annotations.Test

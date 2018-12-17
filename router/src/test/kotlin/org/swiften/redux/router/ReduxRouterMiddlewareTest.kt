@@ -1,5 +1,9 @@
-package org.swiften.redux
+package org.swiften.redux.router
 
+import org.swiften.redux.core.SimpleReduxStore
+import org.swiften.redux.core.Redux
+import org.swiften.redux.core.ReduxPreset
+import org.swiften.redux.middleware.ReduxMiddleware
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
@@ -32,11 +36,15 @@ class ReduxRouterMiddlewareTest: ReduxRouterMiddleware.IRouter {
   @Test
   fun `Dispatching screen actions should navigate to the assoc screen`() {
     /// Setup
-    val store = SimpleReduxStore(0, object : Redux.IReducer<Int> {
-      override operator fun invoke(previous: Int, action: Redux.IAction): Int {
-        return previous
-      }
-    })
+    val store =
+      SimpleReduxStore(0, object : Redux.IReducer<Int> {
+        override operator fun invoke(
+          previous: Int,
+          action: Redux.IAction
+        ): Int {
+          return previous
+        }
+      })
 
     val wrappedStore = ReduxMiddleware.applyMiddlewares(
       ReduxRouterMiddleware.Provider<Int>(this).middleware

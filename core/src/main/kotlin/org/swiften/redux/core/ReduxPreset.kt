@@ -1,9 +1,9 @@
-package org.swiften.redux
+package org.swiften.redux.core
 
 /**
  * Created by haipham on 2018/12/16.
  */
-class ReduxPreset {
+object ReduxPreset {
   /**
    * Default [Redux.IAction] implementation.
    */

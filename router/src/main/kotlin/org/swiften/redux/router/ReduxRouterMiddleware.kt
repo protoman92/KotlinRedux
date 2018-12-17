@@ -1,4 +1,7 @@
-package org.swiften.redux
+package org.swiften.redux.router
+
+import org.swiften.redux.core.Redux
+import org.swiften.redux.middleware.ReduxMiddleware
 
 /**
  * Created by haipham on 2018/12/16.
@@ -6,7 +9,7 @@ package org.swiften.redux
 /**
  * Top-level namespace for Redux Router middleware.
  */
-class ReduxRouterMiddleware {
+object ReduxRouterMiddleware {
   /**
    * Represents a screen that also implements [Redux.IAction], so that views
    * can simply dispatch an [IScreen] to navigate to the associated screen.

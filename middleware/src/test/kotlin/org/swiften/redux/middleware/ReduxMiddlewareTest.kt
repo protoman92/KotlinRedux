@@ -1,5 +1,8 @@
-package org.swiften.redux
+package org.swiften.redux.middleware
 
+import org.swiften.redux.core.Redux
+import org.swiften.redux.core.ReduxPreset
+import org.swiften.redux.core.SimpleReduxStore
 import org.testng.Assert
 import org.testng.annotations.Test
 
@@ -10,11 +13,15 @@ class ReduxMiddlewareTest {
   @Test
   fun `Applying middlewares to a store should produce correct order`() {
     /// Setup
-    val store = SimpleReduxStore(0, object : Redux.IReducer<Int> {
-      override operator fun invoke(previous: Int, action: Redux.IAction): Int {
-        return previous
-      }
-    })
+    val store =
+      SimpleReduxStore(0, object : Redux.IReducer<Int> {
+        override operator fun invoke(
+          previous: Int,
+          action: Redux.IAction
+        ): Int {
+          return previous
+        }
+      })
 
     val ordering = arrayListOf<Int>()
 
@@ -93,11 +100,15 @@ class ReduxMiddlewareTest {
   @Test
   fun `Applying middlewares with empty middleware list`() {
     /// Setup
-    val store = SimpleReduxStore(0, object : Redux.IReducer<Int> {
-      override operator fun invoke(previous: Int, action: Redux.IAction): Int {
-        return previous
-      }
-    })
+    val store =
+      SimpleReduxStore(0, object : Redux.IReducer<Int> {
+        override operator fun invoke(
+          previous: Int,
+          action: Redux.IAction
+        ): Int {
+          return previous
+        }
+      })
 
     /// When
     val wrapper = ReduxMiddleware.combineMiddlewares<Int>(arrayListOf())(store)
