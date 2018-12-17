@@ -93,14 +93,6 @@ project(':router') {
 
 project(':simple-store') {
   project.group = 'org.swiften.redux.core'
-
-  sourceSets {
-    test {
-      kotlin {
-        srcDirs += "${rootDir}/testing/src/test"
-      }
-    }
-  }
   
   dependencies {
     api project(':core')
@@ -121,5 +113,15 @@ project(':ui') {
 
   dependencies {
     api project(':core')
+  }
+}
+
+configure(project(':simple-store')) {
+  sourceSets {
+    test {
+      kotlin {
+        srcDirs += "${rootDir}/testing/src/test"
+      }
+    }
   }
 }
