@@ -4,7 +4,7 @@ import org.swiften.redux.testing.BaseReduxStoreTest
 import org.testng.annotations.Test
 
 /**
- * Created by haipham on 2018-12-16.
+ * Created by haipham on 2018/12/16.
  */
 class SimpleReduxStoreTest: BaseReduxStoreTest() {
   @Test

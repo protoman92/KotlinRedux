@@ -29,6 +29,11 @@ subprojects {
   group 'org.swiften'
   version '1.0-SNAPSHOT'
 
+  repositories {
+    jcenter()
+    maven { url = "https://jitpack.io" }
+  }
+
   apply plugin: "kotlin"
   apply plugin: "jacoco"
     
@@ -60,5 +65,61 @@ subprojects {
 
   test {
     useTestNG()
+  }
+}
+
+project(':core') {
+  project.group = 'org.swift.redux.core'
+}
+
+project(':middleware') {
+  project.group = 'org.swift.redux.middleware'
+
+  dependencies {
+    api project(':core')
+    testApi project(':simple-store')
+  }
+}
+
+project(':router') {
+  project.group = 'org.swift.redux.router'
+
+  dependencies {
+    api project(':core')
+    api project(':middleware')
+    testApi project(':simple-store')
+  }
+}
+
+project(':simple-store') {
+  project.group = 'org.swift.redux.core'
+
+  sourceSets {
+    test {
+      kotlin {
+        srcDirs += "${rootDir}/testing/src/test"
+      }
+    }
+  }
+  
+  dependencies {
+    api project(':core')
+    testApi project(':testing')
+  }
+}
+
+project(':testing') {
+  project.group = 'org.swift.redux.testing'
+
+  dependencies {
+    testApi project(':core')
+  }
+}
+
+project(':ui') {
+  project.group = 'org.swift.redux.ui'
+
+  dependencies {
+    api project(':core')
   }
 }

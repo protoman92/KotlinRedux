@@ -30,6 +30,14 @@
       <module name="org.swift.redux.ui.test" target="1.8" />
       <module name="org.swift.redux.ui.ui.main" target="1.8" />
       <module name="org.swift.redux.ui.ui.test" target="1.8" />
+      <module name="org.swiften.router.main" target="1.8" />
+      <module name="org.swiften.router.test" target="1.8" />
+      <module name="org.swiften.simple-store.main" target="1.8" />
+      <module name="org.swiften.simple-store.test" target="1.8" />
+      <module name="org.swiften.testing.main" target="1.8" />
+      <module name="org.swiften.testing.test" target="1.8" />
+      <module name="org.swiften.ui.main" target="1.8" />
+      <module name="org.swiften.ui.test" target="1.8" />
       <module name="redux.main" target="1.8" />
       <module name="redux.test" target="1.8" />
     </bytecodeTargetLevel>
