@@ -33,7 +33,12 @@ subprojects {
   apply plugin: "jacoco"
     
   project.apply from: "${rootDir}/constants.gradle"
-    
+
+  configurations.all {
+    // Make sure the latest JitPack releases are used.
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+  }
+  
   compileKotlin {
     kotlinOptions {
       jvmTarget = jvmTarget

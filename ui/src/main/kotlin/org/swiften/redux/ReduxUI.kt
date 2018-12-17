@@ -26,7 +26,7 @@ class ReduxUI {
     /**
      * This will be set any time a [GlobalState] update is received.
      */
-    var variableProps: VariableProps<StateProps, ActionProps>
+    var variableProps: VariableProps<StateProps, ActionProps>?
   }
 
   /**
