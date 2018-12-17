@@ -69,11 +69,11 @@ subprojects {
 }
 
 project(':core') {
-  project.group = 'org.swift.redux.core'
+  project.group = 'org.swiften.redux.core'
 }
 
 project(':middleware') {
-  project.group = 'org.swift.redux.middleware'
+  project.group = 'org.swiften.redux.middleware'
 
   dependencies {
     api project(':core')
@@ -82,7 +82,7 @@ project(':middleware') {
 }
 
 project(':router') {
-  project.group = 'org.swift.redux.router'
+  project.group = 'org.swiften.redux.router'
 
   dependencies {
     api project(':core')
@@ -92,7 +92,7 @@ project(':router') {
 }
 
 project(':simple-store') {
-  project.group = 'org.swift.redux.core'
+  project.group = 'org.swiften.redux.core'
 
   sourceSets {
     test {
@@ -109,7 +109,7 @@ project(':simple-store') {
 }
 
 project(':testing') {
-  project.group = 'org.swift.redux.testing'
+  project.group = 'org.swiften.redux.testing'
 
   dependencies {
     testApi project(':core')
@@ -117,7 +117,7 @@ project(':testing') {
 }
 
 project(':ui') {
-  project.group = 'org.swift.redux.ui'
+  project.group = 'org.swiften.redux.ui'
 
   dependencies {
     api project(':core')
