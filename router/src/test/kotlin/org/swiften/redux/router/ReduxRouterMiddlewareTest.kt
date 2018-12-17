@@ -1,8 +1,13 @@
+/*
+ * Copyright (c) haipham 2018. All rights reserved.
+ * Any attempt to reproduce this source code in any form shall be met with legal actions.
+ */
+
 package org.swiften.redux.router
 
-import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
+import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.ReduxMiddleware
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
