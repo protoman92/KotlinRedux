@@ -103,28 +103,20 @@ object ReduxUI {
       val lock = ReentrantLock()
       var previousState: StateProps? = null
 
-      val setViewVariableProps: (StateProps, ActionProps) -> Unit = { s, a ->
-        try {
-          lock.lock()
-          callback(
-            VariableProps(
-              previousState,
-              s,
-              a
-            )
-          )
-          previousState = s
-        } finally {
-          lock.unlock()
-        }
+      val accessWithLock: (() -> Unit) -> Unit = {
+        try { lock.lock(); it() } finally { lock.unlock() }
       }
 
       val onStateUpdate: (State) -> Unit = {
         val nextState = mapper.mapState(it, outProps)
 
-        if (nextState != previousState) {
-          val actions = mapper.mapAction(this.store.dispatch, it, outProps)
-          setViewVariableProps(nextState, actions)
+        accessWithLock {
+          if (nextState != previousState) {
+            val actions = mapper.mapAction(this.store.dispatch, it, outProps)
+            callback(VariableProps(previousState, nextState, actions))
+          }
+
+          previousState = nextState
         }
       }
 

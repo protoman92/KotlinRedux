@@ -24,7 +24,7 @@ object Redux {
   interface IAction
 
   /**
-   * Represents a redux reducer that reduce a [IAction] onto a previous
+   * Represents a Redux reducer that reduce a [IAction] onto a previous
    * [State] to produce a new [State]
    */
   interface IReducer<State> {
