@@ -26,9 +26,6 @@ repositories {
 apply plugin: "com.palantir.jacoco-full-report"
 
 subprojects {
-  group 'org.swiften'
-  version '1.0-SNAPSHOT'
-
   repositories {
     jcenter()
     maven { url = "https://jitpack.io" }
@@ -68,13 +65,9 @@ subprojects {
   }
 }
 
-project(':core') {
-  project.group = 'org.swiften.redux.core'
-}
+project(':core') {}
 
 project(':middleware') {
-  project.group = 'org.swiften.redux.middleware'
-
   dependencies {
     api project(':core')
     testApi project(':simple-store')
@@ -82,8 +75,6 @@ project(':middleware') {
 }
 
 project(':router') {
-  project.group = 'org.swiften.redux.router'
-
   dependencies {
     api project(':core')
     api project(':middleware')
@@ -92,17 +83,14 @@ project(':router') {
 }
 
 project(':simple-store') {
-  project.group = 'org.swiften.redux.core'
-  
   dependencies {
     api project(':core')
   }
 }
 
 project(':ui') {
-  project.group = 'org.swiften.redux.ui'
-
   dependencies {
     api project(':core')
+    testApi project(':simple-store')
   }
 }

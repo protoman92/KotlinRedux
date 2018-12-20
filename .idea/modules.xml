@@ -2,24 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/org.swiften.redux.core.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/org.swiften.redux.core.core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/org.swiften.redux.core.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/org.swiften.redux.core.core.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/org.swiften.redux.core.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/org.swiften.redux.core.core.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple-store/org.swiften.redux.core.simple-store.iml" filepath="$PROJECT_DIR$/.idea/modules/simple-store/org.swiften.redux.core.simple-store.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple-store/org.swiften.redux.core.simple-store.main.iml" filepath="$PROJECT_DIR$/.idea/modules/simple-store/org.swiften.redux.core.simple-store.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple-store/org.swiften.redux.core.simple-store.test.iml" filepath="$PROJECT_DIR$/.idea/modules/simple-store/org.swiften.redux.core.simple-store.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware/org.swiften.redux.middleware.middleware.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware/org.swiften.redux.middleware.middleware.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware/org.swiften.redux.middleware.middleware.main.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware/org.swiften.redux.middleware.middleware.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware/org.swiften.redux.middleware.middleware.test.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware/org.swiften.redux.middleware.middleware.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.iml" filepath="$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.main.iml" filepath="$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.test.iml" filepath="$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware/middleware.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware/middleware.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux.iml" filepath="$PROJECT_DIR$/.idea/modules/redux.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux.main.iml" filepath="$PROJECT_DIR$/.idea/modules/redux.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux.test.iml" filepath="$PROJECT_DIR$/.idea/modules/redux.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/router/router.iml" filepath="$PROJECT_DIR$/.idea/modules/router/router.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple-store/simple-store.iml" filepath="$PROJECT_DIR$/.idea/modules/simple-store/simple-store.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/ui.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/ui.iml" />
     </modules>
   </component>
 </project>
