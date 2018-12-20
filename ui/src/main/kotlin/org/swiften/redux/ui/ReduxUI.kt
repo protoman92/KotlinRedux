@@ -59,15 +59,12 @@ object ReduxUI {
    */
   interface IPropInjector<State> {
     /**
-     * Inject [StateProps] and [ActionProps] into [callback]. Classes that
-     * implement [IPropInjector] can override [callback] to introduce extra
-     * behaviors (e.g. invoking callback on main thread).
+     * Inject [StateProps] and [ActionProps] into [view].
      */
     fun <OutProps, StateProps, ActionProps> injectProps(
-      subscribeId: String,
+      view: ReduxUI.ICompatibleView<State, OutProps, StateProps, ActionProps>,
       outProps: OutProps,
-      mapper: IPropMapper<State, OutProps, StateProps, ActionProps>,
-      callback: (VariableProps<StateProps, ActionProps>) -> Unit
+      mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
     ): Redux.Subscription
   }
 
@@ -95,13 +92,23 @@ object ReduxUI {
     private val store: Redux.IStore<State>
   ): IPropInjector<State> {
     override fun <OutProps, StateProps, ActionProps> injectProps(
-      subscribeId: String,
+      view: ReduxUI.ICompatibleView<State, OutProps, StateProps, ActionProps>,
       outProps: OutProps,
-      mapper: IPropMapper<State, OutProps, StateProps, ActionProps>,
-      callback: (VariableProps<StateProps, ActionProps>) -> Unit
+      mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
     ): Redux.Subscription {
+      /**
+       * If [view] has received an injection before, unsubscribe from that.
+       */
+      view.staticProps?.also { it.subscription.unsubscribe() }
+
+      /**
+       * It does not matter what the id is, as long as it is unique. This is
+       * because we will be passing along a [Redux.Subscription] to handle
+       * unsubscribe, so there's not need to keep track of the [view]'s id.
+       */
+      val id = "${view.javaClass.canonicalName}${Date().time}"
       val lock = ReentrantLock()
-      var previousState: StateProps? = null
+      var previousState: StateProps? = view.variableProps?.nextState
 
       val accessWithLock: (() -> Unit) -> Unit = {
         try { lock.lock(); it() } finally { lock.unlock() }
@@ -113,7 +120,7 @@ object ReduxUI {
         accessWithLock {
           if (nextState != previousState) {
             val actions = mapper.mapAction(this.store.dispatch, it, outProps)
-            callback(VariableProps(previousState, nextState, actions))
+            view.variableProps = VariableProps(previousState, nextState, actions)
           }
 
           previousState = nextState
@@ -126,32 +133,9 @@ object ReduxUI {
        * subscription.
        */
       onStateUpdate(this.store.lastState())
-      return this.store.subscribe(subscribeId, onStateUpdate)
+      val subscription = this.store.subscribe(id, onStateUpdate)
+      view.staticProps = ReduxUI.StaticProps(this, subscription)
+      return subscription
     }
   }
-}
-
-/**
- * Convenience method to inject props into [view], which conforms to
- * [ReduxUI.ICompatibleView].
- */
-fun <State, OP, SP, AP> ReduxUI.IPropInjector<State>.injectProps(
-  view: ReduxUI.ICompatibleView<State, OP, SP, AP>,
-  outProps: OP,
-  mapper: ReduxUI.IPropMapper<State, OP, SP, AP>
-): Redux.Subscription {
-  /**
-   * If [view] has received an injection before, unsubscribe from that.
-   */
-  view.staticProps?.also { it.subscription.unsubscribe() }
-
-  /**
-   * It does not matter what the id is, as long as it is unique. This is
-   * because we will be passing along a [Redux.Subscription] to handle
-   * unsubscribe, so there's not need to keep track of the [view]'s id.
-   */
-  val id = "${view.javaClass.canonicalName}${Date().time}"
-  val sub = this.injectProps(id, outProps, mapper) { view.variableProps = it }
-  view.staticProps = ReduxUI.StaticProps(this, sub)
-  return sub
 }

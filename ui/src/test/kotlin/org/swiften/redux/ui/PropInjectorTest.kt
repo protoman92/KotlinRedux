@@ -114,6 +114,6 @@ class PropInjectorTest {
     /// Then
     Assert.assertEquals(this.store.unsubCount, 1)
     Assert.assertEquals(view.staticInjectionCount, 2)
-    Assert.assertEquals(view.variableInjectionCount, 5)
+    Assert.assertEquals(view.variableInjectionCount, 4)
   }
 }
