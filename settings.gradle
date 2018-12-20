@@ -3,6 +3,5 @@ include ':core'
 include ':middleware'
 include ':router'
 include ':simple-store'
-include ':testing'
 include ':ui'
 

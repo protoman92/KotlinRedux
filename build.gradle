@@ -96,15 +96,6 @@ project(':simple-store') {
   
   dependencies {
     api project(':core')
-    testApi project(':testing')
-  }
-}
-
-project(':testing') {
-  project.group = 'org.swiften.redux.testing'
-
-  dependencies {
-    testApi project(':core')
   }
 }
 
@@ -113,15 +104,5 @@ project(':ui') {
 
   dependencies {
     api project(':core')
-  }
-}
-
-configure(project(':simple-store')) {
-  sourceSets {
-    test {
-      kotlin {
-        srcDirs += "${rootDir}/testing/src/test"
-      }
-    }
   }
 }

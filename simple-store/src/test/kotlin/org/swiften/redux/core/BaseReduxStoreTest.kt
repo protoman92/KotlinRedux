@@ -1,4 +1,4 @@
-package org.swiften.redux.testing
+package org.swiften.redux.core
 
 import kotlinx.coroutines.*
 import org.swiften.redux.core.Redux

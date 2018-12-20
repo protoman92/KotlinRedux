@@ -14,9 +14,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.iml" filepath="$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.main.iml" filepath="$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.test.iml" filepath="$PROJECT_DIR$/.idea/modules/router/org.swiften.redux.router.router.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testing/org.swiften.redux.testing.testing.iml" filepath="$PROJECT_DIR$/.idea/modules/testing/org.swiften.redux.testing.testing.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testing/org.swiften.redux.testing.testing.main.iml" filepath="$PROJECT_DIR$/.idea/modules/testing/org.swiften.redux.testing.testing.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testing/org.swiften.redux.testing.testing.test.iml" filepath="$PROJECT_DIR$/.idea/modules/testing/org.swiften.redux.testing.testing.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/org.swiften.redux.ui.ui.test.iml" />
