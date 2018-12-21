@@ -41,7 +41,7 @@ class PropInjectorTest {
     }
   }
 
-  class View: ReduxUI.ICompatibleView<S, Unit, S, A> {
+  class View: ReduxUI.IPropContainerView<S, S, A> {
     override var staticProps
       by Delegates.observable<ReduxUI.StaticProps<S>?>(null) { _, _, p ->
         this.didSetStaticProps(p)
@@ -64,9 +64,9 @@ class PropInjectorTest {
     }
   }
 
-  lateinit var store: StoreWrapper
-  lateinit var injector: ReduxUI.IPropInjector<S>
-  lateinit var mapper: ReduxUI.IPropMapper<S, Unit, S, A>
+  private lateinit var store: StoreWrapper
+  private lateinit var injector: ReduxUI.IPropInjector<S>
+  private lateinit var mapper: ReduxUI.IPropMapper<S, Unit, S, A>
 
   @BeforeMethod
   fun beforeMethod() {

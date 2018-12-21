@@ -17,34 +17,49 @@ import java.util.concurrent.locks.ReentrantLock
  */
 object ReduxUI {
   /**
-   * Represents a Redux compatible view.
-   * - [GlobalState] is the application's state implementation;
-   * - [OutProps] is the view's immutable property as dictated by its parent;
-   * - [StateProps] is the view's mutable state;
-   * - [ActionProps] is the view's interaction handlers.
+   * Represents a view that contains [StaticProps] dependencies.
    */
-  interface ICompatibleView<GlobalState, OutProps, StateProps, ActionProps> {
+  interface IStaticPropContainerView<GlobalState> {
     /**
      * This will only be set once after injection commences.
      */
     var staticProps: StaticProps<GlobalState>?
+  }
 
+  /**
+   * Represents a view that contains [VariableProps] internal state.
+   */
+  interface IVariablePropContainerView<StateProps, ActionProps> {
     /**
-     * This will be set any time a [GlobalState] update is received.
+     * This will be set any time a state update is received.
      */
     var variableProps: VariableProps<StateProps, ActionProps>?
   }
 
   /**
-   * Maps [GlobalState] to [StateProps] and [ActionProps] for a
-   * [ICompatibleView].
+   * Represents a Redux compatible view, combining [IStaticPropContainerView]
+   * and [IVariablePropContainerView].
    */
-  interface IPropMapper<GlobalState, OutProps, StateProps, ActionProps> {
+  interface IPropContainerView<GlobalState, StateProps, ActionProps>:
+    IStaticPropContainerView<GlobalState>,
+    IVariablePropContainerView<StateProps, ActionProps>
+
+  /**
+   * Maps [GlobalState] to [StateProps] for a [IPropContainerView]. [OutProps]
+   * is the view's immutable property as dictated by its parent.
+   */
+  interface IStatePropMapper<GlobalState, OutProps, StateProps> {
     /**
      * Map [GlobalState] to [StateProps] using [OutProps].
      */
     fun mapState(state: GlobalState, outProps: OutProps): StateProps
+  }
 
+  /**
+   * Maps [Redux.IDispatcher] to [ActionProps] for a [IPropContainerView].
+   * [OutProps] is the view's immutable property as dictated by its parent.
+   */
+  interface IActionPropMapper<GlobalState, OutProps, ActionProps> {
     /**
      * Map [Redux.IDispatcher] to [ActionProps] using [GlobalState] and
      * [OutProps].
@@ -55,21 +70,29 @@ object ReduxUI {
   }
 
   /**
-   * Inject state and actions into an [ICompatibleView].
+   * Maps [GlobalState] to [StateProps] and [ActionProps] for a
+   * [IPropContainerView].
+   */
+  interface IPropMapper<GlobalState, OutProps, StateProps, ActionProps>:
+    IStatePropMapper<GlobalState, OutProps, StateProps>,
+    IActionPropMapper<GlobalState, OutProps, ActionProps>
+
+  /**
+   * Inject state and actions into an [IPropContainerView].
    */
   interface IPropInjector<State> {
     /**
      * Inject [StateProps] and [ActionProps] into [view].
      */
     fun <OutProps, StateProps, ActionProps> injectProps(
-      view: ReduxUI.ICompatibleView<State, OutProps, StateProps, ActionProps>,
+      view: ReduxUI.IPropContainerView<State, StateProps, ActionProps>,
       outProps: OutProps,
       mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
     ): Redux.Subscription
   }
 
   /**
-   * Container for an [ICompatibleView] static properties.
+   * Container for an [IPropContainerView] static properties.
    */
   class StaticProps<State>(
     val injector: IPropInjector<State>,
@@ -77,7 +100,7 @@ object ReduxUI {
   )
 
   /**
-   * Container for an [ICompatibleView] mutable properties.
+   * Container for an [IPropContainerView] mutable properties.
    */
   class VariableProps<StateProps, ActionProps>(
     val previousState: StateProps?,
@@ -92,7 +115,7 @@ object ReduxUI {
     private val store: Redux.IStore<State>
   ): IPropInjector<State> {
     override fun <OutProps, StateProps, ActionProps> injectProps(
-      view: ReduxUI.ICompatibleView<State, OutProps, StateProps, ActionProps>,
+      view: ReduxUI.IPropContainerView<State, StateProps, ActionProps>,
       outProps: OutProps,
       mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
     ): Redux.Subscription {
@@ -111,7 +134,7 @@ object ReduxUI {
 
       /**
        * If [view] has received an injection before, take the latest [State]
-       * from its [ICompatibleView.variableProps].
+       * from its [IPropContainerView.variableProps].
        */
       var previousState: StateProps? = view.variableProps?.nextState
 
@@ -134,7 +157,7 @@ object ReduxUI {
       }
 
       /**
-       * Immediately set [ICompatibleView.variableProps] based on [store]'s
+       * Immediately set [IPropContainerView.variableProps] based on [store]'s
        * last [State], in case this [store] does not relay last [State] on
        * subscription.
        */
