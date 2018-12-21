@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware/middleware.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware/middleware.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux.iml" filepath="$PROJECT_DIR$/.idea/modules/redux.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/router/router.iml" filepath="$PROJECT_DIR$/.idea/modules/router/router.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/saga.iml" filepath="$PROJECT_DIR$/.idea/modules/saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple-store/simple-store.iml" filepath="$PROJECT_DIR$/.idea/modules/simple-store/simple-store.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/ui.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/ui.iml" />
     </modules>

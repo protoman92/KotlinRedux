@@ -82,6 +82,13 @@ project(':router') {
   }
 }
 
+project(':saga') {
+  dependencies {
+    api project(':core')
+    api project(':middleware')
+  }
+}
+
 project(':simple-store') {
   dependencies {
     api project(':core')
