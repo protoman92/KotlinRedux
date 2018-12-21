@@ -108,6 +108,11 @@ object ReduxUI {
        */
       val id = "${view.javaClass.canonicalName}${Date().time}"
       val lock = ReentrantLock()
+
+      /**
+       * If [view] has received an injection before, take the latest [State]
+       * from its [ICompatibleView.variableProps].
+       */
       var previousState: StateProps? = view.variableProps?.nextState
 
       val accessWithLock: (() -> Unit) -> Unit = {
@@ -118,12 +123,13 @@ object ReduxUI {
         val nextState = mapper.mapState(it, outProps)
 
         accessWithLock {
-          if (nextState != previousState) {
-            val actions = mapper.mapAction(this.store.dispatch, it, outProps)
-            view.variableProps = VariableProps(previousState, nextState, actions)
-          }
-
+          val prevState = previousState
           previousState = nextState
+
+          if (nextState != prevState) {
+            val actions = mapper.mapAction(this.store.dispatch, it, outProps)
+            view.variableProps = VariableProps(prevState, nextState, actions)
+          }
         }
       }
 
