@@ -8,10 +8,9 @@ package org.swiften.redux.core
 /**
  * Created by haipham on 2018/12/16.
  */
+/** Top-level namespace for presets */
 object ReduxPreset {
-  /**
-   * Default [Redux.IAction] implementation.
-   */
+  /** Default [Redux.IAction] implementation */
   sealed class DefaultAction: Redux.IAction {
     object Dummy: DefaultAction()
 
@@ -26,9 +25,7 @@ object ReduxPreset {
     }
   }
 
-  /**
-   * Default wrapper to handle [DefaultAction].
-   */
+  /** Default wrapper to handle [DefaultAction] */
   internal class ReducerWrapper<State>(
     private val reducer: Redux.IReducer<State>
   ):

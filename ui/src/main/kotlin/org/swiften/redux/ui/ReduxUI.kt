@@ -12,27 +12,19 @@ import java.util.concurrent.locks.ReentrantLock
 /**
  * Created by haipham on 2018/12/16.
  */
-/**
- * Top-level namespace for UI.
- */
+/** Top-level namespace for UI */
 object ReduxUI {
   /**
    * Represents a view that contains [StaticProps] dependencies.
    */
   interface IStaticPropContainerView<GlobalState> {
-    /**
-     * This will only be set once after injection commences.
-     */
+    /** This will only be set once after injection commences */
     var staticProps: StaticProps<GlobalState>?
   }
 
-  /**
-   * Represents a view that contains [VariableProps] internal state.
-   */
+  /** Represents a view that contains [VariableProps] internal state */
   interface IVariablePropContainerView<StateProps, ActionProps> {
-    /**
-     * This will be set any time a state update is received.
-     */
+    /** This will be set any time a state update is received */
     var variableProps: VariableProps<StateProps, ActionProps>?
   }
 
@@ -49,9 +41,7 @@ object ReduxUI {
    * is the view's immutable property as dictated by its parent.
    */
   interface IStatePropMapper<GlobalState, OutProps, StateProps> {
-    /**
-     * Map [GlobalState] to [StateProps] using [OutProps].
-     */
+    /** Map [GlobalState] to [StateProps] using [OutProps] */
     fun mapState(state: GlobalState, outProps: OutProps): StateProps
   }
 
@@ -77,13 +67,9 @@ object ReduxUI {
     IStatePropMapper<GlobalState, OutProps, StateProps>,
     IActionPropMapper<GlobalState, OutProps, ActionProps>
 
-  /**
-   * Inject state and actions into an [IPropContainerView].
-   */
+  /** Inject state and actions into an [IPropContainerView] */
   interface IPropInjector<State> {
-    /**
-     * Inject [StateProps] and [ActionProps] into [view].
-     */
+    /** Inject [StateProps] and [ActionProps] into [view] */
     fun <OutProps, StateProps, ActionProps> injectProps(
       view: ReduxUI.IPropContainerView<State, StateProps, ActionProps>,
       outProps: OutProps,
@@ -91,26 +77,20 @@ object ReduxUI {
     ): Redux.Subscription
   }
 
-  /**
-   * Container for an [IPropContainerView] static properties.
-   */
+  /** Container for an [IPropContainerView] static properties */
   class StaticProps<State>(
     val injector: IPropInjector<State>,
     val subscription: Redux.Subscription
   )
 
-  /**
-   * Container for an [IPropContainerView] mutable properties.
-   */
+  /** Container for an [IPropContainerView] mutable properties */
   class VariableProps<StateProps, ActionProps>(
     val previousState: StateProps?,
     val nextState: StateProps,
     val actions: ActionProps
   )
 
-  /**
-   * A [IPropInjector] implementation.
-   */
+  /** A [IPropInjector] implementation */
   class PropInjector<State>(
     private val store: Redux.IStore<State>
   ): IPropInjector<State> {
@@ -119,9 +99,7 @@ object ReduxUI {
       outProps: OutProps,
       mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
     ): Redux.Subscription {
-      /**
-       * If [view] has received an injection before, unsubscribe from that.
-       */
+      /** If [view] has received an injection before, unsubscribe from that */
       view.staticProps?.also { it.subscription.unsubscribe() }
 
       /**

@@ -34,8 +34,7 @@ open class BaseReduxStoreTest {
       )
 
       fun random(): Action {
-        return allActions[random.nextInt(
-          allActions.size)]
+        return allActions[random.nextInt(allActions.size)]
       }
     }
 
@@ -65,9 +64,7 @@ open class BaseReduxStoreTest {
     }
   }
 
-  fun dispatchingAction_shouldResultInCorrectState(
-    store: Redux.IStore<Int>
-  ) {
+  fun dispatchingAction_shouldResultInCorrectState(store: Redux.IStore<Int>) {
     var currentState = 0
     val allDispatches = arrayListOf<Deferred<Unit>>()
     val latch = CountDownLatch(1)
@@ -77,8 +74,7 @@ open class BaseReduxStoreTest {
       val actions = arrayListOf<Action>()
 
       for (j in 0 until 50) {
-        val action =
-          Action.random()
+        val action = Action.random()
         actions.add(action)
         currentState = action(currentState)
       }
@@ -86,16 +82,14 @@ open class BaseReduxStoreTest {
       /// When
       // Dispatch actions on multiple coroutines to check thread safety.
       allDispatches.addAll(actions.map { a ->
-        GlobalScope.async(start = CoroutineStart.LAZY) {
-          store.dispatch(a)
-        }
+        GlobalScope.async(start = CoroutineStart.LAZY) { store.dispatch(a) }
       })
     }
 
     for (dispatch in allDispatches) { dispatch.start() }
 
     GlobalScope.launch {
-      while (store.lastState() != currentState) {}
+      while (store.lastState() != currentState)
       latch.countDown()
     }
 

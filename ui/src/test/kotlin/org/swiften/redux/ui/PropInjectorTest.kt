@@ -86,13 +86,13 @@ class PropInjectorTest {
     this.injector = ReduxUI.PropInjector(this.store)
 
     this.mapper = object : ReduxUI.IPropMapper<S, Unit, S, A> {
-      override fun mapState(state: S, outProps: Unit): S = state
+      override fun mapState(state: S, outProps: Unit) = state
 
       override fun mapAction(
         dispatch: Redux.IDispatcher,
         state: S,
         outProps: Unit
-      ): A = A()
+      ) = A()
     }
   }
 

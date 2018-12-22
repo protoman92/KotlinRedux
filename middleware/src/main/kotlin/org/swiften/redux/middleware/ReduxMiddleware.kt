@@ -10,13 +10,9 @@ import org.swiften.redux.core.Redux
 /**
  * Created by haipham on 2018/12/16.
  */
-/**
- * Top-level namespace for Redux middlewares.
- */
+/** Top-level namespace for Redux middlewares */
 object ReduxMiddleware {
-  /**
-   * Map one [DispatchWrapper] to another.
-   */
+  /** Map one [DispatchWrapper] to another */
   interface IDispatchMapper {
     operator fun invoke(wrapper: DispatchWrapper): DispatchWrapper
   }
@@ -29,13 +25,9 @@ object ReduxMiddleware {
     operator fun invoke(input: Input<State>): IDispatchMapper
   }
 
-  /**
-   * Implement [IProvider] to provide a middleware instance.
-   */
+  /** Implement [IProvider] to provide a middleware instance */
   interface IProvider<State> {
-    /**
-     * Wrap a [DispatchWrapper.dispatch] to provide extra functionalities.
-     */
+    /** Wrap a [DispatchWrapper.dispatch] to provide extra functionalities */
     val middleware: IMiddleware<State>
   }
 
@@ -68,28 +60,17 @@ object ReduxMiddleware {
     middlewares: Collection<IMiddleware<State>>
   ): (Redux.IStore<State>) -> DispatchWrapper {
     return fun(store): DispatchWrapper {
-      val input =
-        Input { store.lastState() }
-      val rootWrapper =
-        DispatchWrapper(
-          "root",
-          store.dispatch
-        )
+      val input = Input { store.lastState() }
+      val rootWrapper = DispatchWrapper("root", store.dispatch)
       if (middlewares.isEmpty()) return rootWrapper
 
-      return middlewares.reduce { acc, middleware ->
-        object :
-          IMiddleware<State> {
-          override operator fun invoke(input: Input<State>): IDispatchMapper {
-            return object :
-              IDispatchMapper {
-              override operator fun invoke(wrapper: DispatchWrapper): DispatchWrapper {
-                return acc(input)(middleware(input)(wrapper))
-              }
-            }
+      return middlewares.reduce { acc, middleware -> object : IMiddleware<State> {
+        override operator fun invoke(input: Input<State>) = object : IDispatchMapper {
+          override operator fun invoke(wrapper: DispatchWrapper): DispatchWrapper {
+            return acc(input)(middleware(input)(wrapper))
           }
         }
-      }(input)(rootWrapper)
+      } }(input)(rootWrapper)
     }
   }
 
@@ -101,13 +82,8 @@ object ReduxMiddleware {
     middlewares: Collection<IMiddleware<State>>
   ): (Redux.IStore<State>) -> Redux.IStore<State> {
     return fun(store): Redux.IStore<State> {
-      val wrapper = combineMiddlewares(
-        middlewares
-      )(store)
-      return EnhancedStore(
-        store,
-        wrapper.dispatch
-      )
+      val wrapper = combineMiddlewares(middlewares)(store)
+      return EnhancedStore(store, wrapper.dispatch)
     }
   }
 
@@ -118,8 +94,6 @@ object ReduxMiddleware {
   fun <State> applyMiddlewares(
     vararg middlewares: IMiddleware<State>
   ): (Redux.IStore<State>) -> Redux.IStore<State> {
-    return applyMiddlewares(
-      middlewares.asList()
-    )
+    return applyMiddlewares(middlewares.asList())
   }
 }
