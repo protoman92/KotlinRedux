@@ -32,63 +32,81 @@ object ReduxSaga {
   /** [Output] for an [IEffect], which can stream values of some type */
   data class Output<T>(
     private val scope: CoroutineScope,
-    private val channel: ReceiveChannel<T>,
+    internal val channel: ReceiveChannel<T>,
     val onAction: Redux.IDispatcher
   ): CoroutineScope by scope {
-    private fun <T2> with(newChannel: ReceiveChannel<T2>): Output<T2> {
-      return Output(this.scope, newChannel, this.onAction)
-    }
+    private fun <T2> with(newChannel: ReceiveChannel<T2>) =
+      Output(this.scope, newChannel, this.onAction)
 
     /** See [ReceiveChannel.map] */
-    internal fun <T2> map(selector: suspend (T) -> T2) =
-      this.with(this.channel.map(this.coroutineContext) { selector(it) })
+    internal fun <T2> map(transform: suspend (T) -> T2) =
+      this.with(this.channel.map(this.coroutineContext) { transform(it) })
 
+    /**
+     * Flatten emissions from other [Output] produced by transforming the
+     * elements emitted by [channel] to said [Output], and emitting everything.
+     */
     @ExperimentalCoroutinesApi
-    internal fun <T2> flatMap(selector: suspend (T) -> Output<T2>) =
+    internal fun <T2> flatMap(transform: suspend (T) -> Output<T2>) =
       this.with(this.scope.produce {
-        val value1 = this@Output.channel.receive()
-        val channel2 = selector(value1).channel
+        for (value1 in this@Output.channel) {
+          val channel2 = transform(value1).channel
 
-        this.launch {
-          while (this.isActive) {}
-          this@produce.close()
-          channel2.cancel()
-        }
+          this.launch {
+            while (this.isActive) { }
+            this@produce.close()
+            channel2.cancel()
+          }
 
-        this.launch {
-          for (t2 in channel2) {
-            if (this@produce.isClosedForSend) break
-            this@produce.send(t2)
+          this.launch {
+            for (t2 in channel2) {
+              if (this@produce.isClosedForSend) break
+              this@produce.send(t2)
+            }
           }
         }
       })
 
+    /**
+     * Flatten emissions from the last [Output] produced by transforming the
+     * latest element emitted by [channel]. Contrast this with [Output.flatMap].
+     */
     @ExperimentalCoroutinesApi
-    internal fun <T2> switchMap(selector: suspend (T) -> Output<T2>): Output<T2> {
+    internal fun <T2> switchMap(transform: suspend (T) -> Output<T2>): Output<T2> {
       val lock = ReentrantReadWriteLock()
       var latestJob1: Job? = null
       var latestJob2: Job? = null
 
       return this.with(this.scope.produce {
-        val value1 = this@Output.channel.receive()
-        val channel2 = selector(value1).channel
-        lock.read { latestJob1?.cancel(); latestJob2?.cancel() }
+        for (value1 in this@Output.channel) {
+          val channel2 = transform(value1).channel
 
-        val job1 = this.launch {
-          while (this.isActive) {}
-          this@produce.close()
-          channel2.cancel()
-        }
-
-        val job2 = this.launch {
-          for (t2 in channel2) {
-            if (this@produce.isClosedForSend) break
-            this@produce.send(t2)
+          val job1 = this.launch(start = CoroutineStart.LAZY) {
+            while (this.isActive) { }
+            this@produce.close()
+            channel2.cancel()
           }
-        }
 
-        lock.write { latestJob1 = job1; latestJob2 = job2 }
+          val job2 = this.launch(start = CoroutineStart.LAZY) {
+            for (t2 in channel2) {
+              if (this@produce.isClosedForSend) break
+              this@produce.send(t2)
+            }
+          }
+
+          lock.read { latestJob1?.cancel(); latestJob2?.cancel() }
+          lock.write { latestJob1 = job1; latestJob2 = job2 }
+          job1.start(); job2.start()
+        }
       })
+    }
+
+    /** Terminate the current [channel] */
+    fun terminate() = this.channel.cancel()
+
+    /** Get the next [T], but only if it arrives before [timeoutInMillis] */
+    fun nextValue(timeoutInMillis: Long) = runBlocking(this.coroutineContext) {
+      withTimeoutOrNull(timeoutInMillis) { this@Output.channel.receive() }
     }
   }
 
