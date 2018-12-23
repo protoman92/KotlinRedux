@@ -35,7 +35,7 @@ object ReduxMiddleware {
    * [Input] for middlewares that includes some functionalities from
    * [Redux.IStore].
    */
-  class Input<State>(val lastState: () -> State)
+  class Input<State>(val lastState: Redux.ILastState<State>)
 
   /**
    * Use this [DispatchWrapper] to track the ordering of [dispatch] wrapping
@@ -60,7 +60,7 @@ object ReduxMiddleware {
     middlewares: Collection<IMiddleware<State>>
   ): (Redux.IStore<State>) -> DispatchWrapper {
     return fun(store): DispatchWrapper {
-      val input = Input { store.lastState() }
+      val input = Input(store.lastState)
       val rootWrapper = DispatchWrapper("root", store.dispatch)
       if (middlewares.isEmpty()) return rootWrapper
 

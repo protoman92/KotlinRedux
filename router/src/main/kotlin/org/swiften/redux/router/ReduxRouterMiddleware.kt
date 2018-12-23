@@ -31,8 +31,8 @@ object ReduxRouterMiddleware {
   /** [ReduxMiddleware.IProvider] implementation for [IRouter] middleware */
   class Provider<State>(private val router: IRouter): ReduxMiddleware.IProvider<State> {
     override val middleware = object : ReduxMiddleware.IMiddleware<State> {
-      override operator fun invoke(input: ReduxMiddleware.Input<State>)
-        = object : ReduxMiddleware.IDispatchMapper {
+      override operator fun invoke(input: ReduxMiddleware.Input<State>) =
+        object : ReduxMiddleware.IDispatchMapper {
         override operator fun invoke(wrapper: ReduxMiddleware.DispatchWrapper)
           = ReduxMiddleware.DispatchWrapper("$wrapper.id-router",
           object : Redux.IDispatcher {
