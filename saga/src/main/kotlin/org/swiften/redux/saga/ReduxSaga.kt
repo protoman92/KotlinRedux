@@ -10,9 +10,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.map
 import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.concurrent.read
-import kotlin.concurrent.write
+import java.util.*
 
 /**
  * Created by haipham on 2018/12/22.
@@ -51,12 +49,7 @@ object ReduxSaga {
       this.with(this.scope.produce {
         for (value1 in this@Output.channel) {
           val channel2 = transform(value1).channel
-
-          this.launch {
-            while (this.isActive) { }
-            this@produce.close()
-            channel2.cancel()
-          }
+          this.launch { while (this.isActive) { }; channel2.cancel() }
 
           this.launch {
             for (t2 in channel2) {
@@ -72,31 +65,48 @@ object ReduxSaga {
      * latest element emitted by [channel]. Contrast this with [Output.flatMap].
      */
     @ExperimentalCoroutinesApi
-    internal fun <T2> switchMap(transform: suspend (T) -> Output<T2>): Output<T2> {
-      val lock = ReentrantReadWriteLock()
-      var latestJob1: Job? = null
-      var latestJob2: Job? = null
+    internal fun <T2> switchMap(transform: suspend (T) -> Output<T2>) =
+      this.with(this.scope.produce {
+        var previousJob: Job? = null
 
-      return this.with(this.scope.produce {
         for (value1 in this@Output.channel) {
+          val parentJob = SupervisorJob()
           val channel2 = transform(value1).channel
 
-          val job1 = this.launch(start = CoroutineStart.LAZY) {
-            while (this.isActive) { }
-            this@produce.close()
-            channel2.cancel()
+          val job1 = this.launch(parentJob, CoroutineStart.LAZY) {
+            while (this.isActive) { }; channel2.cancel()
           }
 
-          val job2 = this.launch(start = CoroutineStart.LAZY) {
+          val job2 = this.launch(parentJob, CoroutineStart.LAZY) {
             for (t2 in channel2) {
               if (this@produce.isClosedForSend) break
               this@produce.send(t2)
             }
           }
 
-          lock.read { latestJob1?.cancel(); latestJob2?.cancel() }
-          lock.write { latestJob1 = job1; latestJob2 = job2 }
+          previousJob?.cancelChildren()
+          previousJob = parentJob
           job1.start(); job2.start()
+        }
+      })
+
+    @ExperimentalCoroutinesApi
+    internal fun debounce(timeMillis: Long): Output<T> {
+      return this.with(this.produce {
+        var previousJob: Job? = null
+
+        for (value1 in this@Output.channel) {
+          val startTime = Date().time
+          val parentJob = SupervisorJob()
+
+          val newJob = this.launch(parentJob, CoroutineStart.LAZY) {
+            while (Date().time - startTime < timeMillis && this.isActive) { }
+            if (this.isActive) { this@produce.send(value1) }
+          }
+
+          previousJob?.cancelChildren()
+          previousJob = parentJob
+          newJob.start()
         }
       })
     }

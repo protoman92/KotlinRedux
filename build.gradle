@@ -43,13 +43,13 @@ subprojects {
   
   compileKotlin {
     kotlinOptions {
-      jvmTarget = jvmTarget
+      jvmTarget = project.ext.jvmTarget
     }
   }
 
   compileTestKotlin {
     kotlinOptions {
-      jvmTarget = jvmTarget
+      jvmTarget = '1.8'
     }
   }
 

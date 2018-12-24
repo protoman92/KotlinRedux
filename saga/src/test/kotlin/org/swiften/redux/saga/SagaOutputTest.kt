@@ -12,16 +12,15 @@ import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
 import org.testng.Assert
 import org.testng.annotations.Test
+import java.util.*
 
 /**
  * Created by haipham on 2018/12/23.
  */
 private typealias Output<T> = ReduxSaga.Output<T>
 
-class SagaOutputTest: CoroutineScope {
-  override val coroutineContext = Dispatchers.Default
-
-  private val timeout: Long = 10000
+class SagaOutputTest {
+  private val timeout: Long = 100000
 
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
@@ -36,35 +35,29 @@ class SagaOutputTest: CoroutineScope {
       override fun invoke(action: Redux.IAction) {}
     }
 
-    val source = ReduxSaga.Output(this, sourceCh, dispatcher)
-    val finalValues = arrayListOf<String>()
+    val source = ReduxSaga.Output(GlobalScope, sourceCh, dispatcher)
+    val finalValues = Collections.synchronizedList(arrayListOf<String>())
 
     val finalOutput = fn(source) {
-      val resultCh = this@SagaOutputTest.produce {
+      val resultCh = GlobalScope.produce {
         delay(500); this.send("${it}1")
         delay(500); this.send("${it}2")
         delay(500); this.send("${it}3")
       }
 
-      ReduxSaga.Output(this, resultCh, dispatcher)
+      ReduxSaga.Output(GlobalScope, resultCh, dispatcher)
     }
 
     /// When
-    this.launch {
-      sourceCh.send(0)
-      sourceCh.send(1)
-      sourceCh.send(2)
-    }
+    GlobalScope.launch { sourceCh.send(0); sourceCh.send(1); sourceCh.send(2) }
+    GlobalScope.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
 
-    this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
-
-    runBlocking(this.coroutineContext) {
+    runBlocking {
       withTimeoutOrNull(this@SagaOutputTest.timeout) {
         while (finalValues.sorted() != actualValues.sorted()) { delay(100) }; 1
       }
 
       finalOutput.terminate()
-      this@SagaOutputTest.coroutineContext.cancel()
 
       /// Then
       Assert.assertEquals(finalValues.sorted(), actualValues.sorted())
@@ -89,5 +82,51 @@ class SagaOutputTest: CoroutineScope {
       { this.switchMap(it) },
       arrayListOf("21", "22", "23")
     )
+  }
+
+  @Test
+  @ObsoleteCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun `Output debounce should throttle emissions`() {
+    /// Setup
+    val rand = Random()
+    val sourceCh = Channel<Int>()
+
+    val source = ReduxSaga.Output(GlobalScope, sourceCh, object : Redux.IDispatcher {
+      override fun invoke(action: Redux.IAction) {}
+    })
+
+    val finalOutput = source.debounce(100)
+    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+    GlobalScope.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
+    val validEmissions = (0 until 100).map { rand.nextBoolean() }
+
+    val actualValues = validEmissions
+      .mapIndexed { index, b -> index.to(b) }
+      .filter { (_, b) -> b }
+      .map { (index, _) -> index }
+
+    /// When
+    GlobalScope.launch {
+      validEmissions.forEachIndexed { index, b ->
+        if (b) {
+          sourceCh.send(index)
+          delay((150 until 300).random().toLong())
+        } else {
+          delay((10 until 50).random().toLong())
+        }
+      }
+    }
+
+    runBlocking {
+      withTimeoutOrNull(this@SagaOutputTest.timeout) {
+        while (finalValues != actualValues) { delay(100) }; 1
+      }
+
+      finalOutput.terminate()
+
+      /// Then
+      Assert.assertEquals(finalValues, actualValues)
+    }
   }
 }
