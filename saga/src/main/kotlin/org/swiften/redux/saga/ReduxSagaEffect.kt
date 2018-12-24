@@ -13,19 +13,21 @@ import org.swiften.redux.core.Redux
  */
 /** Top-level namespace for [ReduxSaga.IEffect] helpers */
 object ReduxSagaEffect {
+  /** Create a [CallEffect] */
+  fun <State, P, R> call(
+    param: ReduxSaga.IEffect<State, P>,
+    block: suspend (P) -> R
+  ): ReduxSaga.IEffect<State, R> = CallEffect(param, block)
+
   /** Create a [TakeEveryEffect] instance. */
   fun <State, P, R> takeEvery(
     extract: suspend (Redux.IAction) -> P?,
     block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
-  ): ReduxSaga.IEffect<State, R> {
-    return TakeEveryEffect(extract, block)
-  }
+  ): ReduxSaga.IEffect<State, R> = TakeEveryEffect(extract, block)
 
   /** Create a [TakeLatestEffect] instance. */
   fun <State, P, R> takeLatest(
     extract: suspend (Redux.IAction) -> P?,
     block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
-  ): ReduxSaga.IEffect<State, R> {
-    return TakeLatestEffect(extract, block)
-  }
+  ): ReduxSaga.IEffect<State, R> = TakeLatestEffect(extract, block)
 }
