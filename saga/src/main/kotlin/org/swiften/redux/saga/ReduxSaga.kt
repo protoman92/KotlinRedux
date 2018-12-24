@@ -125,4 +125,15 @@ object ReduxSaga {
     /** Produce an [Output] with an [Input] */
     operator fun invoke(input: Input<State>): Output<R>
   }
+
+  /** Transform one [IEffect] to another */
+  interface ITransformer<State, R, R2> {
+    operator fun invoke(effect: IEffect<State, R>): IEffect<State, R2>
+  }
 }
+
+/** Transform the current [ReduxSaga.IEffect] to another, based on
+ * [transformer] */
+fun <State, R, R2> ReduxSaga.IEffect<State, R>
+  .transform(transformer: ReduxSaga.ITransformer<State, R, R2>) =
+  transformer(this)
