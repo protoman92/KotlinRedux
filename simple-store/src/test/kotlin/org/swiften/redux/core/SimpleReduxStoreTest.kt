@@ -12,7 +12,7 @@ import org.testng.annotations.Test
  */
 class SimpleReduxStoreTest: BaseReduxStoreTest() {
   @Test
-  fun `dispatching actions with simple store should work`() {
+  fun `Dispatching actions with simple store should ensure thread safety`() {
     val store = SimpleReduxStore(0, this.reducer())
     this.dispatchingAction_shouldResultInCorrectState(store)
   }

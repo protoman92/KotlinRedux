@@ -6,6 +6,7 @@ import org.testng.Assert
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by haipham on 2018-12-16.
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit
  * Use this test class to test [Redux.IStore] implementations.
  */
 @Suppress("FunctionName")
-open class BaseReduxStoreTest {
+open class BaseReduxStoreTest: CoroutineScope {
   sealed class Action: Redux.IAction {
     object AddOne : Action()
     object AddTwo : Action()
@@ -53,6 +54,8 @@ open class BaseReduxStoreTest {
     }
   }
 
+  override val coroutineContext = Dispatchers.Default
+
   fun reducer(): Redux.IReducer<Int> {
     return object : Redux.IReducer<Int> {
       override operator fun invoke(previous: Int, action: Redux.IAction): Int {
@@ -67,13 +70,12 @@ open class BaseReduxStoreTest {
   fun dispatchingAction_shouldResultInCorrectState(store: Redux.IStore<Int>) {
     var currentState = 0
     val allDispatches = arrayListOf<Deferred<Unit>>()
-    val latch = CountDownLatch(1)
 
-    for (i in 0 until 100) {
+    for (i in 0 until 1000) {
       /// Setup
       val actions = arrayListOf<Action>()
 
-      for (j in 0 until 50) {
+      for (j in 0 until 500) {
         val action = Action.random()
         actions.add(action)
         currentState = action(currentState)
@@ -88,14 +90,13 @@ open class BaseReduxStoreTest {
 
     for (dispatch in allDispatches) { dispatch.start() }
 
-    GlobalScope.launch {
-      while (store.lastState() != currentState)
-      latch.countDown()
+    runBlocking(this.coroutineContext) {
+      withTimeoutOrNull(100000) {
+        while (store.lastState() != currentState) { }; 1
+      }
+
+      /// Then
+      Assert.assertEquals(store.lastState(), currentState)
     }
-
-    latch.await(20, TimeUnit.SECONDS)
-
-    /// Then
-    Assert.assertEquals(store.lastState(), currentState)
   }
 }
