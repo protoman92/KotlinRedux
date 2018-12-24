@@ -21,7 +21,7 @@ import org.swiften.redux.core.Redux
  * with [block].
  */
 internal abstract class TakeEffect<State, P, R>(
-  private val extract: (Redux.IAction) -> P?,
+  private val extract: suspend (Redux.IAction) -> P?,
   private val block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
 ) : ReduxSaga.IEffect<State, R> {
   /**

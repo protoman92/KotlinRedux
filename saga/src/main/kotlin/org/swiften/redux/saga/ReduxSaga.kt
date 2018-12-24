@@ -28,7 +28,7 @@ object ReduxSaga {
   )
 
   /** [Output] for an [IEffect], which can stream values of some type */
-  data class Output<T>(
+  data class Output<out T>(
     private val scope: CoroutineScope,
     internal val channel: ReceiveChannel<T>,
     val onAction: Redux.IDispatcher
@@ -121,7 +121,7 @@ object ReduxSaga {
   }
 
   /** Abstraction for Redux saga that handles [Redux.IAction] in the pipeline */
-  interface IEffect<State, R> {
+  interface IEffect<State, out R> {
     /** Produce an [Output] with an [Input] */
     operator fun invoke(input: Input<State>): Output<R>
   }

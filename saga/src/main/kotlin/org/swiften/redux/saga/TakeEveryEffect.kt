@@ -18,7 +18,7 @@ import org.swiften.redux.core.Redux
  * [TakeLatestEffect].
  */
 internal class TakeEveryEffect<State, P, R>(
-  extract: (Redux.IAction) -> P?,
+  extract: suspend (Redux.IAction) -> P?,
   block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
 ) : TakeEffect<State, P, R>(extract, block) {
   @ExperimentalCoroutinesApi
