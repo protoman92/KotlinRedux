@@ -18,8 +18,8 @@ import org.swiften.redux.core.Redux
  * [TakeLatestEffect].
  */
 internal class TakeEveryEffect<State, P, R>(
-  extract: suspend CoroutineScope.(Redux.IAction) -> P?,
-  block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
+  extract: ReduxSaga.IPayloadExtractor<Redux.IAction, P>,
+  block: ReduxSaga.IEffectCreator<State, P, R>
 ) :
   TakeEffect<State, P, R>(extract, block),
   ReduxSaga.Output.IFlatMapper<ReduxSaga.Output<R>, R>
@@ -32,5 +32,5 @@ internal class TakeEveryEffect<State, P, R>(
   @ExperimentalCoroutinesApi
   override fun flattenOutput(
     nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
-  ): ReduxSaga.Output<R> = nestedOutput.flatMap(this)
+  ) = nestedOutput.flatMap(this)
 }
