@@ -1,12 +1,8 @@
 package org.swiften.redux.core
 
 import kotlinx.coroutines.*
-import org.swiften.redux.core.Redux
 import org.testng.Assert
 import java.util.*
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by haipham on 2018-12-16.

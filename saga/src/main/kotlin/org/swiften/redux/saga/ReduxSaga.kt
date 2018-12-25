@@ -10,7 +10,6 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by haipham on 2018/12/22.
@@ -41,6 +40,11 @@ object ReduxSaga {
     /** Operator function for [Output.flatMap] and [Output.switchMap] */
     interface IFlatMapper<in T, R> {
       suspend operator fun invoke(scope: CoroutineScope, value: T): Output<R>
+    }
+
+    /** Operator function for [Output.catchError] */
+    interface IErrorCatcher<out R> {
+      suspend operator fun invoke(scope: CoroutineScope, error: Throwable): R
     }
 
     internal constructor(
@@ -148,18 +152,24 @@ object ReduxSaga {
 
     /** Catch possible errors and return a value produced by [fallback] */
     @ExperimentalCoroutinesApi
-    internal fun catchError(fallback: suspend CoroutineScope.(Throwable) -> T) =
+    internal fun catchError(fallback: IErrorCatcher<T>) =
       this.with(this.produce {
         try { for (value in this@Output.channel) { this@produce.send(value) } }
         catch (e1: Throwable) {
-          try { this.send(fallback(e1)); this.close() }
+          try { this.send(fallback(this, e1)); this.close() }
           catch (e2: Throwable) { this.close(e2) }
         }
       })
 
     /** Catch possible errors and return [fallback] value */
     @ExperimentalCoroutinesApi
-    internal fun catchError(fallback: T) = this.catchError { fallback }
+    internal fun catchError(fallback: T) =
+      this.catchError(object : IErrorCatcher<T> {
+        override suspend operator fun invoke(
+          scope: CoroutineScope,
+          error: Throwable
+        ) = fallback
+    })
 
     /** Terminate the current [channel] */
     fun terminate() = this.channel.cancel()

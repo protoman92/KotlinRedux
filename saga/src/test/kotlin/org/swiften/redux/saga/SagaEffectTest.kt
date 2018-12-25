@@ -9,7 +9,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
-import org.swiften.redux.saga.ReduxSagaEffect.call
 import org.swiften.redux.saga.ReduxSagaEffect.just
 import org.swiften.redux.saga.ReduxSagaEffect.takeEveryAction
 import org.swiften.redux.saga.ReduxSagaEffect.takeLatestAction

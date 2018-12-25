@@ -74,7 +74,7 @@ class PropInjectorTest {
       override operator fun invoke(previous: S, action: Redux.IAction): S {
         return when (action) {
           is Action -> when (action) {
-            is Action.SetQuery -> previous.copy(action.query)
+            is Action.SetQuery -> previous.copy(query = action.query)
           }
 
           else -> previous
