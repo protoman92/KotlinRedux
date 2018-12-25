@@ -20,8 +20,8 @@ import org.swiften.redux.core.Redux
  * [extract] and pluck out the appropriate ones to perform additional work on
  * with [block].
  */
-internal abstract class TakeEffect<State, P, R>(
-  private val extract: suspend (Redux.IAction) -> P?,
+abstract class TakeEffect<State, P, R>(
+  private val extract: suspend CoroutineScope.(Redux.IAction) -> P?,
   private val block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
 ) : ReduxSaga.IEffect<State, R> {
   /**
@@ -39,7 +39,7 @@ internal abstract class TakeEffect<State, P, R>(
     val nestedOutput = ReduxSaga.Output(input.scope,
       input.scope.produce {
         for (action in actionChannel) {
-          val param = this@TakeEffect.extract(action)
+          val param = this@TakeEffect.extract(this, action)
 
           if (param != null) {
             this.send(this@TakeEffect.block(this, param).invoke(input))

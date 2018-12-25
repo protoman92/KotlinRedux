@@ -28,13 +28,37 @@ object ReduxSagaEffect {
 
   /** Create a [TakeEveryEffect] instance. */
   fun <State, P, R> takeEvery(
-    extract: suspend (Redux.IAction) -> P?,
+    extract: suspend CoroutineScope.(Redux.IAction) -> P?,
     block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
   ): ReduxSaga.IEffect<State, R> = TakeEveryEffect(extract, block)
 
+  /**
+   * Convenience function to create [TakeEveryEffect] for a specific type of
+   * [Redux.IAction].
+   */
+  inline fun <State, reified Action, P, R> takeEveryAction(
+    crossinline extract: suspend CoroutineScope.(Action) -> P?,
+    noinline block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
+  ) where Action: Redux.IAction = this.takeEvery(
+    { when (it) {is Action -> extract(it); else -> null } },
+    block
+  )
+
   /** Create a [TakeLatestEffect] instance. */
   fun <State, P, R> takeLatest(
-    extract: suspend (Redux.IAction) -> P?,
+    extract: suspend CoroutineScope.(Redux.IAction) -> P?,
     block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
   ): ReduxSaga.IEffect<State, R> = TakeLatestEffect(extract, block)
+
+  /**
+   * Convenience function to create [TakeLatestEffect] for a specific type of
+   * [Redux.IAction].
+   */
+  inline fun <State, reified Action, P, R> takeLatestAction(
+    crossinline extract: suspend CoroutineScope.(Action) -> P?,
+    noinline block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
+  ) where Action: Redux.IAction = this.takeLatest(
+    { when (it) {is Action -> extract(it); else -> null } },
+    block
+  )
 }
