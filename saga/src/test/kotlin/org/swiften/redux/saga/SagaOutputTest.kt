@@ -19,7 +19,9 @@ import java.util.*
  */
 private typealias Output<T> = ReduxSaga.Output<T>
 
-class SagaOutputTest {
+class SagaOutputTest : CoroutineScope {
+  override val coroutineContext get() = Dispatchers.IO
+
   private val timeout: Long = 100000
 
   @ObsoleteCoroutinesApi
@@ -35,26 +37,26 @@ class SagaOutputTest {
       override fun invoke(action: Redux.IAction) {}
     }
 
-    val source = ReduxSaga.Output(GlobalScope, sourceCh, dispatcher)
+    val source = ReduxSaga.Output(this, sourceCh, dispatcher)
     val finalValues = Collections.synchronizedList(arrayListOf<String>())
 
     val finalOutput = fn(source) {
-      val resultCh = GlobalScope.produce {
+      val resultCh = this.produce {
         delay(500); this.send("${it}1")
         delay(500); this.send("${it}2")
         delay(500); this.send("${it}3")
       }
 
-      ReduxSaga.Output(GlobalScope, resultCh, dispatcher)
+      ReduxSaga.Output(this, resultCh, dispatcher)
     }
 
     /// When
-    GlobalScope.launch { sourceCh.send(0); sourceCh.send(1); sourceCh.send(2) }
-    GlobalScope.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
+    this.launch { sourceCh.send(0); sourceCh.send(1); sourceCh.send(2) }
+    this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
 
     runBlocking {
       withTimeoutOrNull(this@SagaOutputTest.timeout) {
-        while (finalValues.sorted() != actualValues.sorted()) { delay(100) }; 1
+        while (finalValues.sorted() != actualValues.sorted()) { delay(1000) }; 1
       }
 
       finalOutput.terminate()
@@ -92,22 +94,22 @@ class SagaOutputTest {
     val rand = Random()
     val sourceCh = Channel<Int>()
 
-    val source = ReduxSaga.Output(GlobalScope, sourceCh, object : Redux.IDispatcher {
+    val source = ReduxSaga.Output(this, sourceCh, object : Redux.IDispatcher {
       override fun invoke(action: Redux.IAction) {}
     })
 
     val finalOutput = source.debounce(100)
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
-    GlobalScope.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
+    this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
     val validEmissions = (0 until 100).map { rand.nextBoolean() }
 
     val actualValues = validEmissions
-      .mapIndexed { index, b -> index.to(b) }
+      .mapIndexed { index, b -> index to b }
       .filter { (_, b) -> b }
       .map { (index, _) -> index }
 
     /// When
-    GlobalScope.launch {
+    this.launch {
       validEmissions.forEachIndexed { index, b ->
         if (b) {
           sourceCh.send(index)
@@ -120,7 +122,7 @@ class SagaOutputTest {
 
     runBlocking {
       withTimeoutOrNull(this@SagaOutputTest.timeout) {
-        while (finalValues != actualValues) { delay(100) }; 1
+        while (finalValues != actualValues) { delay(1000) }; 1
       }
 
       finalOutput.terminate()
