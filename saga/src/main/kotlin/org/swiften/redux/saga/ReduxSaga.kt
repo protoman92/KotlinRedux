@@ -27,12 +27,22 @@ object ReduxSaga {
   )
 
   /** [Output] for an [IEffect], which can stream values of some type */
-  class Output<out T>(
+  class Output<out T> internal constructor(
     private val scope: CoroutineScope,
     internal val channel: ReceiveChannel<T>,
     val onAction: Redux.IDispatcher
   ): CoroutineScope by scope {
-    constructor(
+    /** Operator function for [Output.map] */
+    interface IMapper<in T, out R> {
+      suspend operator fun invoke(scope: CoroutineScope, value: T): R
+    }
+
+    /** Operator function for [Output.flatMap] and [Output.switchmap] */
+    interface IFlatMapper<in T, R> {
+      suspend operator fun invoke(scope: CoroutineScope, value: T): Output<R>
+    }
+
+    internal constructor(
       scope: CoroutineScope,
       channel: ReceiveChannel<T>,
       onAction: (Redux.IAction) -> Unit
@@ -45,11 +55,11 @@ object ReduxSaga {
 
     /** Map emissions from [channel] with [transform] */
     @ExperimentalCoroutinesApi
-    internal fun <T2> map(transform: suspend CoroutineScope.(T) -> T2) =
+    internal fun <T2> map(transform: IMapper<T, T2>) =
       this.with(this.produce {
         for (value1 in this@Output.channel) {
           if (!this.isActive || this.isClosedForSend) { break }
-          this.send(transform(value1))
+          this.send(transform(this, value1))
         }
 
         if (!this.isActive) { this.close() }
@@ -60,11 +70,11 @@ object ReduxSaga {
      * elements emitted by [channel] to said [Output], and emitting everything.
      */
     @ExperimentalCoroutinesApi
-    internal fun <T2> flatMap(transform: suspend (T) -> Output<T2>) =
+    internal fun <T2> flatMap(transform: IFlatMapper<T, T2>) =
       this.with(this.produce {
         for (value1 in this@Output.channel) {
           val parentJob = SupervisorJob()
-          val channel2 = transform(value1).channel
+          val channel2 = transform(this, value1).channel
 
           this.launch(parentJob) {
             for (t2 in channel2) {
@@ -82,13 +92,13 @@ object ReduxSaga {
      * latest element emitted by [channel]. Contrast this with [Output.flatMap].
      */
     @ExperimentalCoroutinesApi
-    internal fun <T2> switchMap(transform: suspend (T) -> Output<T2>) =
+    internal fun <T2> switchMap(transform: IFlatMapper<T, T2>) =
       this.with(this.scope.produce {
         var previousJob: Job? = null
 
         for (value1 in this@Output.channel) {
           val parentJob = SupervisorJob()
-          val channel2 = transform(value1).channel
+          val channel2 = transform(this, value1).channel
 
           val newJob = this.launch(parentJob, CoroutineStart.LAZY) {
             for (t2 in channel2) {

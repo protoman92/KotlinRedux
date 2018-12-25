@@ -21,9 +21,17 @@ import org.swiften.redux.core.Redux
 internal class TakeLatestEffect<State, P, R>(
   extract: suspend CoroutineScope.(Redux.IAction) -> P?,
   block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
-) : TakeEffect<State, P, R>(extract, block) {
+) :
+  TakeEffect<State, P, R>(extract, block),
+  ReduxSaga.Output.IFlatMapper<ReduxSaga.Output<R>, R>
+{
+  override suspend operator fun invoke(
+    scope: CoroutineScope,
+    value: ReduxSaga.Output<R>
+  ) = value
+
   @ExperimentalCoroutinesApi
   override fun flattenOutput(
     nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
-  ): ReduxSaga.Output<R> = nestedOutput.switchMap { it }
+  ): ReduxSaga.Output<R> = nestedOutput.switchMap(this)
 }

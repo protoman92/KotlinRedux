@@ -10,9 +10,7 @@ import kotlinx.coroutines.channels.consumeEach
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
 import org.swiften.redux.saga.ReduxSagaEffect.call
-import org.swiften.redux.saga.ReduxSagaEffect.takeEvery
 import org.swiften.redux.saga.ReduxSagaEffect.takeEveryAction
-import org.swiften.redux.saga.ReduxSagaEffect.takeLatest
 import org.swiften.redux.saga.ReduxSagaEffect.takeLatestAction
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
@@ -49,7 +47,11 @@ class SagaEffectTest : CoroutineScope {
       when (it) {is TakeAction.Action1 -> it.value }
     }
 
-    val api: suspend CoroutineScope.(Int) -> Int = { delay(1000); it }
+    val api = object : ReduxSaga.Output.IMapper<Int, Int> {
+      override suspend operator fun invoke(scope: CoroutineScope, value: Int): Int {
+        delay(1000); return value
+      }
+    }
 
     val block: suspend CoroutineScope.(Int) -> ReduxSaga.IEffect<State, Int> = {
       call(it, api)
