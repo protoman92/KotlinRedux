@@ -24,6 +24,6 @@ internal class TakeLatestEffect<State, P, R>(
 ) : TakeEffect<State, P, R>(extract, block) {
   @ExperimentalCoroutinesApi
   override fun flattenOutput(
-    output: ReduxSaga.Output<ReduxSaga.Output<R>>
-  ): ReduxSaga.Output<R> = output.switchMap { it }
+    nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
+  ): ReduxSaga.Output<R> = nestedOutput.switchMap { it }
 }
