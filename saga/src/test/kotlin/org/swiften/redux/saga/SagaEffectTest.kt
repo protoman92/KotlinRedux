@@ -9,16 +9,18 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
+import org.swiften.redux.saga.ReduxSagaEffect.call
 import org.swiften.redux.saga.ReduxSagaEffect.takeEvery
 import org.swiften.redux.saga.ReduxSagaEffect.takeLatest
 import org.testng.Assert
+import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
 import java.util.*
 
 /**
  * Created by haipham on 2018/12/23.
  */
-class SagaEffectTest: CoroutineScope {
+class SagaEffectTest : CoroutineScope {
   class State
 
   sealed class TakeAction: Redux.IAction {
@@ -28,6 +30,9 @@ class SagaEffectTest: CoroutineScope {
   override val coroutineContext get() = Dispatchers.IO
 
   private val timeout: Long = 100000
+
+  @AfterMethod
+  fun afterMethod() { this.coroutineContext.cancel() }
 
   @ObsoleteCoroutinesApi
   private fun test_takeEffect_shouldTakeCorrectActions(
@@ -50,7 +55,7 @@ class SagaEffectTest: CoroutineScope {
     val api: suspend CoroutineScope.(Int) -> Int = { delay(1000); it }
 
     val block: suspend CoroutineScope.(Int) -> ReduxSaga.IEffect<State, Int> = {
-      ReduxSagaEffect.call(it, api)
+      call(it, api)
     }
 
     val takeEffect = createTakeEffect(extract, block)
