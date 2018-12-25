@@ -16,11 +16,11 @@ object ReduxSagaEffect {
   /** Create a [CallEffect] */
   fun <State, P, R> call(
     param: ReduxSaga.IEffect<State, P>,
-    block: suspend CoroutineScope.(P) -> R
+    block: ReduxSaga.Output.IMapper<P, R>
   ): ReduxSaga.IEffect<State, R> = CallEffect(param, block)
 
   /** Create a [CallEffect] with [param] */
-  fun <State, P, R> call(param: P, block: suspend CoroutineScope.(P) -> R) =
+  fun <State, P, R> call(param: P, block: ReduxSaga.Output.IMapper<P, R>) =
     this.call(this.just<State, P>(param), block)
 
   /** Create a [JustEffect] */
