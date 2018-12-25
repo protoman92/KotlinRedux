@@ -12,6 +12,7 @@ import kotlinx.coroutines.channels.produce
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
+import java.lang.Exception
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -41,7 +42,7 @@ class SagaOutputTest : CoroutineScope {
 
     val finalOutput = fn(sourceOutput,
       object : ReduxSaga.Output.IFlatMapper<Int, String> {
-        override suspend operator fun invoke(scope: CoroutineScope, value: Int) =
+        override suspend fun invoke(scope: CoroutineScope, value: Int) =
           ReduxSaga.Output(scope, scope.produce {
             delay(500); this.send("${value}1")
             delay(500); this.send("${value}2")
@@ -105,7 +106,7 @@ class SagaOutputTest : CoroutineScope {
 
     val finalOutput = fn(sourceOutput,
       object : ReduxSaga.Output.IFlatMapper<Int, Int> {
-        override suspend operator fun invoke(scope: CoroutineScope, value: Int) =
+        override suspend fun invoke(scope: CoroutineScope, value: Int) =
           ReduxSaga.Output(scope, scope.produce {
             delay(500); this.send(1)
             delay(500); this.send(2)
@@ -119,8 +120,8 @@ class SagaOutputTest : CoroutineScope {
     job.cancel()
 
     this.launch {
-      sourceCh.send(0);
-      sourceCh.send(1);
+      sourceCh.send(0)
+      sourceCh.send(1)
       sourceCh.send(2)
     }
 
@@ -183,6 +184,35 @@ class SagaOutputTest : CoroutineScope {
 
       /// Then
       Assert.assertEquals(finalValues, actualValues)
+    }
+  }
+
+  @Test
+  @ObsoleteCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun `Output catch error should handle errors gracefully`() {
+    /// Setup
+    val sourceCh = Channel<Int>()
+    val sourceOutput = ReduxSaga.Output(this, sourceCh) { }
+    val error = Exception("Oh no!")
+
+    val finalOutput = sourceOutput
+      .map(object : ReduxSaga.Output.IMapper<Int, Int> {
+        override suspend fun invoke(scope: CoroutineScope, value: Int) = throw error
+      })
+      .catchError(100)
+
+    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+    this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
+
+    /// When
+    this.launch { sourceCh.send(0); sourceCh.send(1); sourceCh.send(2) }
+
+    runBlocking {
+      delay(1000)
+
+      /// Then
+      Assert.assertEquals(finalValues, arrayListOf(100))
     }
   }
 }

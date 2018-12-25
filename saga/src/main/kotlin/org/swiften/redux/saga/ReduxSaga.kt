@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by haipham on 2018/12/22.
@@ -27,7 +28,7 @@ object ReduxSaga {
   )
 
   /** [Output] for an [IEffect], which can stream values of some type */
-  class Output<out T> internal constructor(
+  class Output<T> internal constructor(
     private val scope: CoroutineScope,
     internal val channel: ReceiveChannel<T>,
     val onAction: Redux.IDispatcher
@@ -37,7 +38,7 @@ object ReduxSaga {
       suspend operator fun invoke(scope: CoroutineScope, value: T): R
     }
 
-    /** Operator function for [Output.flatMap] and [Output.switchmap] */
+    /** Operator function for [Output.flatMap] and [Output.switchMap] */
     interface IFlatMapper<in T, R> {
       suspend operator fun invoke(scope: CoroutineScope, value: T): Output<R>
     }
@@ -57,12 +58,14 @@ object ReduxSaga {
     @ExperimentalCoroutinesApi
     internal fun <T2> map(transform: IMapper<T, T2>) =
       this.with(this.produce {
-        for (value1 in this@Output.channel) {
-          if (!this.isActive || this.isClosedForSend) { break }
-          this.send(transform(this, value1))
-        }
+        try {
+          for (value in this@Output.channel) {
+            if (!this.isActive || this.isClosedForSend) { break }
+            this.send(transform(this, value))
+          }
 
-        if (!this.isActive) { this.close() }
+          if (!this.isActive) { this.close() }
+        } catch (e: Throwable) { this.close(e) }
       })
 
     /**
@@ -72,19 +75,21 @@ object ReduxSaga {
     @ExperimentalCoroutinesApi
     internal fun <T2> flatMap(transform: IFlatMapper<T, T2>) =
       this.with(this.produce {
-        for (value1 in this@Output.channel) {
-          val parentJob = SupervisorJob()
-          val channel2 = transform(this, value1).channel
+        try {
+          for (value in this@Output.channel) {
+            val channel2 = transform(this, value).channel
+            val parentJob = SupervisorJob()
 
-          this.launch(parentJob) {
-            for (t2 in channel2) {
-              if (!this.isActive || this@produce.isClosedForSend) { break }
-              this@produce.send(t2)
+            this.launch(parentJob) {
+              for (t2 in channel2) {
+                if (!this.isActive || this@produce.isClosedForSend) { break }
+                this@produce.send(t2)
+              }
+
+              if (!this.isActive) { this@produce.close() }
             }
-
-            if (!this.isActive) { this@produce.close() }
           }
-        }
+        } catch (e: Throwable) { this.close(e) }
       })
 
     /**
@@ -96,37 +101,42 @@ object ReduxSaga {
       this.with(this.scope.produce {
         var previousJob: Job? = null
 
-        for (value1 in this@Output.channel) {
-          val parentJob = SupervisorJob()
-          val channel2 = transform(this, value1).channel
+        try {
+          for (value in this@Output.channel) {
+            previousJob?.cancelChildren()
+            val parentJob = SupervisorJob()
+            val channel2 = transform(this, value).channel
 
-          val newJob = this.launch(parentJob, CoroutineStart.LAZY) {
-            for (t2 in channel2) {
-              if (!this.isActive || this@produce.isClosedForSend) { break }
-              this@produce.send(t2)
+            val newJob = this.launch(parentJob, CoroutineStart.LAZY) {
+              for (t2 in channel2) {
+                if (!this.isActive || this@produce.isClosedForSend) { break }
+                this@produce.send(t2)
+              }
+
+              if (!this.isActive) { this@produce.close() }
             }
 
-            if (!this.isActive) { this@produce.close() }
+            previousJob = parentJob
+            newJob.start()
           }
-
-          previousJob?.cancelChildren()
-          previousJob = parentJob
-          newJob.start()
-        }
+        } catch (e: Throwable) { this.close(e) }
       })
 
+    /** Throttle emissions with [timeMillis] */
     @ExperimentalCoroutinesApi
     internal fun debounce(timeMillis: Long): Output<T> {
+      if (timeMillis <= 0) { return this }
+
       return this.with(this.produce {
         var previousJob: Job? = null
 
-        for (value1 in this@Output.channel) {
+        for (value in this@Output.channel) {
           val startTime = Date().time
           val parentJob = SupervisorJob()
 
           val newJob = this.launch(parentJob, CoroutineStart.LAZY) {
             while (Date().time - startTime < timeMillis && this.isActive) { }
-            if (this.isActive) { this@produce.send(value1) }
+            if (this.isActive) { this@produce.send(value) }
           }
 
           previousJob?.cancelChildren()
@@ -135,6 +145,21 @@ object ReduxSaga {
         }
       })
     }
+
+    /** Catch possible errors and return a value produced by [fallback] */
+    @ExperimentalCoroutinesApi
+    internal fun catchError(fallback: suspend CoroutineScope.(Throwable) -> T) =
+      this.with(this.produce {
+        try { for (value in this@Output.channel) { this@produce.send(value) } }
+        catch (e1: Throwable) {
+          try { this.send(fallback(e1)); this.close() }
+          catch (e2: Throwable) { this.close(e2) }
+        }
+      })
+
+    /** Catch possible errors and return [fallback] value */
+    @ExperimentalCoroutinesApi
+    internal fun catchError(fallback: T) = this.catchError { fallback }
 
     /** Terminate the current [channel] */
     fun terminate() = this.channel.cancel()
@@ -146,7 +171,7 @@ object ReduxSaga {
   }
 
   /** Abstraction for Redux saga that handles [Redux.IAction] in the pipeline */
-  interface IEffect<State, out R> {
+  interface IEffect<State, R> {
     /** Produce an [Output] with an [Input] */
     operator fun invoke(input: Input<State>): Output<R>
   }

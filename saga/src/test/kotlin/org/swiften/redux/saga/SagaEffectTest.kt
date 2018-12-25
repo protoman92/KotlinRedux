@@ -39,13 +39,13 @@ class SagaEffectTest : CoroutineScope {
   private fun test_takeEffect_shouldTakeCorrectActions(
     createTakeEffect: (
       ReduxSaga.IPayloadExtractor<TakeAction, Int>,
-      ReduxSaga.IEffectCreator<State, Int, Int>
-    ) -> ReduxSaga.IEffect<State, Int>,
+      ReduxSaga.IEffectCreator<State, Int, Any>
+    ) -> ReduxSaga.IEffect<State, Any>,
     actualValues: List<Int>
   ) {
     /// Setup
-    val api = object : ReduxSaga.Output.IMapper<Int, Int> {
-      override suspend operator fun invoke(scope: CoroutineScope, value: Int): Int {
+    val api = object : ReduxSaga.Output.IMapper<Int, Any> {
+      override suspend operator fun invoke(scope: CoroutineScope, value: Int): Any {
         delay(1000); return value
       }
     }
@@ -57,14 +57,14 @@ class SagaEffectTest : CoroutineScope {
           action: TakeAction
         ) = when (action) {is TakeAction.Action1 -> action.value }
       },
-      object : ReduxSaga.IEffectCreator<State, Int, Int> {
+      object : ReduxSaga.IEffectCreator<State, Int, Any> {
         override suspend operator fun invoke(scope: CoroutineScope, param: Int) =
           just<State, Int>(param).call(api)
       })
 
     val takeOutput = takeEffect.invoke(this, State()) { }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
-    this.launch { takeOutput.channel.consumeEach { finalValues.add(it) } }
+    this.launch { takeOutput.channel.consumeEach { finalValues.add(it as Int) } }
 
     /// When
     takeOutput.onAction(TakeAction.Action1(0))
