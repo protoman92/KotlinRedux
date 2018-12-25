@@ -23,6 +23,12 @@ object ReduxSagaEffect {
   fun <State, P, R> call(param: P, block: ReduxSaga.Output.IMapper<P, R>) =
     this.call(this.just<State, P>(param), block)
 
+  /** Create a [CatchErrorEffect] instance. */
+  fun <State, R> catchError(
+    source: ReduxSaga.IEffect<State, R>,
+    catcher: ReduxSaga.Output.IErrorCatcher<R>
+  ): ReduxSaga.IEffect<State, R> = CatchErrorEffect(source, catcher)
+
   /** Create a [JustEffect] */
   fun <State, R> just(value: R): ReduxSaga.IEffect<State, R> = JustEffect(value)
 
