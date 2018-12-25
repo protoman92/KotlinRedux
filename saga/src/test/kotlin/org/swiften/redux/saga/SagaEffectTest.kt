@@ -11,7 +11,9 @@ import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
 import org.swiften.redux.saga.ReduxSagaEffect.call
 import org.swiften.redux.saga.ReduxSagaEffect.takeEvery
+import org.swiften.redux.saga.ReduxSagaEffect.takeEveryAction
 import org.swiften.redux.saga.ReduxSagaEffect.takeLatest
+import org.swiften.redux.saga.ReduxSagaEffect.takeLatestAction
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
@@ -23,7 +25,7 @@ import java.util.*
 class SagaEffectTest : CoroutineScope {
   class State
 
-  sealed class TakeAction: Redux.IAction {
+  sealed class TakeAction : Redux.IAction {
     data class Action1(val value: Int): TakeAction()
   }
 
@@ -37,19 +39,14 @@ class SagaEffectTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   private fun test_takeEffect_shouldTakeCorrectActions(
     createTakeEffect: (
-      suspend (Redux.IAction) -> Int?,
+      suspend CoroutineScope.(TakeAction) -> Int?,
       suspend CoroutineScope.(Int) -> ReduxSaga.IEffect<State, Int>
     ) -> ReduxSaga.IEffect<State, Int>,
     actualValues: List<Int>
   ) {
     /// Setup
-    val extract: suspend (Redux.IAction) -> Int? = {
-      when (it) {
-        is TakeAction -> when (it) {
-          is TakeAction.Action1 -> it.value
-        }
-        else -> null
-      }
+    val extract: suspend CoroutineScope.(TakeAction) -> Int? = {
+      when (it) {is TakeAction.Action1 -> it.value }
     }
 
     val api: suspend CoroutineScope.(Int) -> Int = { delay(1000); it }
@@ -85,13 +82,13 @@ class SagaEffectTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   fun `Take every effect should take all actions`() {
     test_takeEffect_shouldTakeCorrectActions(
-      { a, b -> takeEvery(a, b) }, arrayListOf(0, 1, 2, 3))
+      { a, b -> takeEveryAction(a, b) }, arrayListOf(0, 1, 2, 3))
   }
 
   @Test
   @ObsoleteCoroutinesApi
   fun `Take latest effect should take latest actions`() {
     test_takeEffect_shouldTakeCorrectActions(
-      { a, b -> takeLatest(a, b) }, arrayListOf(3))
+      { a, b -> takeLatestAction(a, b) }, arrayListOf(3))
   }
 }
