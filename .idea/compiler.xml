@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="redux.core.main" target="1.8" />
+      <module name="redux.core.test" target="1.8" />
+      <module name="redux.main" target="1.8" />
+      <module name="redux.middleware.main" target="1.8" />
+      <module name="redux.middleware.test" target="1.8" />
+      <module name="redux.router.main" target="1.8" />
+      <module name="redux.router.test" target="1.8" />
+      <module name="redux.saga.main" target="1.8" />
+      <module name="redux.saga.test" target="1.8" />
+      <module name="redux.simple-store.main" target="1.8" />
+      <module name="redux.simple-store.test" target="1.8" />
+      <module name="redux.test" target="1.8" />
+      <module name="redux.ui.main" target="1.8" />
+      <module name="redux.ui.test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
