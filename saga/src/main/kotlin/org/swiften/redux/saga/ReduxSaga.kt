@@ -7,7 +7,6 @@ package org.swiften.redux.saga
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.map
 import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
 import java.util.*
@@ -28,7 +27,7 @@ object ReduxSaga {
   )
 
   /** [Output] for an [IEffect], which can stream values of some type */
-  data class Output<out T>(
+  class Output<out T>(
     private val scope: CoroutineScope,
     internal val channel: ReceiveChannel<T>,
     val onAction: Redux.IDispatcher
@@ -36,9 +35,17 @@ object ReduxSaga {
     private fun <T2> with(newChannel: ReceiveChannel<T2>) =
       Output(this.scope, newChannel, this.onAction)
 
-    /** See [ReceiveChannel.map] */
-    internal fun <T2> map(transform: suspend (T) -> T2) =
-      this.with(this.channel.map(this.coroutineContext) { transform(it) })
+    /** Map emissions from [channel] with [transform] */
+    @ExperimentalCoroutinesApi
+    internal fun <T2> map(transform: suspend CoroutineScope.(T) -> T2) =
+      this.with(this.produce {
+        for (value1 in this@Output.channel) {
+          if (!this.isActive || this.isClosedForSend) { break }
+          this.send(transform(value1))
+        }
+
+        if (!this.isActive) { this.close() }
+      })
 
     /**
      * Flatten emissions from other [Output] produced by transforming the
@@ -46,16 +53,18 @@ object ReduxSaga {
      */
     @ExperimentalCoroutinesApi
     internal fun <T2> flatMap(transform: suspend (T) -> Output<T2>) =
-      this.with(this.scope.produce {
+      this.with(this.produce {
         for (value1 in this@Output.channel) {
+          val parentJob = SupervisorJob()
           val channel2 = transform(value1).channel
-          this.launch { while (this.isActive) { }; channel2.cancel() }
 
-          this.launch {
+          this.launch(parentJob) {
             for (t2 in channel2) {
-              if (this@produce.isClosedForSend) break
+              if (!this.isActive || this@produce.isClosedForSend) { break }
               this@produce.send(t2)
             }
+
+            if (!this.isActive) { this@produce.close() }
           }
         }
       })
@@ -73,20 +82,18 @@ object ReduxSaga {
           val parentJob = SupervisorJob()
           val channel2 = transform(value1).channel
 
-          val job1 = this.launch(parentJob, CoroutineStart.LAZY) {
-            while (this.isActive) { }; channel2.cancel()
-          }
-
-          val job2 = this.launch(parentJob, CoroutineStart.LAZY) {
+          val newJob = this.launch(parentJob, CoroutineStart.LAZY) {
             for (t2 in channel2) {
-              if (this@produce.isClosedForSend) break
+              if (!this.isActive || this@produce.isClosedForSend) { break }
               this@produce.send(t2)
             }
+
+            if (!this.isActive) { this@produce.close() }
           }
 
           previousJob?.cancelChildren()
           previousJob = parentJob
-          job1.start(); job2.start()
+          newJob.start()
         }
       })
 
