@@ -16,8 +16,15 @@ object ReduxSagaEffect {
   /** Create a [CallEffect] */
   fun <State, P, R> call(
     param: ReduxSaga.IEffect<State, P>,
-    block: suspend (P) -> R
+    block: suspend CoroutineScope.(P) -> R
   ): ReduxSaga.IEffect<State, R> = CallEffect(param, block)
+
+  /** Create a [CallEffect] with [param] */
+  fun <State, P, R> call(param: P, block: suspend CoroutineScope.(P) -> R) =
+    this.call(this.just<State, P>(param), block)
+
+  /** Create a [JustEffect] */
+  fun <State, R> just(value: R): ReduxSaga.IEffect<State, R> = JustEffect(value)
 
   /** Create a [TakeEveryEffect] instance. */
   fun <State, P, R> takeEvery(

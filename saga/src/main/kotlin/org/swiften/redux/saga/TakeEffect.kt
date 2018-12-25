@@ -29,14 +29,14 @@ internal abstract class TakeEffect<State, P, R>(
    * the values streamed by the inner [ReduxSaga.Output].
    */
   abstract fun flattenOutput(
-    output: ReduxSaga.Output<ReduxSaga.Output<R>>
+    nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
   ): ReduxSaga.Output<R>
 
   @ExperimentalCoroutinesApi
   override operator fun invoke(input: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
     val actionChannel = Channel<Redux.IAction>()
 
-    return flattenOutput(ReduxSaga.Output(input.scope,
+    val nestedOutput = ReduxSaga.Output(input.scope,
       input.scope.produce {
         for (action in actionChannel) {
           val param = this@TakeEffect.extract(action)
@@ -49,6 +49,8 @@ internal abstract class TakeEffect<State, P, R>(
         override operator fun invoke(action: Redux.IAction) {
           input.scope.launch { actionChannel.send(action) }
         }
-      }))
+      })
+
+    return this.flattenOutput(nestedOutput)
   }
 }

@@ -139,8 +139,23 @@ object ReduxSaga {
   }
 }
 
+/**
+ * Convenience method to call [ReduxSaga.IEffect.invoke] with convenience
+ * parameters for testing.
+ */
+fun <State, R> ReduxSaga.IEffect<State, R>.invoke(
+  scope: CoroutineScope,
+  state: State,
+  dispatch: (Redux.IAction) -> Unit
+) = this.invoke(ReduxSaga.Input(
+  scope,
+  object : Redux.ILastState<State> { override operator fun invoke() = state },
+  object : Redux.IDispatcher {
+    override operator fun invoke(action: Redux.IAction) = dispatch(action)
+  }))
+
 /** Transform the current [ReduxSaga.IEffect] to another, based on
  * [transformer] */
-fun <State, R, R2> ReduxSaga.IEffect<State, R>
-  .transform(transformer: ReduxSaga.ITransformer<State, R, R2>) =
-  transformer(this)
+fun <State, R, R2> ReduxSaga.IEffect<State, R>.transform(
+  transformer: ReduxSaga.ITransformer<State, R, R2>
+) = transformer(this)
