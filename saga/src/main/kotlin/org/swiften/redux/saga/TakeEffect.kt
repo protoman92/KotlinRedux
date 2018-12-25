@@ -5,7 +5,6 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
@@ -20,9 +19,9 @@ import org.swiften.redux.core.Redux
  * [extract] and pluck out the appropriate ones to perform additional work on
  * with [block].
  */
-abstract class TakeEffect<State, P, R>(
-  private val extract: suspend CoroutineScope.(Redux.IAction) -> P?,
-  private val block: suspend CoroutineScope.(P) -> ReduxSaga.IEffect<State, R>
+internal abstract class TakeEffect<State, P, R>(
+  private val extract: ReduxSaga.IPayloadExtractor<Redux.IAction, P>,
+  private val block: ReduxSaga.IEffectCreator<State, P, R>
 ) : ReduxSaga.IEffect<State, R> {
   /**
    * Flatten an [ReduxSaga.Output] that streams [ReduxSaga.Output] to access

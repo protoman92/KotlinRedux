@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.consumeEach
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
 import org.swiften.redux.saga.ReduxSagaEffect.call
+import org.swiften.redux.saga.ReduxSagaEffect.just
 import org.swiften.redux.saga.ReduxSagaEffect.takeEveryAction
 import org.swiften.redux.saga.ReduxSagaEffect.takeLatestAction
 import org.testng.Assert
@@ -37,27 +38,30 @@ class SagaEffectTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   private fun test_takeEffect_shouldTakeCorrectActions(
     createTakeEffect: (
-      suspend CoroutineScope.(TakeAction) -> Int?,
-      suspend CoroutineScope.(Int) -> ReduxSaga.IEffect<State, Int>
+      ReduxSaga.IPayloadExtractor<TakeAction, Int>,
+      ReduxSaga.IEffectCreator<State, Int, Int>
     ) -> ReduxSaga.IEffect<State, Int>,
     actualValues: List<Int>
   ) {
     /// Setup
-    val extract: suspend CoroutineScope.(TakeAction) -> Int? = {
-      when (it) {is TakeAction.Action1 -> it.value }
-    }
-
     val api = object : ReduxSaga.Output.IMapper<Int, Int> {
       override suspend operator fun invoke(scope: CoroutineScope, value: Int): Int {
         delay(1000); return value
       }
     }
 
-    val block: suspend CoroutineScope.(Int) -> ReduxSaga.IEffect<State, Int> = {
-      call(it, api)
-    }
+    val takeEffect = createTakeEffect(
+      object : ReduxSaga.IPayloadExtractor<TakeAction, Int> {
+        override suspend operator fun invoke(
+          scope: CoroutineScope,
+          action: TakeAction
+        ) = when (action) {is TakeAction.Action1 -> action.value }
+      },
+      object : ReduxSaga.IEffectCreator<State, Int, Int> {
+        override suspend operator fun invoke(scope: CoroutineScope, param: Int) =
+          just<State, Int>(param).call(api)
+      })
 
-    val takeEffect = createTakeEffect(extract, block)
     val takeOutput = takeEffect.invoke(this, State()) { }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
     this.launch { takeOutput.channel.consumeEach { finalValues.add(it) } }
