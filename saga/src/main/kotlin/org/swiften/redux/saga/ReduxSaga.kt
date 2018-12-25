@@ -32,6 +32,14 @@ object ReduxSaga {
     internal val channel: ReceiveChannel<T>,
     val onAction: Redux.IDispatcher
   ): CoroutineScope by scope {
+    constructor(
+      scope: CoroutineScope,
+      channel: ReceiveChannel<T>,
+      onAction: (Redux.IAction) -> Unit
+    ) : this(scope, channel, object : Redux.IDispatcher {
+      override operator fun invoke(action: Redux.IAction) = onAction(action)
+    })
+
     private fun <T2> with(newChannel: ReceiveChannel<T2>) =
       Output(this.scope, newChannel, this.onAction)
 
