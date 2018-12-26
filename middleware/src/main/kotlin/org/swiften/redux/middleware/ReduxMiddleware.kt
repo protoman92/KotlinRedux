@@ -12,19 +12,19 @@ import org.swiften.redux.core.ReduxStateGetter
 /**
  * Created by haipham on 2018/12/16.
  */
+
+/** Map one [ReduxMiddleware.DispatchWrapper] to another */
+typealias ReduxDispatchMapper =
+  Function1<ReduxMiddleware.DispatchWrapper, ReduxMiddleware.DispatchWrapper>
+
 /** Top-level namespace for Redux middlewares */
 object ReduxMiddleware {
-  /** Map one [DispatchWrapper] to another */
-  interface IDispatchMapper {
-    operator fun invoke(wrapper: DispatchWrapper): DispatchWrapper
-  }
-
   /**
    * Represents a Redux middleware that accepts an [Input] and produces a
    * [DispatchWrapper].
    */
   interface IMiddleware<State> {
-    operator fun invoke(input: Input<State>): IDispatchMapper
+    operator fun invoke(input: Input<State>): ReduxDispatchMapper
   }
 
   /** Implement [IProvider] to provide a middleware instance */
@@ -67,10 +67,8 @@ object ReduxMiddleware {
       if (middlewares.isEmpty()) return rootWrapper
 
       return middlewares.reduce { acc, middleware -> object : IMiddleware<State> {
-        override operator fun invoke(input: Input<State>) = object : IDispatchMapper {
-          override operator fun invoke(wrapper: DispatchWrapper): DispatchWrapper {
-            return acc(input)(middleware(input)(wrapper))
-          }
+        override fun invoke(input: Input<State>): ReduxDispatchMapper = {
+          acc(input)(middleware(input)(it))
         }
       } }(input)(rootWrapper)
     }
