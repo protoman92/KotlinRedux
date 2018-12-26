@@ -26,48 +26,36 @@ class ReduxMiddlewareTest {
 
     val wrappedStore = ReduxMiddleware.applyMiddlewares(
       object : ReduxMiddleware.IMiddleware<Int> {
-        override operator fun invoke(
+        override fun invoke(
           input: ReduxMiddleware.Input<Int>
         ) = object : ReduxMiddleware.IDispatchMapper {
-          override operator fun invoke(
+          override fun invoke(
             wrapper: ReduxMiddleware.DispatchWrapper
-          ) = ReduxMiddleware.DispatchWrapper("$wrapper.id-$1",
-            object : Redux.IDispatcher {
-              override operator fun invoke(action: Redux.IAction) {
-                wrapper.dispatch(action)
-                ordering.add(1)
-              }
-            })
+          ) = ReduxMiddleware.DispatchWrapper("$wrapper.id-$1") {
+            wrapper.dispatch(it); ordering.add(1)
+          }
         }
       },
       object : ReduxMiddleware.IMiddleware<Int> {
-        override operator fun invoke(
+        override fun invoke(
           input: ReduxMiddleware.Input<Int>
         ) = object : ReduxMiddleware.IDispatchMapper {
-          override operator fun invoke(
+          override fun invoke(
             wrapper: ReduxMiddleware.DispatchWrapper
-          ) = ReduxMiddleware.DispatchWrapper("$wrapper.id-$2",
-            object : Redux.IDispatcher {
-              override operator fun invoke(action: Redux.IAction) {
-                wrapper.dispatch(action)
-                ordering.add(2)
-              }
-            })
+          ) = ReduxMiddleware.DispatchWrapper("$wrapper.id-$2") {
+            wrapper.dispatch(it); ordering.add(2)
+          }
         }
       },
       object : ReduxMiddleware.IMiddleware<Int> {
-        override operator fun invoke(
+        override fun invoke(
           input: ReduxMiddleware.Input<Int>
         ) = object : ReduxMiddleware.IDispatchMapper {
-          override operator fun invoke(
+          override fun invoke(
             wrapper: ReduxMiddleware.DispatchWrapper
-          ) = ReduxMiddleware.DispatchWrapper("$wrapper.id-$3",
-            object : Redux.IDispatcher {
-              override operator fun invoke(action: Redux.IAction) {
-                wrapper.dispatch(action)
-                ordering.add(3)
-              }
-            })
+          ) = ReduxMiddleware.DispatchWrapper("$wrapper.id-$3") {
+            wrapper.dispatch(it); ordering.add(3)
+          }
         }
       }
     )(store)
@@ -85,7 +73,7 @@ class ReduxMiddlewareTest {
   fun `Applying middlewares with empty middleware list`() {
     /// Setup
     val store = SimpleReduxStore(0, object : Redux.IReducer<Int> {
-      override operator fun invoke(previous: Int, action: Redux.IAction) = previous
+      override fun invoke(previous: Int, action: Redux.IAction) = previous
     })
 
     /// When

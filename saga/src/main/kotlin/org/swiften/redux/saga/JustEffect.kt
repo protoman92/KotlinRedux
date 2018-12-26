@@ -9,6 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.swiften.redux.core.Redux
+import org.swiften.redux.core.ReduxDispatcher
 
 /**
  * Created by haipham on 2018/12/24.
@@ -21,7 +22,7 @@ internal class JustEffect<State, R>(private val value: R) : ReduxSaga.IEffect<St
     val channel = Channel<R>()
     input.scope.launch { channel.send(value) }
 
-    return ReduxSaga.Output(input.scope, channel, object : Redux.IDispatcher {
+    return ReduxSaga.Output(input.scope, channel, object : ReduxDispatcher {
       override fun invoke(action: Redux.IAction) {}
     })
   }

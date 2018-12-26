@@ -6,6 +6,7 @@
 package org.swiften.redux.middleware
 
 import org.swiften.redux.core.Redux
+import org.swiften.redux.core.ReduxDispatcher
 
 /**
  * Created by haipham on 2018/12/16.
@@ -41,7 +42,7 @@ object ReduxMiddleware {
    * Use this [DispatchWrapper] to track the ordering of [dispatch] wrapping
    * using [id].
    */
-  class DispatchWrapper(val id: String, val dispatch: Redux.IDispatcher)
+  class DispatchWrapper(val id: String, val dispatch: ReduxDispatcher)
 
   /**
    * Enhance a [store] by overriding its [Redux.IStore.dispatch] with
@@ -49,7 +50,7 @@ object ReduxMiddleware {
    */
   private class EnhancedStore<State>(
     val store: Redux.IStore<State>,
-    override val dispatch: Redux.IDispatcher
+    override val dispatch: Function1<Redux.IAction, Unit>
   ): Redux.IStore<State> by store
 
   /**
@@ -80,12 +81,11 @@ object ReduxMiddleware {
    */
   fun <State> applyMiddlewares(
     middlewares: Collection<IMiddleware<State>>
-  ): (Redux.IStore<State>) -> Redux.IStore<State> {
-    return fun(store): Redux.IStore<State> {
+  ): (Redux.IStore<State>) -> Redux.IStore<State> =
+    fun(store): Redux.IStore<State> {
       val wrapper = combineMiddlewares(middlewares)(store)
       return EnhancedStore(store, wrapper.dispatch)
     }
-  }
 
   /**
    * Apply [middlewares] to a [Redux.IStore] instance. This is a convenience
@@ -93,7 +93,5 @@ object ReduxMiddleware {
    */
   fun <State> applyMiddlewares(
     vararg middlewares: IMiddleware<State>
-  ): (Redux.IStore<State>) -> Redux.IStore<State> {
-    return applyMiddlewares(middlewares.asList())
-  }
+  ) = applyMiddlewares(middlewares.asList())
 }

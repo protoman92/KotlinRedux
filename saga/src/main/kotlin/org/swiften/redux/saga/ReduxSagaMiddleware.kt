@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.swiften.redux.core.Redux
+import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.middleware.ReduxMiddleware
 
 /**
@@ -34,7 +35,7 @@ object ReduxSagaMiddleware {
           val sgInput = ReduxSaga.Input(scope, input.lastState, wrapper.dispatch)
           val outputs = this@Provider.effects.map { it(sgInput) }
 
-          return DispatchWrapper("${wrapper.id}-saga", object : Redux.IDispatcher {
+          return DispatchWrapper("${wrapper.id}-saga", object : ReduxDispatcher {
             override fun invoke(action: Redux.IAction) {
               wrapper.dispatch(action)
               outputs.forEach { it.onAction(action) }

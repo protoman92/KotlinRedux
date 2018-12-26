@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.launch
 import org.swiften.redux.core.Redux
+import org.swiften.redux.core.ReduxDispatcher
 
 /**
  * Created by haipham on 2018/12/23.
@@ -44,8 +45,8 @@ internal abstract class TakeEffect<State, P, R>(
             this.send(this@TakeEffect.block(this, param).invoke(input))
           }
         }
-      }, object : Redux.IDispatcher {
-        override operator fun invoke(action: Redux.IAction) {
+      }, object : ReduxDispatcher {
+        override fun invoke(action: Redux.IAction) {
           input.scope.launch { actionChannel.send(action) }
         }
       })

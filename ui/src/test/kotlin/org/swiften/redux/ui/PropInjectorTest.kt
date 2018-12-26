@@ -6,6 +6,7 @@
 package org.swiften.redux.ui
 
 import org.swiften.redux.core.Redux
+import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.core.SimpleReduxStore
 import org.testng.Assert
 import org.testng.annotations.BeforeMethod
@@ -89,7 +90,7 @@ class PropInjectorTest {
       override fun mapState(state: S, outProps: Unit) = state
 
       override fun mapAction(
-        dispatch: Redux.IDispatcher,
+        dispatch: ReduxDispatcher,
         state: S,
         outProps: Unit
       ) = A()

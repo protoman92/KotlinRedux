@@ -6,6 +6,7 @@
 package org.swiften.redux.ui
 
 import org.swiften.redux.core.Redux
+import org.swiften.redux.core.ReduxDispatcher
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
@@ -51,10 +52,10 @@ object ReduxUI {
    */
   interface IActionPropMapper<GlobalState, OutProps, ActionProps> {
     /**
-     * Map [Redux.IDispatcher] to [ActionProps] using [GlobalState] and
+     * Map [ReduxDispatcher] to [ActionProps] using [GlobalState] and
      * [OutProps].
      */
-    fun mapAction(dispatch: Redux.IDispatcher,
+    fun mapAction(dispatch: ReduxDispatcher,
                   state: GlobalState,
                   outProps: OutProps): ActionProps
   }

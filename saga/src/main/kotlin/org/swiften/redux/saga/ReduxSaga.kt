@@ -9,6 +9,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
+import org.swiften.redux.core.ReduxDispatcher
 import java.util.*
 
 /**
@@ -23,14 +24,14 @@ object ReduxSaga {
   class Input<State>(
     val scope: CoroutineScope = GlobalScope,
     val lastState: Redux.ILastState<State>,
-    val dispatch: Redux.IDispatcher
+    val dispatch: ReduxDispatcher
   )
 
   /** [Output] for an [IEffect], which can stream values of some type */
   class Output<T> internal constructor(
     private val scope: CoroutineScope,
     internal val channel: ReceiveChannel<T>,
-    val onAction: Redux.IDispatcher
+    val onAction: ReduxDispatcher
   ): CoroutineScope by scope {
     /** Operator function for [Output.map] */
     interface IMapper<in T, out R> {
@@ -46,14 +47,6 @@ object ReduxSaga {
     interface IErrorCatcher<out R> {
       suspend operator fun invoke(scope: CoroutineScope, error: Throwable): R
     }
-
-    internal constructor(
-      scope: CoroutineScope,
-      channel: ReceiveChannel<T>,
-      onAction: (Redux.IAction) -> Unit
-    ) : this(scope, channel, object : Redux.IDispatcher {
-      override operator fun invoke(action: Redux.IAction) = onAction(action)
-    })
 
     private fun <T2> with(newChannel: ReceiveChannel<T2>) =
       Output(this.scope, newChannel, this.onAction)
@@ -207,13 +200,11 @@ object ReduxSaga {
 fun <State, R> ReduxSaga.IEffect<State, R>.invoke(
   scope: CoroutineScope,
   state: State,
-  dispatch: (Redux.IAction) -> Unit
-) = this.invoke(ReduxSaga.Input(
-  scope,
+  dispatch: ReduxDispatcher
+) = this.invoke(ReduxSaga.Input(scope,
   object : Redux.ILastState<State> { override operator fun invoke() = state },
-  object : Redux.IDispatcher {
-    override operator fun invoke(action: Redux.IAction) = dispatch(action)
-  }))
+  dispatch
+))
 
 /** Transform the current [ReduxSaga.IEffect] to another, based on
  * [transformer] */

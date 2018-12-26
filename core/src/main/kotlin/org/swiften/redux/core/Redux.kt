@@ -8,6 +8,8 @@ package org.swiften.redux.core
 /**
  * Created by haipham on 2018/03/31.
  */
+typealias ReduxDispatcher = Function1<Redux.IAction, Unit>
+
 /** Top-level namespace for Redux root components */
 object Redux {
   /**
@@ -33,11 +35,6 @@ object Redux {
     operator fun invoke(): State
   }
 
-  /** Dispatch an [IAction] and feed it to an [IReducer] */
-  interface IDispatcher {
-    operator fun invoke(action: IAction)
-  }
-
   /** Subscribe to [State] updates with a callback */
   interface ISubscribe<State> {
     /**
@@ -49,13 +46,13 @@ object Redux {
   }
 
   /**
-   * Represents a Redux store that can dispatch [IAction] with an [IDispatcher]
-   * to mutate some internal [State]. Other objects can subscribe to [State]
-   * updates using [subscribe].
+   * Represents a Redux store that can dispatch [IAction] with a
+   * [ReduxDispatcher] to mutate some internal [State]. Other objects can
+   * subscribe to [State] updates using [subscribe].
    */
   interface IStore<State> {
     val lastState: ILastState<State>
-    val dispatch: IDispatcher
+    val dispatch: ReduxDispatcher
     val subscribe: ISubscribe<State>
   }
 }

@@ -6,6 +6,7 @@
 package org.swiften.redux.router
 
 import org.swiften.redux.core.Redux
+import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.middleware.ReduxMiddleware
 
 /**
@@ -31,12 +32,12 @@ object ReduxRouterMiddleware {
   /** [ReduxMiddleware.IProvider] implementation for [IRouter] middleware */
   class Provider<State>(private val router: IRouter): ReduxMiddleware.IProvider<State> {
     override val middleware = object : ReduxMiddleware.IMiddleware<State> {
-      override operator fun invoke(input: ReduxMiddleware.Input<State>) =
+      override fun invoke(input: ReduxMiddleware.Input<State>) =
         object : ReduxMiddleware.IDispatchMapper {
-        override operator fun invoke(wrapper: ReduxMiddleware.DispatchWrapper)
-          = ReduxMiddleware.DispatchWrapper("$wrapper.id-router",
-          object : Redux.IDispatcher {
-            override operator fun invoke(action: Redux.IAction) {
+        override fun invoke(wrapper: ReduxMiddleware.DispatchWrapper) =
+          ReduxMiddleware.DispatchWrapper("$wrapper.id-router",
+          object : ReduxDispatcher {
+            override fun invoke(action: Redux.IAction) {
               wrapper.dispatch(action)
 
               /**
