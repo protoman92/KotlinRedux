@@ -41,9 +41,7 @@ class ReduxRouterMiddlewareTest: ReduxRouterMiddleware.IRouter {
   @Test
   fun `Dispatching screen actions should navigate to the assoc screen`() {
     /// Setup
-    val store = SimpleReduxStore(0, object : Redux.IReducer<Int> {
-      override operator fun invoke(previous: Int, action: Redux.IAction) = previous
-    })
+    val store = SimpleReduxStore(0) { a, b -> a }
 
     val wrappedStore = ReduxMiddleware.applyMiddlewares(
       ReduxRouterMiddleware.Provider<Int>(this).middleware

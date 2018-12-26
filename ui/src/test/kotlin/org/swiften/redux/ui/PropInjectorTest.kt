@@ -71,17 +71,12 @@ class PropInjectorTest {
 
   @BeforeMethod
   fun beforeMethod() {
-    val store = SimpleReduxStore(S(), object : Redux.IReducer<S> {
-      override operator fun invoke(previous: S, action: Redux.IAction): S {
-        return when (action) {
-          is Action -> when (action) {
-            is Action.SetQuery -> previous.copy(query = action.query)
-          }
-
-          else -> previous
-        }
+    val store = SimpleReduxStore(S()) { s, a ->
+      when (a) {
+        is Action -> when (a) {is Action.SetQuery -> s.copy(query = a.query) }
+        else -> s
       }
-    })
+    }
 
     this.store = StoreWrapper(store)
     this.injector = ReduxUI.PropInjector(this.store)

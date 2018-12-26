@@ -26,10 +26,8 @@ object ReduxPreset {
   }
 
   /** Default wrapper to handle [DefaultAction] */
-  internal class ReducerWrapper<State>(
-    private val reducer: Redux.IReducer<State>
-  ):
-      Redux.IReducer<State> by reducer
+  internal class ReducerWrapper<State>(private val reducer: ReduxReducer<State>) :
+    ReduxReducer<State> by reducer
   {
     @Suppress("UNCHECKED_CAST")
     @Throws(ClassCastException::class)

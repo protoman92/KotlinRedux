@@ -8,7 +8,16 @@ package org.swiften.redux.core
 /**
  * Created by haipham on 2018/03/31.
  */
+/**
+ * Represents an [Redux.IAction] dispatcher.
+ */
 typealias ReduxDispatcher = Function1<Redux.IAction, Unit>
+
+/**
+ * Represents a Redux reducer that reduce a [Redux.IAction] onto a previous
+ * state to produce a new state.
+ */
+typealias ReduxReducer<State> = Function2<State, Redux.IAction, State>
 
 /** Top-level namespace for Redux root components */
 object Redux {
@@ -20,15 +29,6 @@ object Redux {
 
   /** Represents a Redux action */
   interface IAction
-
-  /**
-   * Represents a Redux reducer that reduce a [IAction] onto a previous
-   * [State] to produce a new [State]
-   */
-  interface IReducer<State> {
-    /** Reduce [action] onto [previous] to produce a new [State] */
-    operator fun invoke(previous: State, action: IAction): State
-  }
 
   /** Get the last internal [State] */
   interface ILastState<State> {

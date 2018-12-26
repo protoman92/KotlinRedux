@@ -52,15 +52,8 @@ open class BaseReduxStoreTest: CoroutineScope {
 
   override val coroutineContext = Dispatchers.Default
 
-  fun reducer(): Redux.IReducer<Int> {
-    return object : Redux.IReducer<Int> {
-      override operator fun invoke(previous: Int, action: Redux.IAction): Int {
-        return when (action) {
-          is Action -> action(previous)
-          else -> throw RuntimeException()
-        }
-      }
-    }
+  fun reducer(): ReduxReducer<Int> = { s, a ->
+    when (a) {is Action -> a(s); else -> throw RuntimeException() }
   }
 
   fun dispatchingAction_shouldResultInCorrectState(store: Redux.IStore<Int>) {

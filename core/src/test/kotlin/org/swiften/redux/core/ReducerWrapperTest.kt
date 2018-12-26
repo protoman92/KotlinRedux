@@ -15,11 +15,7 @@ class ReducerWrapperTest {
   @Test
   fun test_reducingDefaultActions_shouldWork() {
     /// Setup
-    val reducer = ReduxPreset.ReducerWrapper(object : Redux.IReducer<Int> {
-      override fun invoke(previous: Int, action: Redux.IAction): Int {
-        return previous + 1
-      }
-    })
+    val reducer = ReduxPreset.ReducerWrapper<Int> { a, _ -> a + 1 }
 
     var original = 0
 
