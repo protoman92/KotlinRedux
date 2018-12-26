@@ -22,6 +22,13 @@ typealias ReduxReducer<State> = Function2<State, Redux.IAction, State>
 /** Get the last internal state */
 typealias ReduxStateGetter<State> = Function0<State>
 
+/**
+ * Subscribe to state updates with a callback. The subscriber id should be a
+ * unique id that identifies that subscriber. The resulting [Redux.Subscription]
+ * can be used to unsubscribe.
+ */
+typealias ReduxSubscriber<State> = Function2<String, Function1<State, Unit>, Redux.Subscription>
+
 /** Top-level namespace for Redux root components */
 object Redux {
   /**
@@ -33,16 +40,6 @@ object Redux {
   /** Represents a Redux action */
   interface IAction
 
-  /** Subscribe to [State] updates with a callback */
-  interface ISubscribe<State> {
-    /**
-     * Subscribe to [State] updates with [callback]. The [subscriberId] should
-     * be a unique id that identifies that subscriber.
-     * The resulting [Subscription] can be used to unsubscribe.
-     */
-    operator fun invoke(subscriberId: String, callback: (State) -> Unit): Subscription
-  }
-
   /**
    * Represents a Redux store that can dispatch [IAction] with a
    * [ReduxDispatcher] to mutate some internal [State]. Other objects can
@@ -51,7 +48,7 @@ object Redux {
   interface IStore<State> {
     val stateGetter: ReduxStateGetter<State>
     val dispatch: ReduxDispatcher
-    val subscribe: ISubscribe<State>
+    val subscribe: ReduxSubscriber<State>
   }
 }
 

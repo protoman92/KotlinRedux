@@ -117,7 +117,7 @@ object ReduxUI {
        */
       var previousState: StateProps? = view.variableProps?.nextState
 
-      val accessWithLock: (() -> Unit) -> Unit = {
+      val accessWithLock: Function1<Function0<Unit>, Unit> = {
         try { lock.lock(); it() } finally { lock.unlock() }
       }
 

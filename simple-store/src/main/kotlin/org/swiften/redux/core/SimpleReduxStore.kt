@@ -25,12 +25,11 @@ class SimpleReduxStore<State>(
   private val subscribers = HashMap<String, (State) -> Unit>()
 
   override val stateGetter = object : ReduxStateGetter<State> {
-    override fun invoke(): State {
-      return this@SimpleReduxStore.lock.read { this@SimpleReduxStore.state }
-    }
+    override fun invoke() =
+      this@SimpleReduxStore.lock.read { this@SimpleReduxStore.state }
   }
 
-  override var dispatch = object : ReduxDispatcher {
+  override val dispatch = object : ReduxDispatcher {
     override fun invoke(action: Redux.IAction) {
       this@SimpleReduxStore.lock.write {
         this@SimpleReduxStore.state =
@@ -45,10 +44,10 @@ class SimpleReduxStore<State>(
     }
   }
 
-  override val subscribe = object : Redux.ISubscribe<State> {
+  override val subscribe = object : ReduxSubscriber<State> {
     override fun invoke(
       subscriberId: String,
-      callback: (State) -> Unit
+      callback: Function1<State, Unit>
     ): Redux.Subscription {
       this@SimpleReduxStore.lock.write {
         this@SimpleReduxStore.subscribers[subscriberId] = callback

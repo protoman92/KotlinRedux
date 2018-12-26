@@ -7,6 +7,7 @@ package org.swiften.redux.ui
 
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.core.ReduxSubscriber
 import org.swiften.redux.core.SimpleReduxStore
 import org.testng.Assert
 import org.testng.annotations.BeforeMethod
@@ -27,10 +28,10 @@ class PropInjectorTest {
   class StoreWrapper(val store: Redux.IStore<S>): Redux.IStore<S> by store {
     var unsubCount: Int = 0
 
-    override val subscribe = object : Redux.ISubscribe<S> {
+    override val subscribe = object : ReduxSubscriber<S> {
       override operator fun invoke(
         subscriberId: String,
-        callback: (S) -> Unit
+        callback: Function1<S, Unit>
       ): Redux.Subscription {
         val sub = this@StoreWrapper.store.subscribe(subscriberId, callback)
 
