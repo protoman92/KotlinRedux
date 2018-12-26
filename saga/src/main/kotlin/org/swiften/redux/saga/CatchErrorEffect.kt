@@ -16,21 +16,21 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * upstream
  */
 internal class CatchErrorEffect<State, R>(
-  private val source: ReduxSaga.IEffect<State, R>,
+  private val source: ReduxSagaEffect<State, R>,
   private val catcher: ReduxSaga.Output.IErrorCatcher<R>
-): ReduxSaga.IEffect<State, R> {
+): ReduxSagaEffect<State, R> {
   @ExperimentalCoroutinesApi
   override fun invoke(input: ReduxSaga.Input<State>) =
     this.source.invoke(input).catchError(this.catcher)
 }
 
 /** Catch [Throwable] from upstream with [catcher] */
-fun <State, R> ReduxSaga.IEffect<State, R>.catchError(
+fun <State, R> ReduxSagaEffect<State, R>.catchError(
   catcher: ReduxSaga.Output.IErrorCatcher<R>
-) = ReduxSagaEffect.catchError(this, catcher)
+) = ReduxSagaHelper.catchError(this, catcher)
 
 /** Catch [Throwable] from upstream with [catcher] */
-fun <State, R> ReduxSaga.IEffect<State, R>.catchError(
+fun <State, R> ReduxSagaEffect<State, R>.catchError(
   catcher: CoroutineScope.(Throwable) -> R
 ) = this.catchError(object : ReduxSaga.Output.IErrorCatcher<R> {
   override suspend fun invoke(scope: CoroutineScope, error: Throwable) =

@@ -12,12 +12,12 @@ import org.swiften.redux.core.Redux
  * Created by haipham on 2018/12/24.
  */
 /** Top-level namespace for [ReduxSaga.IEffect] helpers */
-object ReduxSagaEffect {
+object ReduxSagaHelper {
   /** Create a [CallEffect] */
   fun <State, P, R> call(
-    param: ReduxSaga.IEffect<State, P>,
+    param: ReduxSagaEffect<State, P>,
     block: ReduxSaga.Output.IMapper<P, R>
-  ): ReduxSaga.IEffect<State, R> = CallEffect(param, block)
+  ): ReduxSagaEffect<State, R> = CallEffect(param, block)
 
   /** Create a [CallEffect] with [param] */
   fun <State, P, R> call(param: P, block: ReduxSaga.Output.IMapper<P, R>) =
@@ -25,18 +25,18 @@ object ReduxSagaEffect {
 
   /** Create a [CatchErrorEffect] instance. */
   fun <State, R> catchError(
-    source: ReduxSaga.IEffect<State, R>,
+    source: ReduxSagaEffect<State, R>,
     catcher: ReduxSaga.Output.IErrorCatcher<R>
-  ): ReduxSaga.IEffect<State, R> = CatchErrorEffect(source, catcher)
+  ): ReduxSagaEffect<State, R> = CatchErrorEffect(source, catcher)
 
   /** Create a [JustEffect] */
-  fun <State, R> just(value: R): ReduxSaga.IEffect<State, R> = JustEffect(value)
+  fun <State, R> just(value: R): ReduxSagaEffect<State, R> = JustEffect(value)
 
   /** Create a [TakeEveryEffect] instance. */
   fun <State, P, R> takeEvery(
     extract: ReduxSaga.IPayloadExtractor<Redux.IAction, P>,
     block: ReduxSaga.IEffectCreator<State, P, R>
-  ): ReduxSaga.IEffect<State, R> = TakeEveryEffect(extract, block)
+  ): ReduxSagaEffect<State, R> = TakeEveryEffect(extract, block)
 
   /**
    * Convenience function to create [TakeEveryEffect] for a specific type of
@@ -59,7 +59,7 @@ object ReduxSagaEffect {
   fun <State, P, R> takeLatest(
     extract: ReduxSaga.IPayloadExtractor<Redux.IAction, P>,
     block: ReduxSaga.IEffectCreator<State, P, R>
-  ): ReduxSaga.IEffect<State, R> = TakeLatestEffect(extract, block)
+  ): ReduxSagaEffect<State, R> = TakeLatestEffect(extract, block)
 
   /**
    * Convenience function to create [TakeLatestEffect] for a specific type of
@@ -80,8 +80,8 @@ object ReduxSagaEffect {
 
   /** Create a [ThenEffect] on [source1] and [source2] */
   fun <State, R, R2, R3> then(
-    source1: ReduxSaga.IEffect<State, R>,
-    source2: ReduxSaga.IEffect<State, R2>,
+    source1: ReduxSagaEffect<State, R>,
+    source2: ReduxSagaEffect<State, R2>,
     selector: Function2<R, R2, R3>
-  ) : ReduxSaga.IEffect<State, R3> = ThenEffect(source1, source2, selector)
+  ) : ReduxSagaEffect<State, R3> = ThenEffect(source1, source2, selector)
 }

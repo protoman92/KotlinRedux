@@ -9,9 +9,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
-import org.swiften.redux.saga.ReduxSagaEffect.just
-import org.swiften.redux.saga.ReduxSagaEffect.takeEveryAction
-import org.swiften.redux.saga.ReduxSagaEffect.takeLatestAction
+import org.swiften.redux.saga.ReduxSagaHelper.just
+import org.swiften.redux.saga.ReduxSagaHelper.takeEveryAction
+import org.swiften.redux.saga.ReduxSagaHelper.takeLatestAction
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
@@ -39,7 +39,7 @@ class SagaEffectTest : CoroutineScope {
     createTakeEffect: (
       ReduxSaga.IPayloadExtractor<TakeAction, Int>,
       ReduxSaga.IEffectCreator<State, Int, Any>
-    ) -> ReduxSaga.IEffect<State, Any>,
+    ) -> ReduxSagaEffect<State, Any>,
     actualValues: List<Int>
   ) {
     /// Setup

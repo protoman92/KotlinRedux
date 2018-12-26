@@ -16,10 +16,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * [ReduxSaga.Output] created by two other [ReduxSaga.IEffect].
  */
 internal class ThenEffect<State, R, R2, R3>(
-  private val source1: ReduxSaga.IEffect<State, R>,
-  private val source2: ReduxSaga.IEffect<State, R2>,
+  private val source1: ReduxSagaEffect<State, R>,
+  private val source2: ReduxSagaEffect<State, R2>,
   private val selector: Function2<R, R2, R3>
-) : ReduxSaga.IEffect<State, R3> {
+) : ReduxSagaEffect<State, R3> {
   @ExperimentalCoroutinesApi
   @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
   override fun invoke(input: ReduxSaga.Input<State>) =
@@ -34,7 +34,7 @@ internal class ThenEffect<State, R, R2, R3>(
 }
 
 /** Invoke a [ThenEffect] on the current [ReduxSaga.IEffect] */
-fun <State, R, R2, R3> ReduxSaga.IEffect<State, R>.then(
-  effect: ReduxSaga.IEffect<State, R2>,
+fun <State, R, R2, R3> ReduxSagaEffect<State, R>.then(
+  effect: ReduxSagaEffect<State, R2>,
   selector: Function2<R, R2, R3>
-) = ReduxSagaEffect.then(this, effect, selector)
+) = ReduxSagaHelper.then(this, effect, selector)

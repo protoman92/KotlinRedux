@@ -23,7 +23,7 @@ import org.swiften.redux.core.ReduxDispatcher
 internal abstract class TakeEffect<State, P, R>(
   private val extract: ReduxSaga.IPayloadExtractor<Redux.IAction, P>,
   private val block: ReduxSaga.IEffectCreator<State, P, R>
-) : ReduxSaga.IEffect<State, R> {
+) : ReduxSagaEffect<State, R> {
   /**
    * Flatten an [ReduxSaga.Output] that streams [ReduxSaga.Output] to access
    * the values streamed by the inner [ReduxSaga.Output].

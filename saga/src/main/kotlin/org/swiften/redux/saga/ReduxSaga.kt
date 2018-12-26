@@ -16,6 +16,9 @@ import java.util.*
 /**
  * Created by haipham on 2018/12/22.
  */
+/** Abstraction for Redux saga that handles [Redux.IAction] in the pipeline */
+typealias ReduxSagaEffect<State, R> = Function1<ReduxSaga.Input<State>, ReduxSaga.Output<R>>
+
 /** Top-level namespace for Redux saga */
 object ReduxSaga {
   /**
@@ -172,17 +175,6 @@ object ReduxSaga {
     }
   }
 
-  /** Abstraction for Redux saga that handles [Redux.IAction] in the pipeline */
-  interface IEffect<State, R> {
-    /** Produce an [Output] with an [Input] */
-    operator fun invoke(input: Input<State>): Output<R>
-  }
-
-  /** Transform one [IEffect] to another */
-  interface ITransformer<State, R, R2> {
-    operator fun invoke(effect: IEffect<State, R>): IEffect<State, R2>
-  }
-
   /** Extract the payload [P] from some [Action] */
   interface IPayloadExtractor<Action, P> where Action: Redux.IAction {
     suspend operator fun invoke(scope: CoroutineScope, action: Action): P?
@@ -190,7 +182,7 @@ object ReduxSaga {
 
   /** Create an [IEffect] from some [P] value */
   interface IEffectCreator<State, P, R> {
-    suspend operator fun invoke(scope: CoroutineScope, param: P): IEffect<State, R>
+    suspend operator fun invoke(scope: CoroutineScope, param: P): ReduxSagaEffect<State, R>
   }
 }
 
@@ -198,14 +190,8 @@ object ReduxSaga {
  * Convenience method to call [ReduxSaga.IEffect.invoke] with convenience
  * parameters for testing.
  */
-fun <State, R> ReduxSaga.IEffect<State, R>.invoke(
+fun <State, R> ReduxSagaEffect<State, R>.invoke(
   scope: CoroutineScope,
   state: State,
   dispatch: ReduxDispatcher
 ) = this.invoke(ReduxSaga.Input(scope, { state }, dispatch))
-
-/** Transform the current [ReduxSaga.IEffect] to another, based on
- * [transformer] */
-fun <State, R, R2> ReduxSaga.IEffect<State, R>.transform(
-  transformer: ReduxSaga.ITransformer<State, R, R2>
-) = transformer(this)
