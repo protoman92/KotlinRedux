@@ -7,8 +7,8 @@ package org.swiften.redux.router
 
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
-import org.swiften.redux.middleware.ReduxDispatchMapper
 import org.swiften.redux.middleware.ReduxMiddleware
+import org.swiften.redux.middleware.ReduxMiddlewareCreator
 
 /**
  * Created by haipham on 2018/12/16.
@@ -32,23 +32,22 @@ object ReduxRouterMiddleware {
 
   /** [ReduxMiddleware.IProvider] implementation for [IRouter] middleware */
   class Provider<State>(private val router: IRouter): ReduxMiddleware.IProvider<State> {
-    override val middleware = object : ReduxMiddleware.IMiddleware<State> {
-      override fun invoke(input: ReduxMiddleware.Input<State>) : ReduxDispatchMapper =
-        { wrapper -> ReduxMiddleware.DispatchWrapper("$wrapper.id-router",
-          object : ReduxDispatcher {
-            override fun invoke(action: Redux.IAction) {
-              wrapper.dispatch(action)
+    override val middleware: ReduxMiddlewareCreator<State> = { input ->
+      { wrapper -> ReduxMiddleware.DispatchWrapper("$wrapper.id-router",
+        object : ReduxDispatcher {
+          override fun invoke(action: Redux.IAction) {
+            wrapper.dispatch(action)
 
-              /**
-               * If [action] is an [IScreen] instance, use the [router] to
-               * navigate to the associated screen.
-               */
-              when (action) {
-                is IScreen -> this@Provider.router.navigate(action)
-              }
+            /**
+             * If [action] is an [IScreen] instance, use the [router] to
+             * navigate to the associated screen.
+             */
+            when (action) {
+              is IScreen -> this@Provider.router.navigate(action)
             }
-          })
-        }
+          }
+        })
+      }
     }
   }
 }

@@ -20,33 +20,22 @@ class ReduxMiddlewareTest {
     val store = SimpleReduxStore(0) { a, _ -> a }
     val ordering = arrayListOf<Int>()
 
-    val wrappedStore = ReduxMiddleware.applyMiddlewares(
-      object : ReduxMiddleware.IMiddleware<Int> {
-        override fun invoke(input: ReduxMiddleware.Input<Int>): ReduxDispatchMapper =
-          { wrapper ->
-            val value = 1
-
-            ReduxMiddleware.DispatchWrapper("${wrapper.id}-$1") {
-              wrapper.dispatch(it); ordering.add(value)
-            }
-          }
-      },
-      object : ReduxMiddleware.IMiddleware<Int> {
-        override fun invoke(input: ReduxMiddleware.Input<Int>): ReduxDispatchMapper =
-          { wrapper ->
-            ReduxMiddleware.DispatchWrapper("${wrapper.id}-$2") {
-              wrapper.dispatch(it); ordering.add(2)
-            }
-          }
-      },
-      object : ReduxMiddleware.IMiddleware<Int> {
-        override fun invoke(input: ReduxMiddleware.Input<Int>): ReduxDispatchMapper =
-          { wrapper ->
-            ReduxMiddleware.DispatchWrapper("${wrapper.id}-$3") {
-              wrapper.dispatch(it); ordering.add(3)
-            }
-          }
-      }
+    val wrappedStore = ReduxMiddleware.applyMiddlewares<Int>(
+      { _ -> { wrapper ->
+        ReduxMiddleware.DispatchWrapper("${wrapper.id}-$1") {
+          wrapper.dispatch(it); ordering.add(1)
+        }
+      } },
+      { _ -> { wrapper ->
+        ReduxMiddleware.DispatchWrapper("${wrapper.id}-$2") {
+          wrapper.dispatch(it); ordering.add(2)
+        }
+      } },
+      { _ -> { wrapper ->
+        ReduxMiddleware.DispatchWrapper("${wrapper.id}-$3") {
+          wrapper.dispatch(it); ordering.add(3)
+        }
+      } }
     )(store)
 
     /// When

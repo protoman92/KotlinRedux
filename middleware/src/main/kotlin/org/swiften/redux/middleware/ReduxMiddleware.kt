@@ -17,20 +17,20 @@ import org.swiften.redux.core.ReduxStateGetter
 typealias ReduxDispatchMapper =
   Function1<ReduxMiddleware.DispatchWrapper, ReduxMiddleware.DispatchWrapper>
 
+/**
+ * Represents a Redux middleware that accepts an [ReduxMiddleware.Input] and
+ * produces a [ReduxMiddleware.DispatchWrapper].
+ */
+typealias ReduxMiddlewareCreator<State> =
+  Function1<ReduxMiddleware.Input<State>, ReduxDispatchMapper>
+
 /** Top-level namespace for Redux middlewares */
 object ReduxMiddleware {
-  /**
-   * Represents a Redux middleware that accepts an [Input] and produces a
-   * [DispatchWrapper].
-   */
-  interface IMiddleware<State> {
-    operator fun invoke(input: Input<State>): ReduxDispatchMapper
-  }
 
   /** Implement [IProvider] to provide a middleware instance */
   interface IProvider<State> {
     /** Wrap a [DispatchWrapper.dispatch] to provide extra functionalities */
-    val middleware: IMiddleware<State>
+    val middleware: ReduxMiddlewareCreator<State>
   }
 
   /**
@@ -59,18 +59,16 @@ object ReduxMiddleware {
    * [Redux.IStore.dispatch] to produce a [DispatchWrapper].
    */
   fun <State> combineMiddlewares(
-    middlewares: Collection<IMiddleware<State>>
+    middlewares: Collection<ReduxMiddlewareCreator<State>>
   ): (Redux.IStore<State>) -> DispatchWrapper {
     return fun(store): DispatchWrapper {
       val input = Input(store.stateGetter)
       val rootWrapper = DispatchWrapper("root", store.dispatch)
       if (middlewares.isEmpty()) return rootWrapper
 
-      return middlewares.reduce { acc, middleware -> object : IMiddleware<State> {
-        override fun invoke(input: Input<State>): ReduxDispatchMapper = {
-          acc(input)(middleware(input)(it))
-        }
-      } }(input)(rootWrapper)
+      return middlewares.reduce { acc, middleware -> { input -> {
+        acc(input)(middleware(input)(it))
+      } } }(input)(rootWrapper)
     }
   }
 
@@ -79,7 +77,7 @@ object ReduxMiddleware {
    * [Redux.IStore].
    */
   fun <State> applyMiddlewares(
-    middlewares: Collection<IMiddleware<State>>
+    middlewares: Collection<ReduxMiddlewareCreator<State>>
   ): (Redux.IStore<State>) -> Redux.IStore<State> =
     fun(store): Redux.IStore<State> {
       val wrapper = combineMiddlewares(middlewares)(store)
@@ -91,6 +89,6 @@ object ReduxMiddleware {
    * method that uses varargs.
    */
   fun <State> applyMiddlewares(
-    vararg middlewares: IMiddleware<State>
+    vararg middlewares: ReduxMiddlewareCreator<State>
   ) = applyMiddlewares(middlewares.asList())
 }
