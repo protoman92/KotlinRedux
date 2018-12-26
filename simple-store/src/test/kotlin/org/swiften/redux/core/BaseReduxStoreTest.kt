@@ -81,11 +81,11 @@ open class BaseReduxStoreTest: CoroutineScope {
 
     runBlocking(this.coroutineContext) {
       withTimeoutOrNull(100000) {
-        while (store.lastState() != currentState) { }; 1
+        while (store.stateGetter() != currentState) { }; 1
       }
 
       /// Then
-      Assert.assertEquals(store.lastState(), currentState)
+      Assert.assertEquals(store.stateGetter(), currentState)
     }
   }
 }

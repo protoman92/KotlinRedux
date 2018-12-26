@@ -7,6 +7,7 @@ package org.swiften.redux.middleware
 
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.core.ReduxStateGetter
 
 /**
  * Created by haipham on 2018/12/16.
@@ -36,7 +37,7 @@ object ReduxMiddleware {
    * [Input] for middlewares that includes some functionalities from
    * [Redux.IStore].
    */
-  class Input<State>(val lastState: Redux.ILastState<State>)
+  class Input<State>(val stateGetter: ReduxStateGetter<State>)
 
   /**
    * Use this [DispatchWrapper] to track the ordering of [dispatch] wrapping
@@ -61,7 +62,7 @@ object ReduxMiddleware {
     middlewares: Collection<IMiddleware<State>>
   ): (Redux.IStore<State>) -> DispatchWrapper {
     return fun(store): DispatchWrapper {
-      val input = Input(store.lastState)
+      val input = Input(store.stateGetter)
       val rootWrapper = DispatchWrapper("root", store.dispatch)
       if (middlewares.isEmpty()) return rootWrapper
 

@@ -32,7 +32,7 @@ object ReduxSagaMiddleware {
         object : ReduxMiddleware.IDispatchMapper {
         override fun invoke(wrapper: DispatchWrapper): DispatchWrapper {
           val scope = this@Provider
-          val sgInput = ReduxSaga.Input(scope, input.lastState, wrapper.dispatch)
+          val sgInput = ReduxSaga.Input(scope, input.stateGetter, wrapper.dispatch)
           val outputs = this@Provider.effects.map { it(sgInput) }
 
           return DispatchWrapper("${wrapper.id}-saga", object : ReduxDispatcher {

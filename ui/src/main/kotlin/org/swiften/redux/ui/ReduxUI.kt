@@ -140,7 +140,7 @@ object ReduxUI {
        * last [State], in case this [store] does not relay last [State] on
        * subscription.
        */
-      onStateUpdate(this.store.lastState())
+      onStateUpdate(this.store.stateGetter())
       val subscription = this.store.subscribe(id, onStateUpdate)
       view.staticProps = ReduxUI.StaticProps(this, subscription)
       return subscription

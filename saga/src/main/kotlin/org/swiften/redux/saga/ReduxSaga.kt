@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.core.ReduxStateGetter
 import java.util.*
 
 /**
@@ -23,7 +24,7 @@ object ReduxSaga {
    */
   class Input<State>(
     val scope: CoroutineScope = GlobalScope,
-    val lastState: Redux.ILastState<State>,
+    val stateGetter: ReduxStateGetter<State>,
     val dispatch: ReduxDispatcher
   )
 
@@ -201,10 +202,7 @@ fun <State, R> ReduxSaga.IEffect<State, R>.invoke(
   scope: CoroutineScope,
   state: State,
   dispatch: ReduxDispatcher
-) = this.invoke(ReduxSaga.Input(scope,
-  object : Redux.ILastState<State> { override operator fun invoke() = state },
-  dispatch
-))
+) = this.invoke(ReduxSaga.Input(scope, { state }, dispatch))
 
 /** Transform the current [ReduxSaga.IEffect] to another, based on
  * [transformer] */

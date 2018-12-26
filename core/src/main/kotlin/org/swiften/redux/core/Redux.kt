@@ -19,6 +19,9 @@ typealias ReduxDispatcher = Function1<Redux.IAction, Unit>
  */
 typealias ReduxReducer<State> = Function2<State, Redux.IAction, State>
 
+/** Get the last internal state */
+typealias ReduxStateGetter<State> = Function0<State>
+
 /** Top-level namespace for Redux root components */
 object Redux {
   /**
@@ -29,11 +32,6 @@ object Redux {
 
   /** Represents a Redux action */
   interface IAction
-
-  /** Get the last internal [State] */
-  interface ILastState<State> {
-    operator fun invoke(): State
-  }
 
   /** Subscribe to [State] updates with a callback */
   interface ISubscribe<State> {
@@ -51,7 +49,7 @@ object Redux {
    * subscribe to [State] updates using [subscribe].
    */
   interface IStore<State> {
-    val lastState: ILastState<State>
+    val stateGetter: ReduxStateGetter<State>
     val dispatch: ReduxDispatcher
     val subscribe: ISubscribe<State>
   }

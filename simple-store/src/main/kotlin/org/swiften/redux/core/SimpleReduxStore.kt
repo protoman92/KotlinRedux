@@ -24,8 +24,8 @@ class SimpleReduxStore<State>(
   private val lock = ReentrantReadWriteLock()
   private val subscribers = HashMap<String, (State) -> Unit>()
 
-  override val lastState = object : Redux.ILastState<State> {
-    override operator fun invoke(): State {
+  override val stateGetter = object : ReduxStateGetter<State> {
+    override fun invoke(): State {
       return this@SimpleReduxStore.lock.read { this@SimpleReduxStore.state }
     }
   }
@@ -46,7 +46,7 @@ class SimpleReduxStore<State>(
   }
 
   override val subscribe = object : Redux.ISubscribe<State> {
-    override operator fun invoke(
+    override fun invoke(
       subscriberId: String,
       callback: (State) -> Unit
     ): Redux.Subscription {
