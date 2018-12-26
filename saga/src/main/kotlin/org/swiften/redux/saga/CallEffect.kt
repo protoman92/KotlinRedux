@@ -12,7 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * Created by haipham on 2018/12/23.
  */
 /**
- * [ReduxSaga.IEffect] whose output performs some asynchronous work with
+ * [ReduxSagaEffect] whose output performs some asynchronous work with
  * [block], based on the emissions from another [param], and then emit the
  * result.
  */
@@ -25,12 +25,12 @@ internal class CallEffect<State, P, R>(
     this.param.invoke(input).map(block)
 }
 
-/** Invoke a [CallEffect] on the current [ReduxSaga.IEffect] */
+/** Invoke a [CallEffect] on the current [ReduxSagaEffect] */
 fun <State, R, R2> ReduxSagaEffect<State, R>.call(
   block: ReduxSaga.Output.IMapper<R, R2>
 ) = ReduxSagaHelper.call(this, block)
 
-/** Invoke a [CallEffect] on the current [ReduxSaga.IEffect] */
+/** Invoke a [CallEffect] on the current [ReduxSagaEffect] */
 fun <State, R, R2> ReduxSagaEffect<State, R>.call(
   block: suspend CoroutineScope.(R) -> R2
 ) = this.call(object : ReduxSaga.Output.IMapper<R, R2> {

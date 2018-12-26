@@ -10,7 +10,7 @@ import org.swiften.redux.core.Redux
 /**
  * Created by haipham on 2018/12/24.
  */
-/** Top-level namespace for [ReduxSaga.IEffect] helpers */
+/** Top-level namespace for [ReduxSagaEffect] helpers */
 object ReduxSagaHelper {
   /** Create a [CallEffect] */
   fun <State, P, R> call(

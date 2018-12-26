@@ -21,17 +21,17 @@ class ReduxMiddlewareTest {
     val ordering = arrayListOf<Int>()
 
     val wrappedStore = ReduxMiddleware.applyMiddlewares<Int>(
-      { _ -> { wrapper ->
+      { { wrapper ->
         ReduxMiddleware.DispatchWrapper("${wrapper.id}-$1") {
           wrapper.dispatch(it); ordering.add(1)
         }
       } },
-      { _ -> { wrapper ->
+      { { wrapper ->
         ReduxMiddleware.DispatchWrapper("${wrapper.id}-$2") {
           wrapper.dispatch(it); ordering.add(2)
         }
       } },
-      { _ -> { wrapper ->
+      { { wrapper ->
         ReduxMiddleware.DispatchWrapper("${wrapper.id}-$3") {
           wrapper.dispatch(it); ordering.add(3)
         }

@@ -12,8 +12,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * Created by haipham on 2018/12/26.
  */
 /**
- * [ReduxSaga.IEffect] whose [ReduxSaga.Output] enforces ordering for two
- * [ReduxSaga.Output] created by two other [ReduxSaga.IEffect].
+ * [ReduxSagaEffect] whose [ReduxSaga.Output] enforces ordering for two
+ * [ReduxSaga.Output] created by two other [ReduxSagaEffect].
  */
 internal class ThenEffect<State, R, R2, R3>(
   private val source1: ReduxSagaEffect<State, R>,
@@ -33,7 +33,7 @@ internal class ThenEffect<State, R, R2, R3>(
     })
 }
 
-/** Invoke a [ThenEffect] on the current [ReduxSaga.IEffect] */
+/** Invoke a [ThenEffect] on the current [ReduxSagaEffect] */
 fun <State, R, R2, R3> ReduxSagaEffect<State, R>.then(
   effect: ReduxSagaEffect<State, R2>,
   selector: Function2<R, R2, R3>

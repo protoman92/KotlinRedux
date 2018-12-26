@@ -47,7 +47,7 @@ object ReduxUI {
   }
 
   /**
-   * Maps [Redux.IDispatcher] to [ActionProps] for a [IPropContainerView].
+   * Maps [ReduxDispatcher] to [ActionProps] for a [IPropContainerView].
    * [OutProps] is the view's immutable property as dictated by its parent.
    */
   interface IActionPropMapper<GlobalState, OutProps, ActionProps> {

@@ -22,7 +22,7 @@ typealias ReduxSagaEffect<State, R> = Function1<ReduxSaga.Input<State>, ReduxSag
 /** Top-level namespace for Redux saga */
 object ReduxSaga {
   /**
-   * [Input] for an [IEffect], which exposes a [Redux.IStore]'s internal
+   * [Input] for an [ReduxSagaEffect], which exposes a [Redux.IStore]'s internal
    * functionalities.
    */
   class Input<State>(
@@ -31,7 +31,7 @@ object ReduxSaga {
     val dispatch: ReduxDispatcher
   )
 
-  /** [Output] for an [IEffect], which can stream values of some type */
+  /** [Output] for an [ReduxSagaEffect], which can stream values of some type */
   class Output<T> internal constructor(
     private val scope: CoroutineScope,
     internal val channel: ReceiveChannel<T>,
@@ -177,8 +177,8 @@ object ReduxSaga {
 }
 
 /**
- * Convenience method to call [ReduxSaga.IEffect.invoke] with convenience
- * parameters for testing.
+ * Convenience method to call [ReduxSagaEffect] with convenience parameters
+ * for testing.
  */
 fun <State, R> ReduxSagaEffect<State, R>.invoke(
   scope: CoroutineScope,

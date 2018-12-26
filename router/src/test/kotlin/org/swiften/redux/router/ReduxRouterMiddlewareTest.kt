@@ -5,7 +5,6 @@
 
 package org.swiften.redux.router
 
-import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
 import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.ReduxMiddleware

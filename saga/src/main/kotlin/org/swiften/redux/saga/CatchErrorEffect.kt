@@ -12,7 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * Created by haipham on 2018/12/26.
  */
 /**
- * [ReduxSaga.IEffect] whose [ReduxSaga.Output] catches [Throwable] from
+ * [ReduxSagaEffect] whose [ReduxSaga.Output] catches [Throwable] from
  * upstream
  */
 internal class CatchErrorEffect<State, R>(

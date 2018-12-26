@@ -55,8 +55,8 @@ object ReduxMiddleware {
   ): Redux.IStore<State> by store
 
   /**
-   * Combine [middlewares] into a master [IMiddleware] and apply it to a
-   * [Redux.IStore.dispatch] to produce a [DispatchWrapper].
+   * Combine [middlewares] into a master [ReduxMiddlewareCreator] and apply it
+   * to a [Redux.IStore.dispatch] to produce a [DispatchWrapper].
    */
   fun <State> combineMiddlewares(
     middlewares: Collection<ReduxMiddlewareCreator<State>>
