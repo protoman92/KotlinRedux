@@ -77,4 +77,11 @@ object ReduxSagaEffect {
     },
     block
   )
+
+  /** Create a [ThenEffect] on [source1] and [source2] */
+  fun <State, R, R2, R3> then(
+    source1: ReduxSaga.IEffect<State, R>,
+    source2: ReduxSaga.IEffect<State, R2>,
+    selector: Function2<R, R2, R3>
+  ) : ReduxSaga.IEffect<State, R3> = ThenEffect(source1, source2, selector)
 }

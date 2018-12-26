@@ -12,7 +12,6 @@ import kotlinx.coroutines.channels.produce
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
-import java.lang.Exception
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
