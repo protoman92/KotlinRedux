@@ -35,7 +35,7 @@ internal abstract class TakeEffect<State, P, R>(
   override operator fun invoke(input: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
     val actionChannel = Channel<Redux.IAction>()
 
-    val nestedOutput = ReduxSaga.Output(input.scope, input.scope.produce {
+    val nestedOutput = ReduxSaga.Output(this, input.scope, input.scope.produce {
       for (action in actionChannel) {
         val param = this@TakeEffect.extract(action)
 

@@ -12,7 +12,7 @@ import kotlinx.coroutines.channels.SendChannel
  * Created by haipham on 2018/12/26.
  */
 /** Use this [SendChannel] to track [channel]'s lifecycle */
-class LifecycleSendChannel<E, C: SendChannel<E>>(
+class LifecycleSendChannel<E, C : SendChannel<E>>(
   private val channel: C,
   private val onClose: (Throwable?) -> Unit = { println("Closed with $it") }
 ) : SendChannel<E> by channel {
@@ -24,7 +24,7 @@ class LifecycleSendChannel<E, C: SendChannel<E>>(
 }
 
 /** Use this [ReceiveChannel] to track [channel]'s lifecycle */
-class LifecycleReceiveChannel<E, C: ReceiveChannel<E>>(
+class LifecycleReceiveChannel<E, C : ReceiveChannel<E>>(
   private val channel: C,
   private val onCancel: () -> Unit = { println("Cancelled") }
 ) : ReceiveChannel<E> by channel {

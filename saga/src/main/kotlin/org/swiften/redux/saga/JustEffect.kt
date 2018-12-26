@@ -21,9 +21,6 @@ internal class JustEffect<State, R>(private val value: R) : ReduxSagaEffect<Stat
     /** Do not use produce to avoid closing this channel */
     val channel = Channel<R>()
     input.scope.launch { channel.send(value) }
-
-    return ReduxSaga.Output(input.scope, channel, object : ReduxDispatcher {
-      override fun invoke(action: Redux.IAction) {}
-    })
+    return ReduxSaga.Output(this, input.scope, channel) {}
   }
 }

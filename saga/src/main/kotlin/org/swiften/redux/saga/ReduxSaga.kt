@@ -34,9 +34,9 @@ object ReduxSaga {
   /** [Output] for an [ReduxSagaEffect], which can stream values of some type */
   class Output<T> internal constructor(
     private val scope: CoroutineScope,
-    internal val channel: ReceiveChannel<T>,
+    private val _channel: ReceiveChannel<T>,
     val onAction: ReduxDispatcher
-  ): CoroutineScope by scope {
+  ) : CoroutineScope by scope {
     /** Operator function for [Output.map] */
     interface IMapper<in T, out R> {
       suspend operator fun invoke(scope: CoroutineScope, value: T): R
@@ -52,6 +52,34 @@ object ReduxSaga {
       suspend operator fun invoke(scope: CoroutineScope, error: Throwable): R
     }
 
+    companion object {
+      internal val DEFAULT_IDENTIFIER = "UnidentifiedOutput"
+    }
+
+    /** Use this to set [identifier] internally */
+    internal constructor(
+      identifier: String,
+      scope: CoroutineScope,
+      channel: ReceiveChannel<T>,
+      onAction: ReduxDispatcher
+    ) : this(scope, channel, onAction) {
+      this.identifier = identifier
+    }
+
+    /** Use this to set [identifier] using [creator] */
+    internal constructor(
+      creator: Any,
+      scope: CoroutineScope,
+      channel: ReceiveChannel<T>,
+      onAction: ReduxDispatcher
+    ): this ("${creator.javaClass.simpleName}Output", scope, channel, onAction)
+
+    /** This [identifier] may be useful for debugging purposes */
+    internal var identifier = Output.DEFAULT_IDENTIFIER
+    internal val channel get() = LifecycleReceiveChannel(this._channel)
+
+    override fun toString() = this.identifier
+
     private fun <T2> with(newChannel: ReceiveChannel<T2>) =
       Output(this.scope, newChannel, this.onAction)
 
@@ -59,6 +87,8 @@ object ReduxSaga {
     @ExperimentalCoroutinesApi
     internal fun <T2> map(transform: IMapper<T, T2>) =
       this.with(this.produce {
+        this.invokeOnClose { println("Closed") }
+
         try {
           for (value in this@Output.channel) {
             if (!this.isActive || this.isClosedForSend) { break }

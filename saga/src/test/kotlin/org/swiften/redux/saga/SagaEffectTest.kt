@@ -118,5 +118,6 @@ class SagaEffectTest : CoroutineScope {
 
     /// When && Then
     Assert.assertEquals(finalOutput.nextValue(2000), "12")
+    finalOutput.terminate()
   }
 }
