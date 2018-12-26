@@ -67,8 +67,6 @@ object ReduxSaga {
             if (!this.isActive || this.isClosedForSend) { break }
             this.send(transform(this, value))
           }
-
-          if (!this.isActive) { this.close() }
         } catch (e: Throwable) { this.close(e) }
       })
 
@@ -81,16 +79,16 @@ object ReduxSaga {
       this.with(this.produce {
         try {
           for (value in this@Output.channel) {
-            val channel2 = transform(this, value).channel
+            val output2 = transform(this, value)
             val parentJob = SupervisorJob()
 
             this.launch(parentJob) {
-              for (t2 in channel2) {
+              for (t2 in output2.channel) {
                 if (!this.isActive || this@produce.isClosedForSend) { break }
                 this@produce.send(t2)
               }
 
-              if (!this.isActive) { this@produce.close() }
+              if (!this.isActive) { output2.terminate() }
             }
           }
         } catch (e: Throwable) { this.close(e) }
@@ -109,15 +107,15 @@ object ReduxSaga {
           for (value in this@Output.channel) {
             previousJob?.cancelChildren()
             val parentJob = SupervisorJob()
-            val channel2 = transform(this, value).channel
+            val output2 = transform(this, value)
 
             val newJob = this.launch(parentJob, CoroutineStart.LAZY) {
-              for (t2 in channel2) {
+              for (t2 in output2.channel) {
                 if (!this.isActive || this@produce.isClosedForSend) { break }
                 this@produce.send(t2)
               }
 
-              if (!this.isActive) { this@produce.close() }
+              if (!this.isActive) { output2.terminate() }
             }
 
             previousJob = parentJob

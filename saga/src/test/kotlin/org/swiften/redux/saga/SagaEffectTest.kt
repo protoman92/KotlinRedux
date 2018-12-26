@@ -32,7 +32,7 @@ class SagaEffectTest : CoroutineScope {
   private val timeout: Long = 100000
 
   @AfterMethod
-  fun afterMethod() { this.coroutineContext.cancel() }
+  fun afterMethod() { this.coroutineContext.cancelChildren() }
 
   @ObsoleteCoroutinesApi
   private fun test_takeEffect_shouldTakeCorrectActions(
@@ -112,5 +112,17 @@ class SagaEffectTest : CoroutineScope {
       /// Then
       Assert.assertEquals(finalValues, arrayListOf(100))
     }
+  }
+
+  @Test
+  fun `Then effect should enforce ordering`() {
+    /// Setup
+    val finalOutput = just<State, Int>(1)
+      .call { delay(500); it }
+      .then(just<State, Int>(2).call { delay(1000); it }) { a, b -> "$a$b" }
+      .invoke(this, State()) { }
+
+    /// When && Then
+    Assert.assertEquals(finalOutput.nextValue(2000), "12")
   }
 }

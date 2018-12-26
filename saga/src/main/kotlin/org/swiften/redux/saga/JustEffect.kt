@@ -6,7 +6,8 @@
 package org.swiften.redux.saga
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import org.swiften.redux.core.Redux
 
 /**
@@ -15,10 +16,13 @@ import org.swiften.redux.core.Redux
 /** [ReduxSaga.IEffect] whose [ReduxSaga.Output] simply emits [value] */
 internal class JustEffect<State, R>(private val value: R) : ReduxSaga.IEffect<State, R> {
   @ExperimentalCoroutinesApi
-  override fun invoke(input: ReduxSaga.Input<State>) =
-    ReduxSaga.Output(input.scope,
-      input.scope.produce { this.send(value) },
-      object : Redux.IDispatcher {
-        override operator fun invoke(action: Redux.IAction) {}
-      })
+  override fun invoke(input: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
+    /** Do not use produce to avoid closing this channel */
+    val channel = Channel<R>()
+    input.scope.launch { channel.send(value) }
+
+    return ReduxSaga.Output(input.scope, channel, object : Redux.IDispatcher {
+      override fun invoke(action: Redux.IAction) {}
+    })
+  }
 }
