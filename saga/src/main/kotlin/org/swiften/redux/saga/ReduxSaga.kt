@@ -174,16 +174,6 @@ object ReduxSaga {
       withTimeoutOrNull(timeoutInMillis) { this@Output.channel.receive() }
     }
   }
-
-  /** Extract the payload [P] from some [Action] */
-  interface IPayloadExtractor<Action, P> where Action: Redux.IAction {
-    suspend operator fun invoke(scope: CoroutineScope, action: Action): P?
-  }
-
-  /** Create an [IEffect] from some [P] value */
-  interface IEffectCreator<State, P, R> {
-    suspend operator fun invoke(scope: CoroutineScope, param: P): ReduxSagaEffect<State, R>
-  }
 }
 
 /**

@@ -18,8 +18,8 @@ import org.swiften.redux.core.Redux
  * [TakeLatestEffect].
  */
 internal class TakeEveryEffect<State, P, R>(
-  extract: ReduxSaga.IPayloadExtractor<Redux.IAction, P>,
-  block: ReduxSaga.IEffectCreator<State, P, R>
+  extract: Function1<Redux.IAction, P?>,
+  block: Function1<P, ReduxSagaEffect<State, R>>
 ) :
   TakeEffect<State, P, R>(extract, block),
   ReduxSaga.Output.IFlatMapper<ReduxSaga.Output<R>, R>

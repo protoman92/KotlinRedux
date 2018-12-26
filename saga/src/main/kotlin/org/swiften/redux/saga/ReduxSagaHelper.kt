@@ -5,7 +5,6 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.CoroutineScope
 import org.swiften.redux.core.Redux
 
 /**
@@ -34,8 +33,8 @@ object ReduxSagaHelper {
 
   /** Create a [TakeEveryEffect] instance. */
   fun <State, P, R> takeEvery(
-    extract: ReduxSaga.IPayloadExtractor<Redux.IAction, P>,
-    block: ReduxSaga.IEffectCreator<State, P, R>
+    extract: Function1<Redux.IAction, P?>,
+    block: Function1<P, ReduxSagaEffect<State, R>>
   ): ReduxSagaEffect<State, R> = TakeEveryEffect(extract, block)
 
   /**
@@ -43,22 +42,17 @@ object ReduxSagaHelper {
    * [Redux.IAction].
    */
   inline fun <State, reified Action, P, R> takeEveryAction(
-    extract: ReduxSaga.IPayloadExtractor<Action, P>,
-    block: ReduxSaga.IEffectCreator<State, P, R>
+    crossinline extract: Function1<Action, P?>,
+    noinline block: Function1<P, ReduxSagaEffect<State, R>>
   ) where Action: Redux.IAction = this.takeEvery(
-    object : ReduxSaga.IPayloadExtractor<Redux.IAction, P> {
-      override suspend operator fun invoke(
-        scope: CoroutineScope,
-        action: Redux.IAction
-      ) = when (action) {is Action -> extract(scope, action); else -> null }
-    },
+    { when (it) {is Action -> extract(it); else -> null } },
     block
   )
 
   /** Create a [TakeLatestEffect] instance. */
   fun <State, P, R> takeLatest(
-    extract: ReduxSaga.IPayloadExtractor<Redux.IAction, P>,
-    block: ReduxSaga.IEffectCreator<State, P, R>
+    extract: Function1<Redux.IAction, P?>,
+    block: Function1<P, ReduxSagaEffect<State, R>>
   ): ReduxSagaEffect<State, R> = TakeLatestEffect(extract, block)
 
   /**
@@ -66,15 +60,10 @@ object ReduxSagaHelper {
    * [Redux.IAction].
    */
   inline fun <State, reified Action, P, R> takeLatestAction(
-    extract: ReduxSaga.IPayloadExtractor<Action, P>,
-    block: ReduxSaga.IEffectCreator<State, P, R>
+    crossinline extract: Function1<Action, P?>,
+    noinline block: Function1<P, ReduxSagaEffect<State, R>>
   ) where Action: Redux.IAction = this.takeLatest(
-    object : ReduxSaga.IPayloadExtractor<Redux.IAction, P> {
-      override suspend operator fun invoke(
-        scope: CoroutineScope,
-        action: Redux.IAction
-      ) = when (action) {is Action -> extract(scope, action); else -> null }
-    },
+    { when (it) {is Action -> extract(it); else -> null } },
     block
   )
 

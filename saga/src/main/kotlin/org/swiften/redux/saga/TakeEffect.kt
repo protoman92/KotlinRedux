@@ -10,7 +10,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.launch
 import org.swiften.redux.core.Redux
-import org.swiften.redux.core.ReduxDispatcher
 
 /**
  * Created by haipham on 2018/12/23.
@@ -21,8 +20,8 @@ import org.swiften.redux.core.ReduxDispatcher
  * with [block].
  */
 internal abstract class TakeEffect<State, P, R>(
-  private val extract: ReduxSaga.IPayloadExtractor<Redux.IAction, P>,
-  private val block: ReduxSaga.IEffectCreator<State, P, R>
+  private val extract: Function1<Redux.IAction, P?>,
+  private val block: Function1<P, ReduxSagaEffect<State, R>>
 ) : ReduxSagaEffect<State, R> {
   /**
    * Flatten an [ReduxSaga.Output] that streams [ReduxSaga.Output] to access
@@ -36,20 +35,15 @@ internal abstract class TakeEffect<State, P, R>(
   override operator fun invoke(input: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
     val actionChannel = Channel<Redux.IAction>()
 
-    val nestedOutput = ReduxSaga.Output(input.scope,
-      input.scope.produce {
-        for (action in actionChannel) {
-          val param = this@TakeEffect.extract(this, action)
+    val nestedOutput = ReduxSaga.Output(input.scope, input.scope.produce {
+      for (action in actionChannel) {
+        val param = this@TakeEffect.extract(action)
 
-          if (param != null) {
-            this.send(this@TakeEffect.block(this, param).invoke(input))
-          }
+        if (param != null) {
+          this.send(this@TakeEffect.block(param).invoke(input))
         }
-      }, object : ReduxDispatcher {
-        override fun invoke(action: Redux.IAction) {
-          input.scope.launch { actionChannel.send(action) }
-        }
-      })
+      }
+    }) { action -> input.scope.launch { actionChannel.send(action) } }
 
     return this.flattenOutput(nestedOutput)
   }

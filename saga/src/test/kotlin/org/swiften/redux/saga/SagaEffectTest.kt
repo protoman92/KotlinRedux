@@ -37,21 +37,15 @@ class SagaEffectTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   private fun test_takeEffect_shouldTakeCorrectActions(
     createTakeEffect: (
-      ReduxSaga.IPayloadExtractor<TakeAction, Int>,
-      ReduxSaga.IEffectCreator<State, Int, Any>
+      extract: Function1<TakeAction, Int?>,
+      block: Function1<Int, ReduxSagaEffect<State, Any>>
     ) -> ReduxSagaEffect<State, Any>,
     actualValues: List<Int>
   ) {
     /// Setup
     val takeEffect = createTakeEffect(
-      object : ReduxSaga.IPayloadExtractor<TakeAction, Int> {
-        override suspend fun invoke(scope: CoroutineScope, action: TakeAction) =
-          when (action) {is TakeAction.Action1 -> action.value }
-      },
-      object : ReduxSaga.IEffectCreator<State, Int, Any> {
-        override suspend fun invoke(scope: CoroutineScope, param: Int) =
-          just<State, Int>(param).call { delay(1000); it as Any }
-      })
+      { when (it) {is TakeAction.Action1 -> it.value } },
+      { just<State, Int>(it).call { delay(1000); it } })
 
     val takeOutput = takeEffect.invoke(this, State()) { }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
