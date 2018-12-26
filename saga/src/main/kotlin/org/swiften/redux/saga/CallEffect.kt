@@ -5,6 +5,7 @@
 
 package org.swiften.redux.saga
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -20,7 +21,7 @@ internal class CallEffect<State, P, R>(
   private val block: ReduxSaga.Output.IMapper<P, R>
 ): ReduxSaga.IEffect<State, R> {
   @ExperimentalCoroutinesApi
-  override operator fun invoke(input: ReduxSaga.Input<State>) =
+  override fun invoke(input: ReduxSaga.Input<State>) =
     this.param.invoke(input).map(block)
 }
 
@@ -28,3 +29,11 @@ internal class CallEffect<State, P, R>(
 fun <State, R, R2> ReduxSaga.IEffect<State, R>.call(
   block: ReduxSaga.Output.IMapper<R, R2>
 ) = ReduxSagaEffect.call(this, block)
+
+/** Invoke a [CallEffect] on the current [ReduxSaga.IEffect] */
+fun <State, R, R2> ReduxSaga.IEffect<State, R>.call(
+  block: suspend CoroutineScope.(R) -> R2
+) = this.call(object : ReduxSaga.Output.IMapper<R, R2> {
+  override suspend fun invoke(scope: CoroutineScope, value: R) =
+    block(scope, value)
+})

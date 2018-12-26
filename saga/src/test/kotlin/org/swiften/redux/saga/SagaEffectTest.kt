@@ -43,22 +43,14 @@ class SagaEffectTest : CoroutineScope {
     actualValues: List<Int>
   ) {
     /// Setup
-    val api = object : ReduxSaga.Output.IMapper<Int, Any> {
-      override suspend operator fun invoke(scope: CoroutineScope, value: Int): Any {
-        delay(1000); return value
-      }
-    }
-
     val takeEffect = createTakeEffect(
       object : ReduxSaga.IPayloadExtractor<TakeAction, Int> {
-        override suspend operator fun invoke(
-          scope: CoroutineScope,
-          action: TakeAction
-        ) = when (action) {is TakeAction.Action1 -> action.value }
+        override suspend fun invoke(scope: CoroutineScope, action: TakeAction) =
+          when (action) {is TakeAction.Action1 -> action.value }
       },
       object : ReduxSaga.IEffectCreator<State, Int, Any> {
-        override suspend operator fun invoke(scope: CoroutineScope, param: Int) =
-          just<State, Int>(param).call(api)
+        override suspend fun invoke(scope: CoroutineScope, param: Int) =
+          just<State, Int>(param).call { delay(1000); it as Any }
       })
 
     val takeOutput = takeEffect.invoke(this, State()) { }
@@ -95,5 +87,30 @@ class SagaEffectTest : CoroutineScope {
   fun `Take latest effect should take latest actions`() {
     test_takeEffect_shouldTakeCorrectActions(
       { a, b -> takeLatestAction(a, b) }, arrayListOf(3))
+  }
+
+  @Test
+  @ObsoleteCoroutinesApi
+  @Suppress("UNREACHABLE_CODE")
+  fun `Catch error effect should handle errors gracefully`() {
+    /// Setup
+    val error = Exception("Oh no!")
+
+    val finalOutput = just<State, Int>(1)
+      .call { delay(1000); throw error; 1 }
+      .catchError { 100 }
+      .invoke(this, State()) { }
+
+    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+
+    /// When
+    this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
+
+    runBlocking {
+      delay(1500)
+
+      /// Then
+      Assert.assertEquals(finalValues, arrayListOf(100))
+    }
   }
 }

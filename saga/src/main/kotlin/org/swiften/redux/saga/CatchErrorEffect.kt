@@ -5,6 +5,7 @@
 
 package org.swiften.redux.saga
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -19,7 +20,7 @@ internal class CatchErrorEffect<State, R>(
   private val catcher: ReduxSaga.Output.IErrorCatcher<R>
 ): ReduxSaga.IEffect<State, R> {
   @ExperimentalCoroutinesApi
-  override operator fun invoke(input: ReduxSaga.Input<State>) =
+  override fun invoke(input: ReduxSaga.Input<State>) =
     this.source.invoke(input).catchError(this.catcher)
 }
 
@@ -27,3 +28,11 @@ internal class CatchErrorEffect<State, R>(
 fun <State, R> ReduxSaga.IEffect<State, R>.catchError(
   catcher: ReduxSaga.Output.IErrorCatcher<R>
 ) = ReduxSagaEffect.catchError(this, catcher)
+
+/** Catch [Throwable] from upstream with [catcher] */
+fun <State, R> ReduxSaga.IEffect<State, R>.catchError(
+  catcher: CoroutineScope.(Throwable) -> R
+) = this.catchError(object : ReduxSaga.Output.IErrorCatcher<R> {
+  override suspend fun invoke(scope: CoroutineScope, error: Throwable) =
+    catcher(scope, error)
+})
