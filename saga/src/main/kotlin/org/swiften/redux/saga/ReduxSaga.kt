@@ -8,6 +8,7 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.map
 import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
@@ -43,21 +44,6 @@ object ReduxSaga {
     channel: ReceiveChannel<T>,
     val onAction: ReduxDispatcher
   ) : CoroutineScope by scope {
-    /** Operator function for [Output.map] */
-    interface IMapper<in T, out R> {
-      suspend operator fun invoke(scope: CoroutineScope, value: T): R
-    }
-
-    /** Operator function for [Output.flatMap] and [Output.switchMap] */
-    interface IFlatMapper<in T, R> {
-      suspend operator fun invoke(scope: CoroutineScope, value: T): Output<R>
-    }
-
-    /** Operator function for [Output.catchError] */
-    interface IErrorCatcher<out R> {
-      suspend operator fun invoke(scope: CoroutineScope, error: Throwable): R
-    }
-
     companion object {
       internal const val DEFAULT_IDENTIFIER = "Unidentified"
     }
@@ -91,7 +77,7 @@ object ReduxSaga {
     /** Map emissions from [channel] with [transform] */
     @ExperimentalCoroutinesApi
     internal fun <T2> map(identifier: String = this.identifier,
-                          transform: IMapper<T, T2>) =
+                          transform: suspend CoroutineScope.(T) -> T2) =
       this.with(this.newIdentifier(identifier, "map"), this.produce {
         try {
           for (value in this@Output.channel) {
@@ -103,7 +89,7 @@ object ReduxSaga {
 
     /** Append [identifier] with [creator] */
     @ExperimentalCoroutinesApi
-    internal fun <T2> map(creator: Any, transform: IMapper<T, T2>)
+    internal fun <T2> map(creator: Any, transform: suspend CoroutineScope.(T) -> T2)
       = this.map(creator.javaClass.simpleName, transform)
 
     /**
@@ -112,7 +98,7 @@ object ReduxSaga {
      */
     @ExperimentalCoroutinesApi
     internal fun <T2> flatMap(identifier: String = this.identifier,
-                              transform: IFlatMapper<T, T2>) =
+                              transform: suspend CoroutineScope.(T) -> Output<T2>) =
       this.with(this.newIdentifier(identifier, "flatMap"), this.produce {
         try {
           for (value in this@Output.channel) {
@@ -131,18 +117,13 @@ object ReduxSaga {
         } catch (e: Throwable) { this.close(e) }
       })
 
-    /** Append [identifier] with [creator] */
-    @ExperimentalCoroutinesApi
-    internal fun <T2> flatMap(creator: Any, transform: IFlatMapper<T, T2>) =
-      this.flatMap(creator.javaClass.simpleName, transform)
-
     /**
      * Flatten emissions from the last [Output] produced by transforming the
      * latest element emitted by [channel]. Contrast this with [Output.flatMap].
      */
     @ExperimentalCoroutinesApi
     internal fun <T2> switchMap(identifier: String = this.identifier,
-                                transform: IFlatMapper<T, T2>) =
+                                transform: suspend CoroutineScope.(T) -> Output<T2>) =
       this.with(this.newIdentifier(identifier, "switchMap"), this.produce {
         var previousJob: Job? = null
 
@@ -194,7 +175,7 @@ object ReduxSaga {
     /** Catch possible errors and return a value produced by [fallback] */
     @ExperimentalCoroutinesApi
     internal fun catchError(identifier: String = this.identifier,
-                            fallback: IErrorCatcher<T>) =
+                            fallback: suspend CoroutineScope.(Throwable) -> T) =
       this.with(identifier, this.produce {
         try { for (value in this@Output.channel) { this@produce.send(value) } }
         catch (e1: Throwable) {
@@ -205,7 +186,7 @@ object ReduxSaga {
 
     /** Append [identifier] with [creator] */
     @ExperimentalCoroutinesApi
-    internal fun catchError(creator: Any, fallback: IErrorCatcher<T>) =
+    internal fun catchError(creator: Any, fallback: suspend CoroutineScope.(Throwable) -> T) =
       this.catchError(creator.javaClass.simpleName, fallback)
 
     /** Terminate the current [channel] */

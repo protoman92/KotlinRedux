@@ -5,6 +5,7 @@
 
 package org.swiften.redux.saga
 
+import kotlinx.coroutines.CoroutineScope
 import org.swiften.redux.core.Redux
 
 /**
@@ -15,17 +16,17 @@ object ReduxSagaHelper {
   /** Create a [CallEffect] */
   fun <State, P, R> call(
     param: ReduxSagaEffect<State, P>,
-    block: ReduxSaga.Output.IMapper<P, R>
+    block: suspend CoroutineScope.(P) -> R
   ): ReduxSagaEffect<State, R> = CallEffect(param, block)
 
   /** Create a [CallEffect] with [param] */
-  fun <State, P, R> call(param: P, block: ReduxSaga.Output.IMapper<P, R>) =
+  fun <State, P, R> call(param: P, block: suspend CoroutineScope.(P) -> R) =
     this.call(this.just<State, P>(param), block)
 
   /** Create a [CatchErrorEffect] instance. */
   fun <State, R> catchError(
     source: ReduxSagaEffect<State, R>,
-    catcher: ReduxSaga.Output.IErrorCatcher<R>
+    catcher: suspend CoroutineScope.(Throwable) -> R
   ): ReduxSagaEffect<State, R> = CatchErrorEffect(source, catcher)
 
   /** Create a [JustEffect] */

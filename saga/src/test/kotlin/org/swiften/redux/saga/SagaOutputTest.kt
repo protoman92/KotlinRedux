@@ -31,7 +31,7 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun test_flatMapVariants_shouldEmitCorrectValues(
-    fn: Output<Int>.(ReduxSaga.Output.IFlatMapper<Int, String>) -> Output<String>,
+    fn: Output<Int>.(suspend CoroutineScope.(Int) -> ReduxSaga.Output<String>) -> Output<String>,
     actualValues: List<String>
   ) {
     /// Setup
@@ -39,15 +39,13 @@ class SagaOutputTest : CoroutineScope {
     val sourceOutput = ReduxSaga.Output(scope = this, channel = sourceCh) { }
     val finalValues = Collections.synchronizedList(arrayListOf<String>())
 
-    val finalOutput = fn(sourceOutput,
-      object : ReduxSaga.Output.IFlatMapper<Int, String> {
-        override suspend fun invoke(scope: CoroutineScope, value: Int) =
-          ReduxSaga.Output(scope = scope, channel = scope.produce {
-            delay(500); this.send("${value}1")
-            delay(500); this.send("${value}2")
-            delay(500); this.send("${value}3")
-          }) { }
-      })
+    val finalOutput = fn(sourceOutput) { value ->
+      ReduxSaga.Output(scope = this, channel = this.produce {
+        delay(500); this.send("${value}1")
+        delay(500); this.send("${value}2")
+        delay(500); this.send("${value}3")
+      }) { }
+    }
 
     this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
 
@@ -89,7 +87,7 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun test_flatMapVariants_shouldTerminateOnCancel(
-    fn: Output<Int>.(ReduxSaga.Output.IFlatMapper<Int, Int>) -> Output<Int>
+    fn: Output<Int>.(suspend CoroutineScope.(Int) -> ReduxSaga.Output<Int>) -> Output<Int>
   ) {
     /// Setup
     val job = SupervisorJob()
@@ -103,15 +101,13 @@ class SagaOutputTest : CoroutineScope {
     val sourceOutput = ReduxSaga.Output(scope = scope, channel = sourceCh) { }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
-    val finalOutput = fn(sourceOutput,
-      object : ReduxSaga.Output.IFlatMapper<Int, Int> {
-        override suspend fun invoke(scope: CoroutineScope, value: Int) =
-          ReduxSaga.Output(scope = scope, channel = scope.produce {
-            delay(500); this.send(1)
-            delay(500); this.send(2)
-            delay(500); this.send(3)
-          }) { }
-      })
+    val finalOutput = fn(sourceOutput) {
+      ReduxSaga.Output(scope = this, channel = this.produce {
+        delay(500); this.send(1)
+        delay(500); this.send(2)
+        delay(500); this.send(3)
+      }) { }
+    }
 
     this.launch(job) { finalOutput.channel.consumeEach { finalValues.add(it) } }
 
@@ -194,15 +190,7 @@ class SagaOutputTest : CoroutineScope {
     val sourceCh = Channel<Int>()
     val sourceOutput = ReduxSaga.Output(scope = this, channel = sourceCh) { }
     val error = Exception("Oh no!")
-
-    val finalOutput = sourceOutput
-      .map(transform = object : ReduxSaga.Output.IMapper<Int, Int> {
-        override suspend fun invoke(scope: CoroutineScope, value: Int) = throw error
-      })
-      .catchError(fallback = object : ReduxSaga.Output.IErrorCatcher<Int> {
-        override suspend fun invoke(scope: CoroutineScope, error: Throwable) = 100
-      })
-
+    val finalOutput = sourceOutput.map<Int> { throw error }.catchError { 100 }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
     this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
 
