@@ -36,13 +36,13 @@ class SagaOutputTest : CoroutineScope {
   ) {
     /// Setup
     val sourceCh = Channel<Int>()
-    val sourceOutput = ReduxSaga.Output(this, sourceCh) { }
+    val sourceOutput = ReduxSaga.Output(scope = this, channel = sourceCh) { }
     val finalValues = Collections.synchronizedList(arrayListOf<String>())
 
     val finalOutput = fn(sourceOutput,
       object : ReduxSaga.Output.IFlatMapper<Int, String> {
         override suspend fun invoke(scope: CoroutineScope, value: Int) =
-          ReduxSaga.Output(scope, scope.produce {
+          ReduxSaga.Output(scope = scope, channel = scope.produce {
             delay(500); this.send("${value}1")
             delay(500); this.send("${value}2")
             delay(500); this.send("${value}3")
@@ -71,7 +71,7 @@ class SagaOutputTest : CoroutineScope {
   @ExperimentalCoroutinesApi
   fun `Output flatMap should emit all values`() {
     test_flatMapVariants_shouldEmitCorrectValues(
-      { this.flatMap(it) },
+      { this.flatMap(transform = it) },
       arrayListOf("01", "11", "21", "02", "12", "22", "03", "13", "23")
     )
   }
@@ -81,14 +81,14 @@ class SagaOutputTest : CoroutineScope {
   @ExperimentalCoroutinesApi
   fun `Output switchMap should emit values from latest Output`() {
     test_flatMapVariants_shouldEmitCorrectValues(
-      { this.switchMap(it) },
+      { this.switchMap(transform = it) },
       arrayListOf("21", "22", "23")
     )
   }
 
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
-  fun test_flatMapVariants_shouldTerminateWhenCancelled(
+  fun test_flatMapVariants_shouldTerminateOnCancel(
     fn: Output<Int>.(ReduxSaga.Output.IFlatMapper<Int, Int>) -> Output<Int>
   ) {
     /// Setup
@@ -100,13 +100,13 @@ class SagaOutputTest : CoroutineScope {
     }
 
     val sourceCh = Channel<Int>()
-    val sourceOutput = ReduxSaga.Output(scope, sourceCh) { }
+    val sourceOutput = ReduxSaga.Output(scope = scope, channel = sourceCh) { }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
     val finalOutput = fn(sourceOutput,
       object : ReduxSaga.Output.IFlatMapper<Int, Int> {
         override suspend fun invoke(scope: CoroutineScope, value: Int) =
-          ReduxSaga.Output(scope, scope.produce {
+          ReduxSaga.Output(scope = scope, channel = scope.produce {
             delay(500); this.send(1)
             delay(500); this.send(2)
             delay(500); this.send(3)
@@ -136,14 +136,14 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun `Output flatMap should terminate when scope context cancels`() {
-    test_flatMapVariants_shouldTerminateWhenCancelled { this.flatMap(it) }
+    test_flatMapVariants_shouldTerminateOnCancel { this.flatMap(transform = it) }
   }
 
   @Test
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun `Output switchMap should terminate when scope context cancels`() {
-    test_flatMapVariants_shouldTerminateWhenCancelled { this.switchMap(it) }
+    test_flatMapVariants_shouldTerminateOnCancel { this.switchMap(transform = it) }
   }
 
   @Test
@@ -153,7 +153,7 @@ class SagaOutputTest : CoroutineScope {
     /// Setup
     val rand = Random()
     val sourceCh = Channel<Int>()
-    val sourceOutput = ReduxSaga.Output(this, sourceCh) { }
+    val sourceOutput = ReduxSaga.Output(scope = this, channel = sourceCh) { }
     val finalOutput = sourceOutput.debounce(100)
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
     this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
@@ -192,14 +192,14 @@ class SagaOutputTest : CoroutineScope {
   fun `Output catch error should handle errors gracefully`() {
     /// Setup
     val sourceCh = Channel<Int>()
-    val sourceOutput = ReduxSaga.Output(this, sourceCh) { }
+    val sourceOutput = ReduxSaga.Output(scope = this, channel = sourceCh) { }
     val error = Exception("Oh no!")
 
     val finalOutput = sourceOutput
-      .map(object : ReduxSaga.Output.IMapper<Int, Int> {
+      .map(transform = object : ReduxSaga.Output.IMapper<Int, Int> {
         override suspend fun invoke(scope: CoroutineScope, value: Int) = throw error
       })
-      .catchError(object : ReduxSaga.Output.IErrorCatcher<Int> {
+      .catchError(fallback = object : ReduxSaga.Output.IErrorCatcher<Int> {
         override suspend fun invoke(scope: CoroutineScope, error: Throwable) = 100
       })
 

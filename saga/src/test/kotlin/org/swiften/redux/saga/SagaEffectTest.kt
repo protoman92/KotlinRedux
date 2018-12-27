@@ -14,6 +14,7 @@ import org.swiften.redux.saga.ReduxSagaHelper.takeEveryAction
 import org.swiften.redux.saga.ReduxSagaHelper.takeLatestAction
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
+import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.util.*
 
@@ -27,12 +28,20 @@ class SagaEffectTest : CoroutineScope {
     data class Action1(val value: Int): TakeAction()
   }
 
-  override val coroutineContext get() = Dispatchers.IO
+  override val coroutineContext get() = this.job
 
+  private lateinit var job: Job
   private val timeout: Long = 100000
 
+  @BeforeMethod
+  fun beforeMethod() { this.job = SupervisorJob() }
+
   @AfterMethod
-  fun afterMethod() { this.coroutineContext.cancelChildren() }
+  fun afterMethod() {
+    this.coroutineContext.cancelChildren()
+
+    runBlocking { delay(1000) }
+  }
 
   @ObsoleteCoroutinesApi
   private fun test_takeEffect_shouldTakeCorrectActions(
@@ -118,6 +127,5 @@ class SagaEffectTest : CoroutineScope {
 
     /// When && Then
     Assert.assertEquals(finalOutput.nextValue(2000), "12")
-    finalOutput.terminate()
   }
 }

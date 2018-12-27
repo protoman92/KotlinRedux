@@ -6,6 +6,7 @@
 package org.swiften.redux.saga
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
@@ -31,10 +32,15 @@ object ReduxSaga {
     val dispatch: ReduxDispatcher
   )
 
-  /** [Output] for an [ReduxSagaEffect], which can stream values of some type */
+  /**
+   * [Output] for an [ReduxSagaEffect], which can stream values of some type.
+   * Use [identifier] for debugging purposes.
+   */
+  @Suppress("EXPERIMENTAL_API_USAGE")
   class Output<T> internal constructor(
+    internal val identifier: String = Output.DEFAULT_IDENTIFIER,
     private val scope: CoroutineScope,
-    private val _channel: ReceiveChannel<T>,
+    channel: ReceiveChannel<T>,
     val onAction: ReduxDispatcher
   ) : CoroutineScope by scope {
     /** Operator function for [Output.map] */
@@ -56,16 +62,6 @@ object ReduxSaga {
       internal const val DEFAULT_IDENTIFIER = "Unidentified"
     }
 
-    /** Use this to set [identifier] internally */
-    internal constructor(
-      identifier: String,
-      scope: CoroutineScope,
-      channel: ReceiveChannel<T>,
-      onAction: ReduxDispatcher
-    ) : this(scope, channel, onAction) {
-      this.identifier = identifier
-    }
-
     /** Use this to set [identifier] using [creator] */
     internal constructor(
       creator: Any,
@@ -74,24 +70,29 @@ object ReduxSaga {
       onAction: ReduxDispatcher
     ): this (creator.javaClass.simpleName, scope, channel, onAction)
 
-    /** This [identifier] may be useful for debugging purposes */
-    internal var identifier = Output.DEFAULT_IDENTIFIER
-    internal val channel get() = LifecycleReceiveChannel(this._channel)
+    internal val channel: ReceiveChannel<T>
+    init { this.channel = this.debugChannel(channel) }
 
     override fun toString() = this.identifier
 
-    private fun <T2> with(newChannel: ReceiveChannel<T2>) =
-      Output(this.identifier, this.scope, newChannel, this.onAction)
+    private fun <T2> with(identifier: String = this.identifier,
+                          newChannel: ReceiveChannel<T2>) =
+      Output(identifier, this.scope, newChannel, this.onAction)
 
-    private fun appendingId(identifier: String, op: String): Output<T> {
-      this.identifier = "${this.identifier}-$op-$identifier"
-      return this
+    private fun newIdentifier(identifier: String, op: String) =
+      "${this.identifier}-$op-$identifier"
+
+    /** Add debugging caps to [channel] by injecting lifecycle observers */
+    private fun <T2> debugChannel(channel: ReceiveChannel<T2>) = when(channel) {
+      is Channel<T2> -> LifecycleChannel(this.identifier, channel)
+      else -> LifecycleReceiveChannel(this.identifier, channel)
     }
 
     /** Map emissions from [channel] with [transform] */
     @ExperimentalCoroutinesApi
-    internal fun <T2> map(transform: IMapper<T, T2>) =
-      this.with(this.produce {
+    internal fun <T2> map(identifier: String = this.identifier,
+                          transform: IMapper<T, T2>) =
+      this.with(this.newIdentifier(identifier, "map"), this.produce {
         try {
           for (value in this@Output.channel) {
             if (!this.isActive || this.isClosedForSend) { break }
@@ -99,11 +100,6 @@ object ReduxSaga {
           }
         } catch (e: Throwable) { this.close(e) }
       })
-
-    /** Append [identifier] alongside [Output.map]. */
-    @ExperimentalCoroutinesApi
-    internal fun <T2> map(identifier: String, transform: IMapper<T, T2>) =
-      this.map(transform).appendingId(identifier, "map")
 
     /** Append [identifier] with [creator] */
     @ExperimentalCoroutinesApi
@@ -115,8 +111,9 @@ object ReduxSaga {
      * elements emitted by [channel] to said [Output], and emitting everything.
      */
     @ExperimentalCoroutinesApi
-    internal fun <T2> flatMap(transform: IFlatMapper<T, T2>) =
-      this.with(this.produce {
+    internal fun <T2> flatMap(identifier: String = this.identifier,
+                              transform: IFlatMapper<T, T2>) =
+      this.with(this.newIdentifier(identifier, "flatMap"), this.produce {
         try {
           for (value in this@Output.channel) {
             val output2 = transform(this, value)
@@ -134,11 +131,6 @@ object ReduxSaga {
         } catch (e: Throwable) { this.close(e) }
       })
 
-    /** Append [identifier] alongside [Output.flatMap] */
-    @ExperimentalCoroutinesApi
-    internal fun <T2> flatMap(identifier: String, transform: IFlatMapper<T, T2>) =
-      this.flatMap(transform).appendingId(identifier, "flatMap")
-
     /** Append [identifier] with [creator] */
     @ExperimentalCoroutinesApi
     internal fun <T2> flatMap(creator: Any, transform: IFlatMapper<T, T2>) =
@@ -149,8 +141,9 @@ object ReduxSaga {
      * latest element emitted by [channel]. Contrast this with [Output.flatMap].
      */
     @ExperimentalCoroutinesApi
-    internal fun <T2> switchMap(transform: IFlatMapper<T, T2>) =
-      this.with(this.scope.produce {
+    internal fun <T2> switchMap(identifier: String = this.identifier,
+                                transform: IFlatMapper<T, T2>) =
+      this.with(this.newIdentifier(identifier, "switchMap"), this.produce {
         var previousJob: Job? = null
 
         try {
@@ -179,7 +172,7 @@ object ReduxSaga {
     internal fun debounce(timeMillis: Long): Output<T> {
       if (timeMillis <= 0) { return this }
 
-      return this.with(this.produce {
+      return this.with(newChannel = this.produce {
         var previousJob: Job? = null
 
         for (value in this@Output.channel) {
@@ -200,19 +193,15 @@ object ReduxSaga {
 
     /** Catch possible errors and return a value produced by [fallback] */
     @ExperimentalCoroutinesApi
-    internal fun catchError(fallback: IErrorCatcher<T>) =
-      this.with(this.produce {
+    internal fun catchError(identifier: String = this.identifier,
+                            fallback: IErrorCatcher<T>) =
+      this.with(identifier, this.produce {
         try { for (value in this@Output.channel) { this@produce.send(value) } }
         catch (e1: Throwable) {
           try { this.send(fallback(this, e1)); this.close() }
           catch (e2: Throwable) { this.close(e2) }
         }
       })
-
-    /** Append [identifier] alongside [Output.catchError] */
-    @ExperimentalCoroutinesApi
-    internal fun catchError(identifier: String, fallback: IErrorCatcher<T>) =
-      this.catchError(fallback).appendingId(identifier, "flatMap")
 
     /** Append [identifier] with [creator] */
     @ExperimentalCoroutinesApi

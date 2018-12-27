@@ -32,5 +32,5 @@ internal class TakeEveryEffect<State, P, R>(
   @ExperimentalCoroutinesApi
   override fun flattenOutput(
     nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
-  ) = nestedOutput.flatMap(this)
+  ) = nestedOutput.flatMap(transform =  this)
 }

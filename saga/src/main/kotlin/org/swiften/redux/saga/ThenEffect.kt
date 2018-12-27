@@ -29,7 +29,7 @@ internal class ThenEffect<State, R, R2, R3>(
     return this.source1.invoke(input)
       .flatMap(o2.identifier, object : ReduxSaga.Output.IFlatMapper<R, R3> {
         override suspend fun invoke(scope: CoroutineScope, value1: R) =
-          o2.map(object : ReduxSaga.Output.IMapper<R2, R3> {
+          o2.map(transform = object : ReduxSaga.Output.IMapper<R2, R3> {
             override suspend fun invoke(scope: CoroutineScope, value2: R2) =
               this@ThenEffect.selector(value1, value2)
           })

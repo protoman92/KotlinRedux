@@ -33,5 +33,5 @@ internal class TakeLatestEffect<State, P, R>(
   @ExperimentalCoroutinesApi
   override fun flattenOutput(
     nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
-  ) = nestedOutput.switchMap(this)
+  ) = nestedOutput.switchMap(transform = this)
 }
