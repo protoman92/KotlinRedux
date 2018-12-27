@@ -199,7 +199,9 @@ class SagaOutputTest : CoroutineScope {
       .map(object : ReduxSaga.Output.IMapper<Int, Int> {
         override suspend fun invoke(scope: CoroutineScope, value: Int) = throw error
       })
-      .catchError(100)
+      .catchError(object : ReduxSaga.Output.IErrorCatcher<Int> {
+        override suspend fun invoke(scope: CoroutineScope, error: Throwable) = 100
+      })
 
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
     this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }

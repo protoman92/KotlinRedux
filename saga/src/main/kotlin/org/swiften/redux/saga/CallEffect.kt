@@ -22,7 +22,7 @@ internal class CallEffect<State, P, R>(
 ): ReduxSagaEffect<State, R> {
   @ExperimentalCoroutinesApi
   override fun invoke(input: ReduxSaga.Input<State>) =
-    this.param.invoke(input).map(block)
+    this.param.invoke(input).map(this, this.block)
 }
 
 /** Invoke a [CallEffect] on the current [ReduxSagaEffect] */

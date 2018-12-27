@@ -53,7 +53,7 @@ object ReduxSaga {
     }
 
     companion object {
-      internal val DEFAULT_IDENTIFIER = "UnidentifiedOutput"
+      internal const val DEFAULT_IDENTIFIER = "Unidentified"
     }
 
     /** Use this to set [identifier] internally */
@@ -72,7 +72,7 @@ object ReduxSaga {
       scope: CoroutineScope,
       channel: ReceiveChannel<T>,
       onAction: ReduxDispatcher
-    ): this ("${creator.javaClass.simpleName}Output", scope, channel, onAction)
+    ): this (creator.javaClass.simpleName, scope, channel, onAction)
 
     /** This [identifier] may be useful for debugging purposes */
     internal var identifier = Output.DEFAULT_IDENTIFIER
@@ -81,14 +81,17 @@ object ReduxSaga {
     override fun toString() = this.identifier
 
     private fun <T2> with(newChannel: ReceiveChannel<T2>) =
-      Output(this.scope, newChannel, this.onAction)
+      Output(this.identifier, this.scope, newChannel, this.onAction)
+
+    private fun appendingId(identifier: String, op: String): Output<T> {
+      this.identifier = "${this.identifier}-$op-$identifier"
+      return this
+    }
 
     /** Map emissions from [channel] with [transform] */
     @ExperimentalCoroutinesApi
     internal fun <T2> map(transform: IMapper<T, T2>) =
       this.with(this.produce {
-        this.invokeOnClose { println("Closed") }
-
         try {
           for (value in this@Output.channel) {
             if (!this.isActive || this.isClosedForSend) { break }
@@ -96,6 +99,16 @@ object ReduxSaga {
           }
         } catch (e: Throwable) { this.close(e) }
       })
+
+    /** Append [identifier] alongside [Output.map]. */
+    @ExperimentalCoroutinesApi
+    internal fun <T2> map(identifier: String, transform: IMapper<T, T2>) =
+      this.map(transform).appendingId(identifier, "map")
+
+    /** Append [identifier] with [creator] */
+    @ExperimentalCoroutinesApi
+    internal fun <T2> map(creator: Any, transform: IMapper<T, T2>)
+      = this.map(creator.javaClass.simpleName, transform)
 
     /**
      * Flatten emissions from other [Output] produced by transforming the
@@ -120,6 +133,16 @@ object ReduxSaga {
           }
         } catch (e: Throwable) { this.close(e) }
       })
+
+    /** Append [identifier] alongside [Output.flatMap] */
+    @ExperimentalCoroutinesApi
+    internal fun <T2> flatMap(identifier: String, transform: IFlatMapper<T, T2>) =
+      this.flatMap(transform).appendingId(identifier, "flatMap")
+
+    /** Append [identifier] with [creator] */
+    @ExperimentalCoroutinesApi
+    internal fun <T2> flatMap(creator: Any, transform: IFlatMapper<T, T2>) =
+      this.flatMap(creator.javaClass.simpleName, transform)
 
     /**
      * Flatten emissions from the last [Output] produced by transforming the
@@ -186,15 +209,15 @@ object ReduxSaga {
         }
       })
 
-    /** Catch possible errors and return [fallback] value */
+    /** Append [identifier] alongside [Output.catchError] */
     @ExperimentalCoroutinesApi
-    internal fun catchError(fallback: T) =
-      this.catchError(object : IErrorCatcher<T> {
-        override suspend operator fun invoke(
-          scope: CoroutineScope,
-          error: Throwable
-        ) = fallback
-    })
+    internal fun catchError(identifier: String, fallback: IErrorCatcher<T>) =
+      this.catchError(fallback).appendingId(identifier, "flatMap")
+
+    /** Append [identifier] with [creator] */
+    @ExperimentalCoroutinesApi
+    internal fun catchError(creator: Any, fallback: IErrorCatcher<T>) =
+      this.catchError(creator.javaClass.simpleName, fallback)
 
     /** Terminate the current [channel] */
     fun terminate() = this.channel.cancel()
