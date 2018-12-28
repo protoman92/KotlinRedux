@@ -6,6 +6,7 @@
 package org.swiften.redux.saga
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
@@ -127,5 +128,32 @@ class SagaEffectTest : CoroutineScope {
 
     /// When && Then
     Assert.assertEquals(finalOutput.nextValue(2000), "12")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun `Disposing outputs should terminate channels`() {
+    /// Setup
+    val source = just<State, Int>(1)
+      .call { delay(500); it }
+      .then(just(2)) { a, b -> a + b }
+      .call { delay(500); it }
+
+    val sourceOutput = source.invoke(this, State()) { }
+
+    runBlocking {
+      /// When
+      sourceOutput.dispose()
+
+      /// Then
+      var parent: ReduxSaga.Output<*>? = sourceOutput
+
+      while (parent != null) {
+        val channel = parent.channel as Channel<*>
+        Assert.assertTrue(channel.isClosedForSend)
+        Assert.assertTrue(channel.isClosedForReceive)
+        parent = parent.source
+      }
+    }
   }
 }

@@ -57,7 +57,7 @@ class SagaOutputTest : CoroutineScope {
         while (finalValues.sorted() != actualValues.sorted()) { delay(1000) }; 1
       }
 
-      finalOutput.terminate()
+      finalOutput.dispose()
 
       /// Then
       Assert.assertEquals(finalValues.sorted(), actualValues.sorted())

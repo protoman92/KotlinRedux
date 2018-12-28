@@ -44,9 +44,9 @@ class LifecycleReceiveChannel<E>(
 /** Track all lifecycles for both [SendChannel] and [ReceiveChannel] */
 @ExperimentalCoroutinesApi
 class LifecycleChannel<E>(
-  private val sendChannel: LifecycleSendChannel<E>,
-  private val receiveChannel: LifecycleReceiveChannel<E>
-) : SendChannel<E> by sendChannel, ReceiveChannel<E> by receiveChannel {
+  private val sender: LifecycleSendChannel<E>,
+  private val receiver: LifecycleReceiveChannel<E>
+) : Channel<E>, SendChannel<E> by sender, ReceiveChannel<E> by receiver {
   constructor(
     identifier: String,
     channel: Channel<E>,
@@ -62,5 +62,5 @@ class LifecycleChannel<E>(
     LifecycleReceiveChannel(identifier, channel)
   )
 
-  override fun toString() = "${this.sendChannel}"
+  override fun toString() = "${this.sender}"
 }

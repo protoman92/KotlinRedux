@@ -8,7 +8,6 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.map
 import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
@@ -44,9 +43,7 @@ object ReduxSaga {
     channel: ReceiveChannel<T>,
     val onAction: ReduxDispatcher
   ) : CoroutineScope by scope {
-    companion object {
-      internal const val DEFAULT_IDENTIFIER = "Unidentified"
-    }
+    companion object { internal const val DEFAULT_IDENTIFIER = "Unidentified" }
 
     /** Use this to set [identifier] using [creator] */
     internal constructor(
@@ -56,14 +53,20 @@ object ReduxSaga {
       onAction: ReduxDispatcher
     ): this (creator.javaClass.simpleName, scope, channel, onAction)
 
+    internal var source: Output<*>? = null
     internal val channel: ReceiveChannel<T>
+    private var onDispose: () -> Unit = { }
     init { this.channel = this.debugChannel(channel) }
 
     override fun toString() = this.identifier
 
     private fun <T2> with(identifier: String = this.identifier,
-                          newChannel: ReceiveChannel<T2>) =
-      Output(identifier, this.scope, newChannel, this.onAction)
+                          newChannel: ReceiveChannel<T2>): Output<T2> {
+      val result = Output(identifier, this.scope, newChannel, this.onAction)
+      result.source = this
+      result.onDispose = { this.dispose() }
+      return result
+    }
 
     private fun newIdentifier(identifier: String, op: String) =
       "${this.identifier}-$op-$identifier"
@@ -81,7 +84,6 @@ object ReduxSaga {
       this.with(this.newIdentifier(identifier, "map"), this.produce {
         try {
           for (value in this@Output.channel) {
-            if (!this.isActive || this.isClosedForSend) { break }
             this.send(transform(this, value))
           }
         } catch (e: Throwable) { this.close(e) }
@@ -111,7 +113,7 @@ object ReduxSaga {
                 this@produce.send(t2)
               }
 
-              if (!this.isActive) { output2.terminate() }
+              if (!this.isActive) { output2.dispose() }
             }
           }
         } catch (e: Throwable) { this.close(e) }
@@ -139,7 +141,7 @@ object ReduxSaga {
                 this@produce.send(t2)
               }
 
-              if (!this.isActive) { output2.terminate() }
+              if (!this.isActive) { output2.dispose() }
             }
 
             previousJob = parentJob
@@ -190,7 +192,7 @@ object ReduxSaga {
       this.catchError(creator.javaClass.simpleName, fallback)
 
     /** Terminate the current [channel] */
-    fun terminate() = this.channel.cancel()
+    fun dispose() { this.channel.cancel(); this.onDispose() }
 
     /** Get the next [T], but only if it arrives before [timeoutInMillis] */
     fun nextValue(timeoutInMillis: Long) = runBlocking(this.coroutineContext) {
