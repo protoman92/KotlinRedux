@@ -31,16 +31,16 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun test_flatMapVariants_shouldEmitCorrectValues(
-    fn: Output<Int>.(suspend CoroutineScope.(Int) -> ReduxSaga.Output<String>) -> Output<String>,
+    fn: Output<Int>.(suspend CoroutineScope.(Int) -> Output<String>) -> Output<String>,
     actualValues: List<String>
   ) {
     /// Setup
     val sourceCh = Channel<Int>()
-    val sourceOutput = ReduxSaga.Output(scope = this, channel = sourceCh) { }
+    val sourceOutput = Output(scope = this, channel = sourceCh) { }
     val finalValues = Collections.synchronizedList(arrayListOf<String>())
 
     val finalOutput = fn(sourceOutput) { value ->
-      ReduxSaga.Output(scope = this, channel = this.produce {
+      Output(scope = this, channel = this.produce {
         delay(500); this.send("${value}1")
         delay(500); this.send("${value}2")
         delay(500); this.send("${value}3")
@@ -87,7 +87,7 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun test_flatMapVariants_shouldTerminateOnCancel(
-    fn: Output<Int>.(suspend CoroutineScope.(Int) -> ReduxSaga.Output<Int>) -> Output<Int>
+    fn: Output<Int>.(suspend CoroutineScope.(Int) -> Output<Int>) -> Output<Int>
   ) {
     /// Setup
     val job = SupervisorJob()
@@ -98,11 +98,11 @@ class SagaOutputTest : CoroutineScope {
     }
 
     val sourceCh = Channel<Int>()
-    val sourceOutput = ReduxSaga.Output(scope = scope, channel = sourceCh) { }
+    val sourceOutput = Output(scope = scope, channel = sourceCh) { }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
     val finalOutput = fn(sourceOutput) {
-      ReduxSaga.Output(scope = this, channel = this.produce {
+      Output(scope = this, channel = this.produce {
         delay(500); this.send(1)
         delay(500); this.send(2)
         delay(500); this.send(3)
@@ -149,7 +149,7 @@ class SagaOutputTest : CoroutineScope {
     /// Setup
     val rand = Random()
     val sourceCh = Channel<Int>()
-    val sourceOutput = ReduxSaga.Output(scope = this, channel = sourceCh) { }
+    val sourceOutput = Output(scope = this, channel = sourceCh) { }
     val finalOutput = sourceOutput.debounce(100)
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
     this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
@@ -188,7 +188,7 @@ class SagaOutputTest : CoroutineScope {
   fun `Output catch error should handle errors gracefully`() {
     /// Setup
     val sourceCh = Channel<Int>()
-    val sourceOutput = ReduxSaga.Output(scope = this, channel = sourceCh) { }
+    val sourceOutput = Output(scope = this, channel = sourceCh) { }
     val error = Exception("Oh no!")
     val finalOutput = sourceOutput.map<Int> { throw error }.catchError { 100 }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
@@ -203,5 +203,76 @@ class SagaOutputTest : CoroutineScope {
       /// Then
       Assert.assertEquals(finalValues, arrayListOf(100))
     }
+  }
+
+  @ObsoleteCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun test_terminatingOutput_shouldWorkCorrectly(
+    dispose: (CoroutineScope, Output<Int>) -> Unit,
+    assert: (Output<Int>) -> Unit
+  ) {
+    /// Setup
+    val scope = object : CoroutineScope {
+      override val coroutineContext = SupervisorJob()
+    }
+
+    val flatMapChannel1 = Channel<Int>()
+    val flatMapChannel2 = Channel<Int>()
+    val flatMapOutput1 = Output("FlatMap1", scope, flatMapChannel1) { }
+    val flatMapOutput2 = Output("FlatMap2", scope, flatMapChannel2) { }
+
+    val sourceCh = Channel<Int>()
+    val output1 = Output(this, scope, sourceCh) { }
+    val output2 = output1.map { it }
+    val output3 = output2.switchMap { flatMapOutput1 }
+    val output4 = output3.flatMap { flatMapOutput2 }
+    val output5 = output4.debounce(500)
+    val output6 = output5.catchError { 100 }
+
+    this.launch { flatMapChannel1.send(1) }
+    this.launch { flatMapChannel2.send(2) }
+    this.launch { sourceCh.send(50) }
+    this.launch { output6.channel.consumeEach { println("Received $it") } }
+
+    runBlocking {
+      /// When
+      delay(1000)
+      dispose(scope, output6)
+      delay(1000)
+
+      /// Then
+      arrayListOf(
+        output1,
+        output2,
+        output3,
+        output4,
+        output5,
+        output6
+      ).forEach { assert(it) }
+
+      println("${flatMapChannel1.isClosedForSend} ${flatMapChannel2.isClosedForSend}")
+      Assert.assertTrue(flatMapChannel1.isClosedForReceive)
+      Assert.assertTrue(flatMapChannel2.isClosedForReceive)
+    }
+  }
+
+  @Test
+  @ObsoleteCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun `Output should be terminated correctly on scope context cancel`() {
+    test_terminatingOutput_shouldWorkCorrectly(
+      { a, _ -> a.coroutineContext.cancel() },
+      { Assert.assertTrue(it.channel.isClosedForReceive) }
+    )
+  }
+
+  @Test
+  @ObsoleteCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun `Output should be terminated correctly on dispose`() {
+    test_terminatingOutput_shouldWorkCorrectly(
+      { _, b -> b.dispose() },
+      { Assert.assertTrue(it.channel.isClosedForReceive) }
+    )
   }
 }

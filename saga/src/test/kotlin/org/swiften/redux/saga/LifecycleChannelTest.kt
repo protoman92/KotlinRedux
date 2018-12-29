@@ -5,6 +5,7 @@
 
 package org.swiften.redux.saga
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import org.testng.Assert
 import org.testng.annotations.Test
@@ -12,6 +13,7 @@ import org.testng.annotations.Test
 /**
  * Created by haipham on 2018/12/26.
  */
+@ExperimentalCoroutinesApi
 class LifecycleChannelTest {
   @Test
   fun `Send channels should invoke side effects on lifecycle change`() {
@@ -25,7 +27,7 @@ class LifecycleChannelTest {
     channel.close()
 
     /// Then
-    Assert.assertEquals(closed, 1)
+    Assert.assertEquals(closed, 2)
   }
 
   @Test
@@ -59,7 +61,7 @@ class LifecycleChannelTest {
     channel.cancel()
 
     /// Then
-    Assert.assertEquals(closed, 1)
+    Assert.assertEquals(closed, 2)
     Assert.assertEquals(cancelled, 1)
   }
 }

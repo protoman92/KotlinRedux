@@ -32,7 +32,7 @@ class SagaEffectTest : CoroutineScope {
   override val coroutineContext get() = this.job
 
   private lateinit var job: Job
-  private val timeout: Long = 100000
+  private val timeout: Long = 10000
 
   @BeforeMethod
   fun beforeMethod() { this.job = SupervisorJob() }
@@ -75,6 +75,7 @@ class SagaEffectTest : CoroutineScope {
       }
 
       /// Then
+      println(finalValues)
       Assert.assertEquals(finalValues.sorted(), actualValues.sorted())
     }
   }
