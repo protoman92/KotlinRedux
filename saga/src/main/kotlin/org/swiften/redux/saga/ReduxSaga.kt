@@ -174,6 +174,13 @@ object ReduxSaga {
     fun nextValue(timeoutInMillis: Long) = runBlocking(this.coroutineContext) {
       withTimeoutOrNull(timeoutInMillis) { this@Output.channel.receive() }
     }
+
+    fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit = { }) {
+      this.launch {
+        try { this@Output.channel.consumeEach(onValue) }
+        catch (e: Throwable) { onError(e) }
+      }
+    }
   }
 }
 

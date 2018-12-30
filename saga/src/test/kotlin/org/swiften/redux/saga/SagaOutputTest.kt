@@ -11,6 +11,7 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.channels.produce
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
+import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -21,9 +22,13 @@ import kotlin.coroutines.CoroutineContext
 private typealias Output<T> = ReduxSaga.Output<T>
 
 class SagaOutputTest : CoroutineScope {
-  override val coroutineContext = Dispatchers.IO
+  override val coroutineContext get() = this.job
 
+  private lateinit var job: Job
   private val timeout: Long = 100000
+
+  @BeforeMethod
+  fun beforeMethod() { this.job = SupervisorJob() }
 
   @AfterMethod
   fun afterMethod() { this.coroutineContext.cancel() }
@@ -47,7 +52,7 @@ class SagaOutputTest : CoroutineScope {
       }) { }
     }
 
-    this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
+    finalOutput.subscribe({ finalValues.add(it) })
 
     /// When
     this.launch { sourceCh.send(0); sourceCh.send(1); sourceCh.send(2) }
@@ -90,15 +95,8 @@ class SagaOutputTest : CoroutineScope {
     fn: Output<Int>.(suspend CoroutineScope.(Int) -> Output<Int>) -> Output<Int>
   ) {
     /// Setup
-    val job = SupervisorJob()
-
-    val scope = object : CoroutineScope {
-      override val coroutineContext: CoroutineContext =
-        this@SagaOutputTest.coroutineContext + job
-    }
-
     val sourceCh = Channel<Int>()
-    val sourceOutput = Output(scope = scope, channel = sourceCh) { }
+    val sourceOutput = Output(scope = this, channel = sourceCh) { }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
     val finalOutput = fn(sourceOutput) {
@@ -109,10 +107,10 @@ class SagaOutputTest : CoroutineScope {
       }) { }
     }
 
-    this.launch(job) { finalOutput.channel.consumeEach { finalValues.add(it) } }
+    finalOutput.subscribe({ finalValues.add(it) })
 
     /// When
-    job.cancel()
+    this.coroutineContext.cancel()
 
     this.launch {
       sourceCh.send(0)
@@ -152,13 +150,14 @@ class SagaOutputTest : CoroutineScope {
     val sourceOutput = Output(scope = this, channel = sourceCh) { }
     val finalOutput = sourceOutput.debounce(100)
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
-    this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
     val validEmissions = (0 until 100).map { rand.nextBoolean() }
 
     val actualValues = validEmissions
       .mapIndexed { index, b -> index to b }
       .filter { (_, b) -> b }
       .map { (index, _) -> index }
+
+    finalOutput.subscribe({ finalValues.add(it) })
 
     /// When
     this.launch {
@@ -192,7 +191,7 @@ class SagaOutputTest : CoroutineScope {
     val error = Exception("Oh no!")
     val finalOutput = sourceOutput.map<Int> { throw error }.catchError { 100 }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
-    this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
+    finalOutput.subscribe({ finalValues.add(it) })
 
     /// When
     this.launch { sourceCh.send(0); sourceCh.send(1); sourceCh.send(2) }
@@ -232,7 +231,6 @@ class SagaOutputTest : CoroutineScope {
     this.launch { flatMapChannel1.send(1) }
     this.launch { flatMapChannel2.send(2) }
     this.launch { sourceCh.send(50) }
-    this.launch { output6.channel.consumeEach { println("Received $it") } }
 
     runBlocking {
       /// When
@@ -250,7 +248,6 @@ class SagaOutputTest : CoroutineScope {
         output6
       ).forEach { assert(it) }
 
-      println("${flatMapChannel1.isClosedForSend} ${flatMapChannel2.isClosedForSend}")
       Assert.assertTrue(flatMapChannel1.isClosedForReceive)
       Assert.assertTrue(flatMapChannel2.isClosedForReceive)
     }

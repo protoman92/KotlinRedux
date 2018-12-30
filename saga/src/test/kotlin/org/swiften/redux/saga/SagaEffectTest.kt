@@ -7,7 +7,6 @@ package org.swiften.redux.saga
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.consumeEach
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
 import org.swiften.redux.saga.ReduxSagaHelper.just
@@ -59,7 +58,7 @@ class SagaEffectTest : CoroutineScope {
 
     val takeOutput = takeEffect.invoke(this, State()) { }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
-    this.launch { takeOutput.channel.consumeEach { finalValues.add(it as Int) } }
+    takeOutput.subscribe({ finalValues.add(it as Int) })
 
     /// When
     takeOutput.onAction(TakeAction.Action1(0))
@@ -75,7 +74,6 @@ class SagaEffectTest : CoroutineScope {
       }
 
       /// Then
-      println(finalValues)
       Assert.assertEquals(finalValues.sorted(), actualValues.sorted())
     }
   }
@@ -109,7 +107,7 @@ class SagaEffectTest : CoroutineScope {
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
     /// When
-    this.launch { finalOutput.channel.consumeEach { finalValues.add(it) } }
+    finalOutput.subscribe({ finalValues.add(it) })
 
     runBlocking {
       delay(1500)
