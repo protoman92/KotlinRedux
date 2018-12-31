@@ -39,7 +39,6 @@ class SagaEffectTest : CoroutineScope {
   @AfterMethod
   fun afterMethod() {
     this.coroutineContext.cancelChildren()
-
     runBlocking { delay(1000) }
   }
 
@@ -70,7 +69,7 @@ class SagaEffectTest : CoroutineScope {
 
     runBlocking {
       withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues.sorted() != actualValues.sorted()) { delay(1000) }; 1
+        while (finalValues.sorted() != actualValues.sorted()) { }; Unit
       }
 
       /// Then
@@ -110,7 +109,9 @@ class SagaEffectTest : CoroutineScope {
     finalOutput.subscribe({ finalValues.add(it) })
 
     runBlocking {
-      delay(1500)
+      withTimeoutOrNull(this@SagaEffectTest.timeout) {
+        while (finalValues != arrayListOf(100)) { }; Unit
+      }
 
       /// Then
       Assert.assertEquals(finalValues, arrayListOf(100))
@@ -126,7 +127,7 @@ class SagaEffectTest : CoroutineScope {
       .invoke(this, State()) { }
 
     /// When && Then
-    Assert.assertEquals(finalOutput.nextValue(2000), "12")
+    Assert.assertEquals(finalOutput.nextValue(this.timeout), "12")
   }
 
   @Test
@@ -153,6 +154,28 @@ class SagaEffectTest : CoroutineScope {
         Assert.assertTrue(channel.isClosedForReceive)
         parent = parent.source
       }
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun `One-off channels should terminate on single item emission`() {
+    /// Setup
+    val sourceOutput = just<State, Int>(0)
+      .call { it }
+      .then(just<State, Int>(2).call { it }) { a, b -> a + b }
+      .invoke(this, State()) { }
+
+    sourceOutput.subscribe({})
+
+    runBlocking {
+      /// When
+      withTimeoutOrNull(this@SagaEffectTest.timeout) {
+        while (!sourceOutput.channel.isClosedForReceive) { }; Unit
+      }
+
+      /// Then
+      Assert.assertTrue(sourceOutput.channel.isClosedForReceive)
     }
   }
 }

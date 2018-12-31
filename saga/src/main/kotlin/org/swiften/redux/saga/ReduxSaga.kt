@@ -38,7 +38,7 @@ object ReduxSaga {
   class Output<T> internal constructor(
     internal val identifier: String = Output.DEFAULT_IDENTIFIER,
     private val scope: CoroutineScope,
-    channel: ReceiveChannel<T>,
+    internal val channel: ReceiveChannel<T>,
     val onAction: ReduxDispatcher
   ) : CoroutineScope by scope {
     companion object { internal const val DEFAULT_IDENTIFIER = "Unidentified" }
@@ -52,13 +52,7 @@ object ReduxSaga {
     ): this (creator.javaClass.simpleName, scope, channel, onAction)
 
     internal var source: Output<*>? = null
-    internal val channel: ReceiveChannel<T>
     private var onDispose: () -> Unit = { }
-    init {
-      /// Uncomment this to enable lifecycle debug.
-      /// this.channel = this.debugChannel(channel)
-      this.channel = channel
-    }
 
     override fun toString() = this.identifier
 
