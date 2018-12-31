@@ -16,7 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * [block], based on the emissions from another [param], and then emit the
  * result.
  */
-internal class CallEffect<State, P, R>(
+internal class MapEffect<State, P, R>(
   private val param: ReduxSagaEffect<State, P>,
   private val block: suspend CoroutineScope.(P) -> R
 ): ReduxSagaEffect<State, R> {
@@ -25,7 +25,7 @@ internal class CallEffect<State, P, R>(
     this.param.invoke(input).map(this, this.block)
 }
 
-/** Invoke a [CallEffect] on the current [ReduxSagaEffect] */
-fun <State, R, R2> ReduxSagaEffect<State, R>.call(
+/** Invoke a [MapEffect] on the current [ReduxSagaEffect] */
+fun <State, R, R2> ReduxSagaEffect<State, R>.map(
   block: suspend CoroutineScope.(R) -> R2
-) = ReduxSagaHelper.call(this, block)
+) = ReduxSagaHelper.map(this, block)

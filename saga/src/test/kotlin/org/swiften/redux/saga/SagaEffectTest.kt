@@ -53,7 +53,7 @@ class SagaEffectTest : CoroutineScope {
     /// Setup
     val takeEffect = createTakeEffect(
       { when (it) {is TakeAction.Action1 -> it.value } },
-      { just<State, Int>(it).call { delay(1000); it } })
+      { just<State, Int>(it).map { delay(1000); it } })
 
     val takeOutput = takeEffect.invoke(this, State()) { }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
@@ -99,7 +99,7 @@ class SagaEffectTest : CoroutineScope {
     val error = Exception("Oh no!")
 
     val finalOutput = just<State, Int>(1)
-      .call { delay(1000); throw error; 1 }
+      .map { delay(1000); throw error; 1 }
       .catchError { 100 }
       .invoke(this, State()) { }
 
@@ -122,8 +122,8 @@ class SagaEffectTest : CoroutineScope {
   fun `Then effect should enforce ordering`() {
     /// Setup
     val finalOutput = just<State, Int>(1)
-      .call { delay(500); it }
-      .then(just<State, Int>(2).call { delay(1000); it }) { a, b -> "$a$b" }
+      .map { delay(500); it }
+      .then(just<State, Int>(2).map { delay(1000); it }) { a, b -> "$a$b" }
       .invoke(this, State()) { }
 
     /// When && Then
@@ -135,9 +135,9 @@ class SagaEffectTest : CoroutineScope {
   fun `Disposing outputs should terminate channels`() {
     /// Setup
     val source = just<State, Int>(1)
-      .call { delay(500); it }
+      .map { delay(500); it }
       .then(just(2)) { a, b -> a + b }
-      .call { delay(500); it }
+      .map { delay(500); it }
 
     val sourceOutput = source.invoke(this, State()) { }
 
@@ -162,8 +162,8 @@ class SagaEffectTest : CoroutineScope {
   fun `One-off channels should terminate on single item emission`() {
     /// Setup
     val sourceOutput = just<State, Int>(0)
-      .call { it }
-      .then(just<State, Int>(2).call { it }) { a, b -> a + b }
+      .map { it }
+      .then(just<State, Int>(2).map { it }) { a, b -> a + b }
       .invoke(this, State()) { }
 
     sourceOutput.subscribe({})

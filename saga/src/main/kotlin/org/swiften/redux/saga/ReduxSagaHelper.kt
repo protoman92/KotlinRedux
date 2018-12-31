@@ -13,15 +13,15 @@ import org.swiften.redux.core.Redux
  */
 /** Top-level namespace for [ReduxSagaEffect] helpers */
 object ReduxSagaHelper {
-  /** Create a [CallEffect] */
-  fun <State, P, R> call(
+  /** Create a [MapEffect] */
+  fun <State, P, R> map(
     param: ReduxSagaEffect<State, P>,
     block: suspend CoroutineScope.(P) -> R
-  ): ReduxSagaEffect<State, R> = CallEffect(param, block)
+  ): ReduxSagaEffect<State, R> = MapEffect(param, block)
 
-  /** Create a [CallEffect] with [param] */
-  fun <State, P, R> call(param: P, block: suspend CoroutineScope.(P) -> R) =
-    this.call(this.just<State, P>(param), block)
+  /** Create a [MapEffect] with [param] */
+  fun <State, P, R> map(param: P, block: suspend CoroutineScope.(P) -> R) =
+    this.map(this.just<State, P>(param), block)
 
   /** Create a [CatchErrorEffect] instance. */
   fun <State, R> catchError(
