@@ -32,6 +32,12 @@ object ReduxSagaHelper {
   /** Create a [JustEffect] */
   fun <State, R> just(value: R): ReduxSagaEffect<State, R> = JustEffect(value)
 
+  /** Create a [PutEffect] */
+  fun <State, P> put(
+    source: ReduxSagaEffect<State, P>,
+    actionCreator: (P) -> Redux.IAction
+  ): ReduxSagaEffect<State, Any> = PutEffect(source, actionCreator)
+
   /** Create a [TakeEveryEffect] instance. */
   fun <State, P, R> takeEvery(
     extract: Function1<Redux.IAction, P?>,

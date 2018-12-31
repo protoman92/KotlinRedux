@@ -119,6 +119,30 @@ class SagaEffectTest : CoroutineScope {
   }
 
   @Test
+  fun `Put effect should dispatch action`() {
+    /// Setup
+    data class Action(private val value: Int) : Redux.IAction
+    val dispatched = arrayListOf<Redux.IAction>()
+
+    val sourceOutput = just<State, Int>(0)
+      .map { it }
+      .put { Action(it) }
+      .invoke(this, State()) { dispatched.add(it) }
+
+    /// When
+    sourceOutput.subscribe({})
+
+    runBlocking {
+      withTimeoutOrNull(this@SagaEffectTest.timeout) {
+        while (dispatched != arrayListOf(Action(0))) { }; Unit
+      }
+
+      /// Then
+      Assert.assertEquals(dispatched, arrayListOf(Action(0)))
+    }
+  }
+
+  @Test
   fun `Then effect should enforce ordering`() {
     /// Setup
     val finalOutput = just<State, Int>(1)
