@@ -6,11 +6,7 @@
 package org.swiften.redux.saga
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
-import kotlinx.coroutines.launch
-import org.swiften.redux.core.Redux
-import org.swiften.redux.core.ReduxDispatcher
 
 /**
  * Created by haipham on 2018/12/24.
