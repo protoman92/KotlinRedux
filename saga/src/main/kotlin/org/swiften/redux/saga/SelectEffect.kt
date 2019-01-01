@@ -28,3 +28,7 @@ internal class SelectEffect<State, R>(
 fun <State, R, R2, R3> ReduxSagaEffect<State, R>.select(
   selector: (State) -> R2, combiner: (R, R2) -> R3
 ) = this.then(ReduxSagaHelper.select(selector), combiner)
+
+/** Invoke a [SelectEffect] but ignore emissions from [this] */
+fun <State, R, R2> ReduxSagaEffect<State, R>.select(selector: (State) -> R2) =
+  this.then(ReduxSagaHelper.select(selector))
