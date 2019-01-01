@@ -7,14 +7,12 @@ package org.swiften.redux.saga
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.channels.produce
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by haipham on 2018/12/23.
