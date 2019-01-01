@@ -5,7 +5,6 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -19,7 +18,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 internal class ThenEffect<State, R, R2, R3>(
   private val source1: ReduxSagaEffect<State, R>,
   private val source2: ReduxSagaEffect<State, R2>,
-  private val selector: Function2<R, R2, R3>
+  private val combiner: Function2<R, R2, R3>
 ) : ReduxSagaEffect<State, R3> {
   @ExperimentalCoroutinesApi
   @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
@@ -27,7 +26,7 @@ internal class ThenEffect<State, R, R2, R3>(
     val o2 = this@ThenEffect.source2.invoke(input)
 
     return this.source1.invoke(input).flatMap(o2.identifier) { value1 ->
-      o2.map { this@ThenEffect.selector(value1, it) }
+      o2.map { this@ThenEffect.combiner(value1, it) }
     }
   }
 }
@@ -35,5 +34,5 @@ internal class ThenEffect<State, R, R2, R3>(
 /** Invoke a [ThenEffect] on the current [ReduxSagaEffect] */
 fun <State, R, R2, R3> ReduxSagaEffect<State, R>.then(
   effect: ReduxSagaEffect<State, R2>,
-  selector: Function2<R, R2, R3>
-) = ReduxSagaHelper.then(this, effect, selector)
+  combiner: Function2<R, R2, R3>
+) = ReduxSagaHelper.then(this, effect, combiner)

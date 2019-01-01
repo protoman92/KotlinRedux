@@ -143,6 +143,17 @@ class SagaEffectTest : CoroutineScope {
   }
 
   @Test
+  fun `Select effect should extract some value from a state`() {
+    /// Setup
+    val sourceOutput = just<State, Int>(1)
+      .select({ 2 }, { a, b -> a + b })
+      .invoke(this, State()) { }
+
+    /// When && Then
+    Assert.assertEquals(sourceOutput.nextValue(this.timeout), 3)
+  }
+
+  @Test
   fun `Then effect should enforce ordering`() {
     /// Setup
     val finalOutput = just<State, Int>(1)

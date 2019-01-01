@@ -38,6 +38,10 @@ object ReduxSagaHelper {
     actionCreator: (P) -> Redux.IAction
   ): ReduxSagaEffect<State, Any> = PutEffect(source, actionCreator)
 
+  /** Create a [SelectEffect] */
+  fun <State, R> select(selector: (State) -> R): ReduxSagaEffect<State, R>
+    = SelectEffect(selector)
+
   /** Create a [TakeEveryEffect] instance. */
   fun <State, P, R> takeEvery(
     extract: Function1<Redux.IAction, P?>,
