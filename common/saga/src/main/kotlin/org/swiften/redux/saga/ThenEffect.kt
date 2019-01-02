@@ -40,4 +40,4 @@ fun <State, R, R2, R3> ReduxSagaEffect<State, R>.then(
 /** Invoke a [ThenEffect] but ignore emissions from [this] */
 fun <State, R, R2> ReduxSagaEffect<State, R>.then(
   effect: ReduxSagaEffect<State, R2>
-) = this.then(effect) { a, b -> b }
+) = this.then(effect) { _, b -> b }

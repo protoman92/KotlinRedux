@@ -6,7 +6,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
 
     // https://github.com/palantir/gradle-jacoco-coverage
     classpath 'com.palantir:jacoco-coverage:0.4.0'
