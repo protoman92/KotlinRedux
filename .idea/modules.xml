@@ -2,35 +2,17 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware/middleware.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware/middleware.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux.iml" filepath="$PROJECT_DIR$/.idea/modules/redux.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android.iml" filepath="$PROJECT_DIR$/android/android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/ui/android-ui.iml" filepath="$PROJECT_DIR$/android/ui/android-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/ui/common-ui.iml" filepath="$PROJECT_DIR$/common/ui/common-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/core/core.iml" filepath="$PROJECT_DIR$/common/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/middleware/middleware.iml" filepath="$PROJECT_DIR$/common/middleware/middleware.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux-jvm.iml" filepath="$PROJECT_DIR$/.idea/modules/redux-jvm.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/redux-jvm.common.iml" filepath="$PROJECT_DIR$/.idea/modules/common/redux-jvm.common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/core/redux-jvm.common.core.iml" filepath="$PROJECT_DIR$/.idea/modules/common/core/redux-jvm.common.core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/middleware/redux-jvm.common.middleware.iml" filepath="$PROJECT_DIR$/.idea/modules/common/middleware/redux-jvm.common.middleware.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/router/redux-jvm.common.router.iml" filepath="$PROJECT_DIR$/.idea/modules/common/router/redux-jvm.common.router.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/saga/redux-jvm.common.saga.iml" filepath="$PROJECT_DIR$/.idea/modules/common/saga/redux-jvm.common.saga.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/simple-store/redux-jvm.common.simple-store.iml" filepath="$PROJECT_DIR$/.idea/modules/common/simple-store/redux-jvm.common.simple-store.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/ui/redux-jvm.common.ui.iml" filepath="$PROJECT_DIR$/.idea/modules/common/ui/redux-jvm.common.ui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/redux.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/redux.core.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/redux.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/redux.core.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux.main.iml" filepath="$PROJECT_DIR$/.idea/modules/redux.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware/redux.middleware.main.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware/redux.middleware.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware/redux.middleware.test.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware/redux.middleware.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/router/redux.router.main.iml" filepath="$PROJECT_DIR$/.idea/modules/router/redux.router.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/router/redux.router.test.iml" filepath="$PROJECT_DIR$/.idea/modules/router/redux.router.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/saga/redux.saga.main.iml" filepath="$PROJECT_DIR$/.idea/modules/saga/redux.saga.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/saga/redux.saga.test.iml" filepath="$PROJECT_DIR$/.idea/modules/saga/redux.saga.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple-store/redux.simple-store.main.iml" filepath="$PROJECT_DIR$/.idea/modules/simple-store/redux.simple-store.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple-store/redux.simple-store.test.iml" filepath="$PROJECT_DIR$/.idea/modules/simple-store/redux.simple-store.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux.test.iml" filepath="$PROJECT_DIR$/.idea/modules/redux.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/redux.ui.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/redux.ui.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/redux.ui.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/redux.ui.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/router/router.iml" filepath="$PROJECT_DIR$/.idea/modules/router/router.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/saga.iml" filepath="$PROJECT_DIR$/.idea/modules/saga.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple-store/simple-store.iml" filepath="$PROJECT_DIR$/.idea/modules/simple-store/simple-store.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui/ui.iml" filepath="$PROJECT_DIR$/.idea/modules/ui/ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ui/redux-jvm-ui.iml" filepath="$PROJECT_DIR$/ui/redux-jvm-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/router/router.iml" filepath="$PROJECT_DIR$/common/router/router.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/saga/saga.iml" filepath="$PROJECT_DIR$/common/saga/saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/simple-store/simple-store.iml" filepath="$PROJECT_DIR$/common/simple-store/simple-store.iml" />
     </modules>
   </component>
 </project>

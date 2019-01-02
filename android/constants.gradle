@@ -1,0 +1,13 @@
+project.ext {
+  gradle = "3.2.1"
+  androidMavenGradle = "2.1"
+  compileSdk = 28
+  minSdk = 14
+  targetSdk = 28
+  versionCode = 1
+  versionName = "1.0"
+  appCompat = "1.0.2"
+  junit = "+"
+  testRunner = "1.1.0"
+  espresso = "3.1.0"
+}
