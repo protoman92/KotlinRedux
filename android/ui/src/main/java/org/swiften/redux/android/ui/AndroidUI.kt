@@ -19,7 +19,7 @@ import org.swiften.redux.ui.ReduxUI
  * Created by haipham on 2018/12/17.
  */
 /** Top-level namespace for Android Redux UI functionalities */
-object AndroidReduxUI {
+object AndroidUI {
   /**
    * This [IPropInjector] is a specialized version of [ReduxUI.IPropInjector]
    * that handles [LifecycleOwner] and deals with lifecycles automatically.
@@ -89,21 +89,19 @@ object AndroidReduxUI {
       view: ReduxUI.IPropContainerView<State, SP, AP>,
       outProps: OP,
       mapper: ReduxUI.IPropMapper<State, OP, SP, AP>
-    ): Redux.Subscription {
-      return this.injector.injectProps(
-        object : ReduxUI.IPropContainerView<State, SP, AP> {
-          override var staticProps: ReduxUI.StaticProps<State>?
-            get() = view.staticProps
-            set(value) { view.staticProps = value }
+    ) = this.injector.injectProps(
+      object : ReduxUI.IPropContainerView<State, SP, AP> {
+        override var staticProps: ReduxUI.StaticProps<State>?
+          get() = view.staticProps
+          set(value) { view.staticProps = value }
 
-          override var variableProps: ReduxUI.VariableProps<SP, AP>?
-            get() = view.variableProps
-            set(value) { this@PropInjector.runOnUIThread {
-              view.variableProps = value }
-            }
-        },
-        outProps, mapper)
-    }
+        override var variableProps: ReduxUI.VariableProps<SP, AP>?
+          get() = view.variableProps
+          set(value) { this@PropInjector.runOnUIThread {
+            view.variableProps = value }
+          }
+      },
+      outProps, mapper)
 
     /**
      * When [ReduxLifecycleObserver.onStop] is called, unsubscribe from
@@ -132,7 +130,7 @@ object AndroidReduxUI {
  * Inject props into [lifecycleOwner], which is a view that only has a mutable
  * state but handles no actions.
  */
-fun <State, LC, OP, SP> AndroidReduxUI.IPropInjector<State>.injectProps(
+fun <State, LC, OP, SP> AndroidUI.IPropInjector<State>.injectProps(
   lifecycleOwner: LC,
   outProps: OP,
   mapper: ReduxUI.IStatePropMapper<State, OP, SP>
@@ -147,7 +145,6 @@ fun <State, LC, OP, SP> AndroidReduxUI.IPropInjector<State>.injectProps(
       outProps: OP
     ) = Unit
 
-    override fun mapState(state: State, outProps: OP): SP {
-      return mapper.mapState(state, outProps)
-    }
+    override fun mapState(state: State, outProps: OP) =
+      mapper.mapState(state, outProps)
   })
