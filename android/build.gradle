@@ -42,7 +42,7 @@ subprojects {
 
   configurations.all {
     // Make sure the latest JitPack releases are used.
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheChangingModulesFor 24, 'hours'
   }
 
   android {
