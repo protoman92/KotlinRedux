@@ -134,7 +134,7 @@ gradle-app.setting
 /build
 /captures
 /out
-/bin
+**/bin
 .classpath
 .project
 .settings

@@ -2,13 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/android/android.iml" filepath="$PROJECT_DIR$/android/android.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/ui/android-ui.iml" filepath="$PROJECT_DIR$/android/ui/android-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/ui/common-ui.iml" filepath="$PROJECT_DIR$/common/ui/common-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/core/core.iml" filepath="$PROJECT_DIR$/common/core/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/middleware/middleware.iml" filepath="$PROJECT_DIR$/common/middleware/middleware.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux-jvm.iml" filepath="$PROJECT_DIR$/.idea/modules/redux-jvm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/redux-jvm-android.iml" filepath="$PROJECT_DIR$/android/redux-jvm-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui/redux-jvm-ui.iml" filepath="$PROJECT_DIR$/ui/redux-jvm-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/router/router.iml" filepath="$PROJECT_DIR$/common/router/router.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/saga/saga.iml" filepath="$PROJECT_DIR$/common/saga/saga.iml" />
