@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) haipham 2018. All rights reserved.
+  ~ Any attempt to reproduce this source code in any form shall be met with legal actions.
+  -->
+
+<resources>
+  <string name="search_hint">Enter search query</string>
+</resources>

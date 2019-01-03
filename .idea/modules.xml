@@ -9,9 +9,10 @@
       <module fileurl="file://$PROJECT_DIR$/common/middleware/middleware.iml" filepath="$PROJECT_DIR$/common/middleware/middleware.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/redux-jvm.iml" filepath="$PROJECT_DIR$/.idea/modules/redux-jvm.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/redux-jvm-android.iml" filepath="$PROJECT_DIR$/android/redux-jvm-android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ui/redux-jvm-ui.iml" filepath="$PROJECT_DIR$/ui/redux-jvm-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/router/router.iml" filepath="$PROJECT_DIR$/common/router/router.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/saga/saga.iml" filepath="$PROJECT_DIR$/common/saga/saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample/android/sample-android.iml" filepath="$PROJECT_DIR$/sample/android/sample-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/simple-store/simple-store.iml" filepath="$PROJECT_DIR$/common/simple-store/simple-store.iml" />
     </modules>
   </component>

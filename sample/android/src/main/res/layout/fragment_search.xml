@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) haipham 2018. All rights reserved.
+  ~ Any attempt to reproduce this source code in any form shall be met with legal actions.
+  -->
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <EditText
+    android:id="@+id/query_search"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/text_view_height"
+    android:layout_marginLeft="@dimen/spacing2"
+    android:layout_marginStart="@dimen/spacing2"
+    android:layout_marginRight="@dimen/spacing2"
+    android:layout_marginEnd="@dimen/spacing2"
+    android:layout_marginTop="@dimen/spacing2"
+    android:hint="@string/search_hint"
+    android:inputType="text"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
