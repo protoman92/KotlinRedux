@@ -1,5 +1,5 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
@@ -8,6 +8,7 @@ package org.swiften.redux.android.sample
 import kotlinx.coroutines.async
 import org.swiften.redux.saga.ReduxSagaHelper.just
 import org.swiften.redux.saga.ReduxSagaHelper.takeLatestAction
+import org.swiften.redux.saga.cast
 import org.swiften.redux.saga.map
 
 /** Created by haipham on 2019/01/04 */
@@ -24,5 +25,5 @@ object MainSaga {
   private fun autocompleteSaga(api: IMainRepository, query: String) =
     just<State, String>(query)
       .map { this.async { api.searchMusicStore(query) }.await() }
-      .map { it as Any }
+      .cast<State, MusicResult?, Any>()
 }

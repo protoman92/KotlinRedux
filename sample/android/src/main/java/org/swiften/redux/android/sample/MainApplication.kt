@@ -8,6 +8,7 @@ package org.swiften.redux.android.sample
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import com.beust.klaxon.Klaxon
 import org.swiften.redux.android.ui.AndroidReduxUI
 import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.ReduxMiddleware.applyMiddlewares
@@ -18,7 +19,7 @@ class MainApplication : Application() {
   override fun onCreate() {
     super.onCreate()
     val api = MainApi()
-    val repository = MainRepository(api)
+    val repository = MainRepository(Klaxon(), api)
 
     val store = applyMiddlewares(
       ReduxSagaMiddleware.Provider(MainSaga.sagas(repository)).middleware

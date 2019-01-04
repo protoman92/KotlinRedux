@@ -5,9 +5,19 @@
 
 package org.swiften.redux.android.sample
 
-/** Created by haipham on 2019/01/05 */
-interface IMainRepository: IMainApi
+import com.beust.klaxon.Klaxon
 
-class MainRepository(private val api: IMainApi) : IMainRepository {
-  override fun searchMusicStore(input: String) = this.api.searchMusicStore(input)
+/** Created by haipham on 2019/01/05 */
+interface IMainRepository {
+  fun searchMusicStore(input: String): MusicResult?
+}
+
+class MainRepository(
+  private val klx: Klaxon,
+  private val api: IMainApi) : IMainRepository
+{
+  override fun searchMusicStore(input: String): MusicResult? {
+    val result = this.api.searchMusicStore(input)
+    return this.klx.parse<MusicResult>(result)
+  }
 }
