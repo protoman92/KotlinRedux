@@ -14,9 +14,7 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.util.*
 
-/**
- * Created by haipham on 2018/12/23.
- */
+/** Created by haipham on 2018/12/23 */
 private typealias Output<T> = ReduxSaga.Output<T>
 
 class SagaOutputTest : CoroutineScope {

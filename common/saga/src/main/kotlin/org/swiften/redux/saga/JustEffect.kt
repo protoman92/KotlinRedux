@@ -8,9 +8,7 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.produce
 
-/**
- * Created by haipham on 2018/12/24.
- */
+/** Created by haipham on 2018/12/24 */
 /** [ReduxSagaEffect] whose [ReduxSaga.Output] simply emits [value] */
 internal class JustEffect<State, R>(private val value: R) : ReduxSagaEffect<State, R> {
   @ExperimentalCoroutinesApi

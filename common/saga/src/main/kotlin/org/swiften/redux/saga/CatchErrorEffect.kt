@@ -8,9 +8,7 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-/**
- * Created by haipham on 2018/12/26.
- */
+/** Created by haipham on 2018/12/26 */
 /**
  * [ReduxSagaEffect] whose [ReduxSaga.Output] catches [Throwable] from
  * upstream

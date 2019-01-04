@@ -10,9 +10,7 @@ import org.swiften.redux.core.ReduxDispatcher
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
-/**
- * Created by haipham on 2018/12/16.
- */
+/** Created by haipham on 2018/12/16 */
 /** Top-level namespace for UI */
 object ReduxUI {
   /**

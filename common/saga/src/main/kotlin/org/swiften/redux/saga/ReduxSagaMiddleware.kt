@@ -11,9 +11,7 @@ import kotlinx.coroutines.SupervisorJob
 import org.swiften.redux.middleware.ReduxMiddleware
 import org.swiften.redux.middleware.ReduxMiddlewareCreator
 
-/**
- * Created by haipham on 2018/12/22.
- */
+/** Created by haipham on 2018/12/22 */
 /** Top-level namespace for Redux Saga middleware */
 object ReduxSagaMiddleware {
   /** [ReduxMiddleware.IProvider] implementation for Saga */

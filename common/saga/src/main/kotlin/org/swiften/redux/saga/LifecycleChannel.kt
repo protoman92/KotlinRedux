@@ -10,9 +10,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 
-/**
- * Created by haipham on 2018/12/26.
- */
+/** Created by haipham on 2018/12/26 */
 /** Use this [SendChannel] to track [channel]'s lifecycle */
 @ExperimentalCoroutinesApi
 class LifecycleSendChannel<E>(

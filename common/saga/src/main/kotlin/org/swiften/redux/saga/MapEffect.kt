@@ -8,9 +8,7 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-/**
- * Created by haipham on 2018/12/23.
- */
+/** Created by haipham on 2018/12/23 */
 /**
  * [ReduxSagaEffect] whose output performs some asynchronous work with
  * [block], based on the emissions from another [param], and then emit the

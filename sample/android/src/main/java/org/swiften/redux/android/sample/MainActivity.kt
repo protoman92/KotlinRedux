@@ -11,9 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import org.swiften.redux.ui.ReduxUI
 
-/**
- * Created by haipham on 2018/12/19.
- */
+/** Created by haipham on 2018/12/19 */
 class MainActivity : AppCompatActivity(), ReduxUI.IStaticPropContainerView<State> {
   override var staticProps: ReduxUI.StaticProps<State>? = null
 

@@ -8,9 +8,7 @@ package org.swiften.redux.core
 import org.testng.Assert
 import org.testng.annotations.Test
 
-/**
- * Created by haipham on 2018/04/08.
- */
+/** Created by haipham on 2018/04/08 */
 class ReducerWrapperTest {
   @Test
   fun test_reducingDefaultActions_shouldWork() {

@@ -10,9 +10,7 @@ import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.middleware.ReduxMiddleware
 import org.swiften.redux.middleware.ReduxMiddlewareCreator
 
-/**
- * Created by haipham on 2018/12/16.
- */
+/** Created by haipham on 2018/12/16 */
 /** Top-level namespace for Redux Router middleware */
 object ReduxRouterMiddleware {
   /**

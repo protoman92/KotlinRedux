@@ -10,9 +10,7 @@ import org.swiften.redux.saga.ReduxSagaHelper.just
 import org.swiften.redux.saga.ReduxSagaHelper.takeLatestAction
 import org.swiften.redux.saga.map
 
-/**
- * Created by haipham on 2019/01/04.
- */
+/** Created by haipham on 2019/01/04 */
 object MainSaga {
   fun sagas(): List<ReduxSagaEffect<State, Any>> = arrayListOf(
     takeLatestAction<State, MainRedux.Action, String, Any>(

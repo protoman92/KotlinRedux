@@ -9,10 +9,7 @@ import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.core.ReduxStateGetter
 
-/**
- * Created by haipham on 2018/12/16.
- */
-
+/** Created by haipham on 2018/12/16 */
 /** Map one [ReduxMiddleware.DispatchWrapper] to another */
 typealias ReduxDispatchMapper =
   Function1<ReduxMiddleware.DispatchWrapper, ReduxMiddleware.DispatchWrapper>

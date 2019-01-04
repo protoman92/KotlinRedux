@@ -5,12 +5,8 @@
 
 package org.swiften.redux.core
 
-/**
- * Created by haipham on 2018/03/31.
- */
-/**
- * Represents an [Redux.IAction] dispatcher.
- */
+/** Created by haipham on 2018/03/31 */
+/** Represents an [Redux.IAction] dispatcher */
 typealias ReduxDispatcher = Function1<Redux.IAction, Unit>
 
 /**

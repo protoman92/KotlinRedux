@@ -9,9 +9,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
 
-/**
- * Created by haipham on 2018/12/16.
- */
+/** Created by haipham on 2018/12/16 */
 /**
  * [SimpleReduxStore] is a store implementation that supports thread-safe
  * accesses and modifications. Pass in the initial [state] and the store's

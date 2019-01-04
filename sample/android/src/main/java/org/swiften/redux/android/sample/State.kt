@@ -5,8 +5,5 @@
 
 package org.swiften.redux.android.sample
 
-/**
- * Created by haipham on 2018/12/19.
- */
-
+/** Created by haipham on 2018/12/19 */
 data class State(val autocompleteQuery: String? = "")

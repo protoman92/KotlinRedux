@@ -8,9 +8,7 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.swiften.redux.core.Redux
 
-/**
- * Created by haipham on 2018/12/23.
- */
+/** Created by haipham on 2018/12/23 */
 /**
  * [TakeEffect] whose [ReduxSaga.Output] takes all [Redux.IAction] that pass
  * some conditions, then flattens and emits all values. Contrast this with

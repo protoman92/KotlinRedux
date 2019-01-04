@@ -4,12 +4,8 @@ import kotlinx.coroutines.*
 import org.testng.Assert
 import java.util.*
 
-/**
- * Created by haipham on 2018-12-16.
- */
-/**
- * Use this test class to test [Redux.IStore] implementations.
- */
+/** Created by haipham on 2018/12/16 */
+/** Use this test class to test [Redux.IStore] implementations */
 @Suppress("FunctionName")
 open class BaseReduxStoreTest: CoroutineScope {
   sealed class Action: Redux.IAction {

@@ -14,9 +14,7 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import kotlin.properties.Delegates
 
-/**
- * Created by haipham on 2018/12/20.
- */
+/** Created by haipham on 2018/12/20 */
 class PropInjectorTest {
   data class S(val query: String = "")
   class A

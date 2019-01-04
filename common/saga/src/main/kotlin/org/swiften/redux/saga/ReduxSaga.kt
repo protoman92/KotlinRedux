@@ -12,9 +12,7 @@ import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.core.ReduxStateGetter
 import java.util.*
 
-/**
- * Created by haipham on 2018/12/22.
- */
+/** Created by haipham on 2018/12/22 */
 /** Abstraction for Redux saga that handles [Redux.IAction] in the pipeline */
 typealias ReduxSagaEffect<State, R> = Function1<ReduxSaga.Input<State>, ReduxSaga.Output<R>>
 

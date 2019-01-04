@@ -5,9 +5,7 @@
 
 package org.swiften.redux.core
 
-/**
- * Created by haipham on 2018/12/16.
- */
+/** Created by haipham on 2018/12/16 */
 /** Top-level namespace for presets */
 object ReduxPreset {
   /** Default [Redux.IAction] implementation */

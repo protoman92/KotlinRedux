@@ -10,9 +10,7 @@ import org.swiften.redux.core.SimpleReduxStore
 import org.testng.Assert
 import org.testng.annotations.Test
 
-/**
- * Created by haipham on 2018-12-16.
- */
+/** Created by haipham on 2018/12/16 */
 class ReduxMiddlewareTest {
   @Test
   fun `Applying middlewares to a store should produce correct order`() {

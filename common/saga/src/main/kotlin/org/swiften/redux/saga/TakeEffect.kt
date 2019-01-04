@@ -11,9 +11,7 @@ import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.launch
 import org.swiften.redux.core.Redux
 
-/**
- * Created by haipham on 2018/12/23.
- */
+/** Created by haipham on 2018/12/23 */
 /**
  * [TakeEffect] instances produces streams that filter [Redux.IAction] with
  * [extract] and pluck out the appropriate ones to perform additional work on

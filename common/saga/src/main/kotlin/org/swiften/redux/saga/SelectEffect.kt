@@ -7,9 +7,7 @@ package org.swiften.redux.saga
 
 import org.swiften.redux.saga.ReduxSagaHelper.just
 
-/**
- * Created by haipham on 2019/01/01.
- */
+/** Created by haipham on 2019/01/01 */
 /**
  * [ReduxSagaEffect] whose [ReduxSaga.Output] selects some value from an
  * internal state using [selector].

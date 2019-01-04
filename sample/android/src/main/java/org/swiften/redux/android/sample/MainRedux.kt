@@ -8,9 +8,7 @@ package org.swiften.redux.android.sample
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxReducer
 
-/**
- * Created by haipham on 2018/12/19.
- */
+/** Created by haipham on 2018/12/19 */
 object MainRedux {
   sealed class Action: Redux.IAction {
     data class UpdateAutocompleteQuery(val query: String?): Action()

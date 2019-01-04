@@ -17,9 +17,7 @@ import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.ui.ReduxUI
 import kotlin.properties.Delegates
 
-/**
- * Created by haipham on 2018/12/20.
- */
+/** Created by haipham on 2018/12/20 */
 class SearchFragment: Fragment(),
   ReduxUI.IPropContainerView<State, SearchFragment.S, SearchFragment.A>,
   ReduxUI.IPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment

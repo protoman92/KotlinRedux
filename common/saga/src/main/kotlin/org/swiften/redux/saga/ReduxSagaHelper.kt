@@ -8,9 +8,7 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.CoroutineScope
 import org.swiften.redux.core.Redux
 
-/**
- * Created by haipham on 2018/12/24.
- */
+/** Created by haipham on 2018/12/24 */
 /** Top-level namespace for [ReduxSagaEffect] helpers */
 object ReduxSagaHelper {
   /** Create a [MapEffect] */

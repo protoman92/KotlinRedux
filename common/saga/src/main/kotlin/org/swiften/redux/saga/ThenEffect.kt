@@ -7,9 +7,7 @@ package org.swiften.redux.saga
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-/**
- * Created by haipham on 2018/12/26.
- */
+/** Created by haipham on 2018/12/26 */
 /**
  * [ReduxSagaEffect] whose [ReduxSaga.Output] enforces ordering for two
  * [ReduxSaga.Output] created by two other [ReduxSagaEffect].

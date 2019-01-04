@@ -13,9 +13,7 @@ import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.ReduxMiddleware.applyMiddlewares
 import org.swiften.redux.saga.ReduxSagaMiddleware
 
-/**
- * Created by haipham on 2018/12/19.
- */
+/** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
   override fun onCreate() {
     super.onCreate()

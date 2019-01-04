@@ -15,9 +15,7 @@ import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.ui.ReduxUI
 
-/**
- * Created by haipham on 2018/12/17.
- */
+/** Created by haipham on 2018/12/17 */
 /** Top-level namespace for Android Redux UI functionalities */
 object AndroidReduxUI {
   /**
