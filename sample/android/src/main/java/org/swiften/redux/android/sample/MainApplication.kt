@@ -8,7 +8,7 @@ package org.swiften.redux.android.sample
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import org.swiften.redux.android.ui.AndroidUI
+import org.swiften.redux.android.ui.AndroidReduxUI
 import org.swiften.redux.core.SimpleReduxStore
 
 /**
@@ -18,7 +18,7 @@ class MainApplication : Application() {
   override fun onCreate() {
     super.onCreate()
     val store = SimpleReduxStore(State(), MainRedux.Reducer)
-    val injector = AndroidUI.PropInjector(store)
+    val injector = AndroidReduxUI.PropInjector(store)
     val dependency = MainDependency(injector)
 
     this.registerActivityLifecycleCallbacks(
