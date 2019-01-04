@@ -1,12 +1,5 @@
 matrix:
   include:
-    - language: java
-      jdk: oraclejdk8
-      script:
-        - ./gradlew clean test --info
-      after_success:
-        - ./gradlew jacocoFullReport coveralls
-
     - language: android
       jdk: oraclejdk8
       android:
@@ -19,4 +12,4 @@ matrix:
       before_install:
         - yes | sdkmanager "platforms;android-28"
       script:
-        - ./gradlew build connectedCheck
+        - ./gradlew build connectedCheck -p android
