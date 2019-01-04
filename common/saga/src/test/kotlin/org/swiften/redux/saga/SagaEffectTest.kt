@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
+import org.swiften.redux.saga.ReduxSagaHelper.from
 import org.swiften.redux.saga.ReduxSagaHelper.just
 import org.swiften.redux.saga.ReduxSagaHelper.takeEveryAction
 import org.swiften.redux.saga.ReduxSagaHelper.takeLatestAction
@@ -128,8 +129,10 @@ class SagaEffectTest : CoroutineScope {
       this.send(3)
     }
 
-    val sourceOutput = ReduxSaga.Output(this, this, sourceCh) { }
+    val sourceOutput = from<State, Int>(sourceCh)
       .filter { delay(100); it % 2 == 0 }
+      .cast<State, Int, Int>()
+      .invoke(this, State()) { }
 
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 

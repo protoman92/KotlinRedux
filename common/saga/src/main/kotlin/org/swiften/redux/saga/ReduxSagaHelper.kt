@@ -6,6 +6,7 @@
 package org.swiften.redux.saga
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.ReceiveChannel
 import org.swiften.redux.core.Redux
 
 /** Created by haipham on 2018/12/24 */
@@ -32,6 +33,10 @@ object ReduxSagaHelper {
     source: ReduxSagaEffect<State, R>,
     selector: suspend CoroutineScope.(R) -> Boolean
   ): ReduxSagaEffect<State, R> = FilterEffect(source, selector)
+
+  /** Create a [FromEffect] */
+  fun <State, R> from(channel: ReceiveChannel<R>): ReduxSagaEffect<State, R> =
+    FromEffect(channel)
 
   /** Create a [JustEffect] */
   fun <State, R> just(value: R): ReduxSagaEffect<State, R> = JustEffect(value)
