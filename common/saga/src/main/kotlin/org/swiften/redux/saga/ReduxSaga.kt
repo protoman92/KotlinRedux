@@ -116,6 +116,11 @@ object ReduxSaga {
           }
       })
 
+    /** Filter emissions with [selector] */
+    internal fun filter(selector: suspend CoroutineScope.(T) -> Boolean) =
+      this.with("Filter${this.javaClass.simpleName}",
+        this.channel.filter(this.coroutineContext) { selector(this@Output.scope, it) })
+
     /** Throttle emissions with [timeMillis] */
     @ExperimentalCoroutinesApi
     internal fun debounce(timeMillis: Long): Output<T> {

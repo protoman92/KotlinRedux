@@ -27,6 +27,12 @@ object ReduxSagaHelper {
     catcher: suspend CoroutineScope.(Throwable) -> R
   ): ReduxSagaEffect<State, R> = CatchErrorEffect(source, catcher)
 
+  /** Create a [FilterEffect] */
+  fun <State, R> filter(
+    source: ReduxSagaEffect<State, R>,
+    selector: suspend CoroutineScope.(R) -> Boolean
+  ): ReduxSagaEffect<State, R> = FilterEffect(source, selector)
+
   /** Create a [JustEffect] */
   fun <State, R> just(value: R): ReduxSagaEffect<State, R> = JustEffect(value)
 

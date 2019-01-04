@@ -7,6 +7,7 @@ package org.swiften.redux.saga
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.produce
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
 import org.swiften.redux.saga.ReduxSagaHelper.just
@@ -113,6 +114,35 @@ class SagaEffectTest : CoroutineScope {
 
       /// Then
       Assert.assertEquals(finalValues, arrayListOf(100))
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun `Filter effect should filter out unwanted values`() {
+    /// Setup
+    val sourceCh = this.produce {
+      this.send(0)
+      this.send(1)
+      this.send(2)
+      this.send(3)
+    }
+
+    val sourceOutput = ReduxSaga.Output(this, this, sourceCh) { }
+      .filter { delay(100); it % 2 == 0 }
+
+    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+
+    /// When
+    sourceOutput.subscribe({ finalValues.add(it) })
+
+    runBlocking {
+      withTimeoutOrNull(this@SagaEffectTest.timeout) {
+        while (finalValues != arrayListOf(0, 2)) { }; Unit
+      }
+
+      /// Then
+      Assert.assertEquals(finalValues, arrayListOf(0, 2))
     }
   }
 
