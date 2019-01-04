@@ -12,7 +12,7 @@ import org.swiften.redux.android.ui.AndroidReduxUI
 import org.swiften.redux.core.SimpleReduxStore
 
 /**
- * Created by haipham on 12/19/18.
+ * Created by haipham on 2018/12/19.
  */
 class MainApplication : Application() {
   override fun onCreate() {
