@@ -54,7 +54,17 @@ object ReduxSaga {
     internal var source: Output<*>? = null
     private var onDispose: () -> Unit = { }
 
-    override fun toString() = this.identifier
+    override fun toString(): String {
+      val identifiers = arrayListOf<String>()
+      var current: Output<*>? = this
+
+      while (current != null) {
+        identifiers.add(current.identifier)
+        current = current.source
+      }
+
+      return identifiers.joinToString("-")
+    }
 
     private fun <T2> with(identifier: String = this.identifier,
                           newChannel: ReceiveChannel<T2>): Output<T2> {
@@ -64,9 +74,6 @@ object ReduxSaga {
       return result
     }
 
-    private fun newIdentifier(identifier: String, op: String) =
-      "${this.identifier}-$op-$identifier"
-
     /** Add debugging caps to [channel] by injecting lifecycle observers */
     private fun <T2> debugChannel(channel: ReceiveChannel<T2>) = when(channel) {
       is Channel<T2> -> LifecycleChannel(this.identifier, channel)
@@ -75,27 +82,20 @@ object ReduxSaga {
 
     /** Map emissions from [channel] with [transform] */
     @ExperimentalCoroutinesApi
-    internal fun <T2> map(identifier: String = this.identifier,
-                          transform: suspend CoroutineScope.(T) -> T2) =
-      this.with(this.newIdentifier(identifier, "map"), this.produce<T2> {
+    internal fun <T2> map(transform: suspend CoroutineScope.(T) -> T2) =
+      this.with("Map${this.javaClass.simpleName}", this.produce<T2> {
         this@Output.channel
           .map(this.coroutineContext) { transform(this, it) }
           .toChannel(this)
       })
-
-    /** Append [identifier] with [creator] */
-    @ExperimentalCoroutinesApi
-    internal fun <T2> map(creator: Any, transform: suspend CoroutineScope.(T) -> T2)
-      = this.map(creator.javaClass.simpleName, transform)
 
     /**
      * Flatten emissions from other [Output] produced by transforming the
      * elements emitted by [channel] to said [Output], and emitting everything.
      */
     @ExperimentalCoroutinesApi
-    internal fun <T2> flatMap(identifier: String = this.identifier,
-                              transform: suspend CoroutineScope.(T) -> Output<T2>) =
-      this.with(this.newIdentifier(identifier, "flatMap"), this.produce<T2> {
+    internal fun <T2> flatMap(transform: suspend CoroutineScope.(T) -> Output<T2>) =
+      this.with("FlatMap${this.javaClass.simpleName}", this.produce<T2> {
         this@Output.channel
           .map(this.coroutineContext) { transform(this, it) }
           .consumeEach { this.launch { it.channel.toChannel(this@produce) } }
@@ -106,9 +106,8 @@ object ReduxSaga {
      * latest element emitted by [channel]. Contrast this with [Output.flatMap].
      */
     @ExperimentalCoroutinesApi
-    internal fun <T2> switchMap(identifier: String = this.identifier,
-                                transform: suspend CoroutineScope.(T) -> Output<T2>) =
-      this.with(this.newIdentifier(identifier, "switchMap"), this.produce<T2> {
+    internal fun <T2> switchMap(transform: suspend CoroutineScope.(T) -> Output<T2>) =
+      this.with("SwitchMap${this.javaClass.simpleName}", this.produce<T2> {
         var previousJob: Job? = null
 
         this@Output.channel
@@ -124,7 +123,7 @@ object ReduxSaga {
     internal fun debounce(timeMillis: Long): Output<T> {
       if (timeMillis <= 0) { return this }
 
-      return this.with(newChannel = this.produce {
+      return this.with("Debounce${this.javaClass.simpleName}", this.produce {
         var previousJob: Job? = null
 
         this@Output.channel
@@ -146,20 +145,14 @@ object ReduxSaga {
 
     /** Catch possible errors and return a value produced by [fallback] */
     @ExperimentalCoroutinesApi
-    internal fun catchError(identifier: String = this.identifier,
-                            fallback: suspend CoroutineScope.(Throwable) -> T) =
-      this.with(identifier, this.produce {
+    internal fun catchError(fallback: suspend CoroutineScope.(Throwable) -> T) =
+      this.with("CatchError${this.javaClass.simpleName}", this.produce {
         try { this@Output.channel.toChannel(this) }
         catch (e1: Throwable) {
           try { this.send(fallback(this, e1)); this.close() }
           catch (e2: Throwable) { this.close(e2) }
         }
       })
-
-    /** Append [identifier] with [creator] */
-    @ExperimentalCoroutinesApi
-    internal fun catchError(creator: Any, fallback: suspend CoroutineScope.(Throwable) -> T) =
-      this.catchError(creator.javaClass.simpleName, fallback)
 
     /** Terminate the current [channel] */
     fun dispose() { this.channel.cancel(); this.onDispose() }

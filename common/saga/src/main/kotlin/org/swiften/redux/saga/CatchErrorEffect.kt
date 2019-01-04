@@ -21,7 +21,7 @@ internal class CatchErrorEffect<State, R>(
 ): ReduxSagaEffect<State, R> {
   @ExperimentalCoroutinesApi
   override fun invoke(input: ReduxSaga.Input<State>) =
-    this.source.invoke(input).catchError(this, this.catcher)
+    this.source.invoke(input).catchError(this.catcher)
 }
 
 /** Catch [Throwable] from upstream with [catcher] */

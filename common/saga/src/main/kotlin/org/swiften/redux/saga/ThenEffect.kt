@@ -10,7 +10,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 /**
  * Created by haipham on 2018/12/26.
  */
-
 /**
  * [ReduxSagaEffect] whose [ReduxSaga.Output] enforces ordering for two
  * [ReduxSaga.Output] created by two other [ReduxSagaEffect].
@@ -25,7 +24,7 @@ internal class ThenEffect<State, R, R2, R3>(
   override fun invoke(input: ReduxSaga.Input<State>): ReduxSaga.Output<R3> {
     val o2 = this@ThenEffect.source2.invoke(input)
 
-    return this.source1.invoke(input).flatMap(o2.identifier) { value1 ->
+    return this.source1.invoke(input).flatMap { value1 ->
       o2.map { this@ThenEffect.combiner(value1, it) }
     }
   }
