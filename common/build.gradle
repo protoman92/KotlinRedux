@@ -56,7 +56,6 @@ subprojects {
   dependencies {
     implementation "com.github.protoman92:KotlinFP:master-SNAPSHOT"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     testImplementation "org.testng:testng:$testNG"
   }
 
@@ -86,12 +85,14 @@ project('saga') {
   dependencies {
     api project(':common:core')
     api project(':common:middleware')
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
   }
 }
 
 project('simple-store') {
   dependencies {
     api project(':common:core')
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
   }
 }
 

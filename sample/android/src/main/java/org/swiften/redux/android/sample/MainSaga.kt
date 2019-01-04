@@ -5,22 +5,24 @@
 
 package org.swiften.redux.android.sample
 
-import org.swiften.redux.saga.ReduxSagaEffect
+import kotlinx.coroutines.async
 import org.swiften.redux.saga.ReduxSagaHelper.just
 import org.swiften.redux.saga.ReduxSagaHelper.takeLatestAction
 import org.swiften.redux.saga.map
 
 /** Created by haipham on 2019/01/04 */
 object MainSaga {
-  fun sagas(): List<ReduxSagaEffect<State, Any>> = arrayListOf(
+  fun sagas(api: IMainRepository) = arrayListOf(
     takeLatestAction<State, MainRedux.Action, String, Any>(
       { when (it) {
         is MainRedux.Action.UpdateAutocompleteQuery -> it.query
       } },
-      { autocompleteSaga(it) }
+      { autocompleteSaga(api, it) }
     )
   )
 
-  private fun autocompleteSaga(query: String): ReduxSagaEffect<State, Any> =
-    just<State, String>(query).map { it }
+  private fun autocompleteSaga(api: IMainRepository, query: String) =
+    just<State, String>(query)
+      .map { this.async { api.searchMusicStore(query) }.await() }
+      .map { it as Any }
 }

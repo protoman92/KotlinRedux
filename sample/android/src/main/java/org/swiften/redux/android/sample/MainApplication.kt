@@ -17,9 +17,11 @@ import org.swiften.redux.saga.ReduxSagaMiddleware
 class MainApplication : Application() {
   override fun onCreate() {
     super.onCreate()
+    val api = MainApi()
+    val repository = MainRepository(api)
 
     val store = applyMiddlewares(
-      ReduxSagaMiddleware.Provider(MainSaga.sagas()).middleware
+      ReduxSagaMiddleware.Provider(MainSaga.sagas(repository)).middleware
     )(SimpleReduxStore(State(), MainRedux.Reducer))
 
     val injector = AndroidReduxUI.PropInjector(store)
