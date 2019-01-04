@@ -10,6 +10,8 @@ import android.app.Application
 import android.os.Bundle
 import org.swiften.redux.android.ui.AndroidReduxUI
 import org.swiften.redux.core.SimpleReduxStore
+import org.swiften.redux.middleware.ReduxMiddleware.applyMiddlewares
+import org.swiften.redux.saga.ReduxSagaMiddleware
 
 /**
  * Created by haipham on 2018/12/19.
@@ -17,7 +19,11 @@ import org.swiften.redux.core.SimpleReduxStore
 class MainApplication : Application() {
   override fun onCreate() {
     super.onCreate()
-    val store = SimpleReduxStore(State(), MainRedux.Reducer)
+
+    val store = applyMiddlewares(
+      ReduxSagaMiddleware.Provider(MainSaga.sagas()).middleware
+    )(SimpleReduxStore(State(), MainRedux.Reducer))
+
     val injector = AndroidReduxUI.PropInjector(store)
     val dependency = MainDependency(injector)
 

@@ -4,7 +4,8 @@
   ~ Any attempt to reproduce this source code in any form shall be met with legal actions.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+  xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.swiften.redux.android.sample">
 
     <application
