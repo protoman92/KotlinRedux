@@ -35,6 +35,12 @@ object ReduxSagaHelper {
     catcher: suspend CoroutineScope.(Throwable) -> R
   ): ReduxSagaEffect<State, R> = CatchErrorEffect(source, catcher)
 
+  /** Create a [DoOnValueEffect] instance */
+  fun <State, R> doOnValue(
+    source: ReduxSagaEffect<State, R>,
+    block: suspend CoroutineScope.(R) -> Unit
+  ): ReduxSagaEffect<State, R> = DoOnValueEffect(source, block)
+
   /** Create a [FilterEffect] */
   fun <State, R> filter(
     source: ReduxSagaEffect<State, R>,

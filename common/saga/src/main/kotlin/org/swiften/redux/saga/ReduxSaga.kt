@@ -64,8 +64,10 @@ object ReduxSaga {
       return identifiers.joinToString("-")
     }
 
-    private fun <T2> with(identifier: String = this.identifier,
-                          newChannel: ReceiveChannel<T2>): Output<T2> {
+    private fun <T2> with(
+      identifier: String = this.identifier,
+      newChannel: ReceiveChannel<T2>): Output<T2>
+    {
       val result = Output(identifier, this.scope, newChannel, this.onAction)
       result.source = this
       result.onDispose = { this.dispose() }
@@ -93,6 +95,12 @@ object ReduxSaga {
         this@Output.channel
           .map(this.coroutineContext) { transform(this, it) }
           .consumeEach { this.launch { this@produce.send(it.await()) } }
+      })
+
+    /** Perform some side effects on value emission with [perform] */
+    internal fun doOnValue(perform: suspend CoroutineScope.(T) -> Unit) =
+      this.with("DoOnValue", this.produce {
+        this@Output.channel.consumeEach { perform(this, it); this.send(it) }
       })
 
     /**
