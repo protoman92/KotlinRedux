@@ -19,7 +19,8 @@ import org.swiften.redux.core.Redux
  */
 internal abstract class TakeEffect<State, P, R>(
   private val extract: Function1<Redux.IAction, P?>,
-  private val block: Function1<P, ReduxSagaEffect<State, R>>
+  private val block: Function1<P, ReduxSagaEffect<State, R>>,
+  private val options: ReduxSaga.TakeOptions
 ) : ReduxSagaEffect<State, R> {
   /**
    * Flatten an [ReduxSaga.Output] that streams [ReduxSaga.Output] to access
@@ -30,19 +31,19 @@ internal abstract class TakeEffect<State, P, R>(
   ): ReduxSaga.Output<R>
 
   @ExperimentalCoroutinesApi
-  override operator fun invoke(input: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
+  override operator fun invoke(p1: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
     val actionChannel = Channel<Redux.IAction>()
 
-    val nestedOutput = ReduxSaga.Output(this, input.scope, input.scope.produce {
+    val nested = ReduxSaga.Output(this, p1.scope, p1.scope.produce {
       for (action in actionChannel) {
         val param = this@TakeEffect.extract(action)
 
         if (param != null) {
-          this.send(this@TakeEffect.block(param).invoke(input))
+          this@produce.send(this@TakeEffect.block(param).invoke(p1))
         }
       }
-    }) { action -> input.scope.launch { actionChannel.send(action) } }
+    }) { action -> p1.scope.launch { actionChannel.send(action) } }
 
-    return this.flattenOutput(nestedOutput)
+    return this.flattenOutput(nested).debounce(this.options.debounceMillis)
   }
 }

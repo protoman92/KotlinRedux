@@ -54,8 +54,9 @@ object ReduxSagaHelper {
   /** Create a [TakeEveryEffect] instance. */
   fun <State, P, R> takeEvery(
     extract: Function1<Redux.IAction, P?>,
-    block: Function1<P, ReduxSagaEffect<State, R>>
-  ): ReduxSagaEffect<State, R> = TakeEveryEffect(extract, block)
+    block: Function1<P, ReduxSagaEffect<State, R>>,
+    options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
+  ): ReduxSagaEffect<State, R> = TakeEveryEffect(extract, block, options)
 
   /**
    * Convenience function to create [TakeEveryEffect] for a specific type of
@@ -63,17 +64,19 @@ object ReduxSagaHelper {
    */
   inline fun <State, reified Action, P, R> takeEveryAction(
     crossinline extract: Function1<Action, P?>,
-    noinline block: Function1<P, ReduxSagaEffect<State, R>>
+    noinline block: Function1<P, ReduxSagaEffect<State, R>>,
+    options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
   ) where Action: Redux.IAction = this.takeEvery(
     { when (it) {is Action -> extract(it); else -> null } },
-    block
+    block, options
   )
 
   /** Create a [TakeLatestEffect] instance. */
   fun <State, P, R> takeLatest(
     extract: Function1<Redux.IAction, P?>,
-    block: Function1<P, ReduxSagaEffect<State, R>>
-  ): ReduxSagaEffect<State, R> = TakeLatestEffect(extract, block)
+    block: Function1<P, ReduxSagaEffect<State, R>>,
+    options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
+  ): ReduxSagaEffect<State, R> = TakeLatestEffect(extract, block, options)
 
   /**
    * Convenience function to create [TakeLatestEffect] for a specific type of
@@ -81,10 +84,11 @@ object ReduxSagaHelper {
    */
   inline fun <State, reified Action, P, R> takeLatestAction(
     crossinline extract: Function1<Action, P?>,
-    noinline block: Function1<P, ReduxSagaEffect<State, R>>
+    noinline block: Function1<P, ReduxSagaEffect<State, R>>,
+    options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
   ) where Action: Redux.IAction = this.takeLatest(
     { when (it) {is Action -> extract(it); else -> null } },
-    block
+    block, options
   )
 
   /** Create a [ThenEffect] on [source1] and [source2] */

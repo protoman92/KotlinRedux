@@ -172,6 +172,9 @@ object ReduxSaga {
       }
     }
   }
+
+  /** Options for [TakeEffect] */
+  data class TakeOptions(internal val debounceMillis: Long = 0)
 }
 
 /**

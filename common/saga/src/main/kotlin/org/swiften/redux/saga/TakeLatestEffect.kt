@@ -17,8 +17,9 @@ import org.swiften.redux.core.Redux
  */
 internal class TakeLatestEffect<State, P, R>(
   extract: Function1<Redux.IAction, P?>,
-  block: Function1<P, ReduxSagaEffect<State, R>>
-) : TakeEffect<State, P, R>(extract, block) {
+  block: Function1<P, ReduxSagaEffect<State, R>>,
+  options: ReduxSaga.TakeOptions
+) : TakeEffect<State, P, R>(extract, block, options) {
   @ExperimentalCoroutinesApi
   override fun flattenOutput(
     nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
