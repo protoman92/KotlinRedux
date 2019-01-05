@@ -81,13 +81,13 @@ object ReduxSaga {
     /** Map emissions from [channel] with [transform] */
     @ExperimentalCoroutinesApi
     internal fun <T2> map(transform: suspend CoroutineScope.(T) -> T2) =
-      this.with("Map${this.javaClass.simpleName}", this.produce<T2> {
+      this.with("Map", this.produce<T2> {
         this@Output.channel
           .map(this.coroutineContext) { transform(this, it) }
           .toChannel(this)
       })
 
-    /** Similar to [Output.map], but handles [Deffered] */
+    /** Similar to [Output.map], but handles [Deferred] */
     internal fun <T2> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>) =
       this.with("MapAsync", this.produce<T2> {
         this@Output.channel
@@ -101,7 +101,7 @@ object ReduxSaga {
      */
     @ExperimentalCoroutinesApi
     internal fun <T2> flatMap(transform: suspend CoroutineScope.(T) -> Output<T2>) =
-      this.with("FlatMap${this.javaClass.simpleName}", this.produce<T2> {
+      this.with("FlatMap", this.produce<T2> {
         this@Output.channel
           .map(this.coroutineContext) { transform(this, it) }
           .consumeEach { this.launch { it.channel.toChannel(this@produce) } }
@@ -113,7 +113,7 @@ object ReduxSaga {
      */
     @ExperimentalCoroutinesApi
     internal fun <T2> switchMap(transform: suspend CoroutineScope.(T) -> Output<T2>) =
-      this.with("SwitchMap${this.javaClass.simpleName}", this.produce<T2> {
+      this.with("SwitchMap", this.produce<T2> {
         var previousJob: Job? = null
 
         this@Output.channel
@@ -134,7 +134,7 @@ object ReduxSaga {
     internal fun debounce(timeMillis: Long): Output<T> {
       if (timeMillis <= 0) { return this }
 
-      return this.with("Debounce${this.javaClass.simpleName}", this.produce {
+      return this.with("Debounce", this.produce {
         var previousJob: Job? = null
 
         this@Output.channel.consumeEach {
@@ -152,7 +152,7 @@ object ReduxSaga {
     /** Catch possible errors and return a value produced by [fallback] */
     @ExperimentalCoroutinesApi
     internal fun catchError(fallback: suspend CoroutineScope.(Throwable) -> T) =
-      this.with("CatchError${this.javaClass.simpleName}", this.produce {
+      this.with("CatchError", this.produce {
         try { this@Output.channel.toChannel(this) }
         catch (e1: Throwable) {
           try { this.send(fallback(this, e1)); this.close() }
