@@ -234,6 +234,7 @@ class SagaEffectTest : CoroutineScope {
     /// Setup
     val sourceOutput = just<State, Int>(0)
       .map { it }
+      .call { this.async { delay(1000); it } }
       .then(just<State, Int>(2).map { it }) { a, b -> a + b }
       .invoke(this, State()) { }
 

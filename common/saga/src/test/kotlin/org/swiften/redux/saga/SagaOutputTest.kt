@@ -137,6 +137,33 @@ class SagaOutputTest : CoroutineScope {
   }
 
   @Test
+  @ExperimentalCoroutinesApi
+  fun `Output mapAsync should await deferred values`() {
+    /// Setup
+    val sourceCh = this.produce {
+      this.send(0)
+      this.send(1)
+      this.send(2)
+      this.send(3)
+    }
+
+    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+
+    ReduxSaga.Output("", this, sourceCh) { }
+      .mapAsync { this.async { delay(1000); it } }
+      .subscribe({ finalValues.add(it) })
+
+    /// When && Then
+    runBlocking {
+      withTimeoutOrNull(this@SagaOutputTest.timeout) {
+        while (finalValues.sorted() != arrayListOf(0, 1, 2, 3)) { }; Unit
+      }
+
+      Assert.assertEquals(finalValues.sorted(), arrayListOf(0, 1, 2, 3))
+    }
+  }
+
+  @Test
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun `Output debounce should throttle emissions`() {
