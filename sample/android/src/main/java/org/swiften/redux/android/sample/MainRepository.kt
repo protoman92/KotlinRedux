@@ -5,19 +5,17 @@
 
 package org.swiften.redux.android.sample
 
-import com.beust.klaxon.Klaxon
-
 /** Created by haipham on 2019/01/05 */
 interface IMainRepository {
   fun searchMusicStore(input: String): MusicResult?
 }
 
 class MainRepository(
-  private val klx: Klaxon,
-  private val api: IMainApi) : IMainRepository
-{
+  private val api: IMainApi,
+  private val decoder: JSONDecoder
+) : IMainRepository {
   override fun searchMusicStore(input: String): MusicResult? {
     val result = this.api.searchMusicStore(input)
-    return this.klx.parse<MusicResult>(result)
+    return this.decoder.parse<MusicResult>(result)
   }
 }
