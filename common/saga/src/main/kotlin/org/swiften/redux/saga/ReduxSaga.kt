@@ -129,20 +129,15 @@ object ReduxSaga {
       return this.with("Debounce${this.javaClass.simpleName}", this.produce {
         var previousJob: Job? = null
 
-        this@Output.channel
-          .consumeEach {
+        this@Output.channel.consumeEach {
+          previousJob?.cancel()
+
+          previousJob = this.launch {
             val startTime = Date().time
-            val parentJob = SupervisorJob()
-
-            val newJob = this.launch(parentJob, CoroutineStart.LAZY) {
-              while (Date().time - startTime < timeMillis && this.isActive) { }
-              if (this.isActive) { this@produce.send(it) }
-            }
-
-            previousJob?.cancelChildren()
-            previousJob = parentJob
-            newJob.start()
+            while ((Date().time - startTime) < timeMillis && this.isActive) { }
+            if (this.isActive) { this@produce.send(it) }
           }
+        }
       })
     }
 
