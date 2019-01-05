@@ -6,12 +6,19 @@
 package org.swiften.redux.saga
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.channels.ReceiveChannel
 import org.swiften.redux.core.Redux
 
 /** Created by haipham on 2018/12/24 */
 /** Top-level namespace for [ReduxSagaEffect] helpers */
 object ReduxSagaHelper {
+  /** Create a [CallEffect] */
+  fun <State, P, R> call(
+    source: ReduxSagaEffect<State, P>,
+    block: suspend CoroutineScope.(P) -> Deferred<R>
+  ): ReduxSagaEffect<State, R> = CallEffect(source, block)
+
   /** Create a [MapEffect] */
   fun <State, P, R> map(
     param: ReduxSagaEffect<State, P>,

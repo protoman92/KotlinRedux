@@ -87,6 +87,14 @@ object ReduxSaga {
           .toChannel(this)
       })
 
+    /** Similar to [Output.map], but handles [Deffered] */
+    internal fun <T2> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>) =
+      this.with("MapAsync", this.produce<T2> {
+        this@Output.channel
+          .map(this.coroutineContext) { transform(this, it) }
+          .consumeEach { this.launch { this@produce.send(it.await()) } }
+      })
+
     /**
      * Flatten emissions from other [Output] produced by transforming the
      * elements emitted by [channel] to said [Output], and emitting everything.
