@@ -44,6 +44,6 @@ internal abstract class TakeEffect<State, P, R>(
       }
     }) { action -> p1.scope.launch { actionChannel.send(action) } }
 
-    return this.flattenOutput(nested).debounce(this.options.debounceMillis)
+    return this.flattenOutput(nested.debounce(this.options.debounceMillis))
   }
 }
