@@ -17,6 +17,12 @@ object ReduxSagaHelper {
     source: ReduxSagaEffect<State, P>,
     block: (P) -> Single<R>
   ): ReduxSagaEffect<State, R> = CallEffect(source, block)
+  
+  /** Create a [DelayEffect] */
+  fun <State, R> delay(
+    source: ReduxSagaEffect<State, R>,
+    delayMillis: Long
+  ): ReduxSagaEffect<State, R> = DelayEffect(source, delayMillis)
 
   /** Create a [MapEffect] */
   fun <State, P, R> map(

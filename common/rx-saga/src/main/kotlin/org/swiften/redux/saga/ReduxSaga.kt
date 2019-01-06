@@ -70,6 +70,12 @@ object ReduxSaga {
     internal fun filter(selector: (T) -> Boolean) =
       this.with(this.stream.filter(selector))
 
+    /** Wrapper for [Flowable.delay] */
+    internal fun delay(timeMillis: Long): Output<T> {
+      if (timeMillis <= 0) { return this }
+      return this.with(this.stream.delay(timeMillis, TimeUnit.MILLISECONDS))
+    }
+
     /** Wrapper for [Flowable.debounce] */
     internal fun debounce(timeMillis: Long): Output<T> {
       if (timeMillis <= 0) { return this }
