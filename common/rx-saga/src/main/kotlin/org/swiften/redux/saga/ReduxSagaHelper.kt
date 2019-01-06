@@ -6,11 +6,18 @@
 package org.swiften.redux.saga
 
 import io.reactivex.Flowable
+import io.reactivex.Single
 import org.swiften.redux.core.Redux
 
 /** Created by haipham on 2018/12/24 */
 /** Top-level namespace for [ReduxSagaEffect] helpers */
 object ReduxSagaHelper {
+  /** Create a [CallEffect] */
+  fun <State, P, R> call(
+    source: ReduxSagaEffect<State, P>,
+    block: (P) -> Single<R>
+  ): ReduxSagaEffect<State, R> = CallEffect(source, block)
+
   /** Create a [MapEffect] */
   fun <State, P, R> map(
     param: ReduxSagaEffect<State, P>,
