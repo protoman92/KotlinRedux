@@ -55,7 +55,7 @@ android {
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   api project(':common:middleware')
-  api project(':common:saga')
+  api project(':common:coroutine-saga')
   api project(':android:ui')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin"
   implementation "androidx.appcompat:appcompat:$appCompat"
