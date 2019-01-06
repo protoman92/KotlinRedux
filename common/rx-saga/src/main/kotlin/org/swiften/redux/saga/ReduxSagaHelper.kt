@@ -5,51 +5,43 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.channels.ReceiveChannel
+import io.reactivex.Flowable
 import org.swiften.redux.core.Redux
 
 /** Created by haipham on 2018/12/24 */
 /** Top-level namespace for [ReduxSagaEffect] helpers */
 object ReduxSagaHelper {
-  /** Create a [CallEffect] */
-  fun <State, P, R> call(
-    source: ReduxSagaEffect<State, P>,
-    block: suspend CoroutineScope.(P) -> Deferred<R>
-  ): ReduxSagaEffect<State, R> = CallEffect(source, block)
-
   /** Create a [MapEffect] */
   fun <State, P, R> map(
     param: ReduxSagaEffect<State, P>,
-    block: suspend CoroutineScope.(P) -> R
+    block: (P) -> R
   ): ReduxSagaEffect<State, R> = MapEffect(param, block)
 
   /** Create a [MapEffect] with [param] */
-  fun <State, P, R> map(param: P, block: suspend CoroutineScope.(P) -> R) =
+  fun <State, P, R> map(param: P, block: (P) -> R) =
     this.map(this.just<State, P>(param), block)
 
   /** Create a [CatchErrorEffect] instance. */
   fun <State, R> catchError(
     source: ReduxSagaEffect<State, R>,
-    catcher: suspend CoroutineScope.(Throwable) -> R
+    catcher: (Throwable) -> R
   ): ReduxSagaEffect<State, R> = CatchErrorEffect(source, catcher)
 
   /** Create a [DoOnValueEffect] instance */
   fun <State, R> doOnValue(
     source: ReduxSagaEffect<State, R>,
-    block: suspend CoroutineScope.(R) -> Unit
+    block: (R) -> Unit
   ): ReduxSagaEffect<State, R> = DoOnValueEffect(source, block)
 
   /** Create a [FilterEffect] */
   fun <State, R> filter(
     source: ReduxSagaEffect<State, R>,
-    selector: suspend CoroutineScope.(R) -> Boolean
+    selector: (R) -> Boolean
   ): ReduxSagaEffect<State, R> = FilterEffect(source, selector)
 
   /** Create a [FromEffect] */
-  fun <State, R> from(channel: ReceiveChannel<R>): ReduxSagaEffect<State, R> =
-    FromEffect(channel)
+  fun <State, R> from(stream: Flowable<R>): ReduxSagaEffect<State, R> =
+    FromEffect(stream)
 
   /** Create a [JustEffect] */
   fun <State, R> just(value: R): ReduxSagaEffect<State, R> = JustEffect(value)
