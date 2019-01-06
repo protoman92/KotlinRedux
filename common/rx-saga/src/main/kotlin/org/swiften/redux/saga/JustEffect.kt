@@ -5,16 +5,11 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.produce
+import io.reactivex.Flowable.just
 
 /** Created by haipham on 2018/12/24 */
 /** [ReduxSagaEffect] whose [ReduxSaga.Output] simply emits [value] */
 internal class JustEffect<State, R>(private val value: R) : ReduxSagaEffect<State, R> {
-  @ExperimentalCoroutinesApi
-  override fun invoke(input: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
-    return ReduxSaga.Output(this, input.scope, input.scope.produce {
-      this.send(value)
-    }) {}
-  }
+  override fun invoke(p1: ReduxSaga.Input<State>) =
+    ReduxSaga.Output(p1.scope, just(this.value)) {}
 }

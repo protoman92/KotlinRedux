@@ -5,11 +5,9 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.produce
-import kotlinx.coroutines.launch
+import io.reactivex.processors.PublishProcessor
 import org.swiften.redux.core.Redux
+import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/23 */
 /**
@@ -30,21 +28,17 @@ internal abstract class TakeEffect<State, P, R>(
     nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
   ): ReduxSaga.Output<R>
 
-  @ExperimentalCoroutinesApi
   override operator fun invoke(p1: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
-    val actionChannel = Channel<Redux.IAction>()
+    val subject = PublishProcessor.create<Redux.IAction>()
 
-    val nested = ReduxSaga.Output(this, p1.scope,
-      p1.scope.produce {
-        for (action in actionChannel) {
-          val param = this@TakeEffect.extract(action)
+    val nested = ReduxSaga.Output(p1.scope,
+      subject
+        .map(this.extract)
+        .filter { it != null }
+        .map { this@TakeEffect.block(it).invoke(p1) }
+        .debounce(this.options.debounceMillis, TimeUnit.MILLISECONDS)
+    ) { action -> subject.offer(action) }
 
-          if (param != null) {
-            this@produce.send(this@TakeEffect.block(param).invoke(p1))
-          }
-        }
-      }) { action -> p1.scope.launch { actionChannel.send(action) } }
-
-    return this.flattenOutput(nested.debounce(this.options.debounceMillis))
+    return this.flattenOutput(nested)
   }
 }

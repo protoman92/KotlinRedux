@@ -5,13 +5,13 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.channels.ReceiveChannel
+import io.reactivex.Flowable
 
 /** Created by haipham on 2019/01/05 */
-/** [ReduxSagaEffect] whose [ReduxSaga.Output] is provided via [channel] */
+/** [ReduxSagaEffect] whose [ReduxSaga.Output] is provided via [stream] */
 internal class FromEffect<State, R>(
-  private val channel: ReceiveChannel<R>
+  private val stream: Flowable<R>
 ): ReduxSagaEffect<State, R> {
   override fun invoke(p1: ReduxSaga.Input<State>) =
-    ReduxSaga.Output(this, p1.scope, this.channel) { }
+    ReduxSaga.Output(p1.scope, this.stream) { }
 }

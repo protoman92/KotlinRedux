@@ -5,8 +5,6 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.CoroutineScope
-
 /** Created by haipham on 2019/01/05 */
 /**
  * [ReduxSagaEffect] whose [ReduxSaga.Output] filters emissions with
@@ -14,13 +12,12 @@ import kotlinx.coroutines.CoroutineScope
  */
 internal class FilterEffect<State, R>(
   private val source: ReduxSagaEffect<State, R>,
-  private val selector: suspend CoroutineScope.(R) -> Boolean
+  private val selector: (R) -> Boolean
 ) : ReduxSagaEffect<State, R> {
   override fun invoke(p1: ReduxSaga.Input<State>) =
     this.source.invoke(p1).filter(this.selector)
 }
 
 /** Invoke a [FilterEffect] on the current [ReduxSagaEffect] */
-fun <State, R> ReduxSagaEffect<State, R>.filter(
-  selector: suspend CoroutineScope.(R) -> Boolean
-) = ReduxSagaHelper.filter(this, selector)
+fun <State, R> ReduxSagaEffect<State, R>.filter(selector: (R) -> Boolean) =
+  ReduxSagaHelper.filter(this, selector)

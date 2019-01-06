@@ -5,7 +5,6 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.swiften.redux.core.Redux
 
 /** Created by haipham on 2018/12/23 */
@@ -20,7 +19,6 @@ internal class TakeLatestEffect<State, P, R>(
   block: Function1<P, ReduxSagaEffect<State, R>>,
   options: ReduxSaga.TakeOptions
 ) : TakeEffect<State, P, R>(extract, block, options) {
-  @ExperimentalCoroutinesApi
   override fun flattenOutput(
     nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
   ) = nestedOutput.switchMap { it }
