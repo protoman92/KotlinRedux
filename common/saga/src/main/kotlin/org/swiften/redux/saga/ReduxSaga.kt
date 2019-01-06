@@ -11,6 +11,9 @@ import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.core.ReduxStateGetter
 import java.util.*
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 /** Created by haipham on 2018/12/22 */
 /** Abstraction for Redux saga that handles [Redux.IAction] in the pipeline */
@@ -61,7 +64,7 @@ object ReduxSaga {
         current = current.source
       }
 
-      return identifiers.joinToString("-")
+      return identifiers.reversed().joinToString("-")
     }
 
     private fun <T2> with(
@@ -100,7 +103,7 @@ object ReduxSaga {
     /** Perform some side effects on value emission with [perform] */
     internal fun doOnValue(perform: suspend CoroutineScope.(T) -> Unit) =
       this.with("DoOnValue", this.produce {
-        this@Output.channel.consumeEach { perform(this, it); this.send(it) }
+        this@Output.channel.consumeEach { this.send(it); perform(this, it) }
       })
 
     /**
@@ -110,9 +113,9 @@ object ReduxSaga {
     @ExperimentalCoroutinesApi
     internal fun <T2> flatMap(transform: suspend CoroutineScope.(T) -> Output<T2>) =
       this.with("FlatMap", this.produce<T2> {
-        this@Output.channel
-          .map(this.coroutineContext) { transform(this, it) }
-          .consumeEach { this.launch { it.channel.toChannel(this@produce) } }
+        this@Output.channel.consumeEach {
+          this.launch { transform(this, it).channel.toChannel(this@produce) }
+        }
       })
 
     /**
@@ -124,18 +127,20 @@ object ReduxSaga {
       this.with("SwitchMap", this.produce<T2> {
         var previousJob: Job? = null
 
-        this@Output.channel
-          .map(this.coroutineContext) { transform(this, it) }
-          .consumeEach {
-            previousJob?.cancel()
-            previousJob = this.launch { it.channel.toChannel(this@produce) }
+        this@Output.channel.consumeEach {
+          previousJob?.cancel()
+
+          previousJob = this.launch {
+            transform(this, it).channel.toChannel(this@produce)
           }
+        }
       })
 
     /** Filter emissions with [selector] */
     internal fun filter(selector: suspend CoroutineScope.(T) -> Boolean) =
-      this.with("Filter${this.javaClass.simpleName}",
-        this.channel.filter(this.coroutineContext) { selector(this@Output.scope, it) })
+      this.with("Filter", this.channel.filter(this.coroutineContext) {
+        selector(this@Output.scope, it)
+      })
 
     /** Throttle emissions with [timeMillis] */
     @ExperimentalCoroutinesApi
@@ -146,10 +151,10 @@ object ReduxSaga {
         var previousJob: Job? = null
 
         this@Output.channel.consumeEach {
+          val startTime = Date().time
           previousJob?.cancel()
 
           previousJob = this.launch {
-            val startTime = Date().time
             while ((Date().time - startTime) < timeMillis && this.isActive) { }
             if (this.isActive) { this@produce.send(it) }
           }

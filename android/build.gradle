@@ -73,6 +73,10 @@ subprojects {
     androidTestImplementation "androidx.test:runner:$testRunner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
   }
+
+  test {
+    outputs.upToDateWhen { false }
+  }
 }
 
 project('ui') {

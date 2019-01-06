@@ -18,7 +18,6 @@ import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import java.net.URL
 import java.util.*
 
 /** Created by haipham on 2018/12/23 */
@@ -252,37 +251,45 @@ class SagaEffectTest : CoroutineScope {
     }
   }
 
-  @Test
-  fun `Take latest should work in real life scenarios`() {
-    /// Setup
-    data class Action(val query: String) : Redux.IAction
-    val finalValues = Collections.synchronizedList(arrayListOf<Any>())
-
-    val sourceOutput = takeLatestAction<Unit, Action, String, Any>(
-      { it.query },
-      { query ->
-        just<Unit, String>(query)
-          .call { this.async {
-            val url = "https://itunes.apple.com/search?term=$it&limit=5&media=music"
-            URL(url).readText()
-          } }
-          .cast<Unit, String, Any>()
-          .catchError {}
-          .doOnValue { finalValues.add(it) }
-      },
-      ReduxSaga.TakeOptions(1000)
-    ).invoke(this, Unit) {}
-
-    /// When
-    for (i in 0 until 20) { sourceOutput.onAction(Action("$i")) }
-
-    runBlocking {
-      withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues.size != 20) { delay(100) }; Unit
-      }
-
-      /// Then
-      Assert.assertEquals(finalValues.size, 20)
-    }
-  }
+//  @Test
+//  fun `Take latest should work in real life scenarios`() {
+//    /// Setup
+//    data class Action(val query: String) : Redux.IAction
+//    val finalValues = synchronizedList(arrayListOf<Any>())
+//
+//    fun CoroutineScope.searchMusicStore(q: String) = this.async {
+//      val url = "https://itunes.apple.com/search?term=$q&limit=5&media=music"
+//      val result = URL(url).readText().replace("\n", "")
+//      println("Fetched for $url")
+//      "Input: $q, Result: $result"
+//    }
+//
+//    val sourceOutput = takeLatestAction<Unit, Action, String, Any>(
+//      { it.query },
+//      { query ->
+//        just<Unit, String>(query)
+//          .map { "unavailable$it" }
+//          .call { this.searchMusicStore(it) }
+//          .cast<Unit, String, Any>()
+//          .catchError {}
+//      },
+//      ReduxSaga.TakeOptions(0)
+//    ).invoke(this, Unit) {}
+//
+//    sourceOutput.subscribe({ finalValues.add(it) })
+//
+//    /// When
+//    for (i in 0 until 20) { sourceOutput.onAction(Action("$i")) }
+//
+//    runBlocking {
+//      delay(8000)
+////      withTimeoutOrNull(this@SagaEffectTest.timeout) {
+////        while (finalValues.size != 20) { delay(100) }; Unit
+////      }
+//
+//      /// Then
+//      println(finalValues)
+//      Assert.assertEquals(finalValues.size, 1)
+//    }
+//  }
 }
