@@ -90,6 +90,23 @@ project('saga') {
   }
 }
 
+project('coroutine-saga') {
+  dependencies {
+    api project(':common:core')
+    api project(':common:middleware')
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+  }
+}
+
+//project('rx-saga') {
+//  dependencies {
+//    api project(':common:core')
+//    api project(':common:middleware')
+//    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+//    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
+//  }
+//}
+
 project('simple-store') {
   dependencies {
     api project(':common:core')
