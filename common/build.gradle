@@ -95,6 +95,7 @@ project('rx-saga') {
     api project(':common:core')
     api project(':common:middleware')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
   }
 }
