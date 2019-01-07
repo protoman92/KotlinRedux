@@ -8,12 +8,14 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.swiften.redux.core.Redux
+import org.swiften.redux.core.ReduxPreset
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
@@ -45,6 +47,41 @@ abstract class CommonSagaEffectTest : CoroutineScope {
 
   abstract fun <T> justEffect(value: T): ReduxSagaEffect<State, T>
   abstract fun <T : Any> fromEffect(vararg values: T): ReduxSagaEffect<State, T>
+
+  @ObsoleteCoroutinesApi
+  fun test_takeEffect_shouldTakeCorrectActions(
+    createTakeEffect: (
+      extract: Function1<TakeAction, Int?>,
+      block: Function1<Int, ReduxSagaEffect<State, Any>>
+    ) -> ReduxSagaEffect<State, Any>,
+    actualValues: List<Int>
+  ) {
+    // Setup
+    val takeOutput = createTakeEffect(
+      { when (it) { is TakeAction.Action1 -> it.value } },
+      { justEffect(it).callSuspend { delay(1000); it } }
+    ).invoke(this, State()) { }
+
+    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+    takeOutput.subscribe({ finalValues.add(it as Int) })
+
+    // When
+    takeOutput.onAction(TakeAction.Action1(0))
+    takeOutput.onAction(TakeAction.Action1(1))
+    takeOutput.onAction(ReduxPreset.DefaultAction.Dummy)
+    takeOutput.onAction(TakeAction.Action1(2))
+    takeOutput.onAction(ReduxPreset.DefaultAction.Dummy)
+    takeOutput.onAction(TakeAction.Action1(3))
+
+    runBlocking {
+      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
+        while (finalValues.sorted() != actualValues.sorted()) { }; Unit
+      }
+
+      // Then
+      Assert.assertEquals(finalValues.sorted(), actualValues.sorted())
+    }
+  }
 
   @Test
   @Suppress("UNREACHABLE_CODE")

@@ -14,7 +14,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxFlowable
 import kotlinx.coroutines.withTimeoutOrNull
 import org.swiften.redux.core.Redux
-import org.swiften.redux.core.ReduxPreset
 import org.swiften.redux.saga.ReduxSagaHelper.from
 import org.swiften.redux.saga.ReduxSagaHelper.just
 import org.swiften.redux.saga.ReduxSagaHelper.takeEveryAction
@@ -31,41 +30,6 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @ExperimentalCoroutinesApi
   override fun <T : Any> fromEffect(vararg values: T) =
     from<State, T>(this.rxFlowable { values.forEach { this.send(it) } })
-
-  @ObsoleteCoroutinesApi
-  private fun test_takeEffect_shouldTakeCorrectActions(
-    createTakeEffect: (
-      extract: Function1<TakeAction, Int?>,
-      block: Function1<Int, ReduxSagaEffect<State, Any>>
-    ) -> ReduxSagaEffect<State, Any>,
-    actualValues: List<Int>
-  ) {
-    // Setup
-    val takeOutput = createTakeEffect(
-      { when (it) { is TakeAction.Action1 -> it.value } },
-      { just<State, Int>(it).callSuspend { delay(1000); it } }
-    ).invoke(this, State()) { }
-
-    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
-    takeOutput.subscribe({ finalValues.add(it as Int) })
-
-    // When
-    takeOutput.onAction(TakeAction.Action1(0))
-    takeOutput.onAction(TakeAction.Action1(1))
-    takeOutput.onAction(ReduxPreset.DefaultAction.Dummy)
-    takeOutput.onAction(TakeAction.Action1(2))
-    takeOutput.onAction(ReduxPreset.DefaultAction.Dummy)
-    takeOutput.onAction(TakeAction.Action1(3))
-
-    runBlocking {
-      withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues.sorted() != actualValues.sorted()) { }; Unit
-      }
-
-      // Then
-      Assert.assertEquals(finalValues.sorted(), actualValues.sorted())
-    }
-  }
 
   @Test
   @ObsoleteCoroutinesApi

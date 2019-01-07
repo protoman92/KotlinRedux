@@ -111,12 +111,12 @@ project('coroutine-saga') {
 
 project('rx-saga') {
   dependencies {
-    implementation project(':common:core')
-    implementation project(':common:middleware')
-    implementation project(':common:saga')
+    api project(':common:core')
+    api project(':common:middleware')
+    api project(':common:saga')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
-    testImplementation project (path: ":common:saga", configuration: 'testArtifacts')
+    testApi project (path: ":common:saga", configuration: 'testArtifacts')
   }
 }
 
