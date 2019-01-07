@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/ui/common-ui.iml" filepath="$PROJECT_DIR$/common/ui/common-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/core/core.iml" filepath="$PROJECT_DIR$/common/core/core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/coroutine-saga/coroutine-saga.iml" filepath="$PROJECT_DIR$/common/coroutine-saga/coroutine-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/middleware/middleware.iml" filepath="$PROJECT_DIR$/common/middleware/middleware.iml" />
       <module fileurl="file://$PROJECT_DIR$/redux-jvm.iml" filepath="$PROJECT_DIR$/redux-jvm.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/redux-jvm-android.iml" filepath="$PROJECT_DIR$/android/redux-jvm-android.iml" />
