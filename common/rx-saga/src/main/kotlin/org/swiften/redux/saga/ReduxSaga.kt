@@ -8,7 +8,9 @@ package org.swiften.redux.saga
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.rx2.rxSingle
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.core.ReduxStateGetter
@@ -53,6 +55,20 @@ object ReduxSaga {
     /** Wrapper for [Flowable.map] */
     internal fun <T2> map(transform: (T) -> T2) =
       this.with(this.stream.map(transform))
+
+    /** [Flowable.flatMap] to resolve a suspending function */
+    internal fun <T2 : Any> mapSuspend(
+      transform: suspend CoroutineScope.(T) -> T2
+    ) = this.with(this.stream.flatMap {
+      this@Output.rxSingle { transform(it) }.toFlowable()
+    })
+
+    /** [Flowable.flatMap] to resolve an async function */
+    internal fun <T2 : Any> mapAsync(
+      transform: suspend CoroutineScope.(T) -> Deferred<T2>
+    ) = this.with(this.stream.flatMap {
+      this@Output.rxSingle { transform(it).await() }.toFlowable()
+    })
 
     /** Wrapper for [Flowable.doOnNext] */
     internal fun doOnValue(perform: (T) -> Unit) =
@@ -101,7 +117,7 @@ object ReduxSaga {
     }
 
     fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit = { }) {
-      this.disposable.addAll(this.stream.subscribe(onValue, onError))
+      this.disposable.add(this.stream.subscribe(onValue, onError))
     }
   }
 

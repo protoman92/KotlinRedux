@@ -7,6 +7,8 @@ package org.swiften.redux.saga
 
 import io.reactivex.Flowable
 import io.reactivex.Single
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import org.swiften.redux.core.Redux
 
 /** Created by haipham on 2018/12/24 */
@@ -17,7 +19,19 @@ object ReduxSagaHelper {
     source: ReduxSagaEffect<State, P>,
     block: (P) -> Single<R>
   ): ReduxSagaEffect<State, R> = CallEffect(source, block)
-  
+
+  /** Create a [SuspendCallEffect] */
+  fun <State, P, R : Any> callSuspend(
+    source: ReduxSagaEffect<State, P>,
+    block: suspend CoroutineScope.(P) -> R
+  ): ReduxSagaEffect<State, R> = SuspendCallEffect(source, block)
+
+  /** Create a [AsyncCallEffect] */
+  fun <State, P, R : Any> callAsync(
+    source: ReduxSagaEffect<State, P>,
+    block: suspend CoroutineScope.(P) -> Deferred<R>
+  ): ReduxSagaEffect<State, R> = AsyncCallEffect(source, block)
+
   /** Create a [DelayEffect] */
   fun <State, R> delay(
     source: ReduxSagaEffect<State, R>,
