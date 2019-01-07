@@ -56,11 +56,11 @@ open class BaseReduxStoreTest: CoroutineScope {
     var currentState = 0
     val allDispatches = arrayListOf<Deferred<Unit>>()
 
-    for (i in 0 until 1000) {
+    for (i in 0 until 100) {
       /// Setup
       val actions = arrayListOf<Action>()
 
-      for (j in 0 until 500) {
+      for (j in 0 until 50) {
         val action = Action.random()
         actions.add(action)
         currentState = action(currentState)

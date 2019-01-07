@@ -5,13 +5,11 @@
 
 package org.swiften.redux.android.sample
 
+import android.util.Log
 import kotlinx.coroutines.async
-import org.swiften.redux.saga.ReduxSaga
+import org.swiften.redux.saga.*
 import org.swiften.redux.saga.ReduxSagaHelper.just
 import org.swiften.redux.saga.ReduxSagaHelper.takeLatestAction
-import org.swiften.redux.saga.cast
-import org.swiften.redux.saga.catchError
-import org.swiften.redux.saga.map
 
 /** Created by haipham on 2019/01/04 */
 object MainSaga {
@@ -27,7 +25,9 @@ object MainSaga {
 
   private fun autocompleteSaga(api: IMainRepository, query: String) =
     just<State, String>(query)
-      .map { this.async { api.searchMusicStore(it) }.await() }
-      .cast<State, MusicResult?, Any>()
-      .catchError { }
+      .doOnValue { Log.i("HAHAHA", "$it") }
+      .callAsync { this.async { api.searchMusicStore(it) } }
+      .cast<State, MusicResult, Any>()
+      .catchError {  }
+      .doOnValue { Log.i("HAHAHA", "$it") }
 }
