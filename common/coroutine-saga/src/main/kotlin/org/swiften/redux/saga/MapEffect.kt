@@ -17,7 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 internal class MapEffect<State, P, R>(
   private val param: ReduxSagaEffect<State, P>,
   private val block: suspend CoroutineScope.(P) -> R
-): ReduxSagaEffect<State, R> {
+) : ReduxSagaEffect<State, R> {
   @ExperimentalCoroutinesApi
   override fun invoke(input: ReduxSaga.Input<State>) =
     this.param.invoke(input).map(this.block)

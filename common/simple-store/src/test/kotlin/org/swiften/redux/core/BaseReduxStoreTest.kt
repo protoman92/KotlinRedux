@@ -1,19 +1,26 @@
 package org.swiften.redux.core
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
 import org.testng.Assert
-import java.util.*
+import java.util.Random
 
 /** Created by haipham on 2018/12/16 */
 /** Use this test class to test [Redux.IStore] implementations */
 @Suppress("FunctionName")
-open class BaseReduxStoreTest: CoroutineScope {
-  sealed class Action: Redux.IAction {
+open class BaseReduxStoreTest : CoroutineScope {
+  sealed class Action : Redux.IAction {
     object AddOne : Action()
     object AddTwo : Action()
     object AddThree : Action()
     object Minus10 : Action()
-    object Minus20: Action()
+    object Minus20 : Action()
 
     companion object {
       private val random = Random()
@@ -49,7 +56,7 @@ open class BaseReduxStoreTest: CoroutineScope {
   override val coroutineContext = Dispatchers.Default
 
   fun reducer(): ReduxReducer<Int> = { s, a ->
-    when (a) {is Action -> a(s); else -> throw RuntimeException() }
+    when (a) { is Action -> a(s); else -> throw RuntimeException() }
   }
 
   fun dispatchingAction_shouldResultInCorrectState(store: Redux.IStore<Int>) {
@@ -57,7 +64,7 @@ open class BaseReduxStoreTest: CoroutineScope {
     val allDispatches = arrayListOf<Deferred<Unit>>()
 
     for (i in 0 until 100) {
-      /// Setup
+      // Setup
       val actions = arrayListOf<Action>()
 
       for (j in 0 until 50) {
@@ -66,7 +73,7 @@ open class BaseReduxStoreTest: CoroutineScope {
         currentState = action(currentState)
       }
 
-      /// When
+      // When
       // Dispatch actions on multiple coroutines to check thread safety.
       allDispatches.addAll(actions.map { a ->
         GlobalScope.async(start = CoroutineStart.LAZY) { store.dispatch(a) }
@@ -80,7 +87,7 @@ open class BaseReduxStoreTest: CoroutineScope {
         while (store.stateGetter() != currentState) { }; 1
       }
 
-      /// Then
+      // Then
       Assert.assertEquals(store.stateGetter(), currentState)
     }
   }

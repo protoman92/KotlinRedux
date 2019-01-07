@@ -18,7 +18,7 @@ import kotlin.concurrent.write
 class SimpleReduxStore<State>(
   internal var state: State,
   internal val reducer: ReduxReducer<State>
-): Redux.IStore<State> {
+) : Redux.IStore<State> {
   private val lock = ReentrantReadWriteLock()
   private val subscribers = HashMap<String, (State) -> Unit>()
 

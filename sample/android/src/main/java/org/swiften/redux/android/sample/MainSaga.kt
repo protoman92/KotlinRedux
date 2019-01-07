@@ -29,5 +29,5 @@ object MainSaga {
     just<State, String>(query)
       .callAsync { this.async { api.searchMusicStore(it) } }
       .cast<State, MusicResult, Any>()
-      .catchError {  }
+      .catchError { }
 }

@@ -16,7 +16,7 @@ import org.swiften.redux.core.Redux
 internal class PutEffect<State, P>(
   private val source: ReduxSagaEffect<State, P>,
   private val actionCreator: (P) -> Redux.IAction
-): ReduxSagaEffect<State, Any> {
+) : ReduxSagaEffect<State, Any> {
   @ExperimentalCoroutinesApi
   override fun invoke(p1: ReduxSaga.Input<State>) =
     source.invoke(p1).map { p1.dispatch(this@PutEffect.actionCreator(it)) as Any }

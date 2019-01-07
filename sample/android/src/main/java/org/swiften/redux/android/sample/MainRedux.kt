@@ -10,14 +10,14 @@ import org.swiften.redux.core.ReduxReducer
 
 /** Created by haipham on 2018/12/19 */
 object MainRedux {
-  sealed class Action: Redux.IAction {
-    data class UpdateAutocompleteQuery(val query: String?): Action()
+  sealed class Action : Redux.IAction {
+    data class UpdateAutocompleteQuery(val query: String?) : Action()
   }
 
-  object Reducer: ReduxReducer<State> {
+  object Reducer : ReduxReducer<State> {
     override operator fun invoke(previous: State, action: Redux.IAction): State {
       return when (action) {
-        is Action -> when(action) {
+        is Action -> when (action) {
           is Action.UpdateAutocompleteQuery -> previous.copy(action.query)
         }
 

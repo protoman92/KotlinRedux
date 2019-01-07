@@ -5,14 +5,25 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import java.util.*
+import java.util.Collections
+import java.util.Random
 
 /** Created by haipham on 2018/12/23 */
 private typealias Output<T> = ReduxSaga.Output<T>
@@ -35,7 +46,7 @@ class SagaOutputTest : CoroutineScope {
     fn: Output<Int>.(suspend CoroutineScope.(Int) -> Output<String>) -> Output<String>,
     actualValues: List<String>
   ) {
-    /// Setup
+    // Setup
     val sourceCh = Channel<Int>()
     val sourceOutput = Output(scope = this, channel = sourceCh) { }
     val finalValues = Collections.synchronizedList(arrayListOf<String>())
@@ -50,7 +61,7 @@ class SagaOutputTest : CoroutineScope {
 
     finalOutput.subscribe({ finalValues.add(it) })
 
-    /// When
+    // When
     this.launch { sourceCh.send(0); sourceCh.send(1); sourceCh.send(2) }
 
     runBlocking {
@@ -60,7 +71,7 @@ class SagaOutputTest : CoroutineScope {
 
       finalOutput.dispose()
 
-      /// Then
+      // Then
       Assert.assertEquals(finalValues.sorted(), actualValues.sorted())
     }
   }
@@ -90,7 +101,7 @@ class SagaOutputTest : CoroutineScope {
   fun test_flatMapVariants_shouldTerminateOnCancel(
     fn: Output<Int>.(suspend CoroutineScope.(Int) -> Output<Int>) -> Output<Int>
   ) {
-    /// Setup
+    // Setup
     val sourceCh = Channel<Int>()
     val sourceOutput = Output(scope = this, channel = sourceCh) { }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
@@ -105,7 +116,7 @@ class SagaOutputTest : CoroutineScope {
 
     finalOutput.subscribe({ finalValues.add(it) })
 
-    /// When
+    // When
     this.coroutineContext.cancel()
 
     this.launch {
@@ -117,7 +128,7 @@ class SagaOutputTest : CoroutineScope {
     runBlocking {
       delay(1000)
 
-      /// Then
+      // Then
       Assert.assertEquals(finalValues.size, 0)
     }
   }
@@ -139,7 +150,7 @@ class SagaOutputTest : CoroutineScope {
   @Test
   @ExperimentalCoroutinesApi
   fun `Output mapAsync should await deferred values`() {
-    /// Setup
+    // Setup
     val sourceCh = this.produce {
       this.send(0)
       this.send(1)
@@ -153,7 +164,7 @@ class SagaOutputTest : CoroutineScope {
       .mapAsync { this.async { delay(1000); it } }
       .subscribe({ finalValues.add(it) })
 
-    /// When && Then
+    // When && Then
     runBlocking {
       withTimeoutOrNull(this@SagaOutputTest.timeout) {
         while (finalValues.sorted() != arrayListOf(0, 1, 2, 3)) { }; Unit
@@ -167,7 +178,7 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun `Output debounce should throttle emissions`() {
-    /// Setup
+    // Setup
     val rand = Random()
     val sourceCh = Channel<Int>()
     val sourceOutput = Output(scope = this, channel = sourceCh) { }
@@ -182,7 +193,7 @@ class SagaOutputTest : CoroutineScope {
 
     finalOutput.subscribe({ finalValues.add(it) })
 
-    /// When
+    // When
     this.launch {
       validEmissions.forEachIndexed { index, b ->
         if (b) {
@@ -199,7 +210,7 @@ class SagaOutputTest : CoroutineScope {
         while (finalValues != actualValues) { delay(1000) }; 1
       }
 
-      /// Then
+      // Then
       Assert.assertEquals(finalValues, actualValues)
     }
   }
@@ -208,7 +219,7 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun `Output catch error should handle errors gracefully`() {
-    /// Setup
+    // Setup
     val sourceCh = Channel<Int>()
     val sourceOutput = Output(scope = this, channel = sourceCh) { }
     val error = Exception("Oh no!")
@@ -216,13 +227,13 @@ class SagaOutputTest : CoroutineScope {
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
     finalOutput.subscribe({ finalValues.add(it) })
 
-    /// When
+    // When
     this.launch { sourceCh.send(0); sourceCh.send(1); sourceCh.send(2) }
 
     runBlocking {
       delay(1000)
 
-      /// Then
+      // Then
       Assert.assertEquals(finalValues, arrayListOf(100))
     }
   }
@@ -233,7 +244,7 @@ class SagaOutputTest : CoroutineScope {
     dispose: (CoroutineScope, Output<Int>) -> Unit,
     assert: (Output<Int>) -> Unit
   ) {
-    /// Setup
+    // Setup
     val scope = object : CoroutineScope {
       override val coroutineContext = SupervisorJob()
     }
@@ -256,12 +267,12 @@ class SagaOutputTest : CoroutineScope {
     this.launch { sourceCh.send(50) }
 
     runBlocking {
-      /// When
+      // When
       delay(1000)
       dispose(scope, output6)
       delay(1000)
 
-      /// Then
+      // Then
       arrayListOf(
         output1,
         output2,

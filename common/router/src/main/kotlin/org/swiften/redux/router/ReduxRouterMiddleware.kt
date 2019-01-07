@@ -17,7 +17,7 @@ object ReduxRouterMiddleware {
    * Represents a screen that also implements [Redux.IAction], so that views
    * can simply dispatch an [IScreen] to navigate to the associated screen.
    */
-  interface IScreen: Redux.IAction
+  interface IScreen : Redux.IAction
 
   /** Abstract the necessary work to navigate from one [IScreen] to another */
   interface IRouter {
@@ -29,7 +29,7 @@ object ReduxRouterMiddleware {
   }
 
   /** [ReduxMiddleware.IProvider] implementation for [IRouter] middleware */
-  class Provider<State>(private val router: IRouter): ReduxMiddleware.IProvider<State> {
+  class Provider<State>(private val router: IRouter) : ReduxMiddleware.IProvider<State> {
     override val middleware: ReduxMiddlewareCreator<State> = { input ->
       { wrapper -> ReduxMiddleware.DispatchWrapper("$wrapper.id-router",
         object : ReduxDispatcher {

@@ -5,15 +5,26 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.channels.filter
+import kotlinx.coroutines.channels.map
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.channels.toChannel
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.core.ReduxStateGetter
-import java.util.*
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.concurrent.read
-import kotlin.concurrent.write
+import java.util.Date
 
 /** Created by haipham on 2018/12/22 */
 /** Abstraction for Redux saga that handles [Redux.IAction] in the pipeline */
@@ -69,7 +80,8 @@ object ReduxSaga {
 
     private fun <T2> with(
       identifier: String = this.identifier,
-      newChannel: ReceiveChannel<T2>): Output<T2>
+      newChannel: ReceiveChannel<T2>
+    ): Output<T2>
     {
       val result = Output(identifier, this.scope, newChannel, this.onAction)
       result.source = this
@@ -78,7 +90,7 @@ object ReduxSaga {
     }
 
     /** Add debugging caps to [channel] by injecting lifecycle observers */
-    private fun <T2> debugChannel(channel: ReceiveChannel<T2>) = when(channel) {
+    private fun <T2> debugChannel(channel: ReceiveChannel<T2>) = when (channel) {
       is Channel<T2> -> LifecycleChannel(this.identifier, channel)
       else -> LifecycleReceiveChannel(this.identifier, channel)
     }
@@ -166,10 +178,8 @@ object ReduxSaga {
     @ExperimentalCoroutinesApi
     internal fun catchError(fallback: suspend CoroutineScope.(Throwable) -> T) =
       this.with("CatchError", this.produce {
-        try { this@Output.channel.toChannel(this) }
-        catch (e1: Throwable) {
-          try { this.send(fallback(this, e1)); this.close() }
-          catch (e2: Throwable) { this.close(e2) }
+        try { this@Output.channel.toChannel(this) } catch (e1: Throwable) {
+          try { this.send(fallback(this, e1)); this.close() } catch (e2: Throwable) { this.close(e2) }
         }
       })
 
@@ -183,8 +193,7 @@ object ReduxSaga {
 
     fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit = { }) {
       this.launch {
-        try { this@Output.channel.consumeEach(onValue) }
-        catch (e: Throwable) { onError(e) }
+        try { this@Output.channel.consumeEach(onValue) } catch (e: Throwable) { onError(e) }
       }
     }
   }

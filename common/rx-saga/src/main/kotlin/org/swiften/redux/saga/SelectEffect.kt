@@ -14,7 +14,7 @@ import org.swiften.redux.saga.ReduxSagaHelper.just
  */
 internal class SelectEffect<State, R>(
   private val selector: (State) -> R
-): ReduxSagaEffect<State, R> {
+) : ReduxSagaEffect<State, R> {
   override fun invoke(p1: CommonSaga.Input<State>) =
     just<State, R>(this.selector(p1.stateGetter())).invoke(p1)
 }
@@ -24,7 +24,8 @@ internal class SelectEffect<State, R>(
  * emitted values with [selector].
  */
 fun <State, R, R2, R3> ReduxSagaEffect<State, R>.select(
-  selector: (State) -> R2, combiner: (R, R2) -> R3
+  selector: (State) -> R2,
+  combiner: (R, R2) -> R3
 ) = this.then(ReduxSagaHelper.select(selector), combiner)
 
 /** Invoke a [SelectEffect] but ignore emissions from [this] */
