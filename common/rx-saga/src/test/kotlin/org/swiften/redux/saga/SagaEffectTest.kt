@@ -5,8 +5,17 @@
 
 package org.swiften.redux.saga
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxFlowable
+import kotlinx.coroutines.withTimeoutOrNull
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxPreset
 import org.swiften.redux.saga.ReduxSagaHelper.from
@@ -18,14 +27,14 @@ import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.net.URL
-import java.util.*
+import java.util.Collections
 
 /** Created by haipham on 2018/12/23 */
 class SagaEffectTest : CoroutineScope {
   class State
 
   sealed class TakeAction : Redux.IAction {
-    data class Action1(val value: Int): TakeAction()
+    data class Action1(val value: Int) : TakeAction()
   }
 
   override val coroutineContext get() = this.job
@@ -50,16 +59,16 @@ class SagaEffectTest : CoroutineScope {
     ) -> ReduxSagaEffect<State, Any>,
     actualValues: List<Int>
   ) {
-    /// Setup
+    // Setup
     val takeOutput = createTakeEffect(
-      { when (it) {is TakeAction.Action1 -> it.value } },
+      { when (it) { is TakeAction.Action1 -> it.value } },
       { just<State, Int>(it).callSuspend { delay(1000); it } }
     ).invoke(this, State()) { }
 
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
     takeOutput.subscribe({ finalValues.add(it as Int) })
 
-    /// When
+    // When
     takeOutput.onAction(TakeAction.Action1(0))
     takeOutput.onAction(TakeAction.Action1(1))
     takeOutput.onAction(ReduxPreset.DefaultAction.Dummy)
@@ -72,7 +81,7 @@ class SagaEffectTest : CoroutineScope {
         while (finalValues.sorted() != actualValues.sorted()) { }; Unit
       }
 
-      /// Then
+      // Then
       Assert.assertEquals(finalValues.sorted(), actualValues.sorted())
     }
   }
@@ -93,7 +102,7 @@ class SagaEffectTest : CoroutineScope {
 
   @Test
   fun `Catch error effect should handle errors gracefully`() {
-    /// Setup
+    // Setup
     val error = Exception("Oh no!")
 
     val finalOutput = just<State, Int>(1)
@@ -104,7 +113,7 @@ class SagaEffectTest : CoroutineScope {
 
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
-    /// When
+    // When
     finalOutput.subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -112,7 +121,7 @@ class SagaEffectTest : CoroutineScope {
         while (finalValues != arrayListOf(100)) { }; Unit
       }
 
-      /// Then
+      // Then
       Assert.assertEquals(finalValues, arrayListOf(100))
     }
   }
@@ -120,7 +129,7 @@ class SagaEffectTest : CoroutineScope {
   @Test
   @ExperimentalCoroutinesApi
   fun `Filter effect should filter out unwanted values`() {
-    /// Setup
+    // Setup
     val sourceStream = this.rxFlowable {
       this.send(0)
       this.send(1)
@@ -136,7 +145,7 @@ class SagaEffectTest : CoroutineScope {
 
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
-    /// When
+    // When
     finalOutput.subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -144,14 +153,14 @@ class SagaEffectTest : CoroutineScope {
         while (finalValues != arrayListOf(0, 2)) { }; Unit
       }
 
-      /// Then
+      // Then
       Assert.assertEquals(finalValues, arrayListOf(0, 2))
     }
   }
 
   @Test
   fun `Put effect should dispatch action`() {
-    /// Setup
+    // Setup
     data class Action(private val value: Int) : Redux.IAction
     val dispatched = arrayListOf<Redux.IAction>()
 
@@ -160,7 +169,7 @@ class SagaEffectTest : CoroutineScope {
       .put { Action(it) }
       .invoke(this, State()) { dispatched.add(it) }
 
-    /// When
+    // When
     finalOutput.subscribe({})
 
     runBlocking {
@@ -168,14 +177,14 @@ class SagaEffectTest : CoroutineScope {
         while (dispatched != arrayListOf(Action(0))) { }; Unit
       }
 
-      /// Then
+      // Then
       Assert.assertEquals(dispatched, arrayListOf(Action(0)))
     }
   }
 
   @Test
   fun `Select effect should extract some value from a state`() {
-    /// Setup
+    // Setup
     val sourceOutput1 = just<State, Int>(1)
       .select({ 2 }, { a, b -> a + b })
       .invoke(this, State()) { }
@@ -184,27 +193,27 @@ class SagaEffectTest : CoroutineScope {
       .select { 4 }
       .invoke(this, State()) { }
 
-    /// When && Then
+    // When && Then
     Assert.assertEquals(sourceOutput1.nextValue(this.timeout), 3)
     Assert.assertEquals(sourceOutput2.nextValue(this.timeout), 4)
   }
 
   @Test
   fun `Then effect should enforce ordering`() {
-    /// Setup
+    // Setup
     val finalOutput = just<State, Int>(1)
       .delay(500)
       .then(just<State, Int>(2).map { it }) { a, b -> "$a$b" }
       .delay(1000)
       .invoke(this, State()) { }
 
-    /// When && Then
+    // When && Then
     Assert.assertEquals(finalOutput.nextValue(this.timeout), "12")
   }
 
   @Test
   fun `Take latest should work in real life scenarios`() {
-    /// Setup
+    // Setup
     data class Action(val query: String) : Redux.IAction
     val finalValues = Collections.synchronizedList(arrayListOf<Any>())
 
@@ -228,7 +237,7 @@ class SagaEffectTest : CoroutineScope {
 
     sourceOutput.subscribe({ finalValues.add(it) })
 
-    /// When
+    // When
     for (i in 0 until 20) { sourceOutput.onAction(Action("$i")) }
 
     runBlocking {
@@ -236,7 +245,7 @@ class SagaEffectTest : CoroutineScope {
         while (finalValues.size != 1) { delay(100) }; Unit
       }
 
-      /// Then
+      // Then
       Assert.assertEquals(finalValues.size, 1)
     }
   }

@@ -11,7 +11,7 @@ import io.reactivex.Flowable
 /** [ReduxSagaEffect] whose [ReduxSaga.Output] is provided via [stream] */
 internal class FromEffect<State, R>(
   private val stream: Flowable<R>
-): ReduxSagaEffect<State, R> {
+) : ReduxSagaEffect<State, R> {
   override fun invoke(p1: CommonSaga.Input<State>) =
     ReduxSaga.Output(p1.scope, this.stream) { }
 }

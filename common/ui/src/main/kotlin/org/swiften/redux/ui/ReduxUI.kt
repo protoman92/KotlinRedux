@@ -7,7 +7,7 @@ package org.swiften.redux.ui
 
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
-import java.util.*
+import java.util.Date
 import java.util.concurrent.locks.ReentrantLock
 
 /** Created by haipham on 2018/12/16 */
@@ -31,7 +31,7 @@ object ReduxUI {
    * Represents a Redux compatible view, combining [IStaticPropContainerView]
    * and [IVariablePropContainerView].
    */
-  interface IPropContainerView<GlobalState, StateProps, ActionProps>:
+  interface IPropContainerView<GlobalState, StateProps, ActionProps> :
     IStaticPropContainerView<GlobalState>,
     IVariablePropContainerView<StateProps, ActionProps>
 
@@ -53,16 +53,18 @@ object ReduxUI {
      * Map [ReduxDispatcher] to [ActionProps] using [GlobalState] and
      * [OutProps].
      */
-    fun mapAction(dispatch: ReduxDispatcher,
-                  state: GlobalState,
-                  outProps: OutProps): ActionProps
+    fun mapAction(
+      dispatch: ReduxDispatcher,
+      state: GlobalState,
+      outProps: OutProps
+    ): ActionProps
   }
 
   /**
    * Maps [GlobalState] to [StateProps] and [ActionProps] for a
    * [IPropContainerView].
    */
-  interface IPropMapper<GlobalState, OutProps, StateProps, ActionProps>:
+  interface IPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
     IStatePropMapper<GlobalState, OutProps, StateProps>,
     IActionPropMapper<GlobalState, OutProps, ActionProps>
 
@@ -92,7 +94,7 @@ object ReduxUI {
   /** A [IPropInjector] implementation */
   class PropInjector<State>(
     private val store: Redux.IStore<State>
-  ): IPropInjector<State> {
+  ) : IPropInjector<State> {
     override fun <OutProps, StateProps, ActionProps> injectProps(
       view: ReduxUI.IPropContainerView<State, StateProps, ActionProps>,
       outProps: OutProps,

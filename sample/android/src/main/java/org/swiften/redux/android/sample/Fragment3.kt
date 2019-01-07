@@ -8,4 +8,4 @@ package org.swiften.redux.android.sample
 import androidx.fragment.app.Fragment
 
 /** Created by haipham on 2018/12/21 */
-class Fragment3: Fragment()
+class Fragment3 : Fragment()

@@ -18,19 +18,18 @@ import org.swiften.redux.ui.ReduxUI
 import kotlin.properties.Delegates
 
 /** Created by haipham on 2018/12/20 */
-class SearchFragment: Fragment(),
+class SearchFragment : Fragment(),
   ReduxUI.IPropContainerView<State, SearchFragment.S, SearchFragment.A>,
-  ReduxUI.IPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment
-{
+  ReduxUI.IPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
   data class S(val query: String?)
   class A(val updateQuery: (String?) -> Unit)
 
-  companion object: ReduxUI.IPropMapper<State, Unit, S, A> {
+  companion object : ReduxUI.IPropMapper<State, Unit, S, A> {
     override fun mapAction(
       dispatch: ReduxDispatcher,
       state: State,
       outProps: Unit
-    ) = A {dispatch(MainRedux.Action.UpdateAutocompleteQuery(it))}
+    ) = A { dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
 
     override fun mapState(state: State, outProps: Unit) = S(state.autocompleteQuery)
   }

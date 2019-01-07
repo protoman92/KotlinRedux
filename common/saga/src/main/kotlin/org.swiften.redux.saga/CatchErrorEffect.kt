@@ -13,7 +13,7 @@ package org.swiften.redux.saga
 internal class CatchErrorEffect<State, R>(
   private val source: ReduxSagaEffect<State, R>,
   private val catcher: (Throwable) -> R
-): ReduxSagaEffect<State, R> {
+) : ReduxSagaEffect<State, R> {
   override fun invoke(input: CommonSaga.Input<State>) =
     this.source.invoke(input).catchError(this.catcher)
 }

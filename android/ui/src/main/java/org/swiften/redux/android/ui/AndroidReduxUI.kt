@@ -47,7 +47,7 @@ object AndroidReduxUI {
   private class ReduxLifecycleObserver private constructor(
     private val lifecycle: Lifecycle,
     private val subscription: Redux.Subscription
-  ): LifecycleObserver {
+  ) : LifecycleObserver {
     companion object {
       /**
        * Create a [ReduxLifecycleObserver] with [lifecycle] and [subscription].
@@ -71,7 +71,7 @@ object AndroidReduxUI {
    */
   class PropInjector<State>(
     private val injector: ReduxUI.IPropInjector<State>
-  ): IPropInjector<State>, ReduxUI.IPropInjector<State> by injector {
+  ) : IPropInjector<State>, ReduxUI.IPropInjector<State> by injector {
     /**
      * Use the default [ReduxUI.PropInjector] implementation.
      */
@@ -134,8 +134,8 @@ fun <State, LC, OP, SP> AndroidReduxUI.IPropInjector<State>.injectProps(
   mapper: ReduxUI.IStatePropMapper<State, OP, SP>
 ) where
   LC : LifecycleOwner,
-  LC : ReduxUI.IPropContainerView<State, SP, Unit>
-  = this.injectProps(lifecycleOwner, outProps,
+  LC : ReduxUI.IPropContainerView<State, SP, Unit> =
+  this.injectProps(lifecycleOwner, outProps,
   object : ReduxUI.IPropMapper<State, OP, SP, Unit> {
     override fun mapAction(
       dispatch: ReduxDispatcher,

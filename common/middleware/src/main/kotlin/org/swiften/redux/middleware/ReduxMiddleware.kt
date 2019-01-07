@@ -49,7 +49,7 @@ object ReduxMiddleware {
   private class EnhancedStore<State>(
     val store: Redux.IStore<State>,
     override val dispatch: Function1<Redux.IAction, Unit>
-  ): Redux.IStore<State> by store
+  ) : Redux.IStore<State> by store
 
   /**
    * Combine [middlewares] into a master [ReduxMiddlewareCreator] and apply it

@@ -19,11 +19,11 @@ class PropInjectorTest {
   data class S(val query: String = "")
   class A
 
-  sealed class Action: Redux.IAction {
-    data class SetQuery(val query: String): Action()
+  sealed class Action : Redux.IAction {
+    data class SetQuery(val query: String) : Action()
   }
 
-  class StoreWrapper(val store: Redux.IStore<S>): Redux.IStore<S> by store {
+  class StoreWrapper(val store: Redux.IStore<S>) : Redux.IStore<S> by store {
     var unsubCount: Int = 0
 
     override val subscribe = object : ReduxSubscriber<S> {
@@ -41,7 +41,7 @@ class PropInjectorTest {
     }
   }
 
-  class View: ReduxUI.IPropContainerView<S, S, A> {
+  class View : ReduxUI.IPropContainerView<S, S, A> {
     override var staticProps
       by Delegates.observable<ReduxUI.StaticProps<S>?>(null) { _, _, p ->
         this.didSetStaticProps(p)
@@ -72,7 +72,7 @@ class PropInjectorTest {
   fun beforeMethod() {
     val store = SimpleReduxStore(S()) { s, a ->
       when (a) {
-        is Action -> when (a) {is Action.SetQuery -> s.copy(query = a.query) }
+        is Action -> when (a) { is Action.SetQuery -> s.copy(query = a.query) }
         else -> s
       }
     }
@@ -93,10 +93,10 @@ class PropInjectorTest {
 
   @Test
   fun `Injecting same state props - should not trigger set event`() {
-    /// Setup
+    // Setup
     val view = View()
 
-    /// When
+    // When
     this.injector.injectProps(view, Unit, this.mapper)
     this.store.dispatch(Action.SetQuery("1"))
     this.store.dispatch(Action.SetQuery("1"))
@@ -106,7 +106,7 @@ class PropInjectorTest {
     this.store.dispatch(Action.SetQuery("3"))
     this.injector.injectProps(view, Unit, this.mapper)
 
-    /// Then
+    // Then
     Assert.assertEquals(this.store.unsubCount, 1)
     Assert.assertEquals(view.staticInjectionCount, 2)
     Assert.assertEquals(view.variableInjectionCount, 4)

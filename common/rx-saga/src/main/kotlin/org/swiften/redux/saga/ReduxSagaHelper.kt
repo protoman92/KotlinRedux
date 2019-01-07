@@ -40,8 +40,8 @@ object ReduxSagaHelper {
   fun <State, R> just(value: R): ReduxSagaEffect<State, R> = JustEffect(value)
 
   /** Create a [SelectEffect] */
-  fun <State, R> select(selector: (State) -> R): ReduxSagaEffect<State, R>
-    = SelectEffect(selector)
+  fun <State, R> select(selector: (State) -> R): ReduxSagaEffect<State, R> =
+    SelectEffect(selector)
 
   /** Create a [TakeEveryEffect] instance. */
   fun <State, P, R> takeEvery(
@@ -59,7 +59,7 @@ object ReduxSagaHelper {
     noinline block: Function1<P, ReduxSagaEffect<State, R>>,
     options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
   ) where Action: Redux.IAction = this.takeEvery(
-    { when (it) {is Action -> extract(it); else -> null } },
+    { when (it) { is Action -> extract(it); else -> null } },
     block, options
   )
 
@@ -79,7 +79,7 @@ object ReduxSagaHelper {
     noinline block: Function1<P, ReduxSagaEffect<State, R>>,
     options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
   ) where Action: Redux.IAction = this.takeLatest(
-    { when (it) {is Action -> extract(it); else -> null } },
+    { when (it) { is Action -> extract(it); else -> null } },
     block, options
   )
 }

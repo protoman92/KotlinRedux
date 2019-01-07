@@ -15,50 +15,50 @@ import org.testng.annotations.Test
 class LifecycleChannelTest {
   @Test
   fun `Send channels should invoke side effects on lifecycle change`() {
-    /// Setup
+    // Setup
     var closed = 0
     val channel = LifecycleSendChannel("", Channel<Int>()) { closed += 1 }
 
-    /// When
+    // When
     channel.close()
     channel.close()
     channel.close()
 
-    /// Then
+    // Then
     Assert.assertEquals(closed, 2)
   }
 
   @Test
   fun `Receive channels should invoke side effects on lifecycle change`() {
-    /// Setup
+    // Setup
     var cancelled = 0
     val channel = LifecycleReceiveChannel("", Channel<Int>()) { cancelled += 1 }
 
-    /// When
+    // When
     channel.cancel()
     channel.cancel()
     channel.cancel()
 
-    /// Then
+    // Then
     Assert.assertEquals(cancelled, 3)
   }
 
   @Test
   fun `Lifecycle channels should invoke side effects on lifecycle change`() {
-    /// Setup
+    // Setup
     var closed = 0
     var cancelled = 0
 
     val channel = LifecycleChannel("", Channel<Int>(),
       { closed += 1 },
-      { cancelled += 1}
+      { cancelled += 1 }
     )
 
-    /// When
+    // When
     channel.close()
     channel.cancel()
 
-    /// Then
+    // Then
     Assert.assertEquals(closed, 2)
     Assert.assertEquals(cancelled, 1)
   }

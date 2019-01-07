@@ -17,7 +17,7 @@ object ReduxSagaMiddleware {
   /** [ReduxMiddleware.IProvider] implementation for Saga */
   class Provider<State>(
     private val effects: List<ReduxSagaEffect<State, Any>>
-  ): ReduxMiddleware.IProvider<State> {
+  ) : ReduxMiddleware.IProvider<State> {
     override val middleware: ReduxMiddlewareCreator<State> = { input ->
       { wrapper ->
         val job = SupervisorJob()

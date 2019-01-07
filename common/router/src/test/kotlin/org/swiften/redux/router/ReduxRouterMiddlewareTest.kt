@@ -13,11 +13,11 @@ import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
 
 /** Created by haipham on 2018/12/16 */
-class ReduxRouterMiddlewareTest: ReduxRouterMiddleware.IRouter {
-  sealed class Screen: ReduxRouterMiddleware.IScreen {
-    object Screen1: Screen()
-    object Screen2: Screen()
-    object Screen3: Screen()
+class ReduxRouterMiddlewareTest : ReduxRouterMiddleware.IRouter {
+  sealed class Screen : ReduxRouterMiddleware.IScreen {
+    object Screen1 : Screen()
+    object Screen2 : Screen()
+    object Screen3 : Screen()
 
     override fun toString(): String {
       return this.javaClass.simpleName
@@ -37,20 +37,20 @@ class ReduxRouterMiddlewareTest: ReduxRouterMiddleware.IRouter {
 
   @Test
   fun `Dispatching screen actions should navigate to the assoc screen`() {
-    /// Setup
+    // Setup
     val store = SimpleReduxStore(0) { a, b -> a }
 
     val wrappedStore = ReduxMiddleware.applyMiddlewares(
       ReduxRouterMiddleware.Provider<Int>(this).middleware
     )(store)
 
-    /// When
+    // When
     wrappedStore.dispatch(ReduxPreset.DefaultAction.Dummy)
     wrappedStore.dispatch(Screen.Screen1)
     wrappedStore.dispatch(Screen.Screen2)
     wrappedStore.dispatch(Screen.Screen3)
 
-    /// Then
+    // Then
     Assert.assertEquals(this.screens, arrayListOf(
       Screen.Screen1,
       Screen.Screen2,

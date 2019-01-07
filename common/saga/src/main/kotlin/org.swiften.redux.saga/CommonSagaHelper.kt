@@ -43,5 +43,5 @@ object CommonSagaHelper {
     source1: ReduxSagaEffect<State, R>,
     source2: ReduxSagaEffect<State, R2>,
     selector: Function2<R, R2, R3>
-  ) : ReduxSagaEffect<State, R3> = ThenEffect(source1, source2, selector)
+  ): ReduxSagaEffect<State, R3> = ThenEffect(source1, source2, selector)
 }

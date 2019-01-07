@@ -12,7 +12,7 @@ interface IMainApi {
   fun searchMusicStore(input: String): String
 }
 
-class MainApi: IMainApi {
+class MainApi : IMainApi {
   override fun searchMusicStore(input: String): String {
     val url = "https://itunes.apple.com/search?term=$input&limit=5&media=music"
     return URL(url).readText()

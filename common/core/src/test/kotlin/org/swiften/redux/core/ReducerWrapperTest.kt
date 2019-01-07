@@ -12,12 +12,12 @@ import org.testng.annotations.Test
 class ReducerWrapperTest {
   @Test
   fun test_reducingDefaultActions_shouldWork() {
-    /// Setup
+    // Setup
     val reducer = ReduxPreset.ReducerWrapper<Int> { a, _ -> a + 1 }
 
     var original = 0
 
-    /// When & Then
+    // When & Then
     original = reducer(original, ReduxPreset.DefaultAction.Dummy)
     Assert.assertEquals(original, 0)
     original = reducer(original, ReduxPreset.DefaultAction.ReplaceState(1000))

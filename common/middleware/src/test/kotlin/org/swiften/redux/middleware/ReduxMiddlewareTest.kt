@@ -14,7 +14,7 @@ import org.testng.annotations.Test
 class ReduxMiddlewareTest {
   @Test
   fun `Applying middlewares to a store should produce correct order`() {
-    /// Setup
+    // Setup
     val store = SimpleReduxStore(0) { a, _ -> a }
     val ordering = arrayListOf<Int>()
 
@@ -36,24 +36,24 @@ class ReduxMiddlewareTest {
       } }
     )(store)
 
-    /// When
+    // When
     wrappedStore.dispatch(ReduxPreset.DefaultAction.Dummy)
     wrappedStore.dispatch(ReduxPreset.DefaultAction.Dummy)
     wrappedStore.dispatch(ReduxPreset.DefaultAction.Dummy)
 
-    /// Then
+    // Then
     Assert.assertEquals(ordering, arrayListOf(3, 2, 1, 3, 2, 1, 3, 2, 1))
   }
 
   @Test
   fun `Applying middlewares with empty middleware list`() {
-    /// Setup
+    // Setup
     val store = SimpleReduxStore(0) { a, _ -> a }
 
-    /// When
+    // When
     val wrapper = ReduxMiddleware.combineMiddlewares<Int>(arrayListOf())(store)
 
-    /// Then
+    // Then
     Assert.assertEquals(wrapper.id, "root")
   }
 }
