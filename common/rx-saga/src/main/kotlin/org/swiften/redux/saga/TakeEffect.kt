@@ -24,11 +24,11 @@ internal abstract class TakeEffect<State, P, R>(
    * the values streamed by the inner [ReduxSaga.Output].
    */
   abstract fun flattenOutput(
-    nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
-  ): ReduxSaga.Output<R>
+    nestedOutput: CommonSaga.IOutput<CommonSaga.IOutput<R>>
+  ): CommonSaga.IOutput<R>
 
   @Suppress("MoveLambdaOutsideParentheses")
-  override operator fun invoke(p1: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
+  override operator fun invoke(p1: CommonSaga.Input<State>): CommonSaga.IOutput<R> {
     val subject = PublishProcessor.create<P>()
 
     val nested = ReduxSaga.Output(

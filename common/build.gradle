@@ -82,6 +82,14 @@ project('router') {
   }
 }
 
+project('saga') {
+  dependencies {
+    api project(':common:core')
+    api project(':common:middleware')
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+  }
+}
+
 project('coroutine-saga') {
   dependencies {
     api project(':common:core')
@@ -92,9 +100,9 @@ project('coroutine-saga') {
 
 project('rx-saga') {
   dependencies {
-    api project(':common:core')
-    api project(':common:middleware')
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation project(':common:core')
+    implementation project(':common:middleware')
+    implementation project(':common:saga')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
   }

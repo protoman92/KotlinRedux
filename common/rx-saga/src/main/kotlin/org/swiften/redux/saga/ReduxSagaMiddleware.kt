@@ -26,7 +26,7 @@ object ReduxSagaMiddleware {
           override val coroutineContext = Dispatchers.Default + job
         }
 
-        val sgi = ReduxSaga.Input(scope, input.stateGetter, wrapper.dispatch)
+        val sgi = CommonSaga.Input(scope, input.stateGetter, wrapper.dispatch)
         val outputs = this@Provider.effects.map { it(sgi) }
         outputs.forEach { it.subscribe({}) }
 
