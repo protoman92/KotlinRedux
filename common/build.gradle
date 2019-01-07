@@ -83,6 +83,17 @@ project('router') {
 }
 
 project('saga') {
+  configurations { testArtifacts.extendsFrom testRuntime }
+
+  task testJar (type: Jar) {
+    classifier "test"
+    from sourceSets.test.output
+  }
+
+  artifacts {
+    testArtifacts testJar
+  }
+
   dependencies {
     api project(':common:core')
     api project(':common:middleware')
@@ -105,6 +116,7 @@ project('rx-saga') {
     implementation project(':common:saga')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
+    testImplementation project (path: ":common:saga", configuration: 'testArtifacts')
   }
 }
 

@@ -7,11 +7,8 @@ package org.swiften.redux.saga
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxFlowable
@@ -23,33 +20,17 @@ import org.swiften.redux.saga.ReduxSagaHelper.just
 import org.swiften.redux.saga.ReduxSagaHelper.takeEveryAction
 import org.swiften.redux.saga.ReduxSagaHelper.takeLatestAction
 import org.testng.Assert
-import org.testng.annotations.AfterMethod
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.net.URL
 import java.util.Collections
 
 /** Created by haipham on 2018/12/23 */
-class SagaEffectTest : CoroutineScope {
-  class State
+class SagaEffectTest : CommonSagaEffectTest() {
+  override fun <T> justEffect(value: T) = just<State, T>(value)
 
-  sealed class TakeAction : Redux.IAction {
-    data class Action1(val value: Int) : TakeAction()
-  }
-
-  override val coroutineContext get() = this.job
-
-  private lateinit var job: Job
-  private val timeout: Long = 10000
-
-  @BeforeMethod
-  fun beforeMethod() { this.job = SupervisorJob() }
-
-  @AfterMethod
-  fun afterMethod() {
-    this.coroutineContext.cancelChildren()
-    runBlocking { delay(1000) }
-  }
+  @ExperimentalCoroutinesApi
+  override fun <T : Any> fromEffect(vararg values: T) =
+    from<State, T>(this.rxFlowable { values.forEach { this.send(it) } })
 
   @ObsoleteCoroutinesApi
   private fun test_takeEffect_shouldTakeCorrectActions(
@@ -101,88 +82,6 @@ class SagaEffectTest : CoroutineScope {
   }
 
   @Test
-  fun `Catch error effect should handle errors gracefully`() {
-    // Setup
-    val error = Exception("Oh no!")
-
-    val finalOutput = just<State, Int>(1)
-      .map { throw error; 1 }
-      .delay(1000)
-      .catchError { 100 }
-      .invoke(this, State()) { }
-
-    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
-
-    // When
-    finalOutput.subscribe({ finalValues.add(it) })
-
-    runBlocking {
-      withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(100)) { }; Unit
-      }
-
-      // Then
-      Assert.assertEquals(finalValues, arrayListOf(100))
-    }
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun `Filter effect should filter out unwanted values`() {
-    // Setup
-    val sourceStream = this.rxFlowable {
-      this.send(0)
-      this.send(1)
-      this.send(2)
-      this.send(3)
-    }
-
-    val finalOutput = from<State, Int>(sourceStream)
-      .filter { it % 2 == 0 }
-      .delay(100)
-      .cast<State, Int, Int>()
-      .invoke(this, State()) { }
-
-    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
-
-    // When
-    finalOutput.subscribe({ finalValues.add(it) })
-
-    runBlocking {
-      withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(0, 2)) { }; Unit
-      }
-
-      // Then
-      Assert.assertEquals(finalValues, arrayListOf(0, 2))
-    }
-  }
-
-  @Test
-  fun `Put effect should dispatch action`() {
-    // Setup
-    data class Action(private val value: Int) : Redux.IAction
-    val dispatched = arrayListOf<Redux.IAction>()
-
-    val finalOutput = just<State, Int>(0)
-      .map { it }
-      .put { Action(it) }
-      .invoke(this, State()) { dispatched.add(it) }
-
-    // When
-    finalOutput.subscribe({})
-
-    runBlocking {
-      withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (dispatched != arrayListOf(Action(0))) { }; Unit
-      }
-
-      // Then
-      Assert.assertEquals(dispatched, arrayListOf(Action(0)))
-    }
-  }
-
-  @Test
   fun `Select effect should extract some value from a state`() {
     // Setup
     val sourceOutput1 = just<State, Int>(1)
@@ -196,19 +95,6 @@ class SagaEffectTest : CoroutineScope {
     // When && Then
     Assert.assertEquals(sourceOutput1.nextValue(this.timeout), 3)
     Assert.assertEquals(sourceOutput2.nextValue(this.timeout), 4)
-  }
-
-  @Test
-  fun `Then effect should enforce ordering`() {
-    // Setup
-    val finalOutput = just<State, Int>(1)
-      .delay(500)
-      .then(just<State, Int>(2).map { it }) { a, b -> "$a$b" }
-      .delay(1000)
-      .invoke(this, State()) { }
-
-    // When && Then
-    Assert.assertEquals(finalOutput.nextValue(this.timeout), "12")
   }
 
   @Test
