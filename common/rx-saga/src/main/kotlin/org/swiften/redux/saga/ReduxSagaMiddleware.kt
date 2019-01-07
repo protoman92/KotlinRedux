@@ -28,6 +28,7 @@ object ReduxSagaMiddleware {
 
         val sgi = ReduxSaga.Input(scope, input.stateGetter, wrapper.dispatch)
         val outputs = this@Provider.effects.map { it(sgi) }
+        outputs.forEach { it.subscribe({}) }
 
         ReduxMiddleware.DispatchWrapper("${wrapper.id}-saga") { action ->
           wrapper.dispatch(action)

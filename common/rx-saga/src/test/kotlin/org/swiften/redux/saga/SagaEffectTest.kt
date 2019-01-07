@@ -211,9 +211,7 @@ class SagaEffectTest : CoroutineScope {
     fun CoroutineScope.searchMusicStore(q: String) = this.async {
       val url = "https://itunes.apple.com/search?term=$q&limit=5&media=music"
       val result = URL(url).readText().replace("\n", "")
-      val result1 = "Input: $q, Result: $result"
-      println("EH")
-      result1
+      "Input: $q, Result: $result"
     }
 
     val sourceOutput = takeLatestAction<Unit, Action, String, Any>(
