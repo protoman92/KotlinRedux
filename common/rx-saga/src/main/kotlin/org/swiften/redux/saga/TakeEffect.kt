@@ -7,7 +7,6 @@ package org.swiften.redux.saga
 
 import io.reactivex.processors.PublishProcessor
 import org.swiften.redux.core.Redux
-import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/23 */
 /**
@@ -28,16 +27,15 @@ internal abstract class TakeEffect<State, P, R>(
     nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
   ): ReduxSaga.Output<R>
 
+  @Suppress("MoveLambdaOutsideParentheses")
   override operator fun invoke(p1: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
-    val subject = PublishProcessor.create<Redux.IAction>()
+    val subject = PublishProcessor.create<P>()
 
-    val nested = ReduxSaga.Output(p1.scope,
-      subject
-        .map(this.extract)
-        .filter { it != null }
-        .map { this@TakeEffect.block(it).invoke(p1) }
-        .debounce(this.options.debounceMillis, TimeUnit.MILLISECONDS)
-    ) { action -> subject.offer(action) }
+    val nested = ReduxSaga.Output(
+      p1.scope, subject,
+      { this@TakeEffect.extract(it)?.also { subject.offer(it) } })
+      .debounce(this@TakeEffect.options.debounceMillis)
+      .map { this@TakeEffect.block(it).invoke(p1) }
 
     return this.flattenOutput(nested)
   }
