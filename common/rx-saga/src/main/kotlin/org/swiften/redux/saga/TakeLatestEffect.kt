@@ -20,6 +20,6 @@ internal class TakeLatestEffect<State, P, R>(
   options: ReduxSaga.TakeOptions
 ) : TakeEffect<State, P, R>(extract, block, options) {
   override fun flattenOutput(
-    nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
+    nestedOutput: CommonSaga.IOutput<CommonSaga.IOutput<R>>
   ) = nestedOutput.switchMap { it }
 }

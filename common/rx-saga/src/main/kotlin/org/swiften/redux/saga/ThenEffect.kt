@@ -16,7 +16,7 @@ internal class ThenEffect<State, R, R2, R3>(
   private val combiner: Function2<R, R2, R3>
 ) : ReduxSagaEffect<State, R3> {
   @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-  override fun invoke(input: ReduxSaga.Input<State>): ReduxSaga.Output<R3> {
+  override fun invoke(input: CommonSaga.Input<State>): CommonSaga.IOutput<R3> {
     val o2 = this@ThenEffect.source2.invoke(input)
 
     return this.source1.invoke(input).flatMap { value1 ->

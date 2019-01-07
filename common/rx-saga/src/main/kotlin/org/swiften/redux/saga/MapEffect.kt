@@ -15,7 +15,7 @@ internal class MapEffect<State, P, R>(
   private val param: ReduxSagaEffect<State, P>,
   private val block: (P) -> R
 ): ReduxSagaEffect<State, R> {
-  override fun invoke(input: ReduxSaga.Input<State>) =
+  override fun invoke(input: CommonSaga.Input<State>) =
     this.param.invoke(input).map(this.block)
 }
 

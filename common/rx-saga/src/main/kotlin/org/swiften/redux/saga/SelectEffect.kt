@@ -15,7 +15,7 @@ import org.swiften.redux.saga.ReduxSagaHelper.just
 internal class SelectEffect<State, R>(
   private val selector: (State) -> R
 ): ReduxSagaEffect<State, R> {
-  override fun invoke(p1: ReduxSaga.Input<State>) =
+  override fun invoke(p1: CommonSaga.Input<State>) =
     just<State, R>(this.selector(p1.stateGetter())).invoke(p1)
 }
 

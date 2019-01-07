@@ -14,7 +14,7 @@ internal class FilterEffect<State, R>(
   private val source: ReduxSagaEffect<State, R>,
   private val selector: (R) -> Boolean
 ) : ReduxSagaEffect<State, R> {
-  override fun invoke(p1: ReduxSaga.Input<State>) =
+  override fun invoke(p1: CommonSaga.Input<State>) =
     this.source.invoke(p1).filter(this.selector)
 }
 

@@ -14,7 +14,7 @@ internal class DelayEffect<State, R>(
   private val source: ReduxSagaEffect<State, R>,
   private val delayMillis: Long
 ) : ReduxSagaEffect<State, R> {
-  override fun invoke(p1: ReduxSaga.Input<State>) =
+  override fun invoke(p1: CommonSaga.Input<State>) =
     this.source.invoke(p1).delay(this.delayMillis)
 }
 
