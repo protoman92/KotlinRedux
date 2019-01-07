@@ -20,4 +20,4 @@ internal class DoOnValueEffect<State, R>(
 
 /** Invoke a [DoOnValueEffect] on [this] */
 fun <State, R> ReduxSagaEffect<State, R>.doOnValue(block: (R) -> Unit) =
-  ReduxSagaHelper.doOnValue(this, block)
+  CommonSagaHelper.doOnValue(this, block)

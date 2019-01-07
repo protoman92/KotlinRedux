@@ -23,4 +23,4 @@ internal class PutEffect<State, P>(
 /** Invoke a [PutEffect] on the current [ReduxSagaHelper] */
 fun <State, P> ReduxSagaEffect<State, P>.put(
   actionCreator: (P) -> Redux.IAction
-) = ReduxSagaHelper.put(this, actionCreator)
+) = CommonSagaHelper.put(this, actionCreator)

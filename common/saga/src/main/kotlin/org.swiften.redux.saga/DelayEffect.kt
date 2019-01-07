@@ -20,4 +20,4 @@ internal class DelayEffect<State, R>(
 
 /** Invoke a [DelayEffect] on [this] */
 fun <State, R> ReduxSagaEffect<State, R>.delay(delayMillis: Long) =
-  ReduxSagaHelper.delay(this, delayMillis)
+  CommonSagaHelper.delay(this, delayMillis)
