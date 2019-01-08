@@ -5,8 +5,14 @@
 
 package org.swiften.redux.android.ui.core
 
+import android.app.Activity
+import android.app.Application
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -71,7 +77,8 @@ object AndroidRedux {
           get() = view.variableProps
           set(value) { this@PropInjector.runOnUIThread { view.variableProps = value } }
       },
-      outProps, mapper)
+      outProps, mapper
+    )
   }
 }
 
@@ -105,3 +112,64 @@ fun <State, LC, OP, SP> ReduxUI.IPropInjector<State>.injectLifecycleProps(
       override fun mapAction(dispatch: ReduxDispatcher, state: State, outProps: OP) = Unit
       override fun mapState(state: State, outProps: OP) = mapper.mapState(state, outProps)
     })
+
+/** Listen to [Activity] lifecycle callbacks and perform [inject] when necessary */
+@Suppress("unused")
+fun <State> ReduxUI.startActivityInjection(
+  application: Application,
+  injector: ReduxUI.IPropInjector<State>,
+  inject: ReduxUI.IPropInjector<State>.(Activity) -> Unit
+): Application.ActivityLifecycleCallbacks {
+  val callback = object : Application.ActivityLifecycleCallbacks {
+    override fun onActivityPaused(activity: Activity?) {}
+    override fun onActivityResumed(activity: Activity?) {}
+    override fun onActivityStopped(activity: Activity?) {}
+    override fun onActivityDestroyed(activity: Activity?) {}
+    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
+    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
+
+    override fun onActivityStarted(activity: Activity?) {
+      activity?.also { inject(injector, it) }
+    }
+  }
+
+  application.registerActivityLifecycleCallbacks(callback)
+  return callback
+}
+
+/** End lifecycle [callback] for [Activity] */
+@Suppress("unused")
+fun ReduxUI.endActivityInjection(
+  application: Application,
+  callback: Application.ActivityLifecycleCallbacks
+) {
+  application.unregisterActivityLifecycleCallbacks(callback)
+}
+
+/** Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary */
+@Suppress("unused")
+fun <State, Activity> ReduxUI.startFragmentInjection(
+  activity: Activity,
+  inject: ReduxUI.StaticProps<State>.(Fragment) -> Unit
+): FragmentManager.FragmentLifecycleCallbacks where
+  Activity : AppCompatActivity,
+  Activity : ReduxUI.IStaticPropContainer<State>
+{
+  val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
+    override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+      inject(activity.staticProps, f)
+    }
+  }
+
+  activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
+  return callback
+}
+
+/** End lifecycle [callback] for [Fragment] */
+@Suppress("unused")
+fun ReduxUI.endFragmentInjection(
+  activity: AppCompatActivity,
+  callback: FragmentManager.FragmentLifecycleCallbacks
+) {
+  activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
+}

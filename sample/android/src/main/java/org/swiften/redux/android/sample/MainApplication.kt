@@ -5,17 +5,20 @@
 
 package org.swiften.redux.android.sample
 
-import android.app.Activity
 import android.app.Application
-import android.os.Bundle
 import org.swiften.redux.android.ui.core.AndroidRedux
+import org.swiften.redux.android.ui.core.endActivityInjection
+import org.swiften.redux.android.ui.core.startActivityInjection
 import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.ReduxMiddleware.applyMiddlewares
 import org.swiften.redux.saga.ReduxSagaMiddleware
+import org.swiften.redux.ui.ReduxUI
 import org.swiften.redux.ui.injectStaticProps
 
 /** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
+  private lateinit var activityCallback: ActivityLifecycleCallbacks
+
   override fun onCreate() {
     super.onCreate()
     val api = MainApi()
@@ -28,29 +31,15 @@ class MainApplication : Application() {
     val injector = AndroidRedux.PropInjector(store)
     val dependency = MainDependency(injector)
 
-    this.registerActivityLifecycleCallbacks(
-      object : Application.ActivityLifecycleCallbacks {
-        override fun onActivityPaused(activity: Activity?) {}
-        override fun onActivityResumed(activity: Activity?) {}
+    this.activityCallback = ReduxUI.startActivityInjection(this, injector) {
+      when (it) {
+        is MainActivity -> dependency.injector.injectStaticProps(it)
+      }
+    }
+  }
 
-        override fun onActivityStarted(activity: Activity?) {
-          when (activity) {
-            is MainActivity -> dependency.injector.injectStaticProps(activity)
-          }
-        }
-
-        override fun onActivityStopped(activity: Activity?) {}
-        override fun onActivityDestroyed(activity: Activity?) {}
-
-        override fun onActivitySaveInstanceState(
-          activity: Activity?,
-          outState: Bundle?
-        ) {}
-
-        override fun onActivityCreated(
-          activity: Activity?,
-          savedInstanceState: Bundle?
-        ) {}
-      })
+  override fun onTerminate() {
+    super.onTerminate()
+    ReduxUI.endActivityInjection(this, this.activityCallback)
   }
 }

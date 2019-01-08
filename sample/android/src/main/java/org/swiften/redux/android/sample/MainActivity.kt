@@ -7,14 +7,16 @@ package org.swiften.redux.android.sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import org.swiften.redux.android.ui.core.endFragmentInjection
 import org.swiften.redux.android.ui.core.injectLifecycleProps
+import org.swiften.redux.android.ui.core.startFragmentInjection
 import org.swiften.redux.ui.ReduxUI
 
 /** Created by haipham on 2018/12/19 */
 class MainActivity : AppCompatActivity(), ReduxUI.IStaticPropContainer<State> {
   override lateinit var staticProps: ReduxUI.StaticProps<State>
+  lateinit var fragmentCallback: FragmentManager.FragmentLifecycleCallbacks
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -26,14 +28,15 @@ class MainActivity : AppCompatActivity(), ReduxUI.IStaticPropContainer<State> {
       tx.commit()
     }
 
-    this.supportFragmentManager.registerFragmentLifecycleCallbacks(
-      object : FragmentManager.FragmentLifecycleCallbacks() {
-        override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
-          when (f) {
-            is SearchFragment ->
-              this@MainActivity.staticProps.injector.injectLifecycleProps(f, Unit, f)
-          }
-        }
-      }, true)
+    this.fragmentCallback = ReduxUI.startFragmentInjection(this) {
+      when (it) {
+        is SearchFragment -> this.injector.injectLifecycleProps(it, Unit, it)
+      }
+    }
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    ReduxUI.endFragmentInjection(this, this.fragmentCallback)
   }
 }
