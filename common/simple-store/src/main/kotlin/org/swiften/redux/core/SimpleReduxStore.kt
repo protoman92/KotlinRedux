@@ -15,11 +15,15 @@ import kotlin.concurrent.write
  * modifications. Pass in the initial [state] and the store's [reducer] in the constructor.
  */
 class SimpleReduxStore<State>(
-  internal var state: State,
-  internal val reducer: ReduxReducer<State>
+  private var state: State,
+  reducer: ReduxReducer<State>
 ) : Redux.IStore<State> {
   private val lock = ReentrantReadWriteLock()
   private val subscribers = HashMap<String, (State) -> Unit>()
+
+  private val reducer: ReduxReducer<State>
+
+  init { this.reducer = ReduxPreset.ReducerWrapper(reducer) }
 
   override val stateGetter = object : ReduxStateGetter<State> {
     override fun invoke() =

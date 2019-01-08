@@ -12,18 +12,15 @@ object ReduxPreset {
   sealed class DefaultAction : Redux.IAction {
     object Dummy : DefaultAction()
 
-    /**
-     * If this action is dispatched, replace the current [State] with [state]. Beware that we will
-     * do a force-cast in [ReducerWrapper] to expected State type, so it will throw a
-     * [ClassCastException] if [State] is not the correct type.
-     */
-    class ReplaceState<out State>(val state: State) : DefaultAction() {
-      override fun toString(): String = "Replacing state with $state"
-    }
+    /** Replace the current [State] with [state] */
+    class ReplaceState<out State>(val state: State) : DefaultAction()
+
+    /** Replace the current [State] with [fn] */
+    class MapState<State>(val fn: (State) -> State) : DefaultAction()
   }
 
   /** Default wrapper to handle [DefaultAction] */
-  internal class ReducerWrapper<State>(private val reducer: ReduxReducer<State>) :
+  class ReducerWrapper<State>(private val reducer: ReduxReducer<State>) :
     ReduxReducer<State> by reducer {
     @Suppress("UNCHECKED_CAST")
     @Throws(ClassCastException::class)
@@ -32,6 +29,7 @@ object ReduxPreset {
         is DefaultAction -> when (action) {
           is DefaultAction.Dummy -> previous
           is DefaultAction.ReplaceState<*> -> action.state as State
+          is DefaultAction.MapState<*> -> (action.fn as (State) -> State)(previous)
         }
         else -> reducer(previous, action)
       }

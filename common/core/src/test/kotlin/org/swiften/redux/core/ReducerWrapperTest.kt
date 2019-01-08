@@ -24,6 +24,7 @@ class ReducerWrapperTest {
     Assert.assertEquals(original, 1000)
     original = reducer(original, object : Redux.IAction {})
     Assert.assertEquals(original, 1001)
-    println(ReduxPreset.DefaultAction.ReplaceState(1000))
+    original = reducer(original, ReduxPreset.DefaultAction.MapState<Int> { it * 2 })
+    Assert.assertEquals(original, 2002)
   }
 }

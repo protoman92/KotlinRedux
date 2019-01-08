@@ -35,13 +35,21 @@ object Redux {
   /** Represents a Redux action */
   interface IAction
 
+  /** Represents an object that can dispatch [IAction] */
+  interface IActionDispatcher {
+    val dispatch: ReduxDispatcher
+  }
+
+  /** Represents an object that has some internal [State] and can fetch the latest [State] */
+  interface IStateGetter<State> {
+    val stateGetter: ReduxStateGetter<State>
+  }
+
   /**
    * Represents a Redux store that can dispatch [IAction] with a [ReduxDispatcher] to mutate some
    * internal [State]. Other objects can subscribe to [State] updates using [subscribe].
    */
-  interface IStore<State> {
-    val stateGetter: ReduxStateGetter<State>
-    val dispatch: ReduxDispatcher
+  interface IStore<State> : IActionDispatcher, IStateGetter<State> {
     val subscribe: ReduxSubscriber<State>
   }
 }
