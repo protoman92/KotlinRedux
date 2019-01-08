@@ -86,3 +86,9 @@ project('core') {
     api project(':common:ui')
   }
 }
+
+project('recycler-view') {
+  dependencies {
+    api project(':android:core')
+  }
+}

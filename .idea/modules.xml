@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/coroutine-saga/coroutine-saga.iml" filepath="$PROJECT_DIR$/common/coroutine-saga/coroutine-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/middleware/middleware.iml" filepath="$PROJECT_DIR$/common/middleware/middleware.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/recycler-view/recycler-view.iml" filepath="$PROJECT_DIR$/android/recycler-view/recycler-view.iml" />
       <module fileurl="file://$PROJECT_DIR$/redux-jvm.iml" filepath="$PROJECT_DIR$/redux-jvm.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/redux-jvm-android.iml" filepath="$PROJECT_DIR$/android/redux-jvm-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/router/router.iml" filepath="$PROJECT_DIR$/common/router/router.iml" />
