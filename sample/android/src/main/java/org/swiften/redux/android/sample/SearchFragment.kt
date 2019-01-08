@@ -58,7 +58,7 @@ class SearchFragment : Fragment(),
 
   override var variableProps
     by Delegates.observable<ReduxUI.VariableProps<S, A>?>(null) { _, _, p ->
-      if (p != null) this.didSetProps(p)
+      p?.also { this.didSetProps(it) }
     }
 
   override fun onCreateView(
@@ -68,6 +68,8 @@ class SearchFragment : Fragment(),
   ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
   override fun onPropInjectionCompleted() {
+    this.querySearch.isSaveEnabled = false
+
     this.querySearch.addTextChangedListener(object : TextWatcher {
       override fun afterTextChanged(s: Editable?) {}
 

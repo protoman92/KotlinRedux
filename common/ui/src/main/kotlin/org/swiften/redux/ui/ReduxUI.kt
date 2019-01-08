@@ -108,20 +108,12 @@ object ReduxUI {
       val id = "${view.javaClass.canonicalName}${Date().time}"
       val lock = ReentrantLock()
 
-      /**
-       * If [view] has received an injection before, take the latest [State] from its
-       * [IPropContainer.variableProps].
-       */
-      var previousState: StateProps? = view.variableProps?.nextState
-
-      val accessWithLock: Function1<Function0<Unit>, Unit> = {
-        try { lock.lock(); it() } finally { lock.unlock() }
-      }
+      var previousState: StateProps? = lock.read { view.variableProps?.nextState }
 
       val onStateUpdate: (State) -> Unit = {
         val nextState = mapper.mapState(it, outProps)
 
-        accessWithLock {
+        lock.write {
           val prevState = previousState
           previousState = nextState
 
@@ -148,6 +140,12 @@ object ReduxUI {
  * Inject props into [view], basically a view that does not have internal state and handles no
  * interactions.
  */
-fun <State> ReduxUI.IPropInjector<State>.injectStaticProps(view: ReduxUI.IStaticPropContainer<State>) {
+fun <S> ReduxUI.IPropInjector<S>.injectStaticProps(view: ReduxUI.IStaticPropContainer<S>) {
   view.staticProps = ReduxUI.StaticProps(this, Redux.Subscription {})
 }
+
+internal fun <T> ReentrantLock.read(fn: () -> T): T {
+  try { this.lock(); return fn() } finally { this.unlock() }
+}
+
+internal fun ReentrantLock.write(fn: () -> Unit) = this.read(fn)

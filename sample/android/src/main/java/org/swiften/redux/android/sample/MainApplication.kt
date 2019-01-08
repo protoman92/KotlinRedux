@@ -6,7 +6,6 @@
 package org.swiften.redux.android.sample
 
 import android.app.Application
-import org.swiften.redux.android.ui.core.AndroidRedux
 import org.swiften.redux.android.ui.core.endActivityInjection
 import org.swiften.redux.android.ui.core.startActivityInjection
 import org.swiften.redux.core.SimpleReduxStore
@@ -28,7 +27,7 @@ class MainApplication : Application() {
       ReduxSagaMiddleware.Provider(MainSaga.sagas(repository)).middleware
     )(SimpleReduxStore(State(), MainRedux.Reducer))
 
-    val injector = AndroidRedux.PropInjector(store)
+    val injector = ReduxUI.PropInjector(store)
     val dependency = MainDependency(injector)
 
     this.activityCallback = ReduxUI.startActivityInjection(this, injector) {

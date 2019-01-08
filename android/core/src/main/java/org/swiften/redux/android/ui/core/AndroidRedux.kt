@@ -24,9 +24,9 @@ import org.swiften.redux.ui.ReduxUI
 
 /** Created by haipham on 2018/12/17 */
 /** Top-level namespace for Android Redux UI functionalities */
-object AndroidRedux {
+internal object AndroidRedux {
   /** Use this [LifecycleObserver] to unsubscribe from a [Redux.Subscription] */
-  internal class ReduxLifecycleObserver<LC> internal constructor(
+  class ReduxLifecycleObserver<LC> constructor(
     private val lifecycleOwner: LC,
     private val subscription: Redux.Subscription
   ) : LifecycleObserver where LC : LifecycleOwner, LC : ReduxUI.IReduxLifecycleOwner {
@@ -48,52 +48,42 @@ object AndroidRedux {
       this.lifecycleOwner.lifecycle.removeObserver(this)
     }
   }
+}
 
-  /**
-   * Default implementation for [ReduxUI.IPropInjector]. [ReduxUI.PropInjector.injectProps]
-   * will perform the injector on the main thread, so we do not need to handle threads anywhere
-   * else.
-   */
-  class PropInjector<State>(
-    private val injector: ReduxUI.IPropInjector<State>
-  ) : ReduxUI.IPropInjector<State> {
-    /** Use the default [ReduxUI.PropInjector] implementation */
-    constructor(store: Redux.IStore<State>) : this(ReduxUI.PropInjector(store))
-
-    private fun runOnUIThread(runnable: () -> Unit) {
-      if (Looper.myLooper() == Looper.getMainLooper()) { runnable() } else {
-        Handler(Looper.getMainLooper()).post { runnable() }
-      }
-    }
-
-    override fun <OP, SP, AP> injectProps(
-      view: ReduxUI.IPropContainer<State, SP, AP>,
-      outProps: OP,
-      mapper: ReduxUI.IPropMapper<State, OP, SP, AP>
-    ) = this.injector.injectProps(
-      object : ReduxUI.IPropContainer<State, SP, AP> {
-        override var staticProps: ReduxUI.StaticProps<State>
-          get() = view.staticProps
-          set(value) { view.staticProps = value }
-
-        override var variableProps: ReduxUI.VariableProps<SP, AP>?
-          get() = view.variableProps
-          set(value) { this@PropInjector.runOnUIThread { view.variableProps = value } }
-
-        override fun onPropInjectionCompleted() {
-          super.onPropInjectionCompleted()
-          view.onPropInjectionCompleted()
-        }
-
-        override fun onPropInjectionStopped() {
-          super.onPropInjectionStopped()
-          view.onPropInjectionStopped()
-        }
-      },
-      outProps, mapper
-    )
+@Suppress("unused")
+internal fun ReduxUI.IPropInjector<*>.runOnUIThread(runnable: () -> Unit) {
+  if (Looper.myLooper() == Looper.getMainLooper()) { runnable() } else {
+    Handler(Looper.getMainLooper()).post { runnable() }
   }
 }
+
+/** Call [ReduxUI.IPropInjector.injectProps] on the main thread */
+internal fun <State, OP, SP, AP> ReduxUI.IPropInjector<State>.injectPropsOnMainThread(
+  view: ReduxUI.IPropContainer<State, SP, AP>,
+  outProps: OP,
+  mapper: ReduxUI.IPropMapper<State, OP, SP, AP>
+) = this.injectProps(
+  object : ReduxUI.IPropContainer<State, SP, AP> {
+    override var staticProps: ReduxUI.StaticProps<State>
+      get() = view.staticProps
+      set(value) { view.staticProps = value }
+
+    override var variableProps: ReduxUI.VariableProps<SP, AP>?
+      get() = view.variableProps
+      set(value) { this@injectPropsOnMainThread.runOnUIThread { view.variableProps = value } }
+
+    override fun onPropInjectionCompleted() {
+      super.onPropInjectionCompleted()
+      view.onPropInjectionCompleted()
+    }
+
+    override fun onPropInjectionStopped() {
+      super.onPropInjectionStopped()
+      view.onPropInjectionStopped()
+    }
+  },
+  outProps, mapper
+)
 
 /**
  * - When [ReduxLifecycleObserver.onResume] is called, call
@@ -111,7 +101,7 @@ fun <State, LC, OP, SP, AP> ReduxUI.IPropInjector<State>.injectLifecycleProps(
   LC : ReduxUI.IPropContainer<State, SP, AP>
 {
   val view: ReduxUI.IPropContainer<State, SP, AP> = lifecycleOwner
-  val subscription = this.injectProps(view, outProps, mapper)
+  val subscription = this.injectPropsOnMainThread(view, outProps, mapper)
   ReduxLifecycleObserver(lifecycleOwner, subscription)
 }
 
@@ -126,7 +116,7 @@ fun <State, LC, OP, SP> ReduxUI.IPropInjector<State>.injectLifecycleProps(
 ) where
   LC : LifecycleOwner,
   LC : ReduxUI.IPropContainer<State, SP, Unit> =
-  this.injectProps(lifecycleOwner, outProps,
+  this.injectPropsOnMainThread(lifecycleOwner, outProps,
     object : ReduxUI.IPropMapper<State, OP, SP, Unit> {
       override fun mapAction(dispatch: ReduxDispatcher, state: State, outProps: OP) = Unit
       override fun mapState(state: State, outProps: OP) = mapper.mapState(state, outProps)
