@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 
 /** Created by haipham on 2019/01/07 */
 /** Similar to [MapEffect], but handles suspend functions */
-internal class SuspendCallEffect<State, P, R : Any>(
+internal class SuspendMapEffect<State, P, R : Any>(
   private val source: ReduxSagaEffect<State, P>,
   private val block: suspend CoroutineScope.(P) -> R
 ) : ReduxSagaEffect<State, R> {
@@ -17,7 +17,7 @@ internal class SuspendCallEffect<State, P, R : Any>(
     this.source.invoke(p1).mapSuspend(this.block)
 }
 
-/** Invoke a [SuspendCallEffect] on [this] */
-fun <State, P, R : Any> ReduxSagaEffect<State, P>.callSuspend(
+/** Invoke a [SuspendMapEffect] on [this] */
+fun <State, P, R : Any> ReduxSagaEffect<State, P>.mapSuspend(
   block: suspend CoroutineScope.(P) -> R
-) = CommonSagaHelper.callSuspend(this, block)
+) = CommonSagaHelper.mapSuspend(this, block)

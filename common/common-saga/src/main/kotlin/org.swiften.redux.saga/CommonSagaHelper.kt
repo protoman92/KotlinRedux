@@ -12,18 +12,6 @@ import org.swiften.redux.core.Redux
 /** Created by haipham on 2019/01/07 */
 /** Top-level namespace for [ReduxSagaEffect] helpers */
 object CommonSagaHelper {
-  /** Create a [SuspendCallEffect] */
-  fun <State, P, R : Any> callSuspend(
-    source: ReduxSagaEffect<State, P>,
-    block: suspend CoroutineScope.(P) -> R
-  ): ReduxSagaEffect<State, R> = SuspendCallEffect(source, block)
-
-  /** Create a [AsyncCallEffect] */
-  fun <State, P, R : Any> callAsync(
-    source: ReduxSagaEffect<State, P>,
-    block: suspend CoroutineScope.(P) -> Deferred<R>
-  ): ReduxSagaEffect<State, R> = AsyncCallEffect(source, block)
-
   /** Create a [DelayEffect] */
   fun <State, R> delay(source: ReduxSagaEffect<State, R>, delayMillis: Long):
     ReduxSagaEffect<State, R> = DelayEffect(source, delayMillis)
@@ -45,6 +33,18 @@ object CommonSagaHelper {
   /** Create a [MapEffect] */
   fun <State, P, R> map(param: ReduxSagaEffect<State, P>, block: (P) -> R):
     ReduxSagaEffect<State, R> = MapEffect(param, block)
+
+  /** Create a [SuspendMapEffect] */
+  fun <State, P, R : Any> mapSuspend(
+    source: ReduxSagaEffect<State, P>,
+    block: suspend CoroutineScope.(P) -> R
+  ): ReduxSagaEffect<State, R> = SuspendMapEffect(source, block)
+
+  /** Create a [AsyncMapEffect] */
+  fun <State, P, R : Any> mapAsync(
+    source: ReduxSagaEffect<State, P>,
+    block: suspend CoroutineScope.(P) -> Deferred<R>
+  ): ReduxSagaEffect<State, R> = AsyncMapEffect(source, block)
 
   /** Create a [PutEffect] */
   fun <State, P> put(

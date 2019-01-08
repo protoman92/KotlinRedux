@@ -59,7 +59,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     // Setup
     val takeOutput = createTakeEffect(
       { when (it) { is TakeAction.Action1 -> it.value } },
-      { justEffect(it).callSuspend { delay(1000); it } }
+      { justEffect(it).mapSuspend { delay(1000); it } }
     ).invoke(this, State()) { }
 
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())

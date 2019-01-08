@@ -9,7 +9,7 @@ import kotlinx.coroutines.async
 import org.swiften.redux.saga.ReduxSaga
 import org.swiften.redux.saga.ReduxSagaHelper.just
 import org.swiften.redux.saga.ReduxSagaHelper.takeLatestAction
-import org.swiften.redux.saga.callAsync
+import org.swiften.redux.saga.mapAsync
 import org.swiften.redux.saga.cast
 import org.swiften.redux.saga.catchError
 
@@ -27,7 +27,7 @@ object MainSaga {
 
   private fun autocompleteSaga(api: IMainRepository, query: String) =
     just<State, String>(query)
-      .callAsync { this.async { api.searchMusicStore(it) } }
+      .mapAsync { this.async { api.searchMusicStore(it) } }
       .cast<State, MusicResult, Any>()
       .catchError { }
 }

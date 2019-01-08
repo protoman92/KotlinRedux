@@ -64,9 +64,9 @@ class SagaEffectTest : CommonSagaEffectTest() {
   fun `Disposing outputs should terminate channels`() {
     // Setup
     val sourceOutput = just<State, Int>(1)
-      .callSuspend { delay(500); it }
+      .mapSuspend { delay(500); it }
       .then(just(2)) { a, b -> a + b }
-      .callSuspend { delay(500); it }
+      .mapSuspend { delay(500); it }
       .invoke(this, State()) { } as ReduxSaga.Output<*>
 
     runBlocking {
@@ -91,7 +91,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     // Setup
     val sourceOutput = just<State, Int>(0)
       .map { it }
-      .callAsync { this.async { delay(1000); it } }
+      .mapAsync { this.async { delay(1000); it } }
       .then(just<State, Int>(2).map { it }) { a, b -> a + b }
       .invoke(this, State()) { } as ReduxSaga.Output<*>
 
