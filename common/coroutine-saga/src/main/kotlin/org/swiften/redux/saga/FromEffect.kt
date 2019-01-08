@@ -12,6 +12,6 @@ import kotlinx.coroutines.channels.ReceiveChannel
 internal class FromEffect<State, R>(
   private val channel: ReceiveChannel<R>
 ) : ReduxSagaEffect<State, R> {
-  override fun invoke(p1: ReduxSaga.Input<State>) =
+  override fun invoke(p1: CommonSaga.Input<State>) =
     ReduxSaga.Output(this, p1.scope, this.channel) { }
 }

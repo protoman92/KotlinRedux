@@ -105,7 +105,9 @@ project('coroutine-saga') {
   dependencies {
     api project(':common:core')
     api project(':common:middleware')
+    api project(':common:common-saga')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    testApi project (path: ":common:common-saga", configuration: 'testArtifacts')
   }
 }
 

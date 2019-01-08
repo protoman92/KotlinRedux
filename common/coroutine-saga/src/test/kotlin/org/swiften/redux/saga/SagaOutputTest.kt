@@ -43,7 +43,7 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun test_flatMapVariants_shouldEmitCorrectValues(
-    fn: Output<Int>.(suspend CoroutineScope.(Int) -> Output<String>) -> Output<String>,
+    fn: Output<Int>.((Int) -> Output<String>) -> Output<String>,
     actualValues: List<String>
   ) {
     // Setup
@@ -81,7 +81,7 @@ class SagaOutputTest : CoroutineScope {
   @ExperimentalCoroutinesApi
   fun `Output flatMap should emit all values`() {
     test_flatMapVariants_shouldEmitCorrectValues(
-      { this.flatMap(transform = it) },
+      { this.flatMap(it) },
       arrayListOf("01", "11", "21", "02", "12", "22", "03", "13", "23")
     )
   }
@@ -99,7 +99,7 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun test_flatMapVariants_shouldTerminateOnCancel(
-    fn: Output<Int>.(suspend CoroutineScope.(Int) -> Output<Int>) -> Output<Int>
+    fn: Output<Int>.((Int) -> Output<Int>) -> Output<Int>
   ) {
     // Setup
     val sourceCh = Channel<Int>()
@@ -137,7 +137,7 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun `Output flatMap should terminate when scope context cancels`() {
-    test_flatMapVariants_shouldTerminateOnCancel { this.flatMap(transform = it) }
+    test_flatMapVariants_shouldTerminateOnCancel { this.flatMap(it) }
   }
 
   @Test

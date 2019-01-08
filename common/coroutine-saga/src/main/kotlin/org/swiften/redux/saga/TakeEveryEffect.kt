@@ -21,6 +21,6 @@ internal class TakeEveryEffect<State, P, R>(
 ) : TakeEffect<State, P, R>(extract, block, options) {
   @ExperimentalCoroutinesApi
   override fun flattenOutput(
-    nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
+    nestedOutput: CommonSaga.IOutput<CommonSaga.IOutput<R>>
   ) = nestedOutput.flatMap { it }
 }

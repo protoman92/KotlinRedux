@@ -8,7 +8,6 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -21,38 +20,23 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
-import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
-import org.swiften.redux.core.ReduxStateGetter
 import java.util.Date
 
 /** Created by haipham on 2018/12/22 */
-/** Abstraction for Redux saga that handles [Redux.IAction] in the pipeline */
-typealias ReduxSagaEffect<State, R> = Function1<ReduxSaga.Input<State>, ReduxSaga.Output<R>>
-
 /** Top-level namespace for Redux saga */
 object ReduxSaga {
-  /**
-   * [Input] for an [ReduxSagaEffect], which exposes a [Redux.IStore]'s internal
-   * functionalities.
-   */
-  class Input<State>(
-    val scope: CoroutineScope = GlobalScope,
-    val stateGetter: ReduxStateGetter<State>,
-    val dispatch: ReduxDispatcher
-  )
-
   /**
    * [Output] for an [ReduxSagaEffect], which can stream values of some type.
    * Use [identifier] for debugging purposes.
    */
   @Suppress("EXPERIMENTAL_API_USAGE")
   class Output<T> internal constructor(
-    internal val identifier: String = Output.DEFAULT_IDENTIFIER,
+    private val identifier: String = Output.DEFAULT_IDENTIFIER,
     private val scope: CoroutineScope,
     internal val channel: ReceiveChannel<T>,
-    val onAction: ReduxDispatcher
-  ) : CoroutineScope by scope {
+    override val onAction: ReduxDispatcher
+  ) : CommonSaga.IOutput<T>, CoroutineScope by scope {
     companion object { internal const val DEFAULT_IDENTIFIER = "Unidentified" }
 
     /** Use this to set [identifier] using [creator] */
@@ -97,7 +81,15 @@ object ReduxSaga {
 
     /** Map emissions from [channel] with [transform] */
     @ExperimentalCoroutinesApi
-    internal fun <T2> map(transform: suspend CoroutineScope.(T) -> T2) =
+    override fun <T2> map(transform: (T) -> T2) = this.with("Map", this.produce<T2> {
+      this@Output.channel
+        .map(this.coroutineContext) { transform(it) }
+        .toChannel(this)
+    })
+
+    /** Similar to [Output.map], but handles suspension */
+    @ExperimentalCoroutinesApi
+    override fun <T2 : Any> mapSuspend(transform: suspend CoroutineScope.(T) -> T2) =
       this.with("Map", this.produce<T2> {
         this@Output.channel
           .map(this.coroutineContext) { transform(this, it) }
@@ -105,7 +97,7 @@ object ReduxSaga {
       })
 
     /** Similar to [Output.map], but handles [Deferred] */
-    internal fun <T2> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>) =
+    override fun <T2 : Any> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>) =
       this.with("MapAsync", this.produce<T2> {
         this@Output.channel
           .map(this.coroutineContext) { transform(this, it) }
@@ -113,9 +105,9 @@ object ReduxSaga {
       })
 
     /** Perform some side effects on value emission with [perform] */
-    internal fun doOnValue(perform: suspend CoroutineScope.(T) -> Unit) =
+    override fun doOnValue(perform: (T) -> Unit) =
       this.with("DoOnValue", this.produce {
-        this@Output.channel.consumeEach { this.send(it); perform(this, it) }
+        this@Output.channel.consumeEach { this.send(it); perform(it) }
       })
 
     /**
@@ -123,10 +115,10 @@ object ReduxSaga {
      * elements emitted by [channel] to said [Output], and emitting everything.
      */
     @ExperimentalCoroutinesApi
-    internal fun <T2> flatMap(transform: suspend CoroutineScope.(T) -> Output<T2>) =
+    override fun <T2> flatMap(transform: (T) -> CommonSaga.IOutput<T2>) =
       this.with("FlatMap", this.produce<T2> {
         this@Output.channel.consumeEach {
-          this.launch { transform(this, it).channel.toChannel(this@produce) }
+          this.launch { (transform(it) as Output<T2>).channel.toChannel(this@produce) }
         }
       })
 
@@ -135,7 +127,7 @@ object ReduxSaga {
      * latest element emitted by [channel]. Contrast this with [Output.flatMap].
      */
     @ExperimentalCoroutinesApi
-    internal fun <T2> switchMap(transform: suspend CoroutineScope.(T) -> Output<T2>) =
+    override fun <T2> switchMap(transform: (T) -> CommonSaga.IOutput<T2>) =
       this.with("SwitchMap", this.produce<T2> {
         var previousJob: Job? = null
 
@@ -143,20 +135,18 @@ object ReduxSaga {
           previousJob?.cancel()
 
           previousJob = this.launch {
-            transform(this, it).channel.toChannel(this@produce)
+            (transform(it) as Output<T2>).channel.toChannel(this@produce)
           }
         }
       })
 
     /** Filter emissions with [selector] */
-    internal fun filter(selector: suspend CoroutineScope.(T) -> Boolean) =
-      this.with("Filter", this.channel.filter(this.coroutineContext) {
-        selector(this@Output.scope, it)
-      })
+    override fun filter(selector: (T) -> Boolean) = this.with("Filter",
+      this.channel.filter(this.coroutineContext) { selector(it) })
 
     /** Throttle emissions with [timeMillis] */
     @ExperimentalCoroutinesApi
-    internal fun debounce(timeMillis: Long): Output<T> {
+    override fun debounce(timeMillis: Long): Output<T> {
       if (timeMillis <= 0) { return this }
 
       return this.with("Debounce", this.produce {
@@ -174,24 +164,28 @@ object ReduxSaga {
       })
     }
 
+    /** Delay emissions by [delayMillis] */
+    override fun delay(delayMillis: Long) = this.with("Delay", this.produce {
+      this@Output.channel.consumeEach { delay(delayMillis); this@produce.send(it) }
+    })
+
     /** Catch possible errors and return a value produced by [fallback] */
     @ExperimentalCoroutinesApi
-    internal fun catchError(fallback: suspend CoroutineScope.(Throwable) -> T) =
-      this.with("CatchError", this.produce {
-        try { this@Output.channel.toChannel(this) } catch (e1: Throwable) {
-          try { this.send(fallback(this, e1)); this.close() } catch (e2: Throwable) { this.close(e2) }
-        }
-      })
+    override fun catchError(fallback: (Throwable) -> T) = this.with("CatchError", this.produce {
+      try { this@Output.channel.toChannel(this) } catch (e1: Throwable) {
+        try { this.send(fallback(e1)); this.close() } catch (e2: Throwable) { this.close(e2) }
+      }
+    })
 
     /** Terminate the current [channel] */
-    fun dispose() { this.channel.cancel(); this.onDispose() }
+    override fun dispose() { this.channel.cancel(); this.onDispose() }
 
-    /** Get the next [T], but only if it arrives before [timeoutInMillis] */
-    fun nextValue(timeoutInMillis: Long) = runBlocking(this.coroutineContext) {
-      withTimeoutOrNull(timeoutInMillis) { this@Output.channel.receive() }
+    /** Get the next [T], but only if it arrives before [timeoutMillis] */
+    override fun nextValue(timeoutMillis: Long) = runBlocking(this.coroutineContext) {
+      withTimeoutOrNull(timeoutMillis) { this@Output.channel.receive() }
     }
 
-    fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit = { }) {
+    override fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit) {
       this.launch {
         try { this@Output.channel.consumeEach(onValue) } catch (e: Throwable) { onError(e) }
       }
@@ -201,13 +195,3 @@ object ReduxSaga {
   /** Options for [TakeEffect] */
   data class TakeOptions(internal val debounceMillis: Long = 0)
 }
-
-/**
- * Convenience method to call [ReduxSagaEffect] with convenience parameters
- * for testing.
- */
-fun <State, R> ReduxSagaEffect<State, R>.invoke(
-  scope: CoroutineScope,
-  state: State,
-  dispatch: ReduxDispatcher
-) = this.invoke(ReduxSaga.Input(scope, { state }, dispatch))

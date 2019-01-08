@@ -12,7 +12,7 @@ import kotlinx.coroutines.channels.produce
 /** [ReduxSagaEffect] whose [ReduxSaga.Output] simply emits [value] */
 internal class JustEffect<State, R>(private val value: R) : ReduxSagaEffect<State, R> {
   @ExperimentalCoroutinesApi
-  override fun invoke(input: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
+  override fun invoke(input: CommonSaga.Input<State>): ReduxSaga.Output<R> {
     return ReduxSaga.Output(this, input.scope, input.scope.produce {
       this.send(value)
     }) {}

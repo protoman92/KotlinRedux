@@ -1,3 +1,7 @@
 <component name="CopyrightManager">
-  <settings default="Swiften Services" />
+  <settings default="Hai Pham">
+    <module2copyright>
+      <element module="All" copyright="Hai Pham" />
+    </module2copyright>
+  </settings>
 </component>

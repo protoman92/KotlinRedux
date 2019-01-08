@@ -27,11 +27,11 @@ internal abstract class TakeEffect<State, P, R>(
    * the values streamed by the inner [ReduxSaga.Output].
    */
   abstract fun flattenOutput(
-    nestedOutput: ReduxSaga.Output<ReduxSaga.Output<R>>
-  ): ReduxSaga.Output<R>
+    nestedOutput: CommonSaga.IOutput<CommonSaga.IOutput<R>>
+  ): CommonSaga.IOutput<R>
 
   @ExperimentalCoroutinesApi
-  override operator fun invoke(p1: ReduxSaga.Input<State>): ReduxSaga.Output<R> {
+  override operator fun invoke(p1: CommonSaga.Input<State>): CommonSaga.IOutput<R> {
     val actionChannel = Channel<Redux.IAction>()
 
     val nested = ReduxSaga.Output(this, p1.scope,
