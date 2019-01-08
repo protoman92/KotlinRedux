@@ -13,14 +13,23 @@ import java.util.concurrent.locks.ReentrantLock
 /** Created by haipham on 2018/12/16 */
 /** Top-level namespace for UI */
 object ReduxUI {
+  /** Handle lifecycles for a target of [ReduxUI.PropInjector]  */
+  interface IReduxLifecycleOwner {
+    /** This is called when [ReduxUI.PropInjector.injectProps] completes */
+    fun onPropInjectionCompleted() {}
+
+    /** This is called when [Redux.Subscription.unsubscribe] is called */
+    fun onPropInjectionStopped() {}
+  }
+
   /** Represents a view that contains [StaticProps] dependencies */
-  interface IStaticPropContainer<GlobalState> {
+  interface IStaticPropContainer<GlobalState> : IReduxLifecycleOwner {
     /** This will only be set once after injection commences */
     var staticProps: StaticProps<GlobalState>
   }
 
   /** Represents a view that contains [VariableProps] internal state */
-  interface IVariablePropContainer<StateProps, ActionProps> {
+  interface IVariablePropContainer<StateProps, ActionProps> : IReduxLifecycleOwner {
     /** This will be set any time a state update is received */
     var variableProps: VariableProps<StateProps, ActionProps>?
   }

@@ -67,9 +67,7 @@ class SearchFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
-  override fun onResume() {
-    super.onResume()
-
+  override fun onPropInjectionCompleted() {
     this.querySearch.addTextChangedListener(object : TextWatcher {
       override fun afterTextChanged(s: Editable?) {}
 

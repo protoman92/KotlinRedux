@@ -26,23 +26,26 @@ import org.swiften.redux.ui.ReduxUI
 /** Top-level namespace for Android Redux UI functionalities */
 object AndroidRedux {
   /** Use this [LifecycleObserver] to unsubscribe from a [Redux.Subscription] */
-  internal class ReduxLifecycleObserver private constructor(
-    private val lifecycle: Lifecycle,
+  internal class ReduxLifecycleObserver<LC> internal constructor(
+    private val lifecycleOwner: LC,
     private val subscription: Redux.Subscription
-  ) : LifecycleObserver {
-    companion object {
-      /** Create a [ReduxLifecycleObserver] with [lifecycle] and [subscription] */
-      fun register(lifecycle: Lifecycle, subscription: Redux.Subscription) {
-        ReduxLifecycleObserver(lifecycle, subscription)
-      }
+  ) : LifecycleObserver where LC : LifecycleOwner, LC : ReduxUI.IReduxLifecycleOwner {
+    init { lifecycleOwner.lifecycle.addObserver(this) }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+      this.lifecycleOwner.onPropInjectionCompleted()
     }
 
-    init { lifecycle.addObserver(this) }
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+      this.lifecycleOwner.onPropInjectionStopped()
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onStop() {
       this.subscription.unsubscribe()
-      this.lifecycle.removeObserver(this)
+      this.lifecycleOwner.lifecycle.removeObserver(this)
     }
   }
 
@@ -76,13 +79,29 @@ object AndroidRedux {
         override var variableProps: ReduxUI.VariableProps<SP, AP>?
           get() = view.variableProps
           set(value) { this@PropInjector.runOnUIThread { view.variableProps = value } }
+
+        override fun onPropInjectionCompleted() {
+          super.onPropInjectionCompleted()
+          view.onPropInjectionCompleted()
+        }
+
+        override fun onPropInjectionStopped() {
+          super.onPropInjectionStopped()
+          view.onPropInjectionStopped()
+        }
       },
       outProps, mapper
     )
   }
 }
 
-/** When [ReduxLifecycleObserver.onStop] is called, unsubscribe from [State] updates */
+/**
+ * - When [ReduxLifecycleObserver.onResume] is called, call
+ * [ReduxUI.IReduxLifecycleOwner.onPropInjectionCompleted].
+ * - When [ReduxLifecycleObserver.onStop] is called, unsubscribe from [State] updates.
+ * - When [ReduxLifecycleObserver.onPause] is called, call
+ * [ReduxUI.IReduxLifecycleOwner.onPropInjectionStopped]
+ */
 fun <State, LC, OP, SP, AP> ReduxUI.IPropInjector<State>.injectLifecycleProps(
   lifecycleOwner: LC,
   outProps: OP,
@@ -93,7 +112,7 @@ fun <State, LC, OP, SP, AP> ReduxUI.IPropInjector<State>.injectLifecycleProps(
 {
   val view: ReduxUI.IPropContainer<State, SP, AP> = lifecycleOwner
   val subscription = this.injectProps(view, outProps, mapper)
-  ReduxLifecycleObserver.register(lifecycleOwner.lifecycle, subscription)
+  ReduxLifecycleObserver(lifecycleOwner, subscription)
 }
 
 /**
@@ -129,7 +148,7 @@ fun <State> ReduxUI.startActivityInjection(
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
 
     override fun onActivityStarted(activity: Activity?) {
-      activity?.also { inject(injector, it) }
+      if (activity != null) inject(injector, activity)
     }
   }
 
