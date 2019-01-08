@@ -26,10 +26,7 @@ import java.util.Date
 /** Created by haipham on 2018/12/22 */
 /** Top-level namespace for Redux saga */
 object ReduxSaga {
-  /**
-   * [Output] for an [ReduxSagaEffect], which can stream values of some type.
-   * Use [identifier] for debugging purposes.
-   */
+  /** @see [CommonSaga.IOutput] */
   @Suppress("EXPERIMENTAL_API_USAGE")
   class Output<T> internal constructor(
     private val identifier: String = Output.DEFAULT_IDENTIFIER,
@@ -79,7 +76,6 @@ object ReduxSaga {
       else -> LifecycleReceiveChannel(this.identifier, channel)
     }
 
-    /** Map emissions from [channel] with [transform] */
     @ExperimentalCoroutinesApi
     override fun <T2> map(transform: (T) -> T2) = this.with("Map", this.produce<T2> {
       this@Output.channel
@@ -87,7 +83,6 @@ object ReduxSaga {
         .toChannel(this)
     })
 
-    /** Similar to [Output.map], but handles suspension */
     @ExperimentalCoroutinesApi
     override fun <T2 : Any> mapSuspend(transform: suspend CoroutineScope.(T) -> T2) =
       this.with("Map", this.produce<T2> {
@@ -96,7 +91,6 @@ object ReduxSaga {
           .toChannel(this)
       })
 
-    /** Similar to [Output.map], but handles [Deferred] */
     override fun <T2 : Any> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>) =
       this.with("MapAsync", this.produce<T2> {
         this@Output.channel
@@ -104,16 +98,11 @@ object ReduxSaga {
           .consumeEach { this.launch { this@produce.send(it.await()) } }
       })
 
-    /** Perform some side effects on value emission with [perform] */
     override fun doOnValue(perform: (T) -> Unit) =
       this.with("DoOnValue", this.produce {
         this@Output.channel.consumeEach { this.send(it); perform(it) }
       })
 
-    /**
-     * Flatten emissions from other [Output] produced by transforming the
-     * elements emitted by [channel] to said [Output], and emitting everything.
-     */
     @ExperimentalCoroutinesApi
     override fun <T2> flatMap(transform: (T) -> CommonSaga.IOutput<T2>) =
       this.with("FlatMap", this.produce<T2> {
@@ -122,10 +111,6 @@ object ReduxSaga {
         }
       })
 
-    /**
-     * Flatten emissions from the last [Output] produced by transforming the
-     * latest element emitted by [channel]. Contrast this with [Output.flatMap].
-     */
     @ExperimentalCoroutinesApi
     override fun <T2> switchMap(transform: (T) -> CommonSaga.IOutput<T2>) =
       this.with("SwitchMap", this.produce<T2> {
@@ -140,11 +125,9 @@ object ReduxSaga {
         }
       })
 
-    /** Filter emissions with [selector] */
     override fun filter(selector: (T) -> Boolean) = this.with("Filter",
       this.channel.filter(this.coroutineContext) { selector(it) })
 
-    /** Throttle emissions with [timeMillis] */
     @ExperimentalCoroutinesApi
     override fun debounce(timeMillis: Long): Output<T> {
       if (timeMillis <= 0) { return this }
@@ -164,12 +147,10 @@ object ReduxSaga {
       })
     }
 
-    /** Delay emissions by [delayMillis] */
     override fun delay(delayMillis: Long) = this.with("Delay", this.produce {
       this@Output.channel.consumeEach { delay(delayMillis); this@produce.send(it) }
     })
 
-    /** Catch possible errors and return a value produced by [fallback] */
     @ExperimentalCoroutinesApi
     override fun catchError(fallback: (Throwable) -> T) = this.with("CatchError", this.produce {
       try { this@Output.channel.toChannel(this) } catch (e1: Throwable) {
@@ -177,10 +158,8 @@ object ReduxSaga {
       }
     })
 
-    /** Terminate the current [channel] */
     override fun dispose() { this.channel.cancel(); this.onDispose() }
 
-    /** Get the next [T], but only if it arrives before [timeoutMillis] */
     override fun nextValue(timeoutMillis: Long) = runBlocking(this.coroutineContext) {
       withTimeoutOrNull(timeoutMillis) { this@Output.channel.receive() }
     }
