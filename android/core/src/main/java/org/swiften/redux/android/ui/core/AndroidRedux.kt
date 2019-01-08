@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.recyclerview
+package org.swiften.redux.android.ui.core
 
 import android.os.Handler
 import android.os.Looper
@@ -19,8 +19,8 @@ import org.swiften.redux.ui.ReduxUI
 /** Top-level namespace for Android Redux UI functionalities */
 object AndroidRedux {
   /**
-   * This [IPropInjector] is a specialized version of [ReduxUI.IPropInjector]
-   * that handles [LifecycleOwner] and deals with lifecycles automatically.
+   * This [IPropInjector] is a specialized version of [ReduxUI.IPropInjector] that handles
+   * [LifecycleOwner] and deals with lifecycles automatically.
    */
   interface IPropInjector<State> {
     /** Inject props into [lifecycleOwner] and handle lifecycle as well */
@@ -33,23 +33,19 @@ object AndroidRedux {
       LC : ReduxUI.IPropContainer<State, StateProps, ActionProps>
 
     /**
-     * Inject props into [view], basically a view that does not have internal
-     * state and handles no interactions.
+     * Inject props into [view], basically a view that does not have internal state and handles no
+     * interactions.
      */
     fun injectProps(view: ReduxUI.IStaticPropContainer<State>)
   }
 
-  /**
-   * Use this [LifecycleObserver] to unsubscribe from a [Redux.Subscription].
-   */
+  /** Use this [LifecycleObserver] to unsubscribe from a [Redux.Subscription] */
   private class ReduxLifecycleObserver private constructor(
     private val lifecycle: Lifecycle,
     private val subscription: Redux.Subscription
   ) : LifecycleObserver {
     companion object {
-      /**
-       * Create a [ReduxLifecycleObserver] with [lifecycle] and [subscription].
-       */
+      /** Create a [ReduxLifecycleObserver] with [lifecycle] and [subscription] */
       fun register(lifecycle: Lifecycle, subscription: Redux.Subscription) {
         ReduxLifecycleObserver(lifecycle, subscription)
       }
@@ -64,15 +60,11 @@ object AndroidRedux {
     }
   }
 
-  /**
-   * Default implementation for [IPropInjector].
-   */
+  /** Default implementation for [IPropInjector] */
   class PropInjector<State>(
     private val injector: ReduxUI.IPropInjector<State>
   ) : IPropInjector<State>, ReduxUI.IPropInjector<State> by injector {
-    /**
-     * Use the default [ReduxUI.PropInjector] implementation.
-     */
+    /** Use the default [ReduxUI.PropInjector] implementation */
     constructor(store: Redux.IStore<State>) : this(ReduxUI.PropInjector(store))
 
     private fun runOnUIThread(runnable: () -> Unit) {
@@ -93,16 +85,11 @@ object AndroidRedux {
 
         override var variableProps: ReduxUI.VariableProps<SP, AP>?
           get() = view.variableProps
-          set(value) { this@PropInjector.runOnUIThread {
-            view.variableProps = value }
-          }
+          set(value) { this@PropInjector.runOnUIThread { view.variableProps = value } }
       },
       outProps, mapper)
 
-    /**
-     * When [ReduxLifecycleObserver.onStop] is called, unsubscribe from
-     * [State] updates.
-     */
+    /** When [ReduxLifecycleObserver.onStop] is called, unsubscribe from [State] updates */
     override fun <LC, OP, SP, AP> injectProps(
       lifecycleOwner: LC,
       outProps: OP,
@@ -123,8 +110,8 @@ object AndroidRedux {
 }
 
 /**
- * Inject props into [lifecycleOwner], which is a view that only has a mutable
- * state but handles no actions.
+ * Inject props into [lifecycleOwner], which is a view that only has a mutable [SP] but handles
+ * no actions.
  */
 fun <State, LC, OP, SP> AndroidRedux.IPropInjector<State>.injectProps(
   lifecycleOwner: LC,

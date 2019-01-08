@@ -14,17 +14,14 @@ import org.swiften.redux.middleware.ReduxMiddlewareCreator
 /** Top-level namespace for Redux Router middleware */
 object ReduxRouterMiddleware {
   /**
-   * Represents a screen that also implements [Redux.IAction], so that views
-   * can simply dispatch an [IScreen] to navigate to the associated screen.
+   * Represents a screen that also implements [Redux.IAction], so that views can simply dispatch
+   * an [IScreen] to navigate to the associated screen.
    */
   interface IScreen : Redux.IAction
 
   /** Abstract the necessary work to navigate from one [IScreen] to another */
   interface IRouter {
-    /**
-     * Navigate to an [IScreen]. How this is done is left to the app's specific
-     * implementation.
-     */
+    /** Navigate to an [IScreen]. How this is done is left to the app's specific implementation */
     fun navigate(screen: IScreen)
   }
 
@@ -37,8 +34,8 @@ object ReduxRouterMiddleware {
             wrapper.dispatch(action)
 
             /**
-             * If [action] is an [IScreen] instance, use the [router] to
-             * navigate to the associated screen.
+             * If [action] is an [IScreen] instance, use the [router] to navigate to the associated
+             * screen.
              */
             when (action) {
               is IScreen -> this@Provider.router.navigate(action)

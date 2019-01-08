@@ -9,8 +9,8 @@ import org.swiften.redux.saga.ReduxSagaHelper.just
 
 /** Created by haipham on 2019/01/01 */
 /**
- * [ReduxSagaEffect] whose [ReduxSaga.Output] selects some value from an
- * internal state using [selector].
+ * [ReduxSagaEffect] whose [ReduxSaga.Output] selects some value from an internal state using
+ * [selector].
  */
 internal class SelectEffect<State, R>(
   private val selector: (State) -> R
@@ -20,8 +20,8 @@ internal class SelectEffect<State, R>(
 }
 
 /**
- * Invoke a [SelectEffect] on the current [ReduxSagaEffect] and combine the
- * emitted values with [selector].
+ * Invoke a [SelectEffect] on the current [ReduxSagaEffect] and combine the emitted values with
+ * [selector].
  */
 fun <State, R, R2, R3> ReduxSagaEffect<State, R>.select(
   selector: (State) -> R2,

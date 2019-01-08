@@ -9,9 +9,8 @@ import org.swiften.redux.core.Redux
 
 /** Created by haipham on 2018/12/23 */
 /**
- * [TakeEffect] whose [ReduxSaga.Output] takes all [Redux.IAction] that pass
- * some conditions, then flattens and emits all values. Contrast this with
- * [TakeLatestEffect].
+ * [TakeEffect] whose [ReduxSaga.Output] takes all [Redux.IAction] that pass some conditions, then
+ * flattens and emits all values. Contrast this with [TakeLatestEffect].
  */
 internal class TakeEveryEffect<State, P, R>(
   extract: Function1<Redux.IAction, P?>,

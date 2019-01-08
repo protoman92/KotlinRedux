@@ -36,10 +36,7 @@ object ReduxSagaHelper {
     options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
   ): ReduxSagaEffect<State, R> = TakeEveryEffect(extract, block, options)
 
-  /**
-   * Convenience function to create [TakeEveryEffect] for a specific type of
-   * [Redux.IAction].
-   */
+  /** Convenience function to create [TakeEveryEffect] for a specific type of [Redux.IAction] */
   inline fun <State, reified Action, P, R> takeEveryAction(
     crossinline extract: Function1<Action, P?>,
     noinline block: Function1<P, ReduxSagaEffect<State, R>>,
@@ -56,10 +53,7 @@ object ReduxSagaHelper {
     options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
   ): ReduxSagaEffect<State, R> = TakeLatestEffect(extract, block, options)
 
-  /**
-   * Convenience function to create [TakeLatestEffect] for a specific type of
-   * [Redux.IAction].
-   */
+  /** Convenience function to create [TakeLatestEffect] for a specific type of [Redux.IAction] */
   inline fun <State, reified Action, P, R> takeLatestAction(
     crossinline extract: Function1<Action, P?>,
     noinline block: Function1<P, ReduxSagaEffect<State, R>>,

@@ -26,16 +26,16 @@ object ReduxUI {
   }
 
   /**
-   * Represents a Redux compatible view, combining [IStaticPropContainer]
-   * and [IVariablePropContainer].
+   * Represents a Redux compatible view, combining [IStaticPropContainer] and
+   * [IVariablePropContainer].
    */
   interface IPropContainer<GlobalState, StateProps, ActionProps> :
     IStaticPropContainer<GlobalState>,
     IVariablePropContainer<StateProps, ActionProps>
 
   /**
-   * Maps [GlobalState] to [StateProps] for a [IPropContainer]. [OutProps]
-   * is the view's immutable property as dictated by its parent.
+   * Maps [GlobalState] to [StateProps] for a [IPropContainer]. [OutProps] is the view's immutable
+   * property as dictated by its parent.
    */
   interface IStatePropMapper<GlobalState, OutProps, StateProps> {
     /** Map [GlobalState] to [StateProps] using [OutProps] */
@@ -43,14 +43,11 @@ object ReduxUI {
   }
 
   /**
-   * Maps [ReduxDispatcher] to [ActionProps] for a [IPropContainer].
-   * [OutProps] is the view's immutable property as dictated by its parent.
+   * Maps [ReduxDispatcher] to [ActionProps] for a [IPropContainer]. [OutProps] is the view's
+   * immutable property as dictated by its parent.
    */
   interface IActionPropMapper<GlobalState, OutProps, ActionProps> {
-    /**
-     * Map [ReduxDispatcher] to [ActionProps] using [GlobalState] and
-     * [OutProps].
-     */
+    /** Map [ReduxDispatcher] to [ActionProps] using [GlobalState] and [OutProps] */
     fun mapAction(
       dispatch: ReduxDispatcher,
       state: GlobalState,
@@ -58,10 +55,7 @@ object ReduxUI {
     ): ActionProps
   }
 
-  /**
-   * Maps [GlobalState] to [StateProps] and [ActionProps] for a
-   * [IPropContainer].
-   */
+  /** Maps [GlobalState] to [StateProps] and [ActionProps] for a [IPropContainer] */
   interface IPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
     IStatePropMapper<GlobalState, OutProps, StateProps>,
     IActionPropMapper<GlobalState, OutProps, ActionProps>
@@ -102,16 +96,16 @@ object ReduxUI {
       view.staticProps?.also { it.subscription.unsubscribe() }
 
       /**
-       * It does not matter what the id is, as long as it is unique. This is
-       * because we will be passing along a [Redux.Subscription] to handle
-       * unsubscribe, so there's not need to keep track of the [view]'s id.
+       * It does not matter what the id is, as long as it is unique. This is because we will be
+       * passing along a [Redux.Subscription] to handle unsubscribe, so there's not need to keep
+       * track of the [view]'s id.
        */
       val id = "${view.javaClass.canonicalName}${Date().time}"
       val lock = ReentrantLock()
 
       /**
-       * If [view] has received an injection before, take the latest [State]
-       * from its [IPropContainer.variableProps].
+       * If [view] has received an injection before, take the latest [State] from its
+       * [IPropContainer.variableProps].
        */
       var previousState: StateProps? = view.variableProps?.nextState
 
@@ -134,9 +128,8 @@ object ReduxUI {
       }
 
       /**
-       * Immediately set [IPropContainer.variableProps] based on [store]'s
-       * last [State], in case this [store] does not relay last [State] on
-       * subscription.
+       * Immediately set [IPropContainer.variableProps] based on [store]'s last [State], in case
+       * this [store] does not relay last [State] on subscription.
        */
       onStateUpdate(this.store.stateGetter())
       val subscription = this.store.subscribe(id, onStateUpdate)

@@ -13,9 +13,8 @@ import org.swiften.redux.core.Redux
 
 /** Created by haipham on 2018/12/23 */
 /**
- * [TakeEffect] instances produces streams that filter [Redux.IAction] with
- * [extract] and pluck out the appropriate ones to perform additional work on
- * with [block].
+ * [TakeEffect] instances produces streams that filter [Redux.IAction] with [extract] and pluck
+ * out the appropriate ones to perform additional work on with [block].
  */
 internal abstract class TakeEffect<State, P, R>(
   private val extract: Function1<Redux.IAction, P?>,

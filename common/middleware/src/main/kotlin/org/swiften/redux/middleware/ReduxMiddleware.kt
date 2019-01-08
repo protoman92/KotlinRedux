@@ -15,8 +15,8 @@ typealias ReduxDispatchMapper =
   Function1<ReduxMiddleware.DispatchWrapper, ReduxMiddleware.DispatchWrapper>
 
 /**
- * Represents a Redux middleware that accepts an [ReduxMiddleware.Input] and
- * produces a [ReduxMiddleware.DispatchWrapper].
+ * Represents a Redux middleware that accepts an [ReduxMiddleware.Input] and produces a
+ * [ReduxMiddleware.DispatchWrapper].
  */
 typealias ReduxMiddlewareCreator<State> =
   Function1<ReduxMiddleware.Input<State>, ReduxDispatchMapper>
@@ -30,30 +30,21 @@ object ReduxMiddleware {
     val middleware: ReduxMiddlewareCreator<State>
   }
 
-  /**
-   * [Input] for middlewares that includes some functionalities from
-   * [Redux.IStore].
-   */
+  /** [Input] for middlewares that includes some functionalities from [Redux.IStore] */
   class Input<State>(val stateGetter: ReduxStateGetter<State>)
 
-  /**
-   * Use this [DispatchWrapper] to track the ordering of [dispatch] wrapping
-   * using [id].
-   */
+  /** Use this [DispatchWrapper] to track the ordering of [dispatch] wrapping using [id] */
   class DispatchWrapper(val id: String, val dispatch: ReduxDispatcher)
 
-  /**
-   * Enhance a [store] by overriding its [Redux.IStore.dispatch] with
-   * [dispatch].
-   */
+  /** Enhance a [store] by overriding its [Redux.IStore.dispatch] with [dispatch] */
   private class EnhancedStore<State>(
     val store: Redux.IStore<State>,
     override val dispatch: Function1<Redux.IAction, Unit>
   ) : Redux.IStore<State> by store
 
   /**
-   * Combine [middlewares] into a master [ReduxMiddlewareCreator] and apply it
-   * to a [Redux.IStore.dispatch] to produce a [DispatchWrapper].
+   * Combine [middlewares] into a master [ReduxMiddlewareCreator] and apply it to a
+   * [Redux.IStore.dispatch] to produce a [DispatchWrapper].
    */
   fun <State> combineMiddlewares(
     middlewares: Collection<ReduxMiddlewareCreator<State>>
@@ -69,10 +60,7 @@ object ReduxMiddleware {
     }
   }
 
-  /**
-   * Apply [middlewares] to a [Redux.IStore] instance to get an enhanced
-   * [Redux.IStore].
-   */
+  /** Apply [middlewares] to a [Redux.IStore] instance to get an enhanced [Redux.IStore] */
   fun <State> applyMiddlewares(
     middlewares: Collection<ReduxMiddlewareCreator<State>>
   ): (Redux.IStore<State>) -> Redux.IStore<State> =
@@ -82,8 +70,8 @@ object ReduxMiddleware {
     }
 
   /**
-   * Apply [middlewares] to a [Redux.IStore] instance. This is a convenience
-   * method that uses varargs.
+   * Apply [middlewares] to a [Redux.IStore] instance. This is a convenience method that uses
+   * varargs.
    */
   fun <State> applyMiddlewares(
     vararg middlewares: ReduxMiddlewareCreator<State>

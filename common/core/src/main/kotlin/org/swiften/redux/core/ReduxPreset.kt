@@ -13,10 +13,9 @@ object ReduxPreset {
     object Dummy : DefaultAction()
 
     /**
-     * If this action is dispatched, replace the current state with [state].
-     * Beware that we will do a force-cast in [ReducerWrapper] to expected
-     * State type, so it will throw a [ClassCastException] if [State] is not
-     * the correct type.
+     * If this action is dispatched, replace the current [State] with [state]. Beware that we will
+     * do a force-cast in [ReducerWrapper] to expected State type, so it will throw a
+     * [ClassCastException] if [State] is not the correct type.
      */
     class ReplaceState<out State>(val state: State) : DefaultAction() {
       override fun toString(): String = "Replacing state with $state"
