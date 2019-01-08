@@ -6,11 +6,13 @@
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
   <EditText
-    android:id="@+id/query_search"
+    android:id="@+id/querySearch"
     android:layout_width="match_parent"
     android:layout_height="@dimen/text_view_height"
     android:layout_marginLeft="@dimen/spacing2"
@@ -20,5 +22,13 @@
     android:layout_marginTop="@dimen/spacing2"
     android:hint="@string/search_hint"
     android:inputType="text"/>
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/searchResult"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/spacing2"
+    app:layout_anchor="@id/querySearch"
+    app:layout_anchorGravity="bottom|left|right|start|end"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

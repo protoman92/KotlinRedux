@@ -11,8 +11,14 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_search.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_search.querySearch
+import kotlinx.android.synthetic.main.fragment_search.searchResult
+import kotlinx.android.synthetic.main.view_search_result.view.trackName
+import org.swiften.redux.android.ui.injectProps
 import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.ui.ReduxUI
 import kotlin.properties.Delegates
@@ -23,6 +29,20 @@ class SearchFragment : Fragment(),
   ReduxUI.IPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
   data class S(val query: String?)
   class A(val updateQuery: (String?) -> Unit)
+  class ViewHolder(val parent: View, val trackName: TextView) : RecyclerView.ViewHolder(parent)
+
+  class Adapter : RecyclerView.Adapter<ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+      val view = LayoutInflater.from(parent.context)
+        .inflate(R.layout.view_search_result, parent, false)
+
+      return ViewHolder(view, view.trackName)
+    }
+
+    override fun getItemCount() = 0
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {}
+  }
 
   companion object : ReduxUI.IPropMapper<State, Unit, S, A> {
     override fun mapAction(
@@ -34,7 +54,10 @@ class SearchFragment : Fragment(),
     override fun mapState(state: State, outProps: Unit) = S(state.autocompleteQuery)
   }
 
-  override var staticProps: ReduxUI.StaticProps<State>? = null
+  override var staticProps
+    by Delegates.observable<ReduxUI.StaticProps<State>?>(null) { _, _, p ->
+      if (p != null) this.didSetStaticProps(p)
+    }
 
   override var variableProps
     by Delegates.observable<ReduxUI.VariableProps<S, A>?>(null) { _, _, p ->
@@ -50,7 +73,7 @@ class SearchFragment : Fragment(),
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    this.query_search.addTextChangedListener(object : TextWatcher {
+    this.querySearch.addTextChangedListener(object : TextWatcher {
       override fun afterTextChanged(s: Editable?) {}
 
       override fun beforeTextChanged(
@@ -71,6 +94,12 @@ class SearchFragment : Fragment(),
         }
       }
     })
+  }
+
+  private fun didSetStaticProps(props: ReduxUI.StaticProps<State>) {
+    val adapter = props.injector.injectProps(Adapter())
+    this.searchResult.adapter = adapter
+    this.searchResult.layoutManager = LinearLayoutManager(this.context)
   }
 
   private fun didSetProps(props: ReduxUI.VariableProps<S, A>) {}

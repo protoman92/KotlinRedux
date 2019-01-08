@@ -8,7 +8,7 @@ package org.swiften.redux.android.sample
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import org.swiften.redux.android.ui.AndroidReduxUI
+import org.swiften.redux.android.ui.AndroidRedux
 import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.ReduxMiddleware.applyMiddlewares
 import org.swiften.redux.saga.ReduxSagaMiddleware
@@ -24,7 +24,7 @@ class MainApplication : Application() {
       ReduxSagaMiddleware.Provider(MainSaga.sagas(repository)).middleware
     )(SimpleReduxStore(State(), MainRedux.Reducer))
 
-    val injector = AndroidReduxUI.PropInjector(store)
+    val injector = AndroidRedux.PropInjector(store)
     val dependency = MainDependency(injector)
 
     this.registerActivityLifecycleCallbacks(

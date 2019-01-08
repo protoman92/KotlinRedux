@@ -17,15 +17,13 @@ import org.swiften.redux.ui.ReduxUI
 
 /** Created by haipham on 2018/12/17 */
 /** Top-level namespace for Android Redux UI functionalities */
-object AndroidReduxUI {
+object AndroidRedux {
   /**
    * This [IPropInjector] is a specialized version of [ReduxUI.IPropInjector]
    * that handles [LifecycleOwner] and deals with lifecycles automatically.
    */
   interface IPropInjector<State> {
-    /**
-     * Inject props into [lifecycleOwner] and handle lifecycle as well.
-     */
+    /** Inject props into [lifecycleOwner] and handle lifecycle as well */
     fun <LC, OutProps, StateProps, ActionProps> injectProps(
       lifecycleOwner: LC,
       outProps: OutProps,
@@ -128,7 +126,7 @@ object AndroidReduxUI {
  * Inject props into [lifecycleOwner], which is a view that only has a mutable
  * state but handles no actions.
  */
-fun <State, LC, OP, SP> AndroidReduxUI.IPropInjector<State>.injectProps(
+fun <State, LC, OP, SP> AndroidRedux.IPropInjector<State>.injectProps(
   lifecycleOwner: LC,
   outProps: OP,
   mapper: ReduxUI.IStatePropMapper<State, OP, SP>

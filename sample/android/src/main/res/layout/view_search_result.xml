@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) haipham 2018. All rights reserved.
+  ~ Copyright (c) haipham 2019. All rights reserved.
   ~ Any attempt to reproduce this source code in any form shall be met with legal actions.
   -->
 
-<FrameLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <androidx.viewpager.widget.ViewPager
-    android:id="@+id/viewPager"
+  <TextView
+    android:id="@+id/trackName"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
 
-</FrameLayout>
+</LinearLayout>

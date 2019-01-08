@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
-import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.android.synthetic.main.fragment_main.viewPager
 
 /** Created by haipham on 2018/12/20 */
 class MainFragment : Fragment() {
@@ -24,9 +24,9 @@ class MainFragment : Fragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     val fm = requireNotNull(this.fragmentManager)
-    this.view_pager.offscreenPageLimit = 1
+    this.viewPager.offscreenPageLimit = 1
 
-    this.view_pager.adapter = object : FragmentPagerAdapter(fm) {
+    this.viewPager.adapter = object : FragmentPagerAdapter(fm) {
       override fun getItem(position: Int): Fragment = when (position) {
         1 -> Fragment2()
         2 -> Fragment3()
