@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/android/ui/android-ui.iml" filepath="$PROJECT_DIR$/android/ui/android-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/core/android-core.iml" filepath="$PROJECT_DIR$/android/core/android-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/core/common-core.iml" filepath="$PROJECT_DIR$/common/core/common-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/ui/common-ui.iml" filepath="$PROJECT_DIR$/common/ui/common-ui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/core/core.iml" filepath="$PROJECT_DIR$/common/core/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/coroutine-saga/coroutine-saga.iml" filepath="$PROJECT_DIR$/common/coroutine-saga/coroutine-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/middleware/middleware.iml" filepath="$PROJECT_DIR$/common/middleware/middleware.iml" />
       <module fileurl="file://$PROJECT_DIR$/redux-jvm.iml" filepath="$PROJECT_DIR$/redux-jvm.iml" />
@@ -16,6 +15,7 @@
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/android/sample-android.iml" filepath="$PROJECT_DIR$/sample/android/sample-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/simple-store/simple-store.iml" filepath="$PROJECT_DIR$/common/simple-store/simple-store.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/ui/ui.iml" filepath="$PROJECT_DIR$/common/ui/ui.iml" />
     </modules>
   </component>
 </project>

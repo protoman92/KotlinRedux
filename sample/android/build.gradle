@@ -57,7 +57,7 @@ dependencies {
   api project(':common:middleware')
   api project(':common:common-saga')
   api project(':common:rx-saga')
-  api project(':android:ui')
+  api project(':android:core')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin"
   implementation "androidx.appcompat:appcompat:$appCompat"
   implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
