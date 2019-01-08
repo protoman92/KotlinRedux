@@ -41,7 +41,7 @@ class PropInjectorTest {
     }
   }
 
-  class View : ReduxUI.IPropContainerView<S, S, A> {
+  class View : ReduxUI.IPropContainer<S, S, A> {
     override var staticProps
       by Delegates.observable<ReduxUI.StaticProps<S>?>(null) { _, _, p ->
         this.didSetStaticProps(p)

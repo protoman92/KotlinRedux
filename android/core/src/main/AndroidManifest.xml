@@ -1,3 +1,3 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
-  package="org.swiften.redux.android.ui"/>
+  package="org.swiften.redux.android.ui.core"/>

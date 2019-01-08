@@ -18,14 +18,14 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
-import org.swiften.redux.android.ui.injectProps
+import org.swiften.redux.android.ui.recyclerview.injectProps
 import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.ui.ReduxUI
 import kotlin.properties.Delegates
 
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
-  ReduxUI.IPropContainerView<State, SearchFragment.S, SearchFragment.A>,
+  ReduxUI.IPropContainer<State, SearchFragment.S, SearchFragment.A>,
   ReduxUI.IPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
   data class S(val query: String?)
   class A(val updateQuery: (String?) -> Unit)
@@ -54,10 +54,7 @@ class SearchFragment : Fragment(),
     override fun mapState(state: State, outProps: Unit) = S(state.autocompleteQuery)
   }
 
-  override var staticProps
-    by Delegates.observable<ReduxUI.StaticProps<State>?>(null) { _, _, p ->
-      if (p != null) this.didSetStaticProps(p)
-    }
+  override var staticProps: ReduxUI.StaticProps<State>? = null
 
   override var variableProps
     by Delegates.observable<ReduxUI.VariableProps<S, A>?>(null) { _, _, p ->
@@ -94,10 +91,8 @@ class SearchFragment : Fragment(),
         }
       }
     })
-  }
 
-  private fun didSetStaticProps(props: ReduxUI.StaticProps<State>) {
-    val adapter = props.injector.injectProps(Adapter())
+    val adapter = this.staticProps!!.injector.injectProps(Adapter())
     this.searchResult.adapter = adapter
     this.searchResult.layoutManager = LinearLayoutManager(this.context)
   }

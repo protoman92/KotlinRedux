@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.ui
+package org.swiften.redux.android.recyclerview
 
 import android.os.Handler
 import android.os.Looper
@@ -30,13 +30,13 @@ object AndroidRedux {
       mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
     ) where
       LC : LifecycleOwner,
-      LC : ReduxUI.IPropContainerView<State, StateProps, ActionProps>
+      LC : ReduxUI.IPropContainer<State, StateProps, ActionProps>
 
     /**
      * Inject props into [view], basically a view that does not have internal
      * state and handles no interactions.
      */
-    fun injectProps(view: ReduxUI.IStaticPropContainerView<State>)
+    fun injectProps(view: ReduxUI.IStaticPropContainer<State>)
   }
 
   /**
@@ -82,11 +82,11 @@ object AndroidRedux {
     }
 
     override fun <OP, SP, AP> injectProps(
-      view: ReduxUI.IPropContainerView<State, SP, AP>,
+      view: ReduxUI.IPropContainer<State, SP, AP>,
       outProps: OP,
       mapper: ReduxUI.IPropMapper<State, OP, SP, AP>
     ) = this.injector.injectProps(
-      object : ReduxUI.IPropContainerView<State, SP, AP> {
+      object : ReduxUI.IPropContainer<State, SP, AP> {
         override var staticProps: ReduxUI.StaticProps<State>?
           get() = view.staticProps
           set(value) { view.staticProps = value }
@@ -109,14 +109,14 @@ object AndroidRedux {
       mapper: ReduxUI.IPropMapper<State, OP, SP, AP>
     ) where
       LC : LifecycleOwner,
-      LC : ReduxUI.IPropContainerView<State, SP, AP>
+      LC : ReduxUI.IPropContainer<State, SP, AP>
     {
-      val view: ReduxUI.IPropContainerView<State, SP, AP> = lifecycleOwner
+      val view: ReduxUI.IPropContainer<State, SP, AP> = lifecycleOwner
       val subscription = this.injectProps(view, outProps, mapper)
       ReduxLifecycleObserver.register(lifecycleOwner.lifecycle, subscription)
     }
 
-    override fun injectProps(view: ReduxUI.IStaticPropContainerView<State>) {
+    override fun injectProps(view: ReduxUI.IStaticPropContainer<State>) {
       view.staticProps = ReduxUI.StaticProps(this, Redux.Subscription {})
     }
   }
@@ -132,7 +132,7 @@ fun <State, LC, OP, SP> AndroidRedux.IPropInjector<State>.injectProps(
   mapper: ReduxUI.IStatePropMapper<State, OP, SP>
 ) where
   LC : LifecycleOwner,
-  LC : ReduxUI.IPropContainerView<State, SP, Unit> =
+  LC : ReduxUI.IPropContainer<State, SP, Unit> =
   this.injectProps(lifecycleOwner, outProps,
   object : ReduxUI.IPropMapper<State, OP, SP, Unit> {
     override fun mapAction(

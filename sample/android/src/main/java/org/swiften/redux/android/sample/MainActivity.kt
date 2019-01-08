@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager
 import org.swiften.redux.ui.ReduxUI
 
 /** Created by haipham on 2018/12/19 */
-class MainActivity : AppCompatActivity(), ReduxUI.IStaticPropContainerView<State> {
+class MainActivity : AppCompatActivity(), ReduxUI.IStaticPropContainer<State> {
   override var staticProps: ReduxUI.StaticProps<State>? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {

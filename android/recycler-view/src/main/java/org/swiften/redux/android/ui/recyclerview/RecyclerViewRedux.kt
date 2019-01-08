@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.ui
+package org.swiften.redux.android.ui.recyclerview
 
 import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.ui.ReduxUI

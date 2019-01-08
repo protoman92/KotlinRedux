@@ -8,7 +8,7 @@ package org.swiften.redux.android.sample
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import org.swiften.redux.android.ui.AndroidRedux
+import org.swiften.redux.android.recyclerview.AndroidRedux
 import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.ReduxMiddleware.applyMiddlewares
 import org.swiften.redux.saga.ReduxSagaMiddleware
