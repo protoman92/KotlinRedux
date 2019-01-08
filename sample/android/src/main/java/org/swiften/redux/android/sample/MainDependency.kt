@@ -5,7 +5,7 @@
 
 package org.swiften.redux.android.sample
 
-import org.swiften.redux.android.recyclerview.AndroidRedux
+import org.swiften.redux.ui.ReduxUI
 
 /** Created by haipham on 2018/12/19 */
-class MainDependency(val injector: AndroidRedux.IPropInjector<State>)
+class MainDependency(val injector: ReduxUI.IPropInjector<State>)

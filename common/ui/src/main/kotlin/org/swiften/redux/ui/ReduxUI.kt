@@ -16,7 +16,7 @@ object ReduxUI {
   /** Represents a view that contains [StaticProps] dependencies */
   interface IStaticPropContainer<GlobalState> {
     /** This will only be set once after injection commences */
-    var staticProps: StaticProps<GlobalState>?
+    var staticProps: StaticProps<GlobalState>
   }
 
   /** Represents a view that contains [VariableProps] internal state */
@@ -48,11 +48,7 @@ object ReduxUI {
    */
   interface IActionPropMapper<GlobalState, OutProps, ActionProps> {
     /** Map [ReduxDispatcher] to [ActionProps] using [GlobalState] and [OutProps] */
-    fun mapAction(
-      dispatch: ReduxDispatcher,
-      state: GlobalState,
-      outProps: OutProps
-    ): ActionProps
+    fun mapAction(dispatch: ReduxDispatcher, state: GlobalState, outProps: OutProps): ActionProps
   }
 
   /** Maps [GlobalState] to [StateProps] and [ActionProps] for a [IPropContainer] */
@@ -73,7 +69,7 @@ object ReduxUI {
   /** Container for an [IPropContainer] static properties */
   class StaticProps<State>(
     val injector: IPropInjector<State>,
-    val subscription: Redux.Subscription
+    internal val subscription: Redux.Subscription
   )
 
   /** Container for an [IPropContainer] mutable properties */
@@ -84,16 +80,16 @@ object ReduxUI {
   )
 
   /** A [IPropInjector] implementation */
-  class PropInjector<State>(
-    private val store: Redux.IStore<State>
-  ) : IPropInjector<State> {
+  class PropInjector<State>(private val store: Redux.IStore<State>) : IPropInjector<State> {
     override fun <OutProps, StateProps, ActionProps> injectProps(
       view: ReduxUI.IPropContainer<State, StateProps, ActionProps>,
       outProps: OutProps,
       mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
     ): Redux.Subscription {
       /** If [view] has received an injection before, unsubscribe from that */
-      view.staticProps?.also { it.subscription.unsubscribe() }
+      try {
+        view.staticProps.subscription.unsubscribe()
+      } catch (e: UninitializedPropertyAccessException) { }
 
       /**
        * It does not matter what the id is, as long as it is unique. This is because we will be
@@ -137,4 +133,12 @@ object ReduxUI {
       return subscription
     }
   }
+}
+
+/**
+ * Inject props into [view], basically a view that does not have internal state and handles no
+ * interactions.
+ */
+fun <State> ReduxUI.IPropInjector<State>.injectStaticProps(view: ReduxUI.IStaticPropContainer<State>) {
+  view.staticProps = ReduxUI.StaticProps(this, Redux.Subscription {})
 }

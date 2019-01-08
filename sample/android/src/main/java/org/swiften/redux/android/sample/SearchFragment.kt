@@ -54,7 +54,7 @@ class SearchFragment : Fragment(),
     override fun mapState(state: State, outProps: Unit) = S(state.autocompleteQuery)
   }
 
-  override var staticProps: ReduxUI.StaticProps<State>? = null
+  override lateinit var staticProps: ReduxUI.StaticProps<State>
 
   override var variableProps
     by Delegates.observable<ReduxUI.VariableProps<S, A>?>(null) { _, _, p ->
@@ -67,8 +67,8 @@ class SearchFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
+  override fun onResume() {
+    super.onResume()
 
     this.querySearch.addTextChangedListener(object : TextWatcher {
       override fun afterTextChanged(s: Editable?) {}
@@ -92,7 +92,7 @@ class SearchFragment : Fragment(),
       }
     })
 
-    val adapter = this.staticProps!!.injector.injectProps(Adapter())
+    val adapter = this.staticProps.injector.injectProps(Adapter())
     this.searchResult.adapter = adapter
     this.searchResult.layoutManager = LinearLayoutManager(this.context)
   }

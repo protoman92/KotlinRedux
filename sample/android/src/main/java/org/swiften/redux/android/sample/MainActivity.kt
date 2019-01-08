@@ -9,11 +9,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import org.swiften.redux.android.ui.core.injectLifecycleProps
 import org.swiften.redux.ui.ReduxUI
 
 /** Created by haipham on 2018/12/19 */
 class MainActivity : AppCompatActivity(), ReduxUI.IStaticPropContainer<State> {
-  override var staticProps: ReduxUI.StaticProps<State>? = null
+  override lateinit var staticProps: ReduxUI.StaticProps<State>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -28,10 +29,9 @@ class MainActivity : AppCompatActivity(), ReduxUI.IStaticPropContainer<State> {
     this.supportFragmentManager.registerFragmentLifecycleCallbacks(
       object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
-          val injector = requireNotNull(this@MainActivity.staticProps).injector
-
           when (f) {
-            is SearchFragment -> injector.injectProps(f, Unit, f)
+            is SearchFragment ->
+              this@MainActivity.staticProps.injector.injectLifecycleProps(f, Unit, f)
           }
         }
       }, true)

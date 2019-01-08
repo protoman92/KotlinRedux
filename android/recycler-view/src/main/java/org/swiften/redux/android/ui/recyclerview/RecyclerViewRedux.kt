@@ -12,4 +12,4 @@ import org.swiften.redux.ui.ReduxUI
 /** Injector props for a [RecyclerView.Adapter] */
 fun <State, VH> ReduxUI.IPropInjector<State>.injectProps(
   adapter: RecyclerView.Adapter<VH>
-) : RecyclerView.Adapter<VH> where VH : RecyclerView.ViewHolder = adapter
+): RecyclerView.Adapter<VH> where VH : RecyclerView.ViewHolder = adapter
