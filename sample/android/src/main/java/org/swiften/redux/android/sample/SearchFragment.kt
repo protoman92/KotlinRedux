@@ -97,28 +97,19 @@ class SearchFragment : Fragment(),
 
     this.querySearch.addTextChangedListener(object : TextWatcher {
       override fun afterTextChanged(s: Editable?) {}
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-      override fun beforeTextChanged(
-        s: CharSequence?,
-        start: Int,
-        count: Int,
-        after: Int
-      ) {}
-
-      override fun onTextChanged(
-        s: CharSequence?,
-        start: Int,
-        before: Int,
-        count: Int
-      ) {
-        this@SearchFragment.variableProps?.also {
-          it.actions.updateQuery(s?.toString())
-        }
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
       }
     })
 
     val adapter = this.staticProps.injector.injectRecyclerViewProps(Adapter(), ViewHolder)
     this.searchResult.adapter = adapter
     this.searchResult.layoutManager = LinearLayoutManager(this.context)
+  }
+
+  override fun onPropInjectionStopped() {
+    this.searchResult.adapter = null
   }
 }
