@@ -23,7 +23,7 @@ class SimpleReduxStore<State>(
 
   private val reducer: IReduxReducer<State>
 
-  init { this.reducer = ReducerWrapper(reducer) }
+  init { this.reducer = ReduxReducerWrapper(reducer) }
 
   override val stateGetter = object : IReduxStateGetter<State> {
     override fun invoke() =

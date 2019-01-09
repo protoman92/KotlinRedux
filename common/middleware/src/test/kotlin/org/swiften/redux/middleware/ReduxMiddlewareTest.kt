@@ -5,7 +5,7 @@
 
 package org.swiften.redux.middleware
 
-import org.swiften.redux.core.DefaultAction
+import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.SimpleReduxStore
 import org.testng.Assert
 import org.testng.annotations.Test
@@ -19,28 +19,28 @@ class ReduxMiddlewareTest {
     val store = SimpleReduxStore(0) { a, _ -> a }
     val ordering = arrayListOf<Int>()
 
-    val wrappedStore = ReduxMiddleware.applyMiddlewares<Int>(
+    val wrappedStore = applyReduxMiddlewares<Int>(
       { { wrapper ->
-        ReduxMiddleware.DispatchWrapper("${wrapper.id}-$1") {
+        ReduxDispatchWrapper("${wrapper.id}-$1") {
           wrapper.dispatch(it); ordering.add(1)
         }
       } },
       { { wrapper ->
-        ReduxMiddleware.DispatchWrapper("${wrapper.id}-$2") {
+        ReduxDispatchWrapper("${wrapper.id}-$2") {
           wrapper.dispatch(it); ordering.add(2)
         }
       } },
       { { wrapper ->
-        ReduxMiddleware.DispatchWrapper("${wrapper.id}-$3") {
+        ReduxDispatchWrapper("${wrapper.id}-$3") {
           wrapper.dispatch(it); ordering.add(3)
         }
       } }
     )(store)
 
     // When
-    wrappedStore.dispatch(DefaultAction.Dummy)
-    wrappedStore.dispatch(DefaultAction.Dummy)
-    wrappedStore.dispatch(DefaultAction.Dummy)
+    wrappedStore.dispatch(DefaultReduxAction.Dummy)
+    wrappedStore.dispatch(DefaultReduxAction.Dummy)
+    wrappedStore.dispatch(DefaultReduxAction.Dummy)
 
     // Then
     Assert.assertEquals(ordering, arrayListOf(3, 2, 1, 3, 2, 1, 3, 2, 1))
@@ -52,7 +52,7 @@ class ReduxMiddlewareTest {
     val store = SimpleReduxStore(0) { a, _ -> a }
 
     // When
-    val wrapper = ReduxMiddleware.combineMiddlewares<Int>(arrayListOf())(store)
+    val wrapper = combineReduxMiddlewares<Int>(arrayListOf())(store)
 
     // Then
     Assert.assertEquals(wrapper.id, "root")

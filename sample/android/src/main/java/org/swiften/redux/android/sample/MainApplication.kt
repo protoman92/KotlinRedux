@@ -9,7 +9,7 @@ import android.app.Application
 import org.swiften.redux.android.ui.core.endActivityInjection
 import org.swiften.redux.android.ui.core.startActivityInjection
 import org.swiften.redux.core.SimpleReduxStore
-import org.swiften.redux.middleware.ReduxMiddleware.applyMiddlewares
+import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.saga.ReduxSagaMiddleware
 import org.swiften.redux.ui.ReduxUI
 import org.swiften.redux.ui.injectStaticProps
@@ -23,7 +23,7 @@ class MainApplication : Application() {
     val api = MainApi()
     val repository = MainRepository(api, JSONDecoder())
 
-    val store = applyMiddlewares(
+    val store = applyReduxMiddlewares(
       ReduxSagaMiddleware.Provider(MainSaga.sagas(repository)).middleware
     )(SimpleReduxStore(State(), MainRedux.Reducer))
 

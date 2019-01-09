@@ -18,7 +18,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.android.ui.core.AndroidRedux.ReduxLifecycleObserver
-import org.swiften.redux.core.DefaultAction
+import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.ReduxUI
@@ -150,7 +150,7 @@ fun <State> ReduxUI.startActivityInjection(
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
       savedInstanceState
         ?.run { restoreState(this) }
-        ?.apply { injector.dispatch(DefaultAction.ReplaceState(this)) }
+        ?.apply { injector.dispatch(DefaultReduxAction.ReplaceState(this)) }
     }
 
     override fun onActivityStarted(activity: Activity?) {

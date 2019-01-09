@@ -5,9 +5,9 @@
 
 package org.swiften.redux.router
 
-import org.swiften.redux.core.DefaultAction
+import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.SimpleReduxStore
-import org.swiften.redux.middleware.ReduxMiddleware
+import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
@@ -40,12 +40,12 @@ class ReduxRouterMiddlewareTest : ReduxRouterMiddleware.IRouter {
     // Setup
     val store = SimpleReduxStore(0) { a, b -> a }
 
-    val wrappedStore = ReduxMiddleware.applyMiddlewares(
+    val wrappedStore = applyReduxMiddlewares(
       ReduxRouterMiddleware.Provider<Int>(this).middleware
     )(store)
 
     // When
-    wrappedStore.dispatch(DefaultAction.Dummy)
+    wrappedStore.dispatch(DefaultReduxAction.Dummy)
     wrappedStore.dispatch(Screen.Screen1)
     wrappedStore.dispatch(Screen.Screen2)
     wrappedStore.dispatch(Screen.Screen3)

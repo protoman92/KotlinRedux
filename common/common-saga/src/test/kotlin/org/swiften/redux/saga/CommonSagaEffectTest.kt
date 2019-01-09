@@ -14,7 +14,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
-import org.swiften.redux.core.DefaultAction
+import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxAction
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
@@ -68,9 +68,9 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     // When
     takeOutput.onAction(TakeAction.Action1(0))
     takeOutput.onAction(TakeAction.Action1(1))
-    takeOutput.onAction(DefaultAction.Dummy)
+    takeOutput.onAction(DefaultReduxAction.Dummy)
     takeOutput.onAction(TakeAction.Action1(2))
-    takeOutput.onAction(DefaultAction.Dummy)
+    takeOutput.onAction(DefaultReduxAction.Dummy)
     takeOutput.onAction(TakeAction.Action1(3))
 
     runBlocking {

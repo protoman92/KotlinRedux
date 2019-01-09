@@ -8,17 +8,18 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import org.swiften.redux.middleware.ReduxMiddleware
-import org.swiften.redux.middleware.ReduxMiddlewareCreator
+import org.swiften.redux.middleware.IReduxMiddleware
+import org.swiften.redux.middleware.IReduxMiddlewareProvider
+import org.swiften.redux.middleware.ReduxDispatchWrapper
 
 /** Created by haipham on 2018/12/22 */
 /** Top-level namespace for Redux Saga middleware */
 object ReduxSagaMiddleware {
-  /** [ReduxMiddleware.IProvider] implementation for Saga */
+  /** [IReduxMiddlewareProvider] implementation for Saga */
   class Provider<State>(
     private val effects: List<ReduxSagaEffect<State, Any>>
-  ) : ReduxMiddleware.IProvider<State> {
-    override val middleware: ReduxMiddlewareCreator<State> = { input ->
+  ) : IReduxMiddlewareProvider<State> {
+    override val middleware: IReduxMiddleware<State> = { input ->
       { wrapper ->
         val job = SupervisorJob()
 
@@ -30,7 +31,7 @@ object ReduxSagaMiddleware {
         val outputs = this@Provider.effects.map { it(sgi) }
         outputs.forEach { it.subscribe({}) }
 
-        ReduxMiddleware.DispatchWrapper("${wrapper.id}-saga") { action ->
+        ReduxDispatchWrapper("${wrapper.id}-saga") { action ->
           wrapper.dispatch(action)
           outputs.forEach { it.onAction(action) }
         }

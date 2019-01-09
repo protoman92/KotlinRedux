@@ -7,27 +7,27 @@ package org.swiften.redux.core
 
 /** Created by haipham on 2018/12/16 */
 /** Default [IReduxAction] implementation */
-sealed class DefaultAction : IReduxAction {
-  object Dummy : DefaultAction()
+sealed class DefaultReduxAction : IReduxAction {
+  object Dummy : DefaultReduxAction()
 
   /** Replace the current [State] with [state] */
-  class ReplaceState<out State>(val state: State) : DefaultAction()
+  class ReplaceState<out State>(val state: State) : DefaultReduxAction()
 
   /** Replace the current [State] with [fn] */
-  class MapState<State>(val fn: (State) -> State) : DefaultAction()
+  class MapState<State>(val fn: (State) -> State) : DefaultReduxAction()
 }
 
-/** Default wrapper to handle [DefaultAction] */
-class ReducerWrapper<State>(private val reducer: IReduxReducer<State>) :
+/** Default wrapper to handle [DefaultReduxAction] */
+class ReduxReducerWrapper<State>(private val reducer: IReduxReducer<State>) :
   IReduxReducer<State> by reducer {
   @Suppress("UNCHECKED_CAST")
   @Throws(ClassCastException::class)
   override operator fun invoke(previous: State, action: IReduxAction): State {
     return when (action) {
-      is DefaultAction -> when (action) {
-        is DefaultAction.Dummy -> previous
-        is DefaultAction.ReplaceState<*> -> action.state as State
-        is DefaultAction.MapState<*> -> (action.fn as (State) -> State)(previous)
+      is DefaultReduxAction -> when (action) {
+        is DefaultReduxAction.Dummy -> previous
+        is DefaultReduxAction.ReplaceState<*> -> action.state as State
+        is DefaultReduxAction.MapState<*> -> (action.fn as (State) -> State)(previous)
       }
       else -> reducer(previous, action)
     }

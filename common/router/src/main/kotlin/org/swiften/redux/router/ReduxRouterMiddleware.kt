@@ -7,8 +7,9 @@ package org.swiften.redux.router
 
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.middleware.ReduxMiddleware
-import org.swiften.redux.middleware.ReduxMiddlewareCreator
+import org.swiften.redux.middleware.IReduxMiddlewareProvider
+import org.swiften.redux.middleware.ReduxDispatchWrapper
+import org.swiften.redux.middleware.IReduxMiddleware
 
 /** Created by haipham on 2018/12/16 */
 /** Top-level namespace for Redux Router middleware */
@@ -25,10 +26,10 @@ object ReduxRouterMiddleware {
     fun navigate(screen: IScreen)
   }
 
-  /** [ReduxMiddleware.IProvider] implementation for [IRouter] middleware */
-  class Provider<State>(private val router: IRouter) : ReduxMiddleware.IProvider<State> {
-    override val middleware: ReduxMiddlewareCreator<State> = { input ->
-      { wrapper -> ReduxMiddleware.DispatchWrapper("$wrapper.id-router",
+  /** [IReduxMiddlewareProvider] implementation for [IRouter] middleware */
+  class Provider<State>(private val router: IRouter) : IReduxMiddlewareProvider<State> {
+    override val middleware: IReduxMiddleware<State> = { input ->
+      { wrapper -> ReduxDispatchWrapper("$wrapper.id-router",
         object : IReduxDispatcher {
           override fun invoke(action: IReduxAction) {
             wrapper.dispatch(action)
