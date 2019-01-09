@@ -1,9 +1,9 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga
+package org.swiften.redux.saga.cr
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.saga.CommonSaga
 import java.util.Date
 
 /** Created by haipham on 2018/12/22 */
@@ -29,7 +30,7 @@ object ReduxSaga {
   /** @see [CommonSaga.IOutput] */
   @Suppress("EXPERIMENTAL_API_USAGE")
   class Output<T> internal constructor(
-    private val identifier: String = Output.DEFAULT_IDENTIFIER,
+    private val identifier: String = DEFAULT_IDENTIFIER,
     private val scope: CoroutineScope,
     internal val channel: ReceiveChannel<T>,
     override val onAction: ReduxDispatcher
@@ -64,7 +65,12 @@ object ReduxSaga {
       newChannel: ReceiveChannel<T2>
     ): Output<T2>
     {
-      val result = Output(identifier, this.scope, newChannel, this.onAction)
+      val result = Output(
+        identifier,
+        this.scope,
+        newChannel,
+        this.onAction
+      )
       result.source = this
       result.onDispose = { this.dispose() }
       return result

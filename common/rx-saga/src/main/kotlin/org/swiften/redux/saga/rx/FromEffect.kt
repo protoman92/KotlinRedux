@@ -1,11 +1,13 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga
+package org.swiften.redux.saga.rx
 
 import io.reactivex.Flowable
+import org.swiften.redux.saga.CommonSaga
+import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2019/01/05 */
 /** [ReduxSagaEffect] whose [ReduxSaga.Output] is provided via [stream] */

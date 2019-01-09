@@ -6,12 +6,12 @@
 package org.swiften.redux.android.sample
 
 import kotlinx.coroutines.async
-import org.swiften.redux.saga.ReduxSaga
-import org.swiften.redux.saga.ReduxSagaHelper.just
-import org.swiften.redux.saga.ReduxSagaHelper.takeLatestAction
-import org.swiften.redux.saga.mapAsync
 import org.swiften.redux.saga.cast
 import org.swiften.redux.saga.catchError
+import org.swiften.redux.saga.mapAsync
+import org.swiften.redux.saga.rx.ReduxSaga
+import org.swiften.redux.saga.rx.ReduxSagaHelper.just
+import org.swiften.redux.saga.rx.ReduxSagaHelper.takeLatestAction
 
 /** Created by haipham on 2019/01/04 */
 object MainSaga {

@@ -1,11 +1,14 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga
+package org.swiften.redux.saga.cr
 
-import org.swiften.redux.saga.ReduxSagaHelper.just
+import org.swiften.redux.saga.CommonSaga
+import org.swiften.redux.saga.ReduxSagaEffect
+import org.swiften.redux.saga.cr.ReduxSagaHelper.just
+import org.swiften.redux.saga.then
 
 /** Created by haipham on 2019/01/01 */
 /**

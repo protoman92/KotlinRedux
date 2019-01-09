@@ -1,9 +1,9 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga
+package org.swiften.redux.saga.cr
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -13,10 +13,16 @@ import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
-import org.swiften.redux.saga.ReduxSagaHelper.from
-import org.swiften.redux.saga.ReduxSagaHelper.just
-import org.swiften.redux.saga.ReduxSagaHelper.takeEveryAction
-import org.swiften.redux.saga.ReduxSagaHelper.takeLatestAction
+import org.swiften.redux.saga.CommonSagaEffectTest
+import org.swiften.redux.saga.cr.ReduxSagaHelper.from
+import org.swiften.redux.saga.cr.ReduxSagaHelper.just
+import org.swiften.redux.saga.cr.ReduxSagaHelper.takeEveryAction
+import org.swiften.redux.saga.cr.ReduxSagaHelper.takeLatestAction
+import org.swiften.redux.saga.invoke
+import org.swiften.redux.saga.map
+import org.swiften.redux.saga.mapAsync
+import org.swiften.redux.saga.mapSuspend
+import org.swiften.redux.saga.then
 import org.testng.Assert
 import org.testng.annotations.Test
 

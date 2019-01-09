@@ -3,9 +3,11 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga
+package org.swiften.redux.saga.rx
 
 import io.reactivex.Single
+import org.swiften.redux.saga.CommonSaga
+import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2019/01/05 */
 /** Similar to [MapEffect], but handles [Single] */

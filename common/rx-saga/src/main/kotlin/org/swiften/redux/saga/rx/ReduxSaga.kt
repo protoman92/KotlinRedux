@@ -1,9 +1,9 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga
+package org.swiften.redux.saga.rx
 
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.rx2.rxSingle
 import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.saga.CommonSaga
 import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/22 */

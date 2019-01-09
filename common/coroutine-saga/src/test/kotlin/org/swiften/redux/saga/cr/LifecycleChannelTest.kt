@@ -3,10 +3,13 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga
+package org.swiften.redux.saga.cr
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import org.swiften.redux.saga.cr.LifecycleChannel
+import org.swiften.redux.saga.cr.LifecycleReceiveChannel
+import org.swiften.redux.saga.cr.LifecycleSendChannel
 import org.testng.Assert
 import org.testng.annotations.Test
 
@@ -32,7 +35,8 @@ class LifecycleChannelTest {
   fun `Receive channels should invoke side effects on lifecycle change`() {
     // Setup
     var cancelled = 0
-    val channel = LifecycleReceiveChannel("", Channel<Int>()) { cancelled += 1 }
+    val channel =
+      LifecycleReceiveChannel("", Channel<Int>()) { cancelled += 1 }
 
     // When
     channel.cancel()
