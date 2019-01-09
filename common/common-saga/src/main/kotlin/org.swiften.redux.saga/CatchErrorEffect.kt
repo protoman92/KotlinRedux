@@ -6,12 +6,12 @@
 package org.swiften.redux.saga
 
 /** Created by haipham on 2018/12/26 */
-/** [ReduxSagaEffect] whose [CommonSaga.IOutput] catches [Throwable] from upstream */
+/** [ReduxSagaEffect] whose [IReduxSagaOutput] catches [Throwable] from upstream */
 internal class CatchErrorEffect<State, R>(
   private val source: ReduxSagaEffect<State, R>,
   private val catcher: (Throwable) -> R
 ) : ReduxSagaEffect<State, R> {
-  override fun invoke(input: CommonSaga.Input<State>) =
+  override fun invoke(input: Input<State>) =
     this.source.invoke(input).catchError(this.catcher)
 }
 

@@ -7,14 +7,14 @@ package org.swiften.redux.saga
 
 /** Created by haipham on 2019/01/06 */
 /**
- * [ReduxSagaEffect] whose [CommonSaga.IOutput] performs some side effects on value emissions
+ * [ReduxSagaEffect] whose [IReduxSagaOutput] performs some side effects on value emissions
  * with [block].
  */
 internal class DoOnValueEffect<State, R>(
   private val source: ReduxSagaEffect<State, R>,
   private val block: (R) -> Unit
 ) : ReduxSagaEffect<State, R> {
-  override fun invoke(p1: CommonSaga.Input<State>) =
+  override fun invoke(p1: Input<State>) =
     this.source.invoke(p1).doOnValue(this.block)
 }
 

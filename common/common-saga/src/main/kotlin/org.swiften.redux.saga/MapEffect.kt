@@ -7,15 +7,14 @@ package org.swiften.redux.saga
 
 /** Created by haipham on 2018/12/23 */
 /**
- * [ReduxSagaEffect] whose output performs some asynchronous work with
- * [block], based on the emissions from another [param], and then emit the
- * result.
+ * [ReduxSagaEffect] whose output performs some asynchronous work with [block], based on the
+ * emissions from another [param], and then emit the result.
  */
 internal class MapEffect<State, P, R>(
   private val param: ReduxSagaEffect<State, P>,
   private val block: (P) -> R
 ) : ReduxSagaEffect<State, R> {
-  override fun invoke(input: CommonSaga.Input<State>) =
+  override fun invoke(input: Input<State>) =
     this.param.invoke(input).map(this.block)
 }
 

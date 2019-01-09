@@ -13,7 +13,7 @@ internal class SuspendMapEffect<State, P, R : Any>(
   private val source: ReduxSagaEffect<State, P>,
   private val block: suspend CoroutineScope.(P) -> R
 ) : ReduxSagaEffect<State, R> {
-  override fun invoke(p1: CommonSaga.Input<State>) =
+  override fun invoke(p1: Input<State>) =
     this.source.invoke(p1).mapSuspend(this.block)
 }
 

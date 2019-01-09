@@ -10,7 +10,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.launch
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.CommonSaga
+import org.swiften.redux.saga.IReduxSagaOutput
+import org.swiften.redux.saga.Input
 import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/23 */
@@ -24,15 +25,13 @@ internal abstract class TakeEffect<State, P, R>(
   private val options: ReduxSaga.TakeOptions
 ) : ReduxSagaEffect<State, R> {
   /**
-   * Flatten an [ReduxSaga.Output] that streams [ReduxSaga.Output] to access
-   * the values streamed by the inner [ReduxSaga.Output].
+   * Flatten an [ReduxSaga.Output] that streams [ReduxSaga.Output] to access the values streamed
+   * by the inner [ReduxSaga.Output].
    */
-  abstract fun flattenOutput(
-    nestedOutput: CommonSaga.IOutput<CommonSaga.IOutput<R>>
-  ): CommonSaga.IOutput<R>
+  abstract fun flattenOutput(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>): IReduxSagaOutput<R>
 
   @ExperimentalCoroutinesApi
-  override operator fun invoke(p1: CommonSaga.Input<State>): CommonSaga.IOutput<R> {
+  override operator fun invoke(p1: Input<State>): IReduxSagaOutput<R> {
     val actionChannel = Channel<IReduxAction>()
 
     val nested = ReduxSaga.Output(this, p1.scope,

@@ -6,12 +6,12 @@
 package org.swiften.redux.saga
 
 /** Created by haipham on 2019/01/05 */
-/** [ReduxSagaEffect] whose [CommonSaga.IOutput] filters emissions with [selector] */
+/** [ReduxSagaEffect] whose [IReduxSagaOutput] filters emissions with [selector] */
 internal class FilterEffect<State, R>(
   private val source: ReduxSagaEffect<State, R>,
   private val selector: (R) -> Boolean
 ) : ReduxSagaEffect<State, R> {
-  override fun invoke(p1: CommonSaga.Input<State>) =
+  override fun invoke(p1: Input<State>) =
     this.source.invoke(p1).filter(this.selector)
 }
 

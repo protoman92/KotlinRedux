@@ -21,20 +21,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.saga.CommonSaga
+import org.swiften.redux.saga.IReduxSagaOutput
 import java.util.Date
 
 /** Created by haipham on 2018/12/22 */
 /** Top-level namespace for Redux saga */
 object ReduxSaga {
-  /** @see [CommonSaga.IOutput] */
+  /** @see [IReduxSagaOutput] */
   @Suppress("EXPERIMENTAL_API_USAGE")
   class Output<T> internal constructor(
     private val identifier: String = DEFAULT_IDENTIFIER,
     private val scope: CoroutineScope,
     internal val channel: ReceiveChannel<T>,
     override val onAction: IReduxDispatcher
-  ) : CommonSaga.IOutput<T>, CoroutineScope by scope {
+  ) : IReduxSagaOutput<T>, CoroutineScope by scope {
     companion object { internal const val DEFAULT_IDENTIFIER = "Unidentified" }
 
     /** Use this to set [identifier] using [creator] */
@@ -110,7 +110,7 @@ object ReduxSaga {
       })
 
     @ExperimentalCoroutinesApi
-    override fun <T2> flatMap(transform: (T) -> CommonSaga.IOutput<T2>) =
+    override fun <T2> flatMap(transform: (T) -> IReduxSagaOutput<T2>) =
       this.with("FlatMap", this.produce<T2> {
         this@Output.channel.consumeEach {
           this.launch { (transform(it) as Output<T2>).channel.toChannel(this@produce) }
@@ -118,7 +118,7 @@ object ReduxSaga {
       })
 
     @ExperimentalCoroutinesApi
-    override fun <T2> switchMap(transform: (T) -> CommonSaga.IOutput<T2>) =
+    override fun <T2> switchMap(transform: (T) -> IReduxSagaOutput<T2>) =
       this.with("SwitchMap", this.produce<T2> {
         var previousJob: Job? = null
 

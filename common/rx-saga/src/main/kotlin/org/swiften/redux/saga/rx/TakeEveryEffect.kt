@@ -6,7 +6,7 @@
 package org.swiften.redux.saga.rx
 
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.CommonSaga
+import org.swiften.redux.saga.IReduxSagaOutput
 import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/23 */
@@ -19,7 +19,6 @@ internal class TakeEveryEffect<State, P, R>(
   block: Function1<P, ReduxSagaEffect<State, R>>,
   options: ReduxSaga.TakeOptions
 ) : TakeEffect<State, P, R>(extract, block, options) {
-  override fun flattenOutput(
-    nestedOutput: CommonSaga.IOutput<CommonSaga.IOutput<R>>
-  ) = nestedOutput.flatMap { it }
+  override fun flattenOutput(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>) =
+    nestedOutput.flatMap { it }
 }

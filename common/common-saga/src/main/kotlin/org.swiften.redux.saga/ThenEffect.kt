@@ -7,8 +7,8 @@ package org.swiften.redux.saga
 
 /** Created by haipham on 2018/12/26 */
 /**
- * [ReduxSagaEffect] whose [CommonSaga.IOutput] enforces ordering for two [CommonSaga.IOutput]
- * created by two other [ReduxSagaEffect].
+ * [ReduxSagaEffect] whose [IReduxSagaOutput] enforces ordering for two [IReduxSagaOutput] created
+ * by two other [ReduxSagaEffect].
  */
 internal class ThenEffect<State, R, R2, R3>(
   private val source1: ReduxSagaEffect<State, R>,
@@ -16,13 +16,10 @@ internal class ThenEffect<State, R, R2, R3>(
   private val combiner: Function2<R, R2, R3>
 ) : ReduxSagaEffect<State, R3> {
   @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-  override fun invoke(input: CommonSaga.Input<State>): CommonSaga.IOutput<R3> {
-    val o2 = this@ThenEffect.source2.invoke(input)
-
-    return this.source1.invoke(input).flatMap { value1 ->
-      o2.map { this@ThenEffect.combiner(value1, it) }
+  override fun invoke(input: Input<State>) =
+    this.source1.invoke(input).flatMap { value1 ->
+      this@ThenEffect.source2.invoke(input).map { this@ThenEffect.combiner(value1, it) }
     }
-  }
 }
 
 /** Invoke a [ThenEffect] on the current [ReduxSagaEffect] */

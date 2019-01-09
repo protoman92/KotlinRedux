@@ -11,23 +11,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.rx2.rxSingle
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.saga.CommonSaga
+import org.swiften.redux.saga.IReduxSagaOutput
 import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/22 */
 /** Top-level namespace for Redux saga */
 object ReduxSaga {
-  /** @see [CommonSaga.IOutput] */
+  /** @see [IReduxSagaOutput] */
   class Output<T> internal constructor(
     private val scope: CoroutineScope,
     private val stream: Flowable<T>,
     override val onAction: IReduxDispatcher
-  ) : CommonSaga.IOutput<T>, CoroutineScope by scope {
+  ) : IReduxSagaOutput<T>, CoroutineScope by scope {
     internal var source: Output<*>? = null
     private var onDispose: () -> Unit = { }
     private val disposable by lazy { CompositeDisposable() }
 
-    private fun <T2> with(newStream: Flowable<T2>): CommonSaga.IOutput<T2> {
+    private fun <T2> with(newStream: Flowable<T2>): IReduxSagaOutput<T2> {
       val result = Output(this.scope, newStream, this.onAction)
       result.source = this
       result.onDispose = { this.dispose() }
@@ -52,21 +52,21 @@ object ReduxSaga {
     override fun doOnValue(perform: (T) -> Unit) =
       this.with(this.stream.doOnNext(perform))
 
-    override fun <T2> flatMap(transform: (T) -> CommonSaga.IOutput<T2>) =
+    override fun <T2> flatMap(transform: (T) -> IReduxSagaOutput<T2>) =
       this.with(this.stream.flatMap { (transform(it) as Output<T2>).stream })
 
-    override fun <T2> switchMap(transform: (T) -> CommonSaga.IOutput<T2>) =
+    override fun <T2> switchMap(transform: (T) -> IReduxSagaOutput<T2>) =
       this.with(this.stream.switchMap { (transform(it) as Output<T2>).stream })
 
     override fun filter(selector: (T) -> Boolean) =
       this.with(this.stream.filter(selector))
 
-    override fun delay(delayMillis: Long): CommonSaga.IOutput<T> {
+    override fun delay(delayMillis: Long): IReduxSagaOutput<T> {
       if (delayMillis <= 0) { return this }
       return this.with(this.stream.delay(delayMillis, TimeUnit.MILLISECONDS))
     }
 
-    override fun debounce(timeMillis: Long): CommonSaga.IOutput<T> {
+    override fun debounce(timeMillis: Long): IReduxSagaOutput<T> {
       if (timeMillis <= 0) { return this }
       return this.with(this.stream.debounce(timeMillis, TimeUnit.MILLISECONDS))
     }

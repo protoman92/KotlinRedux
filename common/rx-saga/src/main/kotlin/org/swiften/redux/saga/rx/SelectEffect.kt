@@ -5,7 +5,7 @@
 
 package org.swiften.redux.saga.rx
 
-import org.swiften.redux.saga.CommonSaga
+import org.swiften.redux.saga.Input
 import org.swiften.redux.saga.ReduxSagaEffect
 import org.swiften.redux.saga.rx.ReduxSagaHelper.just
 import org.swiften.redux.saga.then
@@ -18,7 +18,7 @@ import org.swiften.redux.saga.then
 internal class SelectEffect<State, R>(
   private val selector: (State) -> R
 ) : ReduxSagaEffect<State, R> {
-  override fun invoke(p1: CommonSaga.Input<State>) =
+  override fun invoke(p1: Input<State>) =
     just<State, R>(this.selector(p1.stateGetter())).invoke(p1)
 }
 

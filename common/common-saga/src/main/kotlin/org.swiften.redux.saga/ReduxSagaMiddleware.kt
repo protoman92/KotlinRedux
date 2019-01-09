@@ -13,28 +13,25 @@ import org.swiften.redux.middleware.IReduxMiddlewareProvider
 import org.swiften.redux.middleware.ReduxDispatchWrapper
 
 /** Created by haipham on 2018/12/22 */
-/** Top-level namespace for Redux Saga middleware */
-object ReduxSagaMiddleware {
-  /** [IReduxMiddlewareProvider] implementation for Saga */
-  class Provider<State>(
-    private val effects: List<ReduxSagaEffect<State, Any>>
-  ) : IReduxMiddlewareProvider<State> {
-    override val middleware: IReduxMiddleware<State> = { input ->
-      { wrapper ->
-        val job = SupervisorJob()
+/** [IReduxMiddlewareProvider] implementation for Saga */
+class ReduxSagaMiddlewareProvider<State>(
+  private val effects: List<ReduxSagaEffect<State, Any>>
+) : IReduxMiddlewareProvider<State> {
+  override val middleware: IReduxMiddleware<State> = { input ->
+    { wrapper ->
+      val job = SupervisorJob()
 
-        val scope = object : CoroutineScope {
-          override val coroutineContext = Dispatchers.Default + job
-        }
+      val scope = object : CoroutineScope {
+        override val coroutineContext = Dispatchers.Default + job
+      }
 
-        val sgi = CommonSaga.Input(scope, input.stateGetter, wrapper.dispatch)
-        val outputs = this@Provider.effects.map { it(sgi) }
-        outputs.forEach { it.subscribe({}) }
+      val sgi = Input(scope, input.stateGetter, wrapper.dispatch)
+      val outputs = this@ReduxSagaMiddlewareProvider.effects.map { it(sgi) }
+      outputs.forEach { it.subscribe({}) }
 
-        ReduxDispatchWrapper("${wrapper.id}-saga") { action ->
-          wrapper.dispatch(action)
-          outputs.forEach { it.onAction(action) }
-        }
+      ReduxDispatchWrapper("${wrapper.id}-saga") { action ->
+        wrapper.dispatch(action)
+        outputs.forEach { it.onAction(action) }
       }
     }
   }
