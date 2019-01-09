@@ -20,29 +20,33 @@ import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.ReduxUI
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.VariableProps
 import kotlin.properties.Delegates
 
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
-  ReduxUI.IPropContainer<State, SearchFragment.S, SearchFragment.A>,
-  ReduxUI.IPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
+  IReduxPropContainer<State, SearchFragment.S, SearchFragment.A>,
+  IReduxPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
   data class S(val query: String?)
   class A(val updateQuery: (String?) -> Unit)
 
   class ViewHolder(val parent: View, val trackName: TextView) :
     RecyclerView.ViewHolder(parent),
-    ReduxUI.IPropContainer<State, ViewHolder.S1, Unit> {
+    IReduxPropContainer<State, ViewHolder.S1, Unit> {
     data class S1(val trackName: String)
 
-    companion object : ReduxUI.IStatePropMapper<State, Int, S1> {
+    companion object : IReduxStatePropMapper<State, Int, S1> {
       override fun mapState(state: State, outProps: Int) = S1("")
     }
 
-    override lateinit var staticProps: ReduxUI.StaticProps<State>
+    override lateinit var staticProps: StaticProps<State>
 
     override var variableProps
-      by Delegates.observable<ReduxUI.VariableProps<ViewHolder.S1, Unit>?>(null) { _, _, p -> }
+      by Delegates.observable<VariableProps<S1, Unit>?>(null) { _, _, p -> }
   }
 
   class Adapter : RecyclerView.Adapter<ViewHolder>() {
@@ -58,7 +62,7 @@ class SearchFragment : Fragment(),
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {}
   }
 
-  companion object : ReduxUI.IPropMapper<State, Unit, S, A> {
+  companion object : IReduxPropMapper<State, Unit, S, A> {
     override fun mapAction(
       dispatch: IReduxDispatcher,
       state: State,
@@ -68,10 +72,10 @@ class SearchFragment : Fragment(),
     override fun mapState(state: State, outProps: Unit) = S(state.autocompleteQuery)
   }
 
-  override lateinit var staticProps: ReduxUI.StaticProps<State>
+  override lateinit var staticProps: StaticProps<State>
 
   override var variableProps
-    by Delegates.observable<ReduxUI.VariableProps<S, A>?>(null) { _, _, p -> }
+    by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p -> }
 
   override fun onCreateView(
     inflater: LayoutInflater,

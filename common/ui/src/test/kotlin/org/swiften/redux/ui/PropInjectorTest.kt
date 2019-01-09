@@ -43,24 +43,24 @@ class PropInjectorTest {
     }
   }
 
-  class View : ReduxUI.IPropContainer<S, S, A> {
-    override lateinit var staticProps: ReduxUI.StaticProps<S>
+  class View : IReduxPropContainer<S, S, A> {
+    override lateinit var staticProps: StaticProps<S>
 
     override var variableProps
-      by Delegates.observable<ReduxUI.VariableProps<S, A>?>(null) { _, _, p ->
+      by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
         this.didSetVariableProps(p)
       }
 
     var variableInjectionCount = 0
 
-    private fun didSetVariableProps(props: ReduxUI.VariableProps<S, A>?) {
+    private fun didSetVariableProps(props: VariableProps<S, A>?) {
       this.variableInjectionCount += 1
     }
   }
 
   private lateinit var store: StoreWrapper
-  private lateinit var injector: ReduxUI.IPropInjector<S>
-  private lateinit var mapper: ReduxUI.IPropMapper<S, Unit, S, A>
+  private lateinit var injector: IReduxPropInjector<S>
+  private lateinit var mapper: IReduxPropMapper<S, Unit, S, A>
 
   @BeforeMethod
   fun beforeMethod() {
@@ -72,9 +72,9 @@ class PropInjectorTest {
     }
 
     this.store = StoreWrapper(store)
-    this.injector = ReduxUI.PropInjector(this.store)
+    this.injector = ReduxPropInjector(this.store)
 
-    this.mapper = object : ReduxUI.IPropMapper<S, Unit, S, A> {
+    this.mapper = object : IReduxPropMapper<S, Unit, S, A> {
       override fun mapState(state: S, outProps: Unit) = state
 
       override fun mapAction(

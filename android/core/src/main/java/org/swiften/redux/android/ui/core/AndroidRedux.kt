@@ -21,7 +21,14 @@ import org.swiften.redux.android.ui.core.AndroidRedux.ReduxLifecycleObserver
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.ReduxUI
+import org.swiften.redux.ui.IReduxLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropInjector
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.IStaticReduxPropContainer
+import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.VariableProps
 import java.io.Serializable
 import java.util.Date
 
@@ -32,7 +39,7 @@ internal object AndroidRedux {
   class ReduxLifecycleObserver<LC> constructor(
     private val lifecycleOwner: LC,
     private val subscription: ReduxSubscription
-  ) : LifecycleObserver where LC : LifecycleOwner, LC : ReduxUI.IReduxLifecycleOwner {
+  ) : LifecycleObserver where LC : LifecycleOwner, LC : IReduxLifecycleOwner {
     init { lifecycleOwner.lifecycle.addObserver(this) }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -54,24 +61,24 @@ internal object AndroidRedux {
 }
 
 @Suppress("unused")
-internal fun ReduxUI.IPropInjector<*>.runOnUIThread(runnable: () -> Unit) {
+internal fun IReduxPropInjector<*>.runOnUIThread(runnable: () -> Unit) {
   if (Looper.myLooper() == Looper.getMainLooper()) { runnable() } else {
     Handler(Looper.getMainLooper()).post { runnable() }
   }
 }
 
-/** Call [ReduxUI.IPropInjector.injectRecyclerViewProps] on the main thread */
-internal fun <State, OP, SP, AP> ReduxUI.IPropInjector<State>.injectPropsOnMainThread(
-  view: ReduxUI.IPropContainer<State, SP, AP>,
+/** Call [IReduxPropInjector.injectRecyclerViewProps] on the main thread */
+internal fun <State, OP, SP, AP> IReduxPropInjector<State>.injectPropsOnMainThread(
+  view: IReduxPropContainer<State, SP, AP>,
   outProps: OP,
-  mapper: ReduxUI.IPropMapper<State, OP, SP, AP>
+  mapper: IReduxPropMapper<State, OP, SP, AP>
 ) = this.injectRecyclerViewProps(
-  object : ReduxUI.IPropContainer<State, SP, AP> {
-    override var staticProps: ReduxUI.StaticProps<State>
+  object : IReduxPropContainer<State, SP, AP> {
+    override var staticProps: StaticProps<State>
       get() = view.staticProps
       set(value) { view.staticProps = value }
 
-    override var variableProps: ReduxUI.VariableProps<SP, AP>?
+    override var variableProps: VariableProps<SP, AP>?
       get() = view.variableProps
       set(value) { this@injectPropsOnMainThread.runOnUIThread { view.variableProps = value } }
 
@@ -90,20 +97,20 @@ internal fun <State, OP, SP, AP> ReduxUI.IPropInjector<State>.injectPropsOnMainT
 
 /**
  * - When [ReduxLifecycleObserver.onResume] is called, call
- * [ReduxUI.IReduxLifecycleOwner.onPropInjectionCompleted].
+ * [IReduxLifecycleOwner.onPropInjectionCompleted].
  * - When [ReduxLifecycleObserver.onStop] is called, unsubscribe from [State] updates.
  * - When [ReduxLifecycleObserver.onPause] is called, call
- * [ReduxUI.IReduxLifecycleOwner.onPropInjectionStopped]
+ * [IReduxLifecycleOwner.onPropInjectionStopped]
  */
-fun <State, LC, OP, SP, AP> ReduxUI.IPropInjector<State>.injectLifecycleProps(
+fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
   lifecycleOwner: LC,
   outProps: OP,
-  mapper: ReduxUI.IPropMapper<State, OP, SP, AP>
+  mapper: IReduxPropMapper<State, OP, SP, AP>
 ) where
   LC : LifecycleOwner,
-  LC : ReduxUI.IPropContainer<State, SP, AP>
+  LC : IReduxPropContainer<State, SP, AP>
 {
-  val view: ReduxUI.IPropContainer<State, SP, AP> = lifecycleOwner
+  val view: IReduxPropContainer<State, SP, AP> = lifecycleOwner
   val subscription = this.injectPropsOnMainThread(view, outProps, mapper)
   ReduxLifecycleObserver(lifecycleOwner, subscription)
 }
@@ -112,15 +119,15 @@ fun <State, LC, OP, SP, AP> ReduxUI.IPropInjector<State>.injectLifecycleProps(
  * Inject props into [lifecycleOwner], which is a view that only has a mutable [SP] but handles
  * no actions.
  */
-fun <State, LC, OP, SP> ReduxUI.IPropInjector<State>.injectLifecycleProps(
+fun <State, LC, OP, SP> IReduxPropInjector<State>.injectLifecycleProps(
   lifecycleOwner: LC,
   outProps: OP,
-  mapper: ReduxUI.IStatePropMapper<State, OP, SP>
+  mapper: IReduxStatePropMapper<State, OP, SP>
 ) where
   LC : LifecycleOwner,
-  LC : ReduxUI.IPropContainer<State, SP, Unit> =
+  LC : IReduxPropContainer<State, SP, Unit> =
   this.injectPropsOnMainThread(lifecycleOwner, outProps,
-    object : ReduxUI.IPropMapper<State, OP, SP, Unit> {
+    object : IReduxPropMapper<State, OP, SP, Unit> {
       override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: OP) = Unit
       override fun mapState(state: State, outProps: OP) = mapper.mapState(state, outProps)
     })
@@ -130,10 +137,10 @@ fun <State, LC, OP, SP> ReduxUI.IPropInjector<State>.injectLifecycleProps(
  * declare [saveState] and [restoreState] to handle [State] persistence.
  */
 @Suppress("unused")
-fun <State> ReduxUI.startActivityInjection(
+fun <State> startActivityInjection(
   application: Application,
-  injector: ReduxUI.IPropInjector<State>,
-  inject: ReduxUI.IPropInjector<State>.(Activity) -> Unit,
+  injector: IReduxPropInjector<State>,
+  inject: IReduxPropInjector<State>.(Activity) -> Unit,
   saveState: State.(Bundle) -> Unit = {},
   restoreState: (Bundle) -> State? = { null }
 ): Application.ActivityLifecycleCallbacks {
@@ -163,18 +170,18 @@ fun <State> ReduxUI.startActivityInjection(
 }
 
 /**
- * Similar to [ReduxUI.startActivityInjection], but provides default persistence for when [State] is
+ * Similar to [startActivityInjection], but provides default persistence for when [State] is
  * [Serializable]
  */
 @Suppress("unused")
-inline fun <reified State> ReduxUI.startActivityInjection(
+inline fun <reified State> startActivityInjection(
   application: Application,
-  injector: ReduxUI.IPropInjector<State>,
-  noinline inject: ReduxUI.IPropInjector<State>.(Activity) -> Unit
+  injector: IReduxPropInjector<State>,
+  noinline inject: IReduxPropInjector<State>.(Activity) -> Unit
 ): Application.ActivityLifecycleCallbacks where State : Serializable {
   val stateKey = "REDUX_STATE_${Date().time}"
 
-  return this.startActivityInjection(
+  return startActivityInjection(
     application,
     injector,
     inject,
@@ -185,7 +192,7 @@ inline fun <reified State> ReduxUI.startActivityInjection(
 
 /** End lifecycle [callback] for [Activity] */
 @Suppress("unused")
-fun ReduxUI.endActivityInjection(
+fun endActivityInjection(
   application: Application,
   callback: Application.ActivityLifecycleCallbacks
 ) {
@@ -194,12 +201,12 @@ fun ReduxUI.endActivityInjection(
 
 /** Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary */
 @Suppress("unused")
-fun <State, Activity> ReduxUI.startFragmentInjection(
+fun <State, Activity> startFragmentInjection(
   activity: Activity,
-  inject: ReduxUI.StaticProps<State>.(Fragment) -> Unit
+  inject: StaticProps<State>.(Fragment) -> Unit
 ): FragmentManager.FragmentLifecycleCallbacks where
   Activity : AppCompatActivity,
-  Activity : ReduxUI.IStaticPropContainer<State>
+  Activity : IStaticReduxPropContainer<State>
 {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
@@ -213,7 +220,7 @@ fun <State, Activity> ReduxUI.startFragmentInjection(
 
 /** End lifecycle [callback] for [Fragment] */
 @Suppress("unused")
-fun ReduxUI.endFragmentInjection(
+fun endFragmentInjection(
   activity: AppCompatActivity,
   callback: FragmentManager.FragmentLifecycleCallbacks
 ) {

@@ -14,132 +14,129 @@ import java.util.Date
 import java.util.concurrent.locks.ReentrantLock
 
 /** Created by haipham on 2018/12/16 */
-/** Top-level namespace for UI */
-object ReduxUI {
-  /** Handle lifecycles for a target of [ReduxUI.PropInjector]  */
-  interface IReduxLifecycleOwner {
-    /** This is called when [ReduxUI.PropInjector.injectRecyclerViewProps] completes */
-    fun onPropInjectionCompleted() {}
+/** Handle lifecycles for a target of [ReduxPropInjector]  */
+interface IReduxLifecycleOwner {
+  /** This is called when [ReduxPropInjector.injectRecyclerViewProps] completes */
+  fun onPropInjectionCompleted() {}
 
-    /** This is called when [ReduxSubscription.unsubscribe] is called */
-    fun onPropInjectionStopped() {}
-  }
+  /** This is called when [ReduxSubscription.unsubscribe] is called */
+  fun onPropInjectionStopped() {}
+}
 
-  /** Represents a view that contains [StaticProps] dependencies */
-  interface IStaticPropContainer<GlobalState> : IReduxLifecycleOwner {
-    /** This will only be set once after injection commences */
-    var staticProps: StaticProps<GlobalState>
-  }
+/** Represents a view that contains [StaticProps] dependencies */
+interface IStaticReduxPropContainer<GlobalState> : IReduxLifecycleOwner {
+  /** This will only be set once after injection commences */
+  var staticProps: StaticProps<GlobalState>
+}
 
-  /** Represents a view that contains [VariableProps] internal state */
-  interface IVariablePropContainer<StateProps, ActionProps> : IReduxLifecycleOwner {
-    /** This will be set any time a state update is received */
-    var variableProps: VariableProps<StateProps, ActionProps>?
-  }
+/** Represents a view that contains [VariableProps] internal state */
+interface IVariableReduxPropContainer<StateProps, ActionProps> : IReduxLifecycleOwner {
+  /** This will be set any time a state update is received */
+  var variableProps: VariableProps<StateProps, ActionProps>?
+}
 
-  /**
-   * Represents a Redux compatible view, combining [IStaticPropContainer] and
-   * [IVariablePropContainer].
-   */
-  interface IPropContainer<GlobalState, StateProps, ActionProps> :
-    IStaticPropContainer<GlobalState>,
-    IVariablePropContainer<StateProps, ActionProps>
+/**
+ * Represents a Redux compatible view, combining [IStaticReduxPropContainer] and
+ * [IVariableReduxPropContainer].
+ */
+interface IReduxPropContainer<GlobalState, StateProps, ActionProps> :
+  IStaticReduxPropContainer<GlobalState>,
+  IVariableReduxPropContainer<StateProps, ActionProps>
 
-  /**
-   * Maps [GlobalState] to [StateProps] for a [IPropContainer]. [OutProps] is the view's immutable
-   * property as dictated by its parent.
-   */
-  interface IStatePropMapper<GlobalState, OutProps, StateProps> {
-    /** Map [GlobalState] to [StateProps] using [OutProps] */
-    fun mapState(state: GlobalState, outProps: OutProps): StateProps
-  }
+/**
+ * Maps [GlobalState] to [StateProps] for a [IReduxPropContainer]. [OutProps] is the view's immutable
+ * property as dictated by its parent.
+ */
+interface IReduxStatePropMapper<GlobalState, OutProps, StateProps> {
+  /** Map [GlobalState] to [StateProps] using [OutProps] */
+  fun mapState(state: GlobalState, outProps: OutProps): StateProps
+}
 
-  /**
-   * Maps [IReduxDispatcher] to [ActionProps] for a [IPropContainer]. [OutProps] is the view's
-   * immutable property as dictated by its parent.
-   */
-  interface IActionPropMapper<GlobalState, OutProps, ActionProps> {
-    /** Map [IReduxDispatcher] to [ActionProps] using [GlobalState] and [OutProps] */
-    fun mapAction(dispatch: IReduxDispatcher, state: GlobalState, outProps: OutProps): ActionProps
-  }
+/**
+ * Maps [IReduxDispatcher] to [ActionProps] for a [IReduxPropContainer]. [OutProps] is the view's
+ * immutable property as dictated by its parent.
+ */
+interface IReduxActionPropMapper<GlobalState, OutProps, ActionProps> {
+  /** Map [IReduxDispatcher] to [ActionProps] using [GlobalState] and [OutProps] */
+  fun mapAction(dispatch: IReduxDispatcher, state: GlobalState, outProps: OutProps): ActionProps
+}
 
-  /** Maps [GlobalState] to [StateProps] and [ActionProps] for a [IPropContainer] */
-  interface IPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
-    IStatePropMapper<GlobalState, OutProps, StateProps>,
-    IActionPropMapper<GlobalState, OutProps, ActionProps>
+/** Maps [GlobalState] to [StateProps] and [ActionProps] for a [IReduxPropContainer] */
+interface IReduxPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
+  IReduxStatePropMapper<GlobalState, OutProps, StateProps>,
+  IReduxActionPropMapper<GlobalState, OutProps, ActionProps>
 
-  /** Inject state and actions into an [IPropContainer] */
-  interface IPropInjector<State> : IReduxDispatchContainer, IReduxStateContainer<State> {
-    /** Inject [StateProps] and [ActionProps] into [view] */
-    fun <OutProps, StateProps, ActionProps> injectRecyclerViewProps(
-      view: ReduxUI.IPropContainer<State, StateProps, ActionProps>,
-      outProps: OutProps,
-      mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
-    ): ReduxSubscription
-  }
+/** Inject state and actions into an [IReduxPropContainer] */
+interface IReduxPropInjector<State> : IReduxDispatchContainer, IReduxStateContainer<State> {
+  /** Inject [StateProps] and [ActionProps] into [view] */
+  fun <OutProps, StateProps, ActionProps> injectRecyclerViewProps(
+    view: IReduxPropContainer<State, StateProps, ActionProps>,
+    outProps: OutProps,
+    mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
+  ): ReduxSubscription
+}
 
-  /** Container for an [IPropContainer] static properties */
-  class StaticProps<State>(
-    val injector: IPropInjector<State>,
-    internal val subscription: ReduxSubscription
-  )
+/** Container for an [IReduxPropContainer] static properties */
+class StaticProps<State>(
+  val injector: IReduxPropInjector<State>,
+  internal val subscription: ReduxSubscription
+)
 
-  /** Container for an [IPropContainer] mutable properties */
-  class VariableProps<StateProps, ActionProps>(
-    val previousState: StateProps?,
-    val nextState: StateProps,
-    val actions: ActionProps
-  )
+/** Container for an [IReduxPropContainer] mutable properties */
+class VariableProps<StateProps, ActionProps>(
+  val previousState: StateProps?,
+  val nextState: StateProps,
+  val actions: ActionProps
+)
 
-  /** A [IPropInjector] implementation */
-  class PropInjector<State>(
-    private val store: IReduxStore<State>
-  ) : IPropInjector<State>,
-    IReduxDispatchContainer by store,
-    IReduxStateContainer<State> by store {
-    override fun <OutProps, StateProps, ActionProps> injectRecyclerViewProps(
-      view: ReduxUI.IPropContainer<State, StateProps, ActionProps>,
-      outProps: OutProps,
-      mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
-    ): ReduxSubscription {
-      /** If [view] has received an injection before, unsubscribe from that */
-      try {
-        view.staticProps.subscription.unsubscribe()
-      } catch (e: UninitializedPropertyAccessException) { }
+/** A [IReduxPropInjector] implementation */
+class ReduxPropInjector<State>(
+  private val store: IReduxStore<State>
+) : IReduxPropInjector<State>,
+  IReduxDispatchContainer by store,
+  IReduxStateContainer<State> by store {
+  override fun <OutProps, StateProps, ActionProps> injectRecyclerViewProps(
+    view: IReduxPropContainer<State, StateProps, ActionProps>,
+    outProps: OutProps,
+    mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
+  ): ReduxSubscription {
+    /** If [view] has received an injection before, unsubscribe from that */
+    try {
+      view.staticProps.subscription.unsubscribe()
+    } catch (e: UninitializedPropertyAccessException) { }
 
-      /**
-       * It does not matter what the id is, as long as it is unique. This is because we will be
-       * passing along a [ReduxSubscription] to handle unsubscribe, so there's not need to keep
-       * track of the [view]'s id.
-       */
-      val id = "${view.javaClass.canonicalName}${Date().time}"
-      val lock = ReentrantLock()
+    /**
+     * It does not matter what the id is, as long as it is unique. This is because we will be
+     * passing along a [ReduxSubscription] to handle unsubscribe, so there's not need to keep
+     * track of the [view]'s id.
+     */
+    val id = "${view.javaClass.canonicalName}${Date().time}"
+    val lock = ReentrantLock()
 
-      var previousState: StateProps? = lock.read { view.variableProps?.nextState }
+    var previousState: StateProps? = lock.read { view.variableProps?.nextState }
 
-      val onStateUpdate: (State) -> Unit = {
-        val nextState = mapper.mapState(it, outProps)
+    val onStateUpdate: (State) -> Unit = {
+      val nextState = mapper.mapState(it, outProps)
 
-        lock.write {
-          val prevState = previousState
-          previousState = nextState
+      lock.write {
+        val prevState = previousState
+        previousState = nextState
 
-          if (nextState != prevState) {
-            val actions = mapper.mapAction(this.store.dispatch, it, outProps)
-            view.variableProps = VariableProps(prevState, nextState, actions)
-          }
+        if (nextState != prevState) {
+          val actions = mapper.mapAction(this.store.dispatch, it, outProps)
+          view.variableProps = VariableProps(prevState, nextState, actions)
         }
       }
-
-      /**
-       * Immediately set [IPropContainer.variableProps] based on [store]'s last [State], in case
-       * this [store] does not relay last [State] on subscription.
-       */
-      onStateUpdate(this.store.stateGetter())
-      val subscription = this.store.subscribe(id, onStateUpdate)
-      view.staticProps = ReduxUI.StaticProps(this, subscription)
-      return subscription
     }
+
+    /**
+     * Immediately set [IReduxPropContainer.variableProps] based on [store]'s last [State], in case
+     * this [store] does not relay last [State] on subscription.
+     */
+    onStateUpdate(this.store.stateGetter())
+    val subscription = this.store.subscribe(id, onStateUpdate)
+    view.staticProps = StaticProps(this, subscription)
+    return subscription
   }
 }
 
@@ -147,8 +144,8 @@ object ReduxUI {
  * Inject props into [view], basically a view that does not have internal state and handles no
  * interactions.
  */
-fun <S> ReduxUI.IPropInjector<S>.injectStaticProps(view: ReduxUI.IStaticPropContainer<S>) {
-  view.staticProps = ReduxUI.StaticProps(this, ReduxSubscription {})
+fun <S> IReduxPropInjector<S>.injectStaticProps(view: IStaticReduxPropContainer<S>) {
+  view.staticProps = StaticProps(this, ReduxSubscription {})
 }
 
 internal fun <T> ReentrantLock.read(fn: () -> T): T {

@@ -11,7 +11,7 @@ import org.swiften.redux.android.ui.core.startActivityInjection
 import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.saga.ReduxSagaMiddleware
-import org.swiften.redux.ui.ReduxUI
+import org.swiften.redux.ui.ReduxPropInjector
 import org.swiften.redux.ui.injectStaticProps
 
 /** Created by haipham on 2018/12/19 */
@@ -27,10 +27,10 @@ class MainApplication : Application() {
       ReduxSagaMiddleware.Provider(MainSaga.sagas(repository)).middleware
     )(SimpleReduxStore(State(), MainRedux.Reducer))
 
-    val injector = ReduxUI.PropInjector(store)
+    val injector = ReduxPropInjector(store)
     val dependency = MainDependency(injector)
 
-    this.activityCallback = ReduxUI.startActivityInjection(this, injector) {
+    this.activityCallback = startActivityInjection(this, injector) {
       when (it) {
         is MainActivity -> dependency.injector.injectStaticProps(it)
       }
@@ -39,6 +39,6 @@ class MainApplication : Application() {
 
   override fun onTerminate() {
     super.onTerminate()
-    ReduxUI.endActivityInjection(this, this.activityCallback)
+    endActivityInjection(this, this.activityCallback)
   }
 }

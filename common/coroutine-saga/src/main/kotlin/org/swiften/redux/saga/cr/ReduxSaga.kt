@@ -98,7 +98,7 @@ object ReduxSaga {
       })
 
     override fun <T2 : Any> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>) =
-      this.with("MapAsync", this.produce<T2> {
+      this.with("MapAsync", this.produce {
         this@Output.channel
           .map(this.coroutineContext) { transform(this, it) }
           .consumeEach { this.launch { this@produce.send(it.await()) } }
