@@ -12,7 +12,7 @@ import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/24 */
 /** Top-level namespace for [ReduxSagaEffect] helpers */
-object ReduxSagaHelper {
+object ReduxSagaEffects {
   /** Create a [CallEffect] */
   fun <State, P, R> call(
     source: ReduxSagaEffect<State, P>,

@@ -14,10 +14,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.swiften.redux.saga.CommonSagaEffectTest
-import org.swiften.redux.saga.cr.ReduxSagaHelper.from
-import org.swiften.redux.saga.cr.ReduxSagaHelper.just
-import org.swiften.redux.saga.cr.ReduxSagaHelper.takeEveryAction
-import org.swiften.redux.saga.cr.ReduxSagaHelper.takeLatestAction
+import org.swiften.redux.saga.cr.ReduxSagaEffects.from
+import org.swiften.redux.saga.cr.ReduxSagaEffects.just
+import org.swiften.redux.saga.cr.ReduxSagaEffects.takeEveryAction
+import org.swiften.redux.saga.cr.ReduxSagaEffects.takeLatestAction
 import org.swiften.redux.saga.invoke
 import org.swiften.redux.saga.map
 import org.swiften.redux.saga.mapAsync

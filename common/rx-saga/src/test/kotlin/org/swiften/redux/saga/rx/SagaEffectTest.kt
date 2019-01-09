@@ -20,10 +20,10 @@ import org.swiften.redux.saga.catchError
 import org.swiften.redux.saga.invoke
 import org.swiften.redux.saga.map
 import org.swiften.redux.saga.mapAsync
-import org.swiften.redux.saga.rx.ReduxSagaHelper.from
-import org.swiften.redux.saga.rx.ReduxSagaHelper.just
-import org.swiften.redux.saga.rx.ReduxSagaHelper.takeEveryAction
-import org.swiften.redux.saga.rx.ReduxSagaHelper.takeLatestAction
+import org.swiften.redux.saga.rx.ReduxSagaEffects.from
+import org.swiften.redux.saga.rx.ReduxSagaEffects.just
+import org.swiften.redux.saga.rx.ReduxSagaEffects.takeEveryAction
+import org.swiften.redux.saga.rx.ReduxSagaEffects.takeLatestAction
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.net.URL

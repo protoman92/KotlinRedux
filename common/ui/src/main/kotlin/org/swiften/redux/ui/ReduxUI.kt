@@ -69,7 +69,7 @@ interface IReduxPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
 /** Inject state and actions into an [IReduxPropContainer] */
 interface IReduxPropInjector<State> : IReduxDispatchContainer, IReduxStateContainer<State> {
   /** Inject [StateProps] and [ActionProps] into [view] */
-  fun <OutProps, StateProps, ActionProps> injectRecyclerViewProps(
+  fun <OutProps, StateProps, ActionProps> injectPropsUnsafely(
     view: IReduxPropContainer<State, StateProps, ActionProps>,
     outProps: OutProps,
     mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
@@ -95,7 +95,7 @@ class ReduxPropInjector<State>(
 ) : IReduxPropInjector<State>,
   IReduxDispatchContainer by store,
   IReduxStateContainer<State> by store {
-  override fun <OutProps, StateProps, ActionProps> injectRecyclerViewProps(
+  override fun <OutProps, StateProps, ActionProps> injectPropsUnsafely(
     view: IReduxPropContainer<State, StateProps, ActionProps>,
     outProps: OutProps,
     mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>

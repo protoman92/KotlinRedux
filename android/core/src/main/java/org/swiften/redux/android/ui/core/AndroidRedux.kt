@@ -68,11 +68,11 @@ internal fun IReduxPropInjector<*>.runOnUIThread(runnable: () -> Unit) {
 }
 
 /** Call [IReduxPropInjector.injectRecyclerViewProps] on the main thread */
-internal fun <State, OP, SP, AP> IReduxPropInjector<State>.injectPropsOnMainThread(
+fun <State, OP, SP, AP> IReduxPropInjector<State>.injectPropsOnMainThread(
   view: IReduxPropContainer<State, SP, AP>,
   outProps: OP,
   mapper: IReduxPropMapper<State, OP, SP, AP>
-) = this.injectRecyclerViewProps(
+) = this.injectPropsUnsafely(
   object : IReduxPropContainer<State, SP, AP> {
     override var staticProps: StaticProps<State>
       get() = view.staticProps

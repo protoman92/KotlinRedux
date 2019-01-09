@@ -30,26 +30,18 @@ import kotlin.properties.Delegates
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
   IReduxPropContainer<State, SearchFragment.S, SearchFragment.A>,
-  IReduxPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
+  IReduxPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment
+{
   data class S(val query: String?)
   class A(val updateQuery: (String?) -> Unit)
 
-  class ViewHolder(val parent: View, val trackName: TextView) :
-    RecyclerView.ViewHolder(parent),
-    IReduxPropContainer<State, ViewHolder.S1, Unit> {
-    data class S1(val trackName: String)
-
-    companion object : IReduxStatePropMapper<State, Int, S1> {
-      override fun mapState(state: State, outProps: Int) = S1("")
+  class Adapter : RecyclerView.Adapter<ViewHolder>(),
+    IReduxStatePropMapper<State, Unit, Int> by Adapter
+  {
+    companion object : IReduxStatePropMapper<State, Unit, Int> {
+      override fun mapState(state: State, outProps: Unit) = state.musicResult?.resultCount ?: 0
     }
 
-    override lateinit var staticProps: StaticProps<State>
-
-    override var variableProps
-      by Delegates.observable<VariableProps<S1, Unit>?>(null) { _, _, p -> }
-  }
-
-  class Adapter : RecyclerView.Adapter<ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
       val view = LayoutInflater.from(parent.context)
         .inflate(R.layout.view_search_result, parent, false)
@@ -60,6 +52,23 @@ class SearchFragment : Fragment(),
     override fun getItemCount() = 0
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {}
+  }
+
+  class ViewHolder(val parent: View, val trackName: TextView) :
+    RecyclerView.ViewHolder(parent),
+    IReduxPropContainer<State, ViewHolder.S1, Unit>,
+    IReduxStatePropMapper<State, Int, ViewHolder.S1> by ViewHolder
+  {
+    data class S1(val trackName: String)
+
+    companion object : IReduxStatePropMapper<State, Int, S1> {
+      override fun mapState(state: State, outProps: Int) = S1("")
+    }
+
+    override lateinit var staticProps: StaticProps<State>
+
+    override var variableProps
+      by Delegates.observable<VariableProps<S1, Unit>?>(null) { _, _, p -> }
   }
 
   companion object : IReduxPropMapper<State, Unit, S, A> {

@@ -23,4 +23,4 @@ internal class CallEffect<State, P, R>(
 
 /** Invoke a [CallEffect] on [this] */
 fun <State, P, R> ReduxSagaEffect<State, P>.call(block: (P) -> Single<R>) =
-  ReduxSagaHelper.call(this, block)
+  ReduxSagaEffects.call(this, block)

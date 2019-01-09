@@ -9,8 +9,8 @@ import kotlinx.coroutines.async
 import org.swiften.redux.saga.cast
 import org.swiften.redux.saga.catchError
 import org.swiften.redux.saga.mapAsync
-import org.swiften.redux.saga.rx.ReduxSagaHelper.just
-import org.swiften.redux.saga.rx.ReduxSagaHelper.takeLatestAction
+import org.swiften.redux.saga.rx.ReduxSagaEffects.just
+import org.swiften.redux.saga.rx.ReduxSagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.TakeEffectOptions
 
 /** Created by haipham on 2019/01/04 */

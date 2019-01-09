@@ -11,7 +11,7 @@ import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/24 */
 /** Top-level namespace for [ReduxSagaEffect] helpers */
-object ReduxSagaHelper {
+object ReduxSagaEffects {
   /** Create a [FromEffect] */
   fun <State, R> from(channel: ReceiveChannel<R>): ReduxSagaEffect<State, R> =
     FromEffect(channel)
