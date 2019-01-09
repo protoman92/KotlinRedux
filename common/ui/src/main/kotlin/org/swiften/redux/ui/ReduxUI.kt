@@ -79,7 +79,7 @@ interface IReduxPropInjector<State> : IReduxDispatchContainer, IReduxStateContai
 /** Container for an [IReduxPropContainer] static properties */
 class StaticProps<State>(
   val injector: IReduxPropInjector<State>,
-  internal val subscription: ReduxSubscription
+  val subscription: ReduxSubscription
 )
 
 /** Container for an [IReduxPropContainer] mutable properties */

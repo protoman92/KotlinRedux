@@ -32,14 +32,14 @@ class SearchFragment : Fragment(),
   IReduxPropContainer<State, SearchFragment.S, SearchFragment.A>,
   IReduxPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment
 {
-  data class S(val query: String?)
+  data class S(val query: String?, val resultCount: Int?)
   class A(val updateQuery: (String?) -> Unit)
 
   class Adapter : RecyclerView.Adapter<ViewHolder>(),
     IReduxStatePropMapper<State, Unit, Int> by Adapter
   {
     companion object : IReduxStatePropMapper<State, Unit, Int> {
-      override fun mapState(state: State, outProps: Unit) = state.musicResult?.resultCount ?: 0
+      override fun mapState(state: State, outProps: Unit) = state.musicResult?.resultCount ?: 1
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -78,13 +78,16 @@ class SearchFragment : Fragment(),
       outProps: Unit
     ) = A { dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
 
-    override fun mapState(state: State, outProps: Unit) = S(state.autocompleteQuery)
+    override fun mapState(state: State, outProps: Unit) =
+      S(state.autocompleteQuery, state.musicResult?.resultCount)
   }
 
   override lateinit var staticProps: StaticProps<State>
 
   override var variableProps
-    by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p -> }
+    by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
+      this.searchResult.adapter?.notifyDataSetChanged()
+    }
 
   override fun onCreateView(
     inflater: LayoutInflater,
