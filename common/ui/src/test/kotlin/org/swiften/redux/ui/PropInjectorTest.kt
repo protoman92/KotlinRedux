@@ -97,14 +97,14 @@ class PropInjectorTest {
     val view = View()
 
     // When
-    this.injector.injectProps(view, Unit, this.mapper)
+    this.injector.injectRecyclerViewProps(view, Unit, this.mapper)
     this.store.dispatch(Action.SetQuery("1"))
     this.store.dispatch(Action.SetQuery("1"))
     this.store.dispatch(Action.SetQuery("2"))
     this.store.dispatch(Action.SetQuery("2"))
     this.store.dispatch(Action.SetQuery("3"))
     this.store.dispatch(Action.SetQuery("3"))
-    this.injector.injectProps(view, Unit, this.mapper)
+    this.injector.injectRecyclerViewProps(view, Unit, this.mapper)
 
     // Then
     Assert.assertEquals(this.store.unsubCount, 1)

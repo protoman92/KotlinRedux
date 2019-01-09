@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock
 object ReduxUI {
   /** Handle lifecycles for a target of [ReduxUI.PropInjector]  */
   interface IReduxLifecycleOwner {
-    /** This is called when [ReduxUI.PropInjector.injectProps] completes */
+    /** This is called when [ReduxUI.PropInjector.injectRecyclerViewProps] completes */
     fun onPropInjectionCompleted() {}
 
     /** This is called when [Redux.Subscription.unsubscribe] is called */
@@ -68,7 +68,7 @@ object ReduxUI {
   /** Inject state and actions into an [IPropContainer] */
   interface IPropInjector<State> : Redux.IActionDispatcher, Redux.IStateGetter<State> {
     /** Inject [StateProps] and [ActionProps] into [view] */
-    fun <OutProps, StateProps, ActionProps> injectProps(
+    fun <OutProps, StateProps, ActionProps> injectRecyclerViewProps(
       view: ReduxUI.IPropContainer<State, StateProps, ActionProps>,
       outProps: OutProps,
       mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
@@ -95,7 +95,7 @@ object ReduxUI {
     Redux.IActionDispatcher by store,
     Redux.IStateGetter<State> by store
   {
-    override fun <OutProps, StateProps, ActionProps> injectProps(
+    override fun <OutProps, StateProps, ActionProps> injectRecyclerViewProps(
       view: ReduxUI.IPropContainer<State, StateProps, ActionProps>,
       outProps: OutProps,
       mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>

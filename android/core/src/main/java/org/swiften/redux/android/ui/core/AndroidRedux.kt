@@ -60,12 +60,12 @@ internal fun ReduxUI.IPropInjector<*>.runOnUIThread(runnable: () -> Unit) {
   }
 }
 
-/** Call [ReduxUI.IPropInjector.injectProps] on the main thread */
+/** Call [ReduxUI.IPropInjector.injectRecyclerViewProps] on the main thread */
 internal fun <State, OP, SP, AP> ReduxUI.IPropInjector<State>.injectPropsOnMainThread(
   view: ReduxUI.IPropContainer<State, SP, AP>,
   outProps: OP,
   mapper: ReduxUI.IPropMapper<State, OP, SP, AP>
-) = this.injectProps(
+) = this.injectRecyclerViewProps(
   object : ReduxUI.IPropContainer<State, SP, AP> {
     override var staticProps: ReduxUI.StaticProps<State>
       get() = view.staticProps

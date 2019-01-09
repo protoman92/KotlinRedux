@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
-import org.swiften.redux.android.ui.recyclerview.injectProps
+import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.ui.ReduxUI
 import kotlin.properties.Delegates
@@ -29,7 +29,22 @@ class SearchFragment : Fragment(),
   ReduxUI.IPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
   data class S(val query: String?)
   class A(val updateQuery: (String?) -> Unit)
-  class ViewHolder(val parent: View, val trackName: TextView) : RecyclerView.ViewHolder(parent)
+
+  class ViewHolder(val parent: View, val trackName: TextView) :
+    RecyclerView.ViewHolder(parent),
+    ReduxUI.IPropContainer<State, ViewHolder.S1, Unit>
+  {
+    data class S1(val trackName: String)
+
+    companion object : ReduxUI.IStatePropMapper<State, Int, S1> {
+      override fun mapState(state: State, outProps: Int) = S1("")
+    }
+
+    override lateinit var staticProps: ReduxUI.StaticProps<State>
+
+    override var variableProps
+      by Delegates.observable<ReduxUI.VariableProps<ViewHolder.S1, Unit>?>(null) { _, _, p -> }
+  }
 
   class Adapter : RecyclerView.Adapter<ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -57,9 +72,7 @@ class SearchFragment : Fragment(),
   override lateinit var staticProps: ReduxUI.StaticProps<State>
 
   override var variableProps
-    by Delegates.observable<ReduxUI.VariableProps<S, A>?>(null) { _, _, p ->
-      p?.also { this.didSetProps(it) }
-    }
+    by Delegates.observable<ReduxUI.VariableProps<S, A>?>(null) { _, _, p -> }
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -92,10 +105,8 @@ class SearchFragment : Fragment(),
       }
     })
 
-    val adapter = this.staticProps.injector.injectProps(Adapter())
+    val adapter = this.staticProps.injector.injectRecyclerViewProps(Adapter(), ViewHolder)
     this.searchResult.adapter = adapter
     this.searchResult.layoutManager = LinearLayoutManager(this.context)
   }
-
-  private fun didSetProps(props: ReduxUI.VariableProps<S, A>) {}
 }

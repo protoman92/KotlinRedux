@@ -6,10 +6,27 @@
 package org.swiften.redux.android.ui.recyclerview
 
 import androidx.recyclerview.widget.RecyclerView
+import org.swiften.redux.core.ReduxDispatcher
 import org.swiften.redux.ui.ReduxUI
 
 /** Created by haipham on 2019/01/08 */
-/** Injector props for a [RecyclerView.Adapter] */
-fun <State, VH> ReduxUI.IPropInjector<State>.injectProps(
-  adapter: RecyclerView.Adapter<VH>
-): RecyclerView.Adapter<VH> where VH : RecyclerView.ViewHolder = adapter
+/** Inject props for a [RecyclerView.Adapter] with a compatible [VH] */
+fun <State, SP, AP, VH> ReduxUI.IPropInjector<State>.injectRecyclerViewProps(
+  adapter: RecyclerView.Adapter<VH>,
+  mapper: ReduxUI.IPropMapper<State, Int, SP, AP>
+): RecyclerView.Adapter<VH> where
+  VH : RecyclerView.ViewHolder,
+  VH : ReduxUI.IPropContainer<State, SP, AP> = adapter
+
+/** Similar to [ReduxUI.IPropInjector.injectRecyclerViewProps], but ignores action props */
+fun <State, SP, VH> ReduxUI.IPropInjector<State>.injectRecyclerViewProps(
+  adapter: RecyclerView.Adapter<VH>,
+  mapper: ReduxUI.IStatePropMapper<State, Int, SP>
+): RecyclerView.Adapter<VH> where
+  VH : RecyclerView.ViewHolder,
+  VH : ReduxUI.IPropContainer<State, SP, Unit> =
+  this.injectRecyclerViewProps<State, SP, Unit, VH>(adapter,
+    object : ReduxUI.IPropMapper<State, Int, SP, Unit> {
+      override fun mapState(state: State, outProps: Int) = mapper.mapState(state, outProps)
+      override fun mapAction(dispatch: ReduxDispatcher, state: State, outProps: Int) = Unit
+    })
