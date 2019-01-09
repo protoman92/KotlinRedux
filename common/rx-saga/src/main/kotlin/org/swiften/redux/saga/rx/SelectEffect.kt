@@ -12,7 +12,7 @@ import org.swiften.redux.saga.then
 
 /** Created by haipham on 2019/01/01 */
 /**
- * [ReduxSagaEffect] whose [ReduxSaga.Output] selects some value from an internal [State] using
+ * [ReduxSagaEffect] whose [ReduxSagaOutput] selects some value from an internal [State] using
  * [selector].
  */
 internal class SelectEffect<State, R>(

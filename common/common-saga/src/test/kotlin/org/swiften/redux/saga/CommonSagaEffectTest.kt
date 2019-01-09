@@ -139,7 +139,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
   fun `Put effect should dispatch action`() {
     // Setup
     data class Action(private val value: Int) : IReduxAction
-    val dispatched = arrayListOf<IReduxAction>()
+    val dispatched = Collections.synchronizedList(arrayListOf<IReduxAction>())
 
     val finalOutput = justEffect(0)
       .map { it }

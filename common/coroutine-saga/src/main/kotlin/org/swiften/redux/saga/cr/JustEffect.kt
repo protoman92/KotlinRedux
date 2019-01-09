@@ -11,13 +11,10 @@ import org.swiften.redux.saga.Input
 import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/24 */
-/** [ReduxSagaEffect] whose [ReduxSaga.Output] simply emits [value] */
+/** [ReduxSagaEffect] whose [ReduxSagaOutput] simply emits [value] */
 internal class JustEffect<State, R>(private val value: R) :
   ReduxSagaEffect<State, R> {
   @ExperimentalCoroutinesApi
-  override fun invoke(input: Input<State>): ReduxSaga.Output<R> {
-    return ReduxSaga.Output(this, input.scope, input.scope.produce {
-      this.send(value)
-    }) {}
-  }
+  override fun invoke(input: Input<State>) =
+    ReduxSagaOutput(this, input.scope, input.scope.produce { this.send(value) }) {}
 }

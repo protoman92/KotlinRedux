@@ -73,14 +73,14 @@ class SagaEffectTest : CommonSagaEffectTest() {
       .mapSuspend { delay(500); it }
       .then(just(2)) { a, b -> a + b }
       .mapSuspend { delay(500); it }
-      .invoke(this, State()) { } as ReduxSaga.Output<*>
+      .invoke(this, State()) { } as ReduxSagaOutput<*>
 
     runBlocking {
       // When
       sourceOutput.dispose()
 
       // Then
-      var parent: ReduxSaga.Output<*>? = sourceOutput
+      var parent: ReduxSagaOutput<*>? = sourceOutput
 
       while (parent != null) {
         val channel = parent.channel as Channel<*>
@@ -99,7 +99,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       .map { it }
       .mapAsync { this.async { delay(1000); it } }
       .then(just<State, Int>(2).map { it }) { a, b -> a + b }
-      .invoke(this, State()) { } as ReduxSaga.Output<*>
+      .invoke(this, State()) { } as ReduxSagaOutput<*>
 
     sourceOutput.subscribe({})
 

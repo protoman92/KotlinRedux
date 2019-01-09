@@ -3,26 +3,18 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga.rx
+package org.swiften.redux.saga.cr
 
-import io.reactivex.Flowable
-import io.reactivex.Single
+import kotlinx.coroutines.channels.ReceiveChannel
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/24 */
 /** Top-level namespace for [ReduxSagaEffect] helpers */
 object ReduxSagaHelper {
-  /** Create a [CallEffect] */
-  fun <State, P, R> call(
-    source: ReduxSagaEffect<State, P>,
-    block: (P) -> Single<R>
-  ): ReduxSagaEffect<State, R> =
-    CallEffect(source, block)
-
   /** Create a [FromEffect] */
-  fun <State, R> from(stream: Flowable<R>): ReduxSagaEffect<State, R> =
-    FromEffect(stream)
+  fun <State, R> from(channel: ReceiveChannel<R>): ReduxSagaEffect<State, R> =
+    FromEffect(channel)
 
   /** Create a [JustEffect] */
   fun <State, R> just(value: R): ReduxSagaEffect<State, R> =
@@ -36,7 +28,7 @@ object ReduxSagaHelper {
   fun <State, P, R> takeEvery(
     extract: Function1<IReduxAction, P?>,
     block: Function1<P, ReduxSagaEffect<State, R>>,
-    options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
+    options: TakeEffectOptions = TakeEffectOptions()
   ): ReduxSagaEffect<State, R> =
     TakeEveryEffect(extract, block, options)
 
@@ -44,7 +36,7 @@ object ReduxSagaHelper {
   inline fun <State, reified Action, P, R> takeEveryAction(
     crossinline extract: Function1<Action, P?>,
     noinline block: Function1<P, ReduxSagaEffect<State, R>>,
-    options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
+    options: TakeEffectOptions = TakeEffectOptions()
   ) where Action: IReduxAction = takeEvery(
     {
       when (it) {
@@ -58,7 +50,7 @@ object ReduxSagaHelper {
   fun <State, P, R> takeLatest(
     extract: Function1<IReduxAction, P?>,
     block: Function1<P, ReduxSagaEffect<State, R>>,
-    options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
+    options: TakeEffectOptions = TakeEffectOptions()
   ): ReduxSagaEffect<State, R> =
     TakeLatestEffect(extract, block, options)
 
@@ -66,7 +58,7 @@ object ReduxSagaHelper {
   inline fun <State, reified Action, P, R> takeLatestAction(
     crossinline extract: Function1<Action, P?>,
     noinline block: Function1<P, ReduxSagaEffect<State, R>>,
-    options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
+    options: TakeEffectOptions = TakeEffectOptions()
   ) where Action: IReduxAction = takeLatest(
     {
       when (it) {

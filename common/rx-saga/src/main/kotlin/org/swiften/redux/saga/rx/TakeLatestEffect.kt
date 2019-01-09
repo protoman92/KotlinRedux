@@ -18,7 +18,7 @@ import org.swiften.redux.saga.ReduxSagaEffect
 internal class TakeLatestEffect<State, P, R>(
   extract: Function1<IReduxAction, P?>,
   block: Function1<P, ReduxSagaEffect<State, R>>,
-  options: ReduxSaga.TakeOptions
+  options: TakeEffectOptions
 ) : TakeEffect<State, P, R>(extract, block, options) {
   override fun flattenOutput(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>) =
     nestedOutput.switchMap { it }

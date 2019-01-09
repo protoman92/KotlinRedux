@@ -26,8 +26,6 @@ import java.util.Collections
 import java.util.Random
 
 /** Created by haipham on 2018/12/23 */
-private typealias Output<T> = ReduxSaga.Output<T>
-
 class SagaOutputTest : CoroutineScope {
   override val coroutineContext get() = this.job
 
@@ -43,16 +41,16 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun test_flatMapVariants_shouldEmitCorrectValues(
-    fn: Output<Int>.((Int) -> Output<String>) -> Output<String>,
+    fn: ReduxSagaOutput<Int>.((Int) -> ReduxSagaOutput<String>) -> ReduxSagaOutput<String>,
     actualValues: List<String>
   ) {
     // Setup
     val sourceCh = Channel<Int>()
-    val sourceOutput = Output(scope = this, channel = sourceCh) { }
+    val sourceOutput = ReduxSagaOutput(scope = this, channel = sourceCh) { }
     val finalValues = Collections.synchronizedList(arrayListOf<String>())
 
     val finalOutput = fn(sourceOutput) { value ->
-      Output(scope = this, channel = this.produce {
+      ReduxSagaOutput(scope = this, channel = this.produce {
         delay(500); this.send("${value}1")
         delay(500); this.send("${value}2")
         delay(500); this.send("${value}3")
@@ -99,15 +97,15 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun test_flatMapVariants_shouldTerminateOnCancel(
-    fn: Output<Int>.((Int) -> Output<Int>) -> Output<Int>
+    fn: ReduxSagaOutput<Int>.((Int) -> ReduxSagaOutput<Int>) -> ReduxSagaOutput<Int>
   ) {
     // Setup
     val sourceCh = Channel<Int>()
-    val sourceOutput = Output(scope = this, channel = sourceCh) { }
+    val sourceOutput = ReduxSagaOutput(scope = this, channel = sourceCh) { }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
     val finalOutput = fn(sourceOutput) {
-      Output(scope = this, channel = this.produce {
+      ReduxSagaOutput(scope = this, channel = this.produce {
         delay(500); this.send(1)
         delay(500); this.send(2)
         delay(500); this.send(3)
@@ -160,7 +158,7 @@ class SagaOutputTest : CoroutineScope {
 
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
-    ReduxSaga.Output("", this, sourceCh) { }
+    ReduxSagaOutput("", this, sourceCh) { }
       .mapAsync { this.async { delay(1000); it } }
       .subscribe({ finalValues.add(it) })
 
@@ -181,7 +179,7 @@ class SagaOutputTest : CoroutineScope {
     // Setup
     val rand = Random()
     val sourceCh = Channel<Int>()
-    val sourceOutput = Output(scope = this, channel = sourceCh) { }
+    val sourceOutput = ReduxSagaOutput(scope = this, channel = sourceCh) { }
     val finalOutput = sourceOutput.debounce(100)
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
     val validEmissions = (0 until 100).map { rand.nextBoolean() }
@@ -221,7 +219,7 @@ class SagaOutputTest : CoroutineScope {
   fun `Output catch error should handle errors gracefully`() {
     // Setup
     val sourceCh = Channel<Int>()
-    val sourceOutput = Output(scope = this, channel = sourceCh) { }
+    val sourceOutput = ReduxSagaOutput(scope = this, channel = sourceCh) { }
     val error = Exception("Oh no!")
     val finalOutput = sourceOutput.map<Int> { throw error }.catchError { 100 }
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
@@ -241,8 +239,8 @@ class SagaOutputTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   @ExperimentalCoroutinesApi
   fun test_terminatingOutput_shouldWorkCorrectly(
-    dispose: (CoroutineScope, Output<Int>) -> Unit,
-    assert: (Output<Int>) -> Unit
+    dispose: (CoroutineScope, ReduxSagaOutput<Int>) -> Unit,
+    assert: (ReduxSagaOutput<Int>) -> Unit
   ) {
     // Setup
     val scope = object : CoroutineScope {
@@ -251,11 +249,11 @@ class SagaOutputTest : CoroutineScope {
 
     val flatMapChannel1 = Channel<Int>()
     val flatMapChannel2 = Channel<Int>()
-    val flatMapOutput1 = Output("FlatMap1", scope, flatMapChannel1) { }
-    val flatMapOutput2 = Output("FlatMap2", scope, flatMapChannel2) { }
+    val flatMapOutput1 = ReduxSagaOutput("FlatMap1", scope, flatMapChannel1) { }
+    val flatMapOutput2 = ReduxSagaOutput("FlatMap2", scope, flatMapChannel2) { }
 
     val sourceCh = Channel<Int>()
-    val output1 = Output(this, scope, sourceCh) { }
+    val output1 = ReduxSagaOutput(this, scope, sourceCh) { }
     val output2 = output1.map { it }
     val output3 = output2.switchMap { flatMapOutput1 }
     val output4 = output3.flatMap { flatMapOutput2 }

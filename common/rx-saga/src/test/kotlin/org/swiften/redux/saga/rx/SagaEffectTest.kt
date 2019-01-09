@@ -88,7 +88,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
           .cast<Unit, String, Any>()
           .catchError {}
       },
-      ReduxSaga.TakeOptions(0)
+      TakeEffectOptions(0)
     ).invoke(this, Unit) {}
 
     sourceOutput.subscribe({ finalValues.add(it) })

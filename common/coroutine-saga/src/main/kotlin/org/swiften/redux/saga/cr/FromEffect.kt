@@ -10,10 +10,9 @@ import org.swiften.redux.saga.Input
 import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2019/01/05 */
-/** [ReduxSagaEffect] whose [ReduxSaga.Output] is provided via [channel] */
+/** [ReduxSagaEffect] whose [ReduxSagaOutput] is provided via [channel] */
 internal class FromEffect<State, R>(
   private val channel: ReceiveChannel<R>
 ) : ReduxSagaEffect<State, R> {
-  override fun invoke(p1: Input<State>) =
-    ReduxSaga.Output(this, p1.scope, this.channel) { }
+  override fun invoke(p1: Input<State>) = ReduxSagaOutput(this, p1.scope, this.channel) { }
 }

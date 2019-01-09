@@ -9,9 +9,9 @@ import kotlinx.coroutines.async
 import org.swiften.redux.saga.cast
 import org.swiften.redux.saga.catchError
 import org.swiften.redux.saga.mapAsync
-import org.swiften.redux.saga.rx.ReduxSaga
 import org.swiften.redux.saga.rx.ReduxSagaHelper.just
 import org.swiften.redux.saga.rx.ReduxSagaHelper.takeLatestAction
+import org.swiften.redux.saga.rx.TakeEffectOptions
 
 /** Created by haipham on 2019/01/04 */
 object MainSaga {
@@ -21,7 +21,7 @@ object MainSaga {
         is MainRedux.Action.UpdateAutocompleteQuery -> it.query
       } },
       { autocompleteSaga(api, it) },
-      ReduxSaga.TakeOptions(1000)
+      TakeEffectOptions(1000)
     )
   )
 
