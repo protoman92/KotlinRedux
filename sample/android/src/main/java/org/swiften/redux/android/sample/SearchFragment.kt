@@ -32,8 +32,7 @@ class SearchFragment : Fragment(),
 
   class ViewHolder(val parent: View, val trackName: TextView) :
     RecyclerView.ViewHolder(parent),
-    ReduxUI.IPropContainer<State, ViewHolder.S1, Unit>
-  {
+    ReduxUI.IPropContainer<State, ViewHolder.S1, Unit> {
     data class S1(val trackName: String)
 
     companion object : ReduxUI.IStatePropMapper<State, Int, S1> {

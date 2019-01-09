@@ -7,43 +7,46 @@ package org.swiften.redux.router
 
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.middleware.IReduxMiddleware
 import org.swiften.redux.middleware.IReduxMiddlewareProvider
 import org.swiften.redux.middleware.ReduxDispatchWrapper
-import org.swiften.redux.middleware.IReduxMiddleware
 
 /** Created by haipham on 2018/12/16 */
 /** Top-level namespace for Redux Router middleware */
-object ReduxRouterMiddleware {
+/**
+ * Represents a screen that also implements [IReduxAction], so that views can simply dispatch an
+ * [IReduxRouterScreen] to navigate to the associated screen.
+ */
+interface IReduxRouterScreen : IReduxAction
+
+/** Abstract the necessary work to navigate from one [IReduxRouterScreen] to another */
+interface IReduxRouter {
   /**
-   * Represents a screen that also implements [IReduxAction], so that views can simply dispatch
-   * an [IScreen] to navigate to the associated screen.
+   * Navigate to an [IReduxRouterScreen]. How this is done is left to the app's specific
+   * implementation
    */
-  interface IScreen : IReduxAction
+  fun navigate(screen: IReduxRouterScreen)
+}
 
-  /** Abstract the necessary work to navigate from one [IScreen] to another */
-  interface IRouter {
-    /** Navigate to an [IScreen]. How this is done is left to the app's specific implementation */
-    fun navigate(screen: IScreen)
-  }
+/** [IReduxMiddlewareProvider] implementation for [IReduxRouter] middleware */
+class ReduxRouterMiddlewareProvider<State>(
+  private val router: IReduxRouter
+) : IReduxMiddlewareProvider<State> {
+  override val middleware: IReduxMiddleware<State> = { input ->
+    { wrapper -> ReduxDispatchWrapper("$wrapper.id-router",
+      object : IReduxDispatcher {
+        override fun invoke(action: IReduxAction) {
+          wrapper.dispatch(action)
 
-  /** [IReduxMiddlewareProvider] implementation for [IRouter] middleware */
-  class Provider<State>(private val router: IRouter) : IReduxMiddlewareProvider<State> {
-    override val middleware: IReduxMiddleware<State> = { input ->
-      { wrapper -> ReduxDispatchWrapper("$wrapper.id-router",
-        object : IReduxDispatcher {
-          override fun invoke(action: IReduxAction) {
-            wrapper.dispatch(action)
-
-            /**
-             * If [action] is an [IScreen] instance, use the [router] to navigate to the associated
-             * screen.
-             */
-            when (action) {
-              is IScreen -> this@Provider.router.navigate(action)
-            }
+          /**
+           * If [action] is an [IReduxRouterScreen] instance, use the [router] to navigate to the
+           * associated screen.
+           */
+          when (action) {
+            is IReduxRouterScreen -> this@ReduxRouterMiddlewareProvider.router.navigate(action)
           }
-        })
-      }
+        }
+      })
     }
   }
 }

@@ -96,8 +96,7 @@ object ReduxUI {
     private val store: IReduxStore<State>
   ) : IPropInjector<State>,
     IReduxDispatchContainer by store,
-    IReduxStateContainer<State> by store
-  {
+    IReduxStateContainer<State> by store {
     override fun <OutProps, StateProps, ActionProps> injectRecyclerViewProps(
       view: ReduxUI.IPropContainer<State, StateProps, ActionProps>,
       outProps: OutProps,
