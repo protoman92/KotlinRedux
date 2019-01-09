@@ -66,7 +66,7 @@ object ReduxUI {
     IActionPropMapper<GlobalState, OutProps, ActionProps>
 
   /** Inject state and actions into an [IPropContainer] */
-  interface IPropInjector<State> {
+  interface IPropInjector<State> : Redux.IActionDispatcher, Redux.IStateGetter<State> {
     /** Inject [StateProps] and [ActionProps] into [view] */
     fun <OutProps, StateProps, ActionProps> injectProps(
       view: ReduxUI.IPropContainer<State, StateProps, ActionProps>,
@@ -89,7 +89,12 @@ object ReduxUI {
   )
 
   /** A [IPropInjector] implementation */
-  class PropInjector<State>(private val store: Redux.IStore<State>) : IPropInjector<State> {
+  class PropInjector<State>(
+    private val store: Redux.IStore<State>
+  ) : IPropInjector<State>,
+    Redux.IActionDispatcher by store,
+    Redux.IStateGetter<State> by store
+  {
     override fun <OutProps, StateProps, ActionProps> injectProps(
       view: ReduxUI.IPropContainer<State, StateProps, ActionProps>,
       outProps: OutProps,

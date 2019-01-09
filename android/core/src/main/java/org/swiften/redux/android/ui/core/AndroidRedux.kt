@@ -20,7 +20,10 @@ import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.android.ui.core.AndroidRedux.ReduxLifecycleObserver
 import org.swiften.redux.core.Redux
 import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.core.ReduxPreset
 import org.swiften.redux.ui.ReduxUI
+import java.io.Serializable
+import java.util.Date
 
 /** Created by haipham on 2018/12/17 */
 /** Top-level namespace for Android Redux UI functionalities */
@@ -122,20 +125,33 @@ fun <State, LC, OP, SP> ReduxUI.IPropInjector<State>.injectLifecycleProps(
       override fun mapState(state: State, outProps: OP) = mapper.mapState(state, outProps)
     })
 
-/** Listen to [Activity] lifecycle callbacks and perform [inject] when necessary */
+/**
+ * Listen to [Activity] lifecycle callbacks and perform [inject] when necessary. We can also
+ * declare [saveState] and [restoreState] to handle [State] persistence.
+ */
 @Suppress("unused")
 fun <State> ReduxUI.startActivityInjection(
   application: Application,
   injector: ReduxUI.IPropInjector<State>,
-  inject: ReduxUI.IPropInjector<State>.(Activity) -> Unit
+  inject: ReduxUI.IPropInjector<State>.(Activity) -> Unit,
+  saveState: State.(Bundle) -> Unit = {},
+  restoreState: (Bundle) -> State? = { null }
 ): Application.ActivityLifecycleCallbacks {
   val callback = object : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity?) {}
     override fun onActivityResumed(activity: Activity?) {}
     override fun onActivityStopped(activity: Activity?) {}
     override fun onActivityDestroyed(activity: Activity?) {}
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
+
+    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+      if (outState != null) saveState(injector.stateGetter(), outState)
+    }
+
+    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+      savedInstanceState
+        ?.run { restoreState(this) }
+        ?.apply { injector.dispatch(ReduxPreset.DefaultAction.ReplaceState(this)) }
+    }
 
     override fun onActivityStarted(activity: Activity?) {
       if (activity != null) inject(injector, activity)
@@ -144,6 +160,27 @@ fun <State> ReduxUI.startActivityInjection(
 
   application.registerActivityLifecycleCallbacks(callback)
   return callback
+}
+
+/**
+ * Similar to [ReduxUI.startActivityInjection], but provides default persistence for when [State] is
+ * [Serializable]
+ */
+@Suppress("unused")
+inline fun <reified State> ReduxUI.startActivityInjection(
+  application: Application,
+  injector: ReduxUI.IPropInjector<State>,
+  noinline inject: ReduxUI.IPropInjector<State>.(Activity) -> Unit
+): Application.ActivityLifecycleCallbacks where State : Serializable {
+  val REDUX_STATE_KEY = "REDUX_STATE_${Date().time}"
+
+  return this.startActivityInjection(
+    application,
+    injector,
+    inject,
+    { it.putSerializable(REDUX_STATE_KEY, this) },
+    { it.getSerializable(REDUX_STATE_KEY)?.takeIf { it is State }?.run { this as State } }
+  )
 }
 
 /** End lifecycle [callback] for [Activity] */

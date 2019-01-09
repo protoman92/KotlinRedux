@@ -5,5 +5,7 @@
 
 package org.swiften.redux.android.sample
 
+import java.io.Serializable
+
 /** Created by haipham on 2018/12/19 */
-data class State(val autocompleteQuery: String? = "")
+data class State(val autocompleteQuery: String? = "") : Serializable
