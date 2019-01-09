@@ -7,7 +7,7 @@ package org.swiften.redux.saga
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
-import org.swiften.redux.core.Redux
+import org.swiften.redux.core.IReduxAction
 
 /** Created by haipham on 2019/01/07 */
 /** Top-level namespace for [ReduxSagaEffect] helpers */
@@ -49,7 +49,7 @@ object CommonSagaHelper {
   /** Create a [PutEffect] */
   fun <State, P> put(
     source: ReduxSagaEffect<State, P>,
-    actionCreator: (P) -> Redux.IAction
+    actionCreator: (P) -> IReduxAction
   ): ReduxSagaEffect<State, Any> = PutEffect(source, actionCreator)
 
   /** Create a [ThenEffect] on [source1] and [source2] */

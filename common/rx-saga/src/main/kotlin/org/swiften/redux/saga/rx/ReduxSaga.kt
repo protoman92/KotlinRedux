@@ -10,7 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.rx2.rxSingle
-import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.saga.CommonSaga
 import java.util.concurrent.TimeUnit
 
@@ -21,7 +21,7 @@ object ReduxSaga {
   class Output<T> internal constructor(
     private val scope: CoroutineScope,
     private val stream: Flowable<T>,
-    override val onAction: ReduxDispatcher
+    override val onAction: IReduxDispatcher
   ) : CommonSaga.IOutput<T>, CoroutineScope by scope {
     internal var source: Output<*>? = null
     private var onDispose: () -> Unit = { }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
@@ -7,9 +7,6 @@ package org.swiften.redux.saga.cr
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import org.swiften.redux.saga.cr.LifecycleChannel
-import org.swiften.redux.saga.cr.LifecycleReceiveChannel
-import org.swiften.redux.saga.cr.LifecycleSendChannel
 import org.testng.Assert
 import org.testng.annotations.Test
 

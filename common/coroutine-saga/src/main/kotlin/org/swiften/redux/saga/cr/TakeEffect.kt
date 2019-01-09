@@ -9,17 +9,17 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.launch
-import org.swiften.redux.core.Redux
+import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.CommonSaga
 import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/23 */
 /**
- * [TakeEffect] instances produces streams that filter [Redux.IAction] with [extract] and pluck
+ * [TakeEffect] instances produces streams that filter [IReduxAction] with [extract] and pluck
  * out the appropriate ones to perform additional work on with [block].
  */
 internal abstract class TakeEffect<State, P, R>(
-  private val extract: Function1<Redux.IAction, P?>,
+  private val extract: Function1<IReduxAction, P?>,
   private val block: Function1<P, ReduxSagaEffect<State, R>>,
   private val options: ReduxSaga.TakeOptions
 ) : ReduxSagaEffect<State, R> {
@@ -33,7 +33,7 @@ internal abstract class TakeEffect<State, P, R>(
 
   @ExperimentalCoroutinesApi
   override operator fun invoke(p1: CommonSaga.Input<State>): CommonSaga.IOutput<R> {
-    val actionChannel = Channel<Redux.IAction>()
+    val actionChannel = Channel<IReduxAction>()
 
     val nested = ReduxSaga.Output(this, p1.scope,
       p1.scope.produce {

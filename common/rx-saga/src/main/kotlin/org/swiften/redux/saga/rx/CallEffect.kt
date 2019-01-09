@@ -10,7 +10,7 @@ import org.swiften.redux.saga.CommonSaga
 import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2019/01/05 */
-/** Similar to [MapEffect], but handles [Single] */
+/** [ReduxSagaEffect] whose [CommonSaga.IOutput] awaits for a [Single] to complete */
 internal class CallEffect<State, P, R>(
   private val source: ReduxSagaEffect<State, P>,
   private val block: (P) -> Single<R>

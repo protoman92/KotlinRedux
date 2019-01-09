@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
-import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.ReduxUI
 import kotlin.properties.Delegates
 
@@ -61,7 +61,7 @@ class SearchFragment : Fragment(),
 
   companion object : ReduxUI.IPropMapper<State, Unit, S, A> {
     override fun mapAction(
-      dispatch: ReduxDispatcher,
+      dispatch: IReduxDispatcher,
       state: State,
       outProps: Unit
     ) = A { dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }

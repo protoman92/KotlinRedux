@@ -5,7 +5,7 @@
 
 package org.swiften.redux.middleware
 
-import org.swiften.redux.core.ReduxPreset
+import org.swiften.redux.core.DefaultAction
 import org.swiften.redux.core.SimpleReduxStore
 import org.testng.Assert
 import org.testng.annotations.Test
@@ -13,6 +13,7 @@ import org.testng.annotations.Test
 /** Created by haipham on 2018/12/16 */
 class ReduxMiddlewareTest {
   @Test
+  @Suppress("NestedLambdaShadowedImplicitParameter")
   fun `Applying middlewares to a store should produce correct order`() {
     // Setup
     val store = SimpleReduxStore(0) { a, _ -> a }
@@ -37,9 +38,9 @@ class ReduxMiddlewareTest {
     )(store)
 
     // When
-    wrappedStore.dispatch(ReduxPreset.DefaultAction.Dummy)
-    wrappedStore.dispatch(ReduxPreset.DefaultAction.Dummy)
-    wrappedStore.dispatch(ReduxPreset.DefaultAction.Dummy)
+    wrappedStore.dispatch(DefaultAction.Dummy)
+    wrappedStore.dispatch(DefaultAction.Dummy)
+    wrappedStore.dispatch(DefaultAction.Dummy)
 
     // Then
     Assert.assertEquals(ordering, arrayListOf(3, 2, 1, 3, 2, 1, 3, 2, 1))

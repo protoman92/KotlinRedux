@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxFlowable
 import kotlinx.coroutines.withTimeoutOrNull
-import org.swiften.redux.core.Redux
+import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.CommonSagaEffectTest
 import org.swiften.redux.saga.cast
 import org.swiften.redux.saga.catchError
@@ -70,7 +70,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `Take latest should work in real life scenarios`() {
     // Setup
-    data class Action(val query: String) : Redux.IAction
+    data class Action(val query: String) : IReduxAction
     val finalValues = Collections.synchronizedList(arrayListOf<Any>())
 
     fun CoroutineScope.searchMusicStore(q: String) = this.async {

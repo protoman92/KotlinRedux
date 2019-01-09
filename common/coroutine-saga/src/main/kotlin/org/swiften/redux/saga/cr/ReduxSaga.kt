@@ -20,7 +20,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
-import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.saga.CommonSaga
 import java.util.Date
 
@@ -33,7 +33,7 @@ object ReduxSaga {
     private val identifier: String = DEFAULT_IDENTIFIER,
     private val scope: CoroutineScope,
     internal val channel: ReceiveChannel<T>,
-    override val onAction: ReduxDispatcher
+    override val onAction: IReduxDispatcher
   ) : CommonSaga.IOutput<T>, CoroutineScope by scope {
     companion object { internal const val DEFAULT_IDENTIFIER = "Unidentified" }
 
@@ -42,7 +42,7 @@ object ReduxSaga {
       creator: Any,
       scope: CoroutineScope,
       channel: ReceiveChannel<T>,
-      onAction: ReduxDispatcher
+      onAction: IReduxDispatcher
     ): this (creator.javaClass.simpleName, scope, channel, onAction)
 
     internal var source: Output<*>? = null

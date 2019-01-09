@@ -5,8 +5,11 @@
 
 package org.swiften.redux.ui
 
-import org.swiften.redux.core.Redux
-import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.core.IReduxDispatchContainer
+import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.core.IReduxStateContainer
+import org.swiften.redux.core.IReduxStore
+import org.swiften.redux.core.ReduxSubscription
 import java.util.Date
 import java.util.concurrent.locks.ReentrantLock
 
@@ -18,7 +21,7 @@ object ReduxUI {
     /** This is called when [ReduxUI.PropInjector.injectRecyclerViewProps] completes */
     fun onPropInjectionCompleted() {}
 
-    /** This is called when [Redux.Subscription.unsubscribe] is called */
+    /** This is called when [ReduxSubscription.unsubscribe] is called */
     fun onPropInjectionStopped() {}
   }
 
@@ -52,12 +55,12 @@ object ReduxUI {
   }
 
   /**
-   * Maps [ReduxDispatcher] to [ActionProps] for a [IPropContainer]. [OutProps] is the view's
+   * Maps [IReduxDispatcher] to [ActionProps] for a [IPropContainer]. [OutProps] is the view's
    * immutable property as dictated by its parent.
    */
   interface IActionPropMapper<GlobalState, OutProps, ActionProps> {
-    /** Map [ReduxDispatcher] to [ActionProps] using [GlobalState] and [OutProps] */
-    fun mapAction(dispatch: ReduxDispatcher, state: GlobalState, outProps: OutProps): ActionProps
+    /** Map [IReduxDispatcher] to [ActionProps] using [GlobalState] and [OutProps] */
+    fun mapAction(dispatch: IReduxDispatcher, state: GlobalState, outProps: OutProps): ActionProps
   }
 
   /** Maps [GlobalState] to [StateProps] and [ActionProps] for a [IPropContainer] */
@@ -66,19 +69,19 @@ object ReduxUI {
     IActionPropMapper<GlobalState, OutProps, ActionProps>
 
   /** Inject state and actions into an [IPropContainer] */
-  interface IPropInjector<State> : Redux.IActionDispatcher, Redux.IStateGetter<State> {
+  interface IPropInjector<State> : IReduxDispatchContainer, IReduxStateContainer<State> {
     /** Inject [StateProps] and [ActionProps] into [view] */
     fun <OutProps, StateProps, ActionProps> injectRecyclerViewProps(
       view: ReduxUI.IPropContainer<State, StateProps, ActionProps>,
       outProps: OutProps,
       mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
-    ): Redux.Subscription
+    ): ReduxSubscription
   }
 
   /** Container for an [IPropContainer] static properties */
   class StaticProps<State>(
     val injector: IPropInjector<State>,
-    internal val subscription: Redux.Subscription
+    internal val subscription: ReduxSubscription
   )
 
   /** Container for an [IPropContainer] mutable properties */
@@ -90,16 +93,16 @@ object ReduxUI {
 
   /** A [IPropInjector] implementation */
   class PropInjector<State>(
-    private val store: Redux.IStore<State>
+    private val store: IReduxStore<State>
   ) : IPropInjector<State>,
-    Redux.IActionDispatcher by store,
-    Redux.IStateGetter<State> by store
+    IReduxDispatchContainer by store,
+    IReduxStateContainer<State> by store
   {
     override fun <OutProps, StateProps, ActionProps> injectRecyclerViewProps(
       view: ReduxUI.IPropContainer<State, StateProps, ActionProps>,
       outProps: OutProps,
       mapper: ReduxUI.IPropMapper<State, OutProps, StateProps, ActionProps>
-    ): Redux.Subscription {
+    ): ReduxSubscription {
       /** If [view] has received an injection before, unsubscribe from that */
       try {
         view.staticProps.subscription.unsubscribe()
@@ -107,7 +110,7 @@ object ReduxUI {
 
       /**
        * It does not matter what the id is, as long as it is unique. This is because we will be
-       * passing along a [Redux.Subscription] to handle unsubscribe, so there's not need to keep
+       * passing along a [ReduxSubscription] to handle unsubscribe, so there's not need to keep
        * track of the [view]'s id.
        */
       val id = "${view.javaClass.canonicalName}${Date().time}"
@@ -146,7 +149,7 @@ object ReduxUI {
  * interactions.
  */
 fun <S> ReduxUI.IPropInjector<S>.injectStaticProps(view: ReduxUI.IStaticPropContainer<S>) {
-  view.staticProps = ReduxUI.StaticProps(this, Redux.Subscription {})
+  view.staticProps = ReduxUI.StaticProps(this, ReduxSubscription {})
 }
 
 internal fun <T> ReentrantLock.read(fn: () -> T): T {

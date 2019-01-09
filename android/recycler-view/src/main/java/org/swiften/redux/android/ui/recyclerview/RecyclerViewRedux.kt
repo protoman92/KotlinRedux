@@ -6,7 +6,7 @@
 package org.swiften.redux.android.ui.recyclerview
 
 import androidx.recyclerview.widget.RecyclerView
-import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.ReduxUI
 
 /** Created by haipham on 2019/01/08 */
@@ -28,5 +28,5 @@ fun <State, SP, VH> ReduxUI.IPropInjector<State>.injectRecyclerViewProps(
   this.injectRecyclerViewProps<State, SP, Unit, VH>(adapter,
     object : ReduxUI.IPropMapper<State, Int, SP, Unit> {
       override fun mapState(state: State, outProps: Int) = mapper.mapState(state, outProps)
-      override fun mapAction(dispatch: ReduxDispatcher, state: State, outProps: Int) = Unit
+      override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: Int) = Unit
     })

@@ -6,60 +6,57 @@
 package org.swiften.redux.core
 
 /** Created by haipham on 2018/03/31 */
-/** Represents an [Redux.IAction] dispatcher */
-typealias ReduxDispatcher = Function1<Redux.IAction, Unit>
+/** Represents an [IReduxAction] dispatcher */
+typealias IReduxDispatcher = Function1<IReduxAction, Unit>
 
 /**
- * Represents a Redux reducer that reduce a [Redux.IAction] onto a previous [State] to produce a
- * new [State].
+ * Represents a Redux reducer that reduce a [IReduxAction] onto a previous state to produce a new
+ * state.
  */
-typealias ReduxReducer<State> = Function2<State, Redux.IAction, State>
+typealias IReduxReducer<State> = Function2<State, IReduxAction, State>
 
-/** Get the last internal [State] */
-typealias ReduxStateGetter<State> = Function0<State>
+/** Get the last internal state */
+typealias IReduxStateGetter<State> = Function0<State>
 
 /**
  * Subscribe to state updates with a callback. The subscriber id should be a unique id that
- * identifies that subscriber. The resulting [Redux.Subscription] can be used to unsubscribe.
+ * identifies that subscriber. The resulting [ReduxSubscription] can be used to unsubscribe.
  */
-typealias ReduxSubscriber<State> = Function2<String, Function1<State, Unit>, Redux.Subscription>
+typealias IReduxSubscriber<State> = Function2<String, Function1<State, Unit>, ReduxSubscription>
 
-/** Top-level namespace for Redux root components */
-object Redux {
-  /**
-   * Use this class to perform some [unsubscribe] logic. For e.g.: terminate a [Subscription] from
-   * [IStore.subscribe].
-   */
-  class Subscription(val unsubscribe: () -> Unit)
+/**
+ * Use this class to perform some [unsubscribe] logic. For e.g.: terminate a [ReduxSubscription]
+ * from [IReduxStore.subscribe].
+ */
+class ReduxSubscription(val unsubscribe: () -> Unit)
 
-  /** Represents a Redux action */
-  interface IAction
+/** Represents a Redux action */
+interface IReduxAction
 
-  /** Represents an object that can dispatch [IAction] */
-  interface IActionDispatcher {
-    val dispatch: ReduxDispatcher
-  }
-
-  /** Represents an object that has some internal [State] and can fetch the latest [State] */
-  interface IStateGetter<State> {
-    val stateGetter: ReduxStateGetter<State>
-  }
-
-  /**
-   * Represents a Redux store that can dispatch [IAction] with a [ReduxDispatcher] to mutate some
-   * internal [State]. Other objects can subscribe to [State] updates using [subscribe].
-   */
-  interface IStore<State> : IActionDispatcher, IStateGetter<State> {
-    val subscribe: ReduxSubscriber<State>
-  }
+/** Represents an object that can dispatch [IReduxAction] */
+interface IReduxDispatchContainer {
+  val dispatch: IReduxDispatcher
 }
 
-/** Dispatch all [actions] in a [Collection] of [Redux.IAction] */
-fun <State> Redux.IStore<State>.dispatch(actions: Collection<Redux.IAction>) {
+/** Represents an object that has some internal [State] and can fetch the latest [State] */
+interface IReduxStateContainer<State> {
+  val stateGetter: IReduxStateGetter<State>
+}
+
+/**
+ * Represents a Redux store that can dispatch [IReduxAction] with a [IReduxDispatcher] to mutate
+ * some internal [State]. Other objects can subscribe to [State] updates using [subscribe].
+ */
+interface IReduxStore<State> : IReduxDispatchContainer, IReduxStateContainer<State> {
+  val subscribe: IReduxSubscriber<State>
+}
+
+/** Dispatch all [actions] in a [Collection] of [IReduxAction] */
+fun <State> IReduxStore<State>.dispatch(actions: Collection<IReduxAction>) {
   actions.forEach { this.dispatch(it) }
 }
 
 /** Dispatch all [actions] passed via vararg parameters */
-fun <State> Redux.IStore<State>.dispatch(vararg actions: Redux.IAction) {
+fun <State> IReduxStore<State>.dispatch(vararg actions: IReduxAction) {
   this.dispatch(actions.asList())
 }

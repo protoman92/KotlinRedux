@@ -5,17 +5,17 @@
 
 package org.swiften.redux.android.sample
 
-import org.swiften.redux.core.Redux
-import org.swiften.redux.core.ReduxReducer
+import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.IReduxReducer
 
 /** Created by haipham on 2018/12/19 */
 object MainRedux {
-  sealed class Action : Redux.IAction {
+  sealed class Action : IReduxAction {
     data class UpdateAutocompleteQuery(val query: String?) : Action()
   }
 
-  object Reducer : ReduxReducer<State> {
-    override operator fun invoke(previous: State, action: Redux.IAction): State {
+  object Reducer : IReduxReducer<State> {
+    override operator fun invoke(previous: State, action: IReduxAction): State {
       return when (action) {
         is Action -> when (action) {
           is Action.UpdateAutocompleteQuery -> previous.copy(action.query)

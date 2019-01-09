@@ -12,10 +12,10 @@ import org.testng.Assert
 import java.util.Random
 
 /** Created by haipham on 2018/12/16 */
-/** Use this test class to test [Redux.IStore] implementations */
+/** Use this test class to test [IReduxStore] implementations */
 @Suppress("FunctionName")
 open class BaseReduxStoreTest : CoroutineScope {
-  sealed class Action : Redux.IAction {
+  sealed class Action : IReduxAction {
     object AddOne : Action()
     object AddTwo : Action()
     object AddThree : Action()
@@ -55,11 +55,11 @@ open class BaseReduxStoreTest : CoroutineScope {
 
   override val coroutineContext = Dispatchers.Default
 
-  fun reducer(): ReduxReducer<Int> = { s, a ->
+  fun reducer(): IReduxReducer<Int> = { s, a ->
     when (a) { is Action -> a(s); else -> throw RuntimeException() }
   }
 
-  fun dispatchingAction_shouldResultInCorrectState(store: Redux.IStore<Int>) {
+  fun dispatchingAction_shouldResultInCorrectState(store: IReduxStore<Int>) {
     var currentState = 0
     val allDispatches = arrayListOf<Deferred<Unit>>()
 

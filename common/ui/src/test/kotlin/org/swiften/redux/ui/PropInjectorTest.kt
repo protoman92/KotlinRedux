@@ -5,9 +5,11 @@
 
 package org.swiften.redux.ui
 
-import org.swiften.redux.core.Redux
-import org.swiften.redux.core.ReduxDispatcher
-import org.swiften.redux.core.ReduxSubscriber
+import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.core.IReduxStore
+import org.swiften.redux.core.IReduxSubscriber
+import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.core.SimpleReduxStore
 import org.testng.Assert
 import org.testng.annotations.BeforeMethod
@@ -19,21 +21,21 @@ class PropInjectorTest {
   data class S(val query: String = "")
   class A
 
-  sealed class Action : Redux.IAction {
+  sealed class Action : IReduxAction {
     data class SetQuery(val query: String) : Action()
   }
 
-  class StoreWrapper(val store: Redux.IStore<S>) : Redux.IStore<S> by store {
+  class StoreWrapper(val store: IReduxStore<S>) : IReduxStore<S> by store {
     var unsubCount: Int = 0
 
-    override val subscribe = object : ReduxSubscriber<S> {
+    override val subscribe = object : IReduxSubscriber<S> {
       override operator fun invoke(
         subscriberId: String,
         callback: Function1<S, Unit>
-      ): Redux.Subscription {
+      ): ReduxSubscription {
         val sub = this@StoreWrapper.store.subscribe(subscriberId, callback)
 
-        return Redux.Subscription {
+        return ReduxSubscription {
           this@StoreWrapper.unsubCount += 1
           sub.unsubscribe()
         }
@@ -42,22 +44,14 @@ class PropInjectorTest {
   }
 
   class View : ReduxUI.IPropContainer<S, S, A> {
-    override var staticProps
-      by Delegates.observable<ReduxUI.StaticProps<S>?>(null) { _, _, p ->
-        this.didSetStaticProps(p)
-      }
+    override lateinit var staticProps: ReduxUI.StaticProps<S>
 
     override var variableProps
       by Delegates.observable<ReduxUI.VariableProps<S, A>?>(null) { _, _, p ->
         this.didSetVariableProps(p)
       }
 
-    var staticInjectionCount = 0
     var variableInjectionCount = 0
-
-    private fun didSetStaticProps(props: ReduxUI.StaticProps<S>?) {
-      this.staticInjectionCount += 1
-    }
 
     private fun didSetVariableProps(props: ReduxUI.VariableProps<S, A>?) {
       this.variableInjectionCount += 1
@@ -84,7 +78,7 @@ class PropInjectorTest {
       override fun mapState(state: S, outProps: Unit) = state
 
       override fun mapAction(
-        dispatch: ReduxDispatcher,
+        dispatch: IReduxDispatcher,
         state: S,
         outProps: Unit
       ) = A()
@@ -108,7 +102,6 @@ class PropInjectorTest {
 
     // Then
     Assert.assertEquals(this.store.unsubCount, 1)
-    Assert.assertEquals(view.staticInjectionCount, 2)
     Assert.assertEquals(view.variableInjectionCount, 4)
   }
 }

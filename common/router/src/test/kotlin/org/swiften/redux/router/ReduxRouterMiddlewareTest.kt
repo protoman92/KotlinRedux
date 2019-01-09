@@ -5,7 +5,7 @@
 
 package org.swiften.redux.router
 
-import org.swiften.redux.core.ReduxPreset
+import org.swiften.redux.core.DefaultAction
 import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.ReduxMiddleware
 import org.testng.Assert
@@ -45,7 +45,7 @@ class ReduxRouterMiddlewareTest : ReduxRouterMiddleware.IRouter {
     )(store)
 
     // When
-    wrappedStore.dispatch(ReduxPreset.DefaultAction.Dummy)
+    wrappedStore.dispatch(DefaultAction.Dummy)
     wrappedStore.dispatch(Screen.Screen1)
     wrappedStore.dispatch(Screen.Screen2)
     wrappedStore.dispatch(Screen.Screen3)

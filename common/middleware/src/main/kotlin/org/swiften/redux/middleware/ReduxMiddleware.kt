@@ -5,9 +5,10 @@
 
 package org.swiften.redux.middleware
 
-import org.swiften.redux.core.Redux
-import org.swiften.redux.core.ReduxDispatcher
-import org.swiften.redux.core.ReduxStateGetter
+import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.IReduxStore
+import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.core.IReduxStateGetter
 
 /** Created by haipham on 2018/12/16 */
 /** Map one [ReduxMiddleware.DispatchWrapper] to another */
@@ -30,25 +31,25 @@ object ReduxMiddleware {
     val middleware: ReduxMiddlewareCreator<State>
   }
 
-  /** [Input] for middlewares that includes some functionalities from [Redux.IStore] */
-  class Input<State>(val stateGetter: ReduxStateGetter<State>)
+  /** [Input] for middlewares that includes some functionalities from [IReduxStore] */
+  class Input<State>(val stateGetter: IReduxStateGetter<State>)
 
   /** Use this [DispatchWrapper] to track the ordering of [dispatch] wrapping using [id] */
-  class DispatchWrapper(val id: String, val dispatch: ReduxDispatcher)
+  class DispatchWrapper(val id: String, val dispatch: IReduxDispatcher)
 
-  /** Enhance a [store] by overriding its [Redux.IStore.dispatch] with [dispatch] */
+  /** Enhance a [store] by overriding its [IReduxStore.dispatch] with [dispatch] */
   private class EnhancedStore<State>(
-    val store: Redux.IStore<State>,
-    override val dispatch: Function1<Redux.IAction, Unit>
-  ) : Redux.IStore<State> by store
+    val store: IReduxStore<State>,
+    override val dispatch: Function1<IReduxAction, Unit>
+  ) : IReduxStore<State> by store
 
   /**
    * Combine [middlewares] into a master [ReduxMiddlewareCreator] and apply it to a
-   * [Redux.IStore.dispatch] to produce a [DispatchWrapper].
+   * [IReduxStore.dispatch] to produce a [DispatchWrapper].
    */
   fun <State> combineMiddlewares(
     middlewares: Collection<ReduxMiddlewareCreator<State>>
-  ): (Redux.IStore<State>) -> DispatchWrapper {
+  ): (IReduxStore<State>) -> DispatchWrapper {
     return fun(store): DispatchWrapper {
       val input = Input(store.stateGetter)
       val rootWrapper = DispatchWrapper("root", store.dispatch)
@@ -60,17 +61,17 @@ object ReduxMiddleware {
     }
   }
 
-  /** Apply [middlewares] to a [Redux.IStore] instance to get an enhanced [Redux.IStore] */
+  /** Apply [middlewares] to a [IReduxStore] instance to get an enhanced [IReduxStore] */
   fun <State> applyMiddlewares(
     middlewares: Collection<ReduxMiddlewareCreator<State>>
-  ): (Redux.IStore<State>) -> Redux.IStore<State> =
-    fun(store): Redux.IStore<State> {
+  ): (IReduxStore<State>) -> IReduxStore<State> =
+    fun(store): IReduxStore<State> {
       val wrapper = combineMiddlewares(middlewares)(store)
       return EnhancedStore(store, wrapper.dispatch)
     }
 
   /**
-   * Apply [middlewares] to a [Redux.IStore] instance. This is a convenience method that uses
+   * Apply [middlewares] to a [IReduxStore] instance. This is a convenience method that uses
    * varargs.
    */
   fun <State> applyMiddlewares(

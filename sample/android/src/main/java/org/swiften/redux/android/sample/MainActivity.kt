@@ -16,7 +16,7 @@ import org.swiften.redux.ui.ReduxUI
 /** Created by haipham on 2018/12/19 */
 class MainActivity : AppCompatActivity(), ReduxUI.IStaticPropContainer<State> {
   override lateinit var staticProps: ReduxUI.StaticProps<State>
-  lateinit var fragmentCallback: FragmentManager.FragmentLifecycleCallbacks
+  private lateinit var fragmentCallback: FragmentManager.FragmentLifecycleCallbacks
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

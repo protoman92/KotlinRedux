@@ -16,22 +16,22 @@ import kotlin.concurrent.write
  */
 class SimpleReduxStore<State>(
   private var state: State,
-  reducer: ReduxReducer<State>
-) : Redux.IStore<State> {
+  reducer: IReduxReducer<State>
+) : IReduxStore<State> {
   private val lock = ReentrantReadWriteLock()
   private val subscribers = HashMap<String, (State) -> Unit>()
 
-  private val reducer: ReduxReducer<State>
+  private val reducer: IReduxReducer<State>
 
-  init { this.reducer = ReduxPreset.ReducerWrapper(reducer) }
+  init { this.reducer = ReducerWrapper(reducer) }
 
-  override val stateGetter = object : ReduxStateGetter<State> {
+  override val stateGetter = object : IReduxStateGetter<State> {
     override fun invoke() =
       this@SimpleReduxStore.lock.read { this@SimpleReduxStore.state }
   }
 
-  override val dispatch = object : ReduxDispatcher {
-    override fun invoke(action: Redux.IAction) {
+  override val dispatch = object : IReduxDispatcher {
+    override fun invoke(action: IReduxAction) {
       this@SimpleReduxStore.lock.write {
         this@SimpleReduxStore.state =
           this@SimpleReduxStore.reducer(this@SimpleReduxStore.state, action)
@@ -45,11 +45,11 @@ class SimpleReduxStore<State>(
     }
   }
 
-  override val subscribe = object : ReduxSubscriber<State> {
+  override val subscribe = object : IReduxSubscriber<State> {
     override fun invoke(
       subscriberId: String,
       callback: Function1<State, Unit>
-    ): Redux.Subscription {
+    ): ReduxSubscription {
       this@SimpleReduxStore.lock.write {
         this@SimpleReduxStore.subscribers[subscriberId] = callback
       }
@@ -57,7 +57,7 @@ class SimpleReduxStore<State>(
       /** Relay the last [State] to this subscriber */
       this@SimpleReduxStore.lock.read { callback(this@SimpleReduxStore.state) }
 
-      return Redux.Subscription {
+      return ReduxSubscription {
         this@SimpleReduxStore.lock.write {
           this@SimpleReduxStore.subscribers.remove(subscriberId)
         }

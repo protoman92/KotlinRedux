@@ -6,7 +6,7 @@
 package org.swiften.redux.saga.cr
 
 import kotlinx.coroutines.channels.ReceiveChannel
-import org.swiften.redux.core.Redux
+import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/24 */
@@ -26,18 +26,18 @@ object ReduxSagaHelper {
 
   /** Create a [TakeEveryEffect] instance. */
   fun <State, P, R> takeEvery(
-    extract: Function1<Redux.IAction, P?>,
+    extract: Function1<IReduxAction, P?>,
     block: Function1<P, ReduxSagaEffect<State, R>>,
     options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
   ): ReduxSagaEffect<State, R> =
     TakeEveryEffect(extract, block, options)
 
-  /** Convenience function to create [TakeEveryEffect] for a specific type of [Redux.IAction] */
+  /** Convenience function to create [TakeEveryEffect] for a specific type of [IReduxAction] */
   inline fun <State, reified Action, P, R> takeEveryAction(
     crossinline extract: Function1<Action, P?>,
     noinline block: Function1<P, ReduxSagaEffect<State, R>>,
     options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
-  ) where Action: Redux.IAction = takeEvery(
+  ) where Action: IReduxAction = takeEvery(
     {
       when (it) {
         is Action -> extract(it); else -> null
@@ -48,18 +48,18 @@ object ReduxSagaHelper {
 
   /** Create a [TakeLatestEffect] instance. */
   fun <State, P, R> takeLatest(
-    extract: Function1<Redux.IAction, P?>,
+    extract: Function1<IReduxAction, P?>,
     block: Function1<P, ReduxSagaEffect<State, R>>,
     options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
   ): ReduxSagaEffect<State, R> =
     TakeLatestEffect(extract, block, options)
 
-  /** Convenience function to create [TakeLatestEffect] for a specific type of [Redux.IAction] */
+  /** Convenience function to create [TakeLatestEffect] for a specific type of [IReduxAction] */
   inline fun <State, reified Action, P, R> takeLatestAction(
     crossinline extract: Function1<Action, P?>,
     noinline block: Function1<P, ReduxSagaEffect<State, R>>,
     options: ReduxSaga.TakeOptions = ReduxSaga.TakeOptions()
-  ) where Action: Redux.IAction = takeLatest(
+  ) where Action: IReduxAction = takeLatest(
     {
       when (it) {
         is Action -> extract(it); else -> null

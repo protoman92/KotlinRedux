@@ -7,8 +7,8 @@ package org.swiften.redux.saga
 
 /** Created by haipham on 2018/12/26 */
 /**
- * [ReduxSagaEffect] whose [ReduxSaga.Output] enforces ordering for two
- * [ReduxSaga.Output] created by two other [ReduxSagaEffect].
+ * [ReduxSagaEffect] whose [CommonSaga.IOutput] enforces ordering for two [CommonSaga.IOutput]
+ * created by two other [ReduxSagaEffect].
  */
 internal class ThenEffect<State, R, R2, R3>(
   private val source1: ReduxSagaEffect<State, R>,

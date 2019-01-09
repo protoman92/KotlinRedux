@@ -6,10 +6,7 @@
 package org.swiften.redux.saga
 
 /** Created by haipham on 2019/01/07 */
-/**
- * [ReduxSagaEffect] whose [ReduxSaga.Output] delays emissions by
- * [delayMillis]
- */
+/** [ReduxSagaEffect] whose [CommonSaga.IOutput] delays emissions by [delayMillis] */
 internal class DelayEffect<State, R>(
   private val source: ReduxSagaEffect<State, R>,
   private val delayMillis: Long

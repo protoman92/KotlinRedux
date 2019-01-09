@@ -8,6 +8,6 @@ package org.swiften.redux.android.sample
 import com.beust.klaxon.Klaxon
 
 /** Created by haipham on 2019/01/05 */
-class JSONDecoder() {
+class JSONDecoder {
   inline fun <reified T> parse(value: String) = Klaxon().parse<T>(value)
 }

@@ -7,8 +7,8 @@ package org.swiften.redux.saga
 
 /** Created by haipham on 2019/01/06 */
 /**
- * [ReduxSagaEffect] whose [ReduxSaga.Output] performs some side effects on
- * value emissions with [block].
+ * [ReduxSagaEffect] whose [CommonSaga.IOutput] performs some side effects on value emissions
+ * with [block].
  */
 internal class DoOnValueEffect<State, R>(
   private val source: ReduxSagaEffect<State, R>,

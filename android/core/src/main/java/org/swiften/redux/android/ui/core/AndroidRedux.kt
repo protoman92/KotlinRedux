@@ -18,9 +18,9 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.android.ui.core.AndroidRedux.ReduxLifecycleObserver
-import org.swiften.redux.core.Redux
-import org.swiften.redux.core.ReduxDispatcher
-import org.swiften.redux.core.ReduxPreset
+import org.swiften.redux.core.DefaultAction
+import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.ReduxUI
 import java.io.Serializable
 import java.util.Date
@@ -28,10 +28,10 @@ import java.util.Date
 /** Created by haipham on 2018/12/17 */
 /** Top-level namespace for Android Redux UI functionalities */
 internal object AndroidRedux {
-  /** Use this [LifecycleObserver] to unsubscribe from a [Redux.Subscription] */
+  /** Use this [LifecycleObserver] to unsubscribe from a [ReduxSubscription] */
   class ReduxLifecycleObserver<LC> constructor(
     private val lifecycleOwner: LC,
-    private val subscription: Redux.Subscription
+    private val subscription: ReduxSubscription
   ) : LifecycleObserver where LC : LifecycleOwner, LC : ReduxUI.IReduxLifecycleOwner {
     init { lifecycleOwner.lifecycle.addObserver(this) }
 
@@ -121,7 +121,7 @@ fun <State, LC, OP, SP> ReduxUI.IPropInjector<State>.injectLifecycleProps(
   LC : ReduxUI.IPropContainer<State, SP, Unit> =
   this.injectPropsOnMainThread(lifecycleOwner, outProps,
     object : ReduxUI.IPropMapper<State, OP, SP, Unit> {
-      override fun mapAction(dispatch: ReduxDispatcher, state: State, outProps: OP) = Unit
+      override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: OP) = Unit
       override fun mapState(state: State, outProps: OP) = mapper.mapState(state, outProps)
     })
 
@@ -150,7 +150,7 @@ fun <State> ReduxUI.startActivityInjection(
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
       savedInstanceState
         ?.run { restoreState(this) }
-        ?.apply { injector.dispatch(ReduxPreset.DefaultAction.ReplaceState(this)) }
+        ?.apply { injector.dispatch(DefaultAction.ReplaceState(this)) }
     }
 
     override fun onActivityStarted(activity: Activity?) {
@@ -172,14 +172,14 @@ inline fun <reified State> ReduxUI.startActivityInjection(
   injector: ReduxUI.IPropInjector<State>,
   noinline inject: ReduxUI.IPropInjector<State>.(Activity) -> Unit
 ): Application.ActivityLifecycleCallbacks where State : Serializable {
-  val REDUX_STATE_KEY = "REDUX_STATE_${Date().time}"
+  val stateKey = "REDUX_STATE_${Date().time}"
 
   return this.startActivityInjection(
     application,
     injector,
     inject,
-    { it.putSerializable(REDUX_STATE_KEY, this) },
-    { it.getSerializable(REDUX_STATE_KEY)?.takeIf { it is State }?.run { this as State } }
+    { it.putSerializable(stateKey, this) },
+    { it.getSerializable(stateKey)?.takeIf { it is State }?.run { this as State } }
   )
 }
 

@@ -5,8 +5,8 @@
 
 package org.swiften.redux.router
 
-import org.swiften.redux.core.Redux
-import org.swiften.redux.core.ReduxDispatcher
+import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.middleware.ReduxMiddleware
 import org.swiften.redux.middleware.ReduxMiddlewareCreator
 
@@ -14,10 +14,10 @@ import org.swiften.redux.middleware.ReduxMiddlewareCreator
 /** Top-level namespace for Redux Router middleware */
 object ReduxRouterMiddleware {
   /**
-   * Represents a screen that also implements [Redux.IAction], so that views can simply dispatch
+   * Represents a screen that also implements [IReduxAction], so that views can simply dispatch
    * an [IScreen] to navigate to the associated screen.
    */
-  interface IScreen : Redux.IAction
+  interface IScreen : IReduxAction
 
   /** Abstract the necessary work to navigate from one [IScreen] to another */
   interface IRouter {
@@ -29,8 +29,8 @@ object ReduxRouterMiddleware {
   class Provider<State>(private val router: IRouter) : ReduxMiddleware.IProvider<State> {
     override val middleware: ReduxMiddlewareCreator<State> = { input ->
       { wrapper -> ReduxMiddleware.DispatchWrapper("$wrapper.id-router",
-        object : ReduxDispatcher {
-          override fun invoke(action: Redux.IAction) {
+        object : IReduxDispatcher {
+          override fun invoke(action: IReduxAction) {
             wrapper.dispatch(action)
 
             /**

@@ -6,10 +6,7 @@
 package org.swiften.redux.saga
 
 /** Created by haipham on 2018/12/26 */
-/**
- * [ReduxSagaEffect] whose [ReduxSaga.Output] catches [Throwable] from
- * upstream
- */
+/** [ReduxSagaEffect] whose [CommonSaga.IOutput] catches [Throwable] from upstream */
 internal class CatchErrorEffect<State, R>(
   private val source: ReduxSagaEffect<State, R>,
   private val catcher: (Throwable) -> R

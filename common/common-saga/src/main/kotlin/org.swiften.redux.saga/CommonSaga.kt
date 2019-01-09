@@ -8,25 +8,25 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
-import org.swiften.redux.core.Redux
-import org.swiften.redux.core.ReduxDispatcher
-import org.swiften.redux.core.ReduxStateGetter
+import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.core.IReduxStateGetter
+import org.swiften.redux.core.IReduxStore
 
 /** Created by haipham on 2019/01/07 */
-/** Abstraction for Redux saga that handles [Redux.IAction] in the pipeline */
-typealias ReduxSagaEffect<State, R> =
-  Function1<CommonSaga.Input<State>, CommonSaga.IOutput<R>>
+/** Abstraction for Redux saga that handles [IReduxAction] in the pipeline */
+typealias ReduxSagaEffect<State, R> = Function1<CommonSaga.Input<State>, CommonSaga.IOutput<R>>
 
 /** Top-level namespace for common Saga functionalities */
 object CommonSaga {
   /**
-   * [Input] for an [ReduxSagaEffect], which exposes a [Redux.IStore]'s internal
+   * [Input] for an [ReduxSagaEffect], which exposes a [IReduxStore]'s internal
    * functionalities.
    */
   class Input<State>(
     val scope: CoroutineScope = GlobalScope,
-    val stateGetter: ReduxStateGetter<State>,
-    val dispatch: ReduxDispatcher
+    val stateGetter: IReduxStateGetter<State>,
+    val dispatch: IReduxDispatcher
   )
 
   /**
@@ -34,8 +34,8 @@ object CommonSaga {
    * that can transform emitted values.
    */
   interface IOutput<T> {
-    /** Trigger every time an [Redux.IAction] arrives */
-    val onAction: ReduxDispatcher
+    /** Trigger every time an [IReduxAction] arrives */
+    val onAction: IReduxDispatcher
 
     /** Catch error with [fallback] */
     fun catchError(fallback: (Throwable) -> T): IOutput<T>
@@ -91,5 +91,5 @@ object CommonSaga {
 fun <State, R> ReduxSagaEffect<State, R>.invoke(
   scope: CoroutineScope,
   state: State,
-  dispatch: ReduxDispatcher
+  dispatch: IReduxDispatcher
 ) = this.invoke(CommonSaga.Input(scope, { state }, dispatch))

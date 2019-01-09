@@ -13,18 +13,18 @@ class ReducerWrapperTest {
   @Test
   fun test_reducingDefaultActions_shouldWork() {
     // Setup
-    val reducer = ReduxPreset.ReducerWrapper<Int> { a, _ -> a + 1 }
+    val reducer = ReducerWrapper<Int> { a, _ -> a + 1 }
 
     var original = 0
 
     // When & Then
-    original = reducer(original, ReduxPreset.DefaultAction.Dummy)
+    original = reducer(original, DefaultAction.Dummy)
     Assert.assertEquals(original, 0)
-    original = reducer(original, ReduxPreset.DefaultAction.ReplaceState(1000))
+    original = reducer(original, DefaultAction.ReplaceState(1000))
     Assert.assertEquals(original, 1000)
-    original = reducer(original, object : Redux.IAction {})
+    original = reducer(original, object : IReduxAction {})
     Assert.assertEquals(original, 1001)
-    original = reducer(original, ReduxPreset.DefaultAction.MapState<Int> { it * 2 })
+    original = reducer(original, DefaultAction.MapState<Int> { it * 2 })
     Assert.assertEquals(original, 2002)
   }
 }
