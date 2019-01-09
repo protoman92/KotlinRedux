@@ -31,7 +31,8 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
       adapter.onCreateViewHolder(parent, viewType)
 
-    override fun getItemCount() = adapter.itemCount
+    override fun getItemCount() =
+      adapterMapper.mapState(this@injectRecyclerViewProps.stateGetter(), Unit)
 
     override fun onBindViewHolder(holder: VH, position: Int) {
       this@injectRecyclerViewProps.injectPropsOnMainThread(holder, position, vhMapper)

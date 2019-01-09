@@ -12,13 +12,15 @@ import org.swiften.redux.core.IReduxReducer
 object MainRedux {
   sealed class Action : IReduxAction {
     data class UpdateAutocompleteQuery(val query: String?) : Action()
+    data class UpdateMusicResult(val result: MusicResult?) : Action()
   }
 
   object Reducer : IReduxReducer<State> {
     override operator fun invoke(previous: State, action: IReduxAction): State {
       return when (action) {
         is Action -> when (action) {
-          is Action.UpdateAutocompleteQuery -> previous.copy(action.query)
+          is Action.UpdateAutocompleteQuery -> previous.copy(autocompleteQuery = action.query)
+          is Action.UpdateMusicResult -> previous.copy(musicResult = action.result)
         }
 
         else -> return previous

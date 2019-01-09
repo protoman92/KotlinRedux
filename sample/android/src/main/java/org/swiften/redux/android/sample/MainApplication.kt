@@ -6,8 +6,10 @@
 package org.swiften.redux.android.sample
 
 import android.app.Application
+import android.util.Log
 import org.swiften.redux.android.ui.core.endActivityInjection
 import org.swiften.redux.android.ui.core.startActivityInjection
+import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.saga.ReduxSagaMiddlewareProvider
@@ -17,6 +19,7 @@ import org.swiften.redux.ui.injectStaticProps
 /** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
   private lateinit var activityCallback: ActivityLifecycleCallbacks
+  private lateinit var subscription: ReduxSubscription
 
   override fun onCreate() {
     super.onCreate()
@@ -30,6 +33,8 @@ class MainApplication : Application() {
     val injector = ReduxPropInjector(store)
     val dependency = MainDependency(injector)
 
+    this.subscription = store.subscribe("GLOBAL") { Log.i("ReduxState", "$it") }
+
     this.activityCallback = startActivityInjection(this, injector) {
       when (it) {
         is MainActivity -> dependency.injector.injectStaticProps(it)
@@ -39,6 +44,7 @@ class MainApplication : Application() {
 
   override fun onTerminate() {
     super.onTerminate()
+    this.subscription.unsubscribe()
     endActivityInjection(this, this.activityCallback)
   }
 }

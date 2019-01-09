@@ -6,9 +6,9 @@
 package org.swiften.redux.android.sample
 
 import kotlinx.coroutines.async
-import org.swiften.redux.saga.cast
 import org.swiften.redux.saga.catchError
 import org.swiften.redux.saga.mapAsync
+import org.swiften.redux.saga.put
 import org.swiften.redux.saga.rx.ReduxSagaEffects.just
 import org.swiften.redux.saga.rx.ReduxSagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.TakeEffectOptions
@@ -19,6 +19,7 @@ object MainSaga {
     takeLatestAction<State, MainRedux.Action, String, Any>(
       { when (it) {
         is MainRedux.Action.UpdateAutocompleteQuery -> it.query
+        else -> null
       } },
       { autocompleteSaga(api, it) },
       TakeEffectOptions(1000)
@@ -28,6 +29,6 @@ object MainSaga {
   private fun autocompleteSaga(api: IMainRepository, query: String) =
     just<State, String>(query)
       .mapAsync { this.async { api.searchMusicStore(it) } }
-      .cast<State, MusicResult, Any>()
+      .put { MainRedux.Action.UpdateMusicResult(it) }
       .catchError { }
 }
