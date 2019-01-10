@@ -33,7 +33,7 @@ class MainApplication : Application() {
     val injector = ReduxPropInjector(store)
     val dependency = MainDependency(injector)
 
-    this.subscription = store.subscribe("GLOBAL") { Log.i("ReduxState", "$it") }
+//    this.subscription = store.subscribe("GLOBAL") { Log.i("ReduxState", "$it") }
 
     this.activityCallback = startActivityInjection(this, injector) {
       when (it) {

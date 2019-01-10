@@ -4,31 +4,42 @@
   ~ Any attempt to reproduce this source code in any form shall be met with legal actions.
   -->
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:orientation="vertical">
 
   <EditText
     android:id="@+id/querySearch"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/text_view_height"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing2"
     android:layout_marginLeft="@dimen/spacing2"
     android:layout_marginStart="@dimen/spacing2"
     android:layout_marginRight="@dimen/spacing2"
     android:layout_marginEnd="@dimen/spacing2"
-    android:layout_marginTop="@dimen/spacing2"
+    android:paddingTop="@dimen/spacing2"
+    android:paddingBottom="@dimen/spacing2"
+    android:paddingLeft="@dimen/spacing1"
+    android:paddingStart="@dimen/spacing1"
+    android:paddingRight="@dimen/spacing1"
+    android:paddingEnd="@dimen/spacing1"
     android:hint="@string/search_hint"
-    android:inputType="text"/>
+    android:inputType="text"
+    android:textSize="@dimen/text_font_size"
+    android:saveEnabled="false"/>
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/searchResult"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/spacing2"
-    app:layout_anchor="@id/querySearch"
-    app:layout_anchorGravity="bottom|left|right|start|end"/>
+    android:layout_marginTop="@dimen/spacing1"
+    android:layout_marginLeft="@dimen/spacing2"
+    android:layout_marginStart="@dimen/spacing2"
+    android:layout_marginRight="@dimen/spacing2"
+    android:layout_marginEnd="@dimen/spacing2"
+    android:layout_marginBottom="@dimen/spacing2"
+    android:saveEnabled="false"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

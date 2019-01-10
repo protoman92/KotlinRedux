@@ -8,5 +8,5 @@
   <dimen name="spacing1">8dp</dimen>
   <dimen name="spacing2">16dp</dimen>
 
-  <dimen name="text_view_height">48dp</dimen>
+  <dimen name="text_font_size">20sp</dimen>
 </resources>

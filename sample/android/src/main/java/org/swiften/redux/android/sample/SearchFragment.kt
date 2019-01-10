@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
+import kotlinx.android.synthetic.main.view_search_result.view.artistName
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
+import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.IReduxPropContainer
@@ -35,40 +37,47 @@ class SearchFragment : Fragment(),
   data class S(val query: String?, val resultCount: Int?)
   class A(val updateQuery: (String?) -> Unit)
 
-  class Adapter : RecyclerView.Adapter<ViewHolder>(),
+  class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
     IReduxStatePropMapper<State, Unit, Int> by Adapter
   {
     companion object : IReduxStatePropMapper<State, Unit, Int> {
-      override fun mapState(state: State, outProps: Unit) = state.musicResult?.resultCount ?: 1
+      override fun mapState(state: State, outProps: Unit) = state.musicResult?.resultCount ?: 0
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
       val view = LayoutInflater.from(parent.context)
         .inflate(R.layout.view_search_result, parent, false)
 
-      return ViewHolder(view, view.trackName)
+      return ViewHolder(view, view.trackName, view.artistName)
     }
-
-    override fun getItemCount() = 0
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {}
   }
 
-  class ViewHolder(val parent: View, val trackName: TextView) :
+  class ViewHolder(
+    private val parent: View,
+    private val trackName: TextView,
+    private val artistName: TextView) :
     RecyclerView.ViewHolder(parent),
     IReduxPropContainer<State, ViewHolder.S1, Unit>,
     IReduxStatePropMapper<State, Int, ViewHolder.S1> by ViewHolder
   {
-    data class S1(val trackName: String)
+    data class S1(val trackName: String?, val artistName: String?)
 
     companion object : IReduxStatePropMapper<State, Int, S1> {
-      override fun mapState(state: State, outProps: Int) = S1("")
+      override fun mapState(state: State, outProps: Int) = S1(
+        state.musicResult?.results?.elementAtOrNull(outProps)?.trackName,
+        state.musicResult?.results?.elementAtOrNull(outProps)?.artistName
+      )
     }
 
     override lateinit var staticProps: StaticProps<State>
 
     override var variableProps
-      by Delegates.observable<VariableProps<S1, Unit>?>(null) { _, _, p -> }
+      by Delegates.observable<VariableProps<S1, Unit>?>(null) { _, _, p ->
+        p?.also {
+          this.trackName.text = it.nextState.trackName
+          this.artistName.text = it.nextState.artistName
+        }
+      }
   }
 
   companion object : IReduxPropMapper<State, Unit, S, A> {
@@ -86,7 +95,11 @@ class SearchFragment : Fragment(),
 
   override var variableProps
     by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
-      this.searchResult.adapter?.notifyDataSetChanged()
+      p?.also {
+        if (it.nextState.resultCount != it.previousState?.resultCount) {
+          this.searchResult.adapter?.notifyDataSetChanged()
+        }
+      }
     }
 
   override fun onCreateView(
@@ -107,9 +120,11 @@ class SearchFragment : Fragment(),
       }
     })
 
-    val adapter = this.staticProps.injector.injectRecyclerViewProps(Adapter(), ViewHolder)
-    this.searchResult.adapter = adapter
-    this.searchResult.layoutManager = LinearLayoutManager(this.context)
+    this.searchResult.also {
+      it.setHasFixedSize(true)
+      it.layoutManager = LinearLayoutManager(this.context)
+      it.adapter = this.staticProps.injector.injectRecyclerViewProps(Adapter(), ViewHolder)
+    }
   }
 
   override fun onPropInjectionStopped() {
