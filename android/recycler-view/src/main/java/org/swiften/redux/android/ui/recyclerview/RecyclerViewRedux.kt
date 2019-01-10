@@ -15,6 +15,19 @@ import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.IReduxStatePropMapper
 
 /** Created by haipham on 2019/01/08 */
+/**
+ * Convenience [RecyclerView.Adapter] that implements some default methods to make working with
+ * [IReduxPropInjector] easier. Basically, [RecyclerView.Adapter.getItemCount] always returns 0
+ * (because it will be delegated to a different calculation.
+ *
+ * This class is not required because custom [RecyclerView.Adapter] only needs to do the same as
+ * which has been done here to ensure proper integration.
+ */
+abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
+  final override fun getItemCount() = 0
+  override fun onBindViewHolder(holder: VH, position: Int) {}
+}
+
 /** Inject props for a [RecyclerView.Adapter] with a compatible [VH] */
 fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecyclerViewProps(
   adapter: Adapter,
