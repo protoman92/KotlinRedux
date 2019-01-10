@@ -21,4 +21,4 @@ internal class AsyncMapEffect<State, P, R : Any>(
 /** Invoke a [AsyncMapEffect] on [this] */
 fun <State, P, R : Any> ReduxSagaEffect<State, P>.mapAsync(
   block: suspend CoroutineScope.(P) -> Deferred<R>
-) = CommonSagaHelper.mapAsync(this, block)
+) = CommonSagaEffects.mapAsync(this, block)

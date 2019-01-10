@@ -20,4 +20,4 @@ internal class SuspendMapEffect<State, P, R : Any>(
 /** Invoke a [SuspendMapEffect] on [this] */
 fun <State, P, R : Any> ReduxSagaEffect<State, P>.mapSuspend(
   block: suspend CoroutineScope.(P) -> R
-) = CommonSagaHelper.mapSuspend(this, block)
+) = CommonSagaEffects.mapSuspend(this, block)

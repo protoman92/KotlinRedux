@@ -8,7 +8,7 @@ package org.swiften.redux.saga.rx
 import io.reactivex.Flowable
 import io.reactivex.Single
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.CommonSagaHelper
+import org.swiften.redux.saga.CommonSagaEffects
 import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/24 */
@@ -29,9 +29,9 @@ object ReduxSagaEffects {
   fun <State, R> just(value: R): ReduxSagaEffect<State, R> =
     JustEffect(value)
 
-  /** Call [CommonSagaHelper.put] with [ReduxSagaEffects.just] */
+  /** Call [CommonSagaEffects.put] with [ReduxSagaEffects.just] */
   fun <State, P> put(value: P, actionCreator: (P) -> IReduxAction): ReduxSagaEffect<State, Any> =
-    CommonSagaHelper.put(this.just(value), actionCreator)
+    CommonSagaEffects.put(this.just(value), actionCreator)
 
   /** Create a [JustPutEffect] */
   fun <State> justPut(action: IReduxAction): ReduxSagaEffect<State, Any> =

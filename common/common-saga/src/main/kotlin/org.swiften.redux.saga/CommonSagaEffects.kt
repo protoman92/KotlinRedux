@@ -11,7 +11,7 @@ import org.swiften.redux.core.IReduxAction
 
 /** Created by haipham on 2019/01/07 */
 /** Top-level namespace for [ReduxSagaEffect] helpers */
-object CommonSagaHelper {
+object CommonSagaEffects {
   /** Create a [DelayEffect] */
   fun <State, R> delay(source: ReduxSagaEffect<State, R>, delayMillis: Long):
     ReduxSagaEffect<State, R> = DelayEffect(source, delayMillis)
