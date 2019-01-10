@@ -18,12 +18,15 @@ import java.util.concurrent.TimeUnit
 /** @see [IReduxSagaOutput] */
 class ReduxSagaOutput<T> internal constructor(
   private val scope: CoroutineScope,
-  private val stream: Flowable<T>,
+  stream: Flowable<T>,
   override val onAction: IReduxDispatcher
 ) : IReduxSagaOutput<T>, CoroutineScope by scope {
   internal var source: ReduxSagaOutput<*>? = null
   private var onDispose: () -> Unit = { }
+  private val stream: Flowable<T>
   private val disposable by lazy { CompositeDisposable() }
+
+  init { this.stream = stream }
 
   private fun <T2> with(newStream: Flowable<T2>): IReduxSagaOutput<T2> {
     val result = ReduxSagaOutput(this.scope, newStream, this.onAction)

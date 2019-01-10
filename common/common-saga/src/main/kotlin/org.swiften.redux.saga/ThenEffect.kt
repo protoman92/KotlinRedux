@@ -32,3 +32,6 @@ fun <State, R, R2, R3> ReduxSagaEffect<State, R>.then(
 fun <State, R, R2> ReduxSagaEffect<State, R>.then(
   effect: ReduxSagaEffect<State, R2>
 ) = this.then(effect) { _, b -> b }
+
+/** Invoke [then] with a single [value] */
+fun <State, R, R2> ReduxSagaEffect<State, R>.justThen(value: R2) = this.map { value }
