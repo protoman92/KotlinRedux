@@ -15,6 +15,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_search.backgroundDim
+import kotlinx.android.synthetic.main.fragment_search.progressBar
 import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.artistName
@@ -34,7 +36,7 @@ class SearchFragment : Fragment(),
   IReduxPropContainer<State, SearchFragment.S, SearchFragment.A>,
   IReduxPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment
 {
-  data class S(val query: String?, val resultCount: Int?)
+  data class S(val query: String?, val resultCount: Int?, val loading: Boolean?)
   class A(val updateQuery: (String?) -> Unit)
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
@@ -87,8 +89,11 @@ class SearchFragment : Fragment(),
       outProps: Unit
     ) = A { dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
 
-    override fun mapState(state: State, outProps: Unit) =
-      S(state.autocompleteQuery, state.musicResult?.resultCount)
+    override fun mapState(state: State, outProps: Unit) = S(
+      state.autocompleteQuery,
+      state.musicResult?.resultCount,
+      state.loadingMusic
+    )
   }
 
   override lateinit var staticProps: StaticProps<State>
@@ -96,6 +101,15 @@ class SearchFragment : Fragment(),
   override var variableProps
     by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
       p?.also {
+        println("HAHAHA ${it.nextState}")
+        if (it.nextState.loading == true) {
+          this.backgroundDim.visibility = View.VISIBLE
+          this.progressBar.visibility = View.VISIBLE
+        } else {
+          this.backgroundDim.visibility = View.GONE
+          this.progressBar.visibility = View.GONE
+        }
+
         if (it.nextState.resultCount != it.previousState?.resultCount) {
           this.searchResult.adapter?.notifyDataSetChanged()
         }
@@ -109,16 +123,18 @@ class SearchFragment : Fragment(),
   ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
   override fun onPropInjectionCompleted() {
-    this.querySearch.isSaveEnabled = false
+    this.querySearch.also {
+      it.isSaveEnabled = false
 
-    this.querySearch.addTextChangedListener(object : TextWatcher {
-      override fun afterTextChanged(s: Editable?) {}
-      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+      it.addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {}
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
-      }
-    })
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+          this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
+        }
+      })
+    }
 
     this.searchResult.also {
       it.setHasFixedSize(true)

@@ -13,6 +13,7 @@ object MainRedux {
   sealed class Action : IReduxAction {
     data class UpdateAutocompleteQuery(val query: String?) : Action()
     data class UpdateMusicResult(val result: MusicResult?) : Action()
+    data class UpdateLoadingResult(val loading: Boolean?) : Action()
   }
 
   object Reducer : IReduxReducer<State> {
@@ -21,6 +22,7 @@ object MainRedux {
         is Action -> when (action) {
           is Action.UpdateAutocompleteQuery -> previous.copy(autocompleteQuery = action.query)
           is Action.UpdateMusicResult -> previous.copy(musicResult = action.result)
+          is Action.UpdateLoadingResult -> previous.copy(loadingMusic = action.loading)
         }
 
         else -> return previous

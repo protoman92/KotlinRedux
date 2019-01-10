@@ -7,11 +7,13 @@ package org.swiften.redux.android.sample
 
 import kotlinx.coroutines.async
 import org.swiften.redux.saga.catchError
+import org.swiften.redux.saga.justThen
 import org.swiften.redux.saga.mapAsync
 import org.swiften.redux.saga.put
-import org.swiften.redux.saga.rx.ReduxSagaEffects.just
+import org.swiften.redux.saga.rx.ReduxSagaEffects.justPut
 import org.swiften.redux.saga.rx.ReduxSagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.TakeEffectOptions
+import org.swiften.redux.saga.then
 
 /** Created by haipham on 2019/01/04 */
 object MainSaga {
@@ -22,13 +24,15 @@ object MainSaga {
         else -> null
       } },
       { autocompleteSaga(api, it) },
-      TakeEffectOptions(1000)
+      TakeEffectOptions(500)
     )
   )
 
   private fun autocompleteSaga(api: IMainRepository, query: String) =
-    just<State, String>(query)
+    justPut<State>(MainRedux.Action.UpdateLoadingResult(true))
+      .justThen(query)
       .mapAsync { this.async { api.searchMusicStore(it) } }
       .put { MainRedux.Action.UpdateMusicResult(it) }
       .catchError { }
+      .then(justPut(MainRedux.Action.UpdateLoadingResult(false)))
 }
