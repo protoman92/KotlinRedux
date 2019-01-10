@@ -76,8 +76,8 @@ class SearchFragment : Fragment(),
     override var variableProps
       by Delegates.observable<VariableProps<S1, Unit>?>(null) { _, _, p ->
         p?.also {
-          this.trackName.text = it.nextState.trackName
-          this.artistName.text = it.nextState.artistName
+          this.trackName.text = it.next.trackName
+          this.artistName.text = it.next.artistName
         }
       }
   }
@@ -101,8 +101,7 @@ class SearchFragment : Fragment(),
   override var variableProps
     by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
       p?.also {
-        println("HAHAHA ${it.nextState}")
-        if (it.nextState.loading == true) {
+        if (it.next.loading == true) {
           this.backgroundDim.visibility = View.VISIBLE
           this.progressBar.visibility = View.VISIBLE
         } else {
@@ -110,7 +109,7 @@ class SearchFragment : Fragment(),
           this.progressBar.visibility = View.GONE
         }
 
-        if (it.nextState.resultCount != it.previousState?.resultCount) {
+        if (it.next.resultCount != it.previous?.resultCount) {
           this.searchResult.adapter?.notifyDataSetChanged()
         }
       }

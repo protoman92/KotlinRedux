@@ -84,8 +84,8 @@ class StaticProps<State>(
 
 /** Container for an [IReduxPropContainer] mutable properties */
 class VariableProps<StateProps, ActionProps>(
-  val previousState: StateProps?,
-  val nextState: StateProps,
+  val previous: StateProps?,
+  val next: StateProps,
   val actions: ActionProps
 )
 
@@ -113,7 +113,7 @@ class ReduxPropInjector<State>(
     val id = "${view.javaClass.canonicalName}${Date().time}"
     val lock = ReentrantLock()
 
-    var previousState: StateProps? = lock.read { view.variableProps?.nextState }
+    var previousState: StateProps? = lock.read { view.variableProps?.next }
 
     val onStateUpdate: (State) -> Unit = {
       val nextState = mapper.mapState(it, outProps)
