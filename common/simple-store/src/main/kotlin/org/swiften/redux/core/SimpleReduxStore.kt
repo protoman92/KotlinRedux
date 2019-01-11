@@ -20,48 +20,20 @@ class SimpleReduxStore<State>(
 ) : IReduxStore<State> {
   private val lock = ReentrantReadWriteLock()
   private val subscribers = HashMap<String, (State) -> Unit>()
-
   private val reducer: IReduxReducer<State>
-
   init { this.reducer = ReduxReducerWrapper(reducer) }
+  override val stateGetter = { this.lock.read { this.state } }
 
-  override val stateGetter = object : IReduxStateGetter<State> {
-    override fun invoke() =
-      this@SimpleReduxStore.lock.read { this@SimpleReduxStore.state }
+  override val dispatch: IReduxDispatcher = { action ->
+    this.lock.write { this.state = this.reducer(this.state, action) }
+    this.lock.read { this.subscribers.forEach { it.value(this.state) } }
   }
 
-  override val dispatch = object : IReduxDispatcher {
-    override fun invoke(action: IReduxAction) {
-      this@SimpleReduxStore.lock.write {
-        this@SimpleReduxStore.state =
-          this@SimpleReduxStore.reducer(this@SimpleReduxStore.state, action)
-      }
+  override val subscribe: IReduxSubscriber<State> = { id, callback ->
+    this.lock.write { this.subscribers[id] = callback }
 
-      return this@SimpleReduxStore.lock.read {
-        this@SimpleReduxStore.subscribers.forEach {
-          it.value(this@SimpleReduxStore.state)
-        }
-      }
-    }
-  }
-
-  override val subscribe = object : IReduxSubscriber<State> {
-    override fun invoke(
-      subscriberId: String,
-      callback: Function1<State, Unit>
-    ): ReduxSubscription {
-      this@SimpleReduxStore.lock.write {
-        this@SimpleReduxStore.subscribers[subscriberId] = callback
-      }
-
-      /** Relay the last [State] to this subscriber */
-      this@SimpleReduxStore.lock.read { callback(this@SimpleReduxStore.state) }
-
-      return ReduxSubscription {
-        this@SimpleReduxStore.lock.write {
-          this@SimpleReduxStore.subscribers.remove(subscriberId)
-        }
-      }
-    }
+    /** Relay the last [State] to this subscriber */
+    this.lock.read { callback(this.state) }
+    ReduxSubscription { this.lock.write { this.subscribers.remove(id) } }
   }
 }
