@@ -24,13 +24,13 @@ interface IReduxLifecycleOwner {
 }
 
 /** Represents a view that contains [StaticProps] dependencies */
-interface IStaticReduxPropContainer<GlobalState> : IReduxLifecycleOwner {
+interface IStaticReduxPropContainer<GlobalState> {
   /** This will only be set once after injection commences */
   var staticProps: StaticProps<GlobalState>
 }
 
 /** Represents a view that contains [VariableProps] internal state */
-interface IVariableReduxPropContainer<StateProps, ActionProps> : IReduxLifecycleOwner {
+interface IVariableReduxPropContainer<StateProps, ActionProps> {
   /** This will be set any time a state update is received */
   var variableProps: VariableProps<StateProps, ActionProps>?
 }
@@ -112,7 +112,6 @@ class ReduxPropInjector<State>(
      */
     val id = "${view.javaClass.canonicalName}${Date().time}"
     val lock = ReentrantLock()
-
     var previousState: StateProps? = lock.read { view.variableProps?.next }
 
     val onStateUpdate: (State) -> Unit = {

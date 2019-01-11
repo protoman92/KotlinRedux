@@ -33,28 +33,42 @@ import java.io.Serializable
 import java.util.Date
 
 /** Created by haipham on 2018/12/17 */
+/** Callbacks for lifecycle to use with [LifecycleObserver] */
+internal interface LifecycleCallback {
+  /** Called on [Lifecycle.Event.ON_START] */
+  fun onStart()
+
+  /** Called on [Lifecycle.Event.ON_RESUME] */
+  fun onResume()
+
+  /** Called on [Lifecycle.Event.ON_PAUSE] */
+  fun onPause()
+
+  /** Called on [Lifecycle.Event.ON_STOP] */
+  fun onStop()
+}
+
 /** Top-level namespace for Android Redux UI functionalities */
 internal object AndroidRedux {
   /** Use this [LifecycleObserver] to unsubscribe from a [ReduxSubscription] */
   class ReduxLifecycleObserver<LC> constructor(
     private val lifecycleOwner: LC,
-    private val subscription: ReduxSubscription
+    private val callback: LifecycleCallback
   ) : LifecycleObserver where LC : LifecycleOwner, LC : IReduxLifecycleOwner {
     init { lifecycleOwner.lifecycle.addObserver(this) }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() { this.callback.onStart() }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
-      this.lifecycleOwner.onPropInjectionCompleted()
-    }
+    fun onResume() { this.callback.onResume() }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onPause() {
-      this.lifecycleOwner.onPropInjectionStopped()
-    }
+    fun onPause() { this.callback.onPause() }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onStop() {
-      this.subscription.unsubscribe()
+      this.callback.onStop()
       this.lifecycleOwner.lifecycle.removeObserver(this)
     }
   }
@@ -72,7 +86,7 @@ fun <State, OP, SP, AP> IReduxPropInjector<State>.injectPropsOnMainThread(
   view: IReduxPropContainer<State, SP, AP>,
   outProps: OP,
   mapper: IReduxPropMapper<State, OP, SP, AP>
-) = this.injectPropsUnsafely(
+) = this.injectPropsUnsafely<OP, SP, AP>(
   object : IReduxPropContainer<State, SP, AP> {
     override var staticProps: StaticProps<State>
       get() = view.staticProps
@@ -81,26 +95,17 @@ fun <State, OP, SP, AP> IReduxPropInjector<State>.injectPropsOnMainThread(
     override var variableProps: VariableProps<SP, AP>?
       get() = view.variableProps
       set(value) { this@injectPropsOnMainThread.runOnUIThread { view.variableProps = value } }
-
-    override fun onPropInjectionCompleted() {
-      super.onPropInjectionCompleted()
-      view.onPropInjectionCompleted()
-    }
-
-    override fun onPropInjectionStopped() {
-      super.onPropInjectionStopped()
-      view.onPropInjectionStopped()
-    }
   },
   outProps, mapper
 )
 
 /**
+ * - When [ReduxLifecycleObserver.onStart] is called, create the [ReduxSubscription].
  * - When [ReduxLifecycleObserver.onResume] is called, call
  * [IReduxLifecycleOwner.onPropInjectionCompleted].
- * - When [ReduxLifecycleObserver.onStop] is called, unsubscribe from [State] updates.
  * - When [ReduxLifecycleObserver.onPause] is called, call
- * [IReduxLifecycleOwner.onPropInjectionStopped]
+ * [IReduxLifecycleOwner.onPropInjectionStopped].
+ * - When [ReduxLifecycleObserver.onStop] is called, unsubscribe from [State] updates.
  */
 fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
   lifecycleOwner: LC,
@@ -108,11 +113,21 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
   mapper: IReduxPropMapper<State, OP, SP, AP>
 ) where
   LC : LifecycleOwner,
-  LC : IReduxPropContainer<State, SP, AP>
+  LC : IReduxPropContainer<State, SP, AP>,
+  LC : IReduxLifecycleOwner
 {
   val view: IReduxPropContainer<State, SP, AP> = lifecycleOwner
-  val subscription = this.injectPropsOnMainThread(view, outProps, mapper)
-  ReduxLifecycleObserver(lifecycleOwner, subscription)
+  var subscription: ReduxSubscription? = null
+
+  ReduxLifecycleObserver(lifecycleOwner, object : LifecycleCallback {
+    override fun onStart() {
+      subscription = this@injectLifecycleProps.injectPropsOnMainThread(view, outProps, mapper)
+    }
+
+    override fun onResume() { lifecycleOwner.onPropInjectionCompleted() }
+    override fun onPause() { lifecycleOwner.onPropInjectionStopped() }
+    override fun onStop() { subscription?.unsubscribe?.invoke() }
+  })
 }
 
 /**
@@ -123,10 +138,11 @@ fun <State, LC, OP, SP> IReduxPropInjector<State>.injectLifecycleProps(
   lifecycleOwner: LC,
   outProps: OP,
   mapper: IReduxStatePropMapper<State, OP, SP>
-) where
+) : Unit where
   LC : LifecycleOwner,
-  LC : IReduxPropContainer<State, SP, Unit> =
-  this.injectPropsOnMainThread(lifecycleOwner, outProps,
+  LC : IReduxPropContainer<State, SP, Unit>,
+  LC : IReduxLifecycleOwner =
+  this.injectLifecycleProps<State, LC, OP, SP, Unit>(lifecycleOwner, outProps,
     object : IReduxPropMapper<State, OP, SP, Unit> {
       override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: OP) = Unit
       override fun mapState(state: State, outProps: OP) = mapper.mapState(state, outProps)
@@ -151,7 +167,7 @@ fun <State> startActivityInjection(
     override fun onActivityDestroyed(activity: Activity?) {}
 
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
-      if (outState != null) saveState(injector.stateGetter(), outState)
+      outState?.also { saveState(injector.stateGetter(), it) }
     }
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
@@ -161,7 +177,7 @@ fun <State> startActivityInjection(
     }
 
     override fun onActivityStarted(activity: Activity?) {
-      if (activity != null) inject(injector, activity)
+      activity?.also { inject(injector, it) }
     }
   }
 
