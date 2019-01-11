@@ -20,6 +20,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.android.ui.core.AndroidRedux.ReduxLifecycleObserver
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.IReduxLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
@@ -27,6 +28,7 @@ import org.swiften.redux.ui.IReduxPropInjector
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.IReduxStatePropMapper
 import org.swiften.redux.ui.IStaticReduxPropContainer
+import org.swiften.redux.ui.ReduxPropInjector
 import org.swiften.redux.ui.StaticProps
 import org.swiften.redux.ui.VariableProps
 import java.io.Serializable
@@ -80,24 +82,6 @@ internal fun runOnUIThread(runnable: () -> Unit) {
   }
 }
 
-/** Call [IReduxPropInjector.injectRecyclerViewProps] on the main thread */
-fun <State, OP, SP, AP> IReduxPropInjector<State>.injectPropsOnMainThread(
-  view: IReduxPropContainer<State, SP, AP>,
-  outProps: OP,
-  mapper: IReduxPropMapper<State, OP, SP, AP>
-) = this.injectPropsUnsafely(
-  object : IReduxPropContainer<State, SP, AP> {
-    override var staticProps: StaticProps<State>
-      get() = view.staticProps
-      set(value) { view.staticProps = value }
-
-    override var variableProps: VariableProps<SP, AP>?
-      get() = view.variableProps
-      set(value) { runOnUIThread { view.variableProps = value } }
-  },
-  outProps, mapper
-)
-
 /**
  * - When [ReduxLifecycleObserver.onStart] is called, create the [ReduxSubscription].
  * - When [ReduxLifecycleObserver.onResume] is called, call
@@ -105,6 +89,8 @@ fun <State, OP, SP, AP> IReduxPropInjector<State>.injectPropsOnMainThread(
  * - When [ReduxLifecycleObserver.onPause] is called, call
  * [IReduxLifecycleOwner.onPropInjectionStopped].
  * - When [ReduxLifecycleObserver.onStop] is called, unsubscribe from [State] updates.
+ *
+ * This method is applicable to [Activity] and [Fragment].
  */
 fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
   lifecycleOwner: LC,
@@ -120,7 +106,7 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
 
   ReduxLifecycleObserver(lifecycleOwner, object : LifecycleCallback {
     override fun onStart() {
-      subscription = this@injectLifecycleProps.injectPropsOnMainThread(view, outProps, mapper)
+      subscription = this@injectLifecycleProps.injectProps(view, outProps, mapper)
     }
 
     override fun onResume() { lifecycleOwner.onPropInjectionCompleted() }
@@ -151,7 +137,6 @@ fun <State, LC, OP, SP> IReduxPropInjector<State>.injectLifecycleProps(
  * Listen to [Activity] lifecycle callbacks and perform [inject] when necessary. We can also
  * declare [saveState] and [restoreState] to handle [State] persistence.
  */
-@Suppress("unused")
 fun <State> startActivityInjection(
   application: Application,
   injector: IReduxPropInjector<State>,
@@ -188,7 +173,6 @@ fun <State> startActivityInjection(
  * Similar to [startActivityInjection], but provides default persistence for when [State] is
  * [Serializable]
  */
-@Suppress("unused")
 inline fun <reified State> startActivityInjection(
   application: Application,
   injector: IReduxPropInjector<State>,
@@ -206,7 +190,6 @@ inline fun <reified State> startActivityInjection(
 }
 
 /** End lifecycle [callback] for [Activity] */
-@Suppress("unused")
 fun endActivityInjection(
   application: Application,
   callback: Application.ActivityLifecycleCallbacks
@@ -215,7 +198,6 @@ fun endActivityInjection(
 }
 
 /** Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary */
-@Suppress("unused")
 fun <State, Activity> startFragmentInjection(
   activity: Activity,
   inject: StaticProps<State>.(Fragment) -> Unit
@@ -234,10 +216,33 @@ fun <State, Activity> startFragmentInjection(
 }
 
 /** End lifecycle [callback] for [Fragment] */
-@Suppress("unused")
 fun endFragmentInjection(
   activity: AppCompatActivity,
   callback: FragmentManager.FragmentLifecycleCallbacks
 ) {
   activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
+}
+
+/** [IReduxPropInjector] specifically for Android that calls [injectProps] on the main thread */
+class AndroidPropInjector<State>(
+  private val injector: IReduxPropInjector<State>
+) : IReduxPropInjector<State> by injector {
+  constructor(store: IReduxStore<State>) : this(ReduxPropInjector(store))
+
+  override fun <OutProps, StateProps, ActionProps> injectProps(
+    view: IReduxPropContainer<State, StateProps, ActionProps>,
+    outProps: OutProps,
+    mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
+  ) = this.injector.injectProps(
+    object : IReduxPropContainer<State, StateProps, ActionProps> {
+      override var staticProps: StaticProps<State>
+        get() = view.staticProps
+        set(value) { view.staticProps = value }
+
+      override var variableProps: VariableProps<StateProps, ActionProps>?
+        get() = view.variableProps
+        set(value) { runOnUIThread { view.variableProps = value } }
+    },
+    outProps, mapper
+  )
 }

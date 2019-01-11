@@ -7,7 +7,6 @@ package org.swiften.redux.android.ui.recyclerview
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.swiften.redux.android.ui.core.injectPropsOnMainThread
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropInjector
@@ -53,7 +52,7 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
 
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
-      this@injectRecyclerViewProps.injectPropsOnMainThread(holder, position, vhMapper)
+      this@injectRecyclerViewProps.injectProps(holder, position, vhMapper)
     }
 
     /** Unsubscribe from [holder]'s subscription on recycling */
