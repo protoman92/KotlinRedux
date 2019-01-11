@@ -10,7 +10,7 @@
   android:layout_height="match_parent"
   android:orientation="vertical">
 
-  <EditText
+  <androidx.appcompat.widget.AppCompatEditText
     android:id="@+id/querySearch"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -41,6 +41,7 @@
     android:layout_marginRight="@dimen/spacing2"
     android:layout_marginEnd="@dimen/spacing2"
     android:layout_marginBottom="@dimen/spacing2"
+    android:inputType="textNoSuggestions"
     android:saveEnabled="false"/>
 
   <FrameLayout

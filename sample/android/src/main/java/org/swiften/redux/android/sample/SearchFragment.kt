@@ -102,8 +102,8 @@ class SearchFragment : Fragment(),
 
   override var variableProps
     by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
-      p?.also {
-        if (it.next.loading == true) {
+      p?.also { prop ->
+        if (prop.next.loading == true) {
           this.backgroundDim.visibility = View.VISIBLE
           this.progressBar.visibility = View.VISIBLE
         } else {
@@ -111,11 +111,21 @@ class SearchFragment : Fragment(),
           this.progressBar.visibility = View.GONE
         }
 
-        if (it.next.resultCount != it.previous?.resultCount) {
+        if (prop.next.resultCount != prop.previous?.resultCount) {
           this.searchResult.adapter?.notifyDataSetChanged()
         }
       }
     }
+
+  private val querySearchWatcher: TextWatcher = object : TextWatcher {
+    override fun afterTextChanged(s: Editable?) {}
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+      this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
+    }
+  }
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -126,15 +136,7 @@ class SearchFragment : Fragment(),
   override fun onPropInjectionCompleted() {
     this.querySearch.also {
       it.isSaveEnabled = false
-
-      it.addTextChangedListener(object : TextWatcher {
-        override fun afterTextChanged(s: Editable?) {}
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-          this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
-        }
-      })
+      it.addTextChangedListener(this.querySearchWatcher)
     }
 
     this.searchResult.also {
@@ -145,6 +147,7 @@ class SearchFragment : Fragment(),
   }
 
   override fun onPropInjectionStopped() {
+    this.querySearch.removeTextChangedListener(this.querySearchWatcher)
     this.searchResult.adapter = null
   }
 }

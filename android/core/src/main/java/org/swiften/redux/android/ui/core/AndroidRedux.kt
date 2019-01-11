@@ -33,7 +33,7 @@ import java.io.Serializable
 import java.util.Date
 
 /** Created by haipham on 2018/12/17 */
-/** Callbacks for lifecycle to use with [LifecycleObserver] */
+/** Callbacks for lifecycle for use with [LifecycleObserver] */
 internal interface LifecycleCallback {
   /** Called on [Lifecycle.Event.ON_START] */
   fun onStart()
@@ -74,8 +74,7 @@ internal object AndroidRedux {
   }
 }
 
-@Suppress("unused")
-internal fun IReduxPropInjector<*>.runOnUIThread(runnable: () -> Unit) {
+internal fun runOnUIThread(runnable: () -> Unit) {
   if (Looper.myLooper() == Looper.getMainLooper()) { runnable() } else {
     Handler(Looper.getMainLooper()).post { runnable() }
   }
@@ -86,7 +85,7 @@ fun <State, OP, SP, AP> IReduxPropInjector<State>.injectPropsOnMainThread(
   view: IReduxPropContainer<State, SP, AP>,
   outProps: OP,
   mapper: IReduxPropMapper<State, OP, SP, AP>
-) = this.injectPropsUnsafely<OP, SP, AP>(
+) = this.injectPropsUnsafely(
   object : IReduxPropContainer<State, SP, AP> {
     override var staticProps: StaticProps<State>
       get() = view.staticProps
@@ -94,7 +93,7 @@ fun <State, OP, SP, AP> IReduxPropInjector<State>.injectPropsOnMainThread(
 
     override var variableProps: VariableProps<SP, AP>?
       get() = view.variableProps
-      set(value) { this@injectPropsOnMainThread.runOnUIThread { view.variableProps = value } }
+      set(value) { runOnUIThread { view.variableProps = value } }
   },
   outProps, mapper
 )
