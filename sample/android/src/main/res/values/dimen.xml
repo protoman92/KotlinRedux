@@ -8,5 +8,6 @@
   <dimen name="spacing1">8dp</dimen>
   <dimen name="spacing2">16dp</dimen>
 
-  <dimen name="text_font_size">20sp</dimen>
+  <dimen name="normal_text">20sp</dimen>
+  <dimen name="title_text">30sp</dimen>
 </resources>

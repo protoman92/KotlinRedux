@@ -27,7 +27,7 @@
     android:paddingEnd="@dimen/spacing1"
     android:hint="@string/search_hint"
     android:inputType="text"
-    android:textSize="@dimen/text_font_size"/>
+    android:textSize="@dimen/normal_text"/>
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/searchResult"

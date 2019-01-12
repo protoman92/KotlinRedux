@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) haipham 2019. All rights reserved.
+  ~ Any attempt to reproduce this source code in any form shall be met with legal actions.
+  -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <TextView
+    android:id="@+id/trackName"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing2"
+    android:layout_marginLeft="@dimen/spacing2"
+    android:layout_marginStart="@dimen/spacing2"
+    android:layout_marginRight="@dimen/spacing2"
+    android:layout_marginEnd="@dimen/spacing2"
+    android:textSize="@dimen/title_text"
+    android:saveEnabled="true"/>
+
+</LinearLayout>
