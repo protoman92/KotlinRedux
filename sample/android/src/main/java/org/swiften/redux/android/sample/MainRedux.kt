@@ -23,7 +23,6 @@ object MainRedux {
 
   object Reducer : IReduxReducer<State> {
     override operator fun invoke(previous: State, action: IReduxAction): State {
-      println("Redux $action")
       return when (action) {
         is Action -> when (action) {
           is Action.UpdateAutocompleteQuery -> previous.copy(autocompleteQuery = action.query)

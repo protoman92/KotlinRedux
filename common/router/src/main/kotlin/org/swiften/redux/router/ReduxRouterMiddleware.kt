@@ -31,10 +31,10 @@ interface IReduxRouter<Screen> where Screen : IReduxRouterScreen {
 
 /** [IReduxMiddlewareProvider] implementation for [IReduxRouter] middleware */
 class ReduxRouterMiddlewareProvider<State, Screen>(
-  private val router: IReduxRouter<Screen>,
-  private val cls: Class<Screen>
+  private val cls: Class<Screen>,
+  private val router: IReduxRouter<Screen>
 ) : IReduxMiddlewareProvider<State> where Screen : IReduxRouterScreen {
-  constructor(router: IReduxRouter<Screen>, cls: KClass<Screen>) : this(router, cls.java)
+  constructor(cls: KClass<Screen>, router: IReduxRouter<Screen>) : this(cls.java, router)
 
   override val middleware: IReduxMiddleware<State> = { input ->
     { wrapper -> ReduxDispatchWrapper("$wrapper.id-router",

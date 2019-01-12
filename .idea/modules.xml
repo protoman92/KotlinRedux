@@ -3,15 +3,16 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android/core/android-core.iml" filepath="$PROJECT_DIR$/android/core/android-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/router/android-router.iml" filepath="$PROJECT_DIR$/android/router/android-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/async-store/async-store.iml" filepath="$PROJECT_DIR$/common/async-store/async-store.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/core/common-core.iml" filepath="$PROJECT_DIR$/common/core/common-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/router/common-router.iml" filepath="$PROJECT_DIR$/common/router/common-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/middleware/middleware.iml" filepath="$PROJECT_DIR$/common/middleware/middleware.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/recycler-view/recycler-view.iml" filepath="$PROJECT_DIR$/android/recycler-view/recycler-view.iml" />
       <module fileurl="file://$PROJECT_DIR$/redux-jvm.iml" filepath="$PROJECT_DIR$/redux-jvm.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/redux-jvm-android.iml" filepath="$PROJECT_DIR$/android/redux-jvm-android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/router/router.iml" filepath="$PROJECT_DIR$/common/router/router.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/rx-saga/rx-saga.iml" filepath="$PROJECT_DIR$/common/rx-saga/rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/android/sample-android.iml" filepath="$PROJECT_DIR$/sample/android/sample-android.iml" />

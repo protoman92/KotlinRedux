@@ -93,3 +93,10 @@ project('recycler-view') {
     implementation "androidx.recyclerview:recyclerview:$recyclerView"
   }
 }
+
+project('router') {
+  dependencies {
+    api project(':common:core')
+    api project(':common:router')
+  }
+}

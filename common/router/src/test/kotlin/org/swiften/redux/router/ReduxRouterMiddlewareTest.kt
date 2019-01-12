@@ -41,7 +41,7 @@ class ReduxRouterMiddlewareTest : IReduxRouter<ReduxRouterMiddlewareTest.Screen>
     val store = SimpleReduxStore(0) { a, b -> a }
 
     val wrappedStore = applyReduxMiddlewares(
-      ReduxRouterMiddlewareProvider<Int, Screen>(this, Screen::class).middleware
+      ReduxRouterMiddlewareProvider<Int, Screen>(Screen::class, this).middleware
     )(store)
 
     // When
