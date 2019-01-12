@@ -20,12 +20,11 @@ import kotlin.properties.Delegates
 /** Created by haipham on 2019/01/12 */
 class MusicDetailFragment : Fragment(),
   IReduxPropContainer<State, MusicDetailFragment.S, Unit>,
-  IReduxStatePropMapper<State, Int, MusicDetailFragment.S> by MusicDetailFragment {
+  IReduxStatePropMapper<State, Unit, MusicDetailFragment.S> by MusicDetailFragment {
   class S(val track: MusicTrack?)
 
-  companion object : IReduxStatePropMapper<State, Int, S> {
-    override fun mapState(state: State, outProps: Int) =
-      S(state.musicResult?.results?.elementAtOrNull(outProps))
+  companion object : IReduxStatePropMapper<State, Unit, S> {
+    override fun mapState(state: State, outProps: Unit) = S(state.currentSelectedTrack())
   }
 
   override lateinit var staticProps: StaticProps<State>

@@ -88,7 +88,7 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
   lifecycleOwner: LC,
   outProps: OP,
   mapper: IReduxPropMapper<State, OP, SP, AP>
-) where
+): LC where
   LC : LifecycleOwner,
   LC : IReduxPropContainer<State, SP, AP>,
   LC : IReduxLifecycleOwner
@@ -105,6 +105,8 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
     override fun onPause() {}
     override fun onStop() { subscription?.unsubscribe?.invoke() }
   })
+
+  return lifecycleOwner
 }
 
 /**
@@ -115,7 +117,7 @@ fun <State, LC, OP, SP> IReduxPropInjector<State>.injectLifecycleProps(
   lifecycleOwner: LC,
   outProps: OP,
   mapper: IReduxStatePropMapper<State, OP, SP>
-): Unit where
+): LC where
   LC : LifecycleOwner,
   LC : IReduxPropContainer<State, SP, Unit>,
   LC : IReduxLifecycleOwner =

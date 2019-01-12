@@ -30,6 +30,10 @@ object MainRedux {
           is Action.UpdateLoadingResult -> previous.copy(loadingMusic = action.loading)
         }
 
+        is Screen -> when (action) {
+          is Screen.MusicDetail -> previous.copy(selectedResultIndex = action.index)
+        }
+
         else -> return previous
       }
     }

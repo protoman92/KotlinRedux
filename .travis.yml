@@ -1,7 +1,6 @@
 matrix:
   include:
     - language: android
-      jdk: oraclejdk8
       android:
         components:
           - tools # to get the new `repository-11.xml`
@@ -12,5 +11,4 @@ matrix:
       before_install:
         - yes | sdkmanager "platforms;android-28"
       script:
-        - ./gradlew connectedCheck
-        - ./gradlew clean test --info
+        - ./gradlew build connectedCheck

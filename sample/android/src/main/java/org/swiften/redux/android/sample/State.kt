@@ -11,5 +11,10 @@ import java.io.Serializable
 data class State(
   val autocompleteQuery: String? = "",
   val musicResult: MusicResult? = null,
+  val selectedResultIndex: Int? = null,
   val loadingMusic: Boolean? = null
-) : Serializable
+) : Serializable {
+  fun currentSelectedTrack() = this.selectedResultIndex?.let { index ->
+    this.musicResult?.results?.elementAtOrNull(index)
+  }
+}
