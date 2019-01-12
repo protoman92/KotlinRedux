@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.artistName
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
+import org.swiften.redux.android.ui.core.DistinctTextWatcher
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.IReduxDispatcher
@@ -36,14 +37,12 @@ import kotlin.properties.Delegates
 class SearchFragment : Fragment(),
   IReduxPropContainer<State, SearchFragment.S, SearchFragment.A>,
   IReduxPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment,
-  IReduxLifecycleOwner
-{
+  IReduxLifecycleOwner {
   data class S(val query: String?, val resultCount: Int?, val loading: Boolean?)
   class A(val updateQuery: (String?) -> Unit)
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IReduxStatePropMapper<State, Unit, Int> by Adapter
-  {
+    IReduxStatePropMapper<State, Unit, Int> by Adapter {
     companion object : IReduxStatePropMapper<State, Unit, Int> {
       override fun mapState(state: State, outProps: Unit) = state.musicResult?.resultCount ?: 0
     }
@@ -59,11 +58,11 @@ class SearchFragment : Fragment(),
   class ViewHolder(
     parent: View,
     private val trackName: TextView,
-    private val artistName: TextView) :
+    private val artistName: TextView
+  ) :
     RecyclerView.ViewHolder(parent),
     IReduxPropContainer<State, ViewHolder.S1, Unit>,
-    IReduxStatePropMapper<State, Int, ViewHolder.S1> by ViewHolder
-  {
+    IReduxStatePropMapper<State, Int, ViewHolder.S1> by ViewHolder {
     data class S1(val trackName: String?, val artistName: String?)
 
     companion object : IReduxStatePropMapper<State, Int, S1> {
@@ -114,24 +113,19 @@ class SearchFragment : Fragment(),
         if (prop.next.resultCount != prop.previous?.resultCount) {
           this.searchResult.adapter?.notifyDataSetChanged()
         }
-
-        this.querySearch.also {
-          it.removeTextChangedListener(this.querySearchWatcher)
-          it.setText(prop.next.query)
-          it.setSelection(prop.next.query?.length ?: 0)
-          it.addTextChangedListener(this.querySearchWatcher)
-        }
       }
     }
 
-  private val querySearchWatcher: TextWatcher = object : TextWatcher {
-    override fun afterTextChanged(s: Editable?) {
-      this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
-    }
+  private val querySearchWatcher: TextWatcher by lazy {
+    DistinctTextWatcher(object : TextWatcher {
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+      override fun afterTextChanged(s: Editable?) {
+        this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
+      }
+    })
   }
 
   override fun onCreateView(
@@ -141,7 +135,7 @@ class SearchFragment : Fragment(),
   ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
   override fun beforePropInjectionStarts() {
-    this.querySearch.also { it.isSaveEnabled = false }
+    this.querySearch.also { it.addTextChangedListener(this.querySearchWatcher) }
 
     this.searchResult.also {
       it.setHasFixedSize(true)

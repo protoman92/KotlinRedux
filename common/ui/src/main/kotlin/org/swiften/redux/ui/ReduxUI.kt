@@ -44,8 +44,8 @@ interface IReduxPropContainer<GlobalState, StateProps, ActionProps> :
   IVariableReduxPropContainer<StateProps, ActionProps>
 
 /**
- * Maps [GlobalState] to [StateProps] for a [IReduxPropContainer]. [OutProps] is the view's immutable
- * property as dictated by its parent.
+ * Maps [GlobalState] to [StateProps] for a [IReduxPropContainer]. [OutProps] is the view's
+ * immutable property as dictated by its parent.
  */
 interface IReduxStatePropMapper<GlobalState, OutProps, StateProps> {
   /** Map [GlobalState] to [StateProps] using [OutProps] */
@@ -90,9 +90,8 @@ class VariableProps<StateProps, ActionProps>(
 )
 
 /** A [IReduxPropInjector] implementation */
-class ReduxPropInjector<State>(
-  private val store: IReduxStore<State>
-) : IReduxPropInjector<State>,
+class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
+  IReduxPropInjector<State>,
   IReduxDispatchContainer by store,
   IReduxStateContainer<State> by store {
   override fun <OutProps, StateProps, ActionProps> injectProps(

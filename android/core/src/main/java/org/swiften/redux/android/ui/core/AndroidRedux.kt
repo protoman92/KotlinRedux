@@ -130,7 +130,7 @@ fun <State, LC, OP, SP> IReduxPropInjector<State>.injectLifecycleProps(
   lifecycleOwner: LC,
   outProps: OP,
   mapper: IReduxStatePropMapper<State, OP, SP>
-) : Unit where
+): Unit where
   LC : LifecycleOwner,
   LC : IReduxPropContainer<State, SP, Unit>,
   LC : IReduxLifecycleOwner =
