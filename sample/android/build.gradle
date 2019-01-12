@@ -54,6 +54,7 @@ android {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
+  api project(':common:async-store')
   api project(':common:middleware')
   api project(':common:common-saga')
   api project(':common:rx-saga')

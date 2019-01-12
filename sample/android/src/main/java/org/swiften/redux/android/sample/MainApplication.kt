@@ -9,8 +9,8 @@ import android.app.Application
 import org.swiften.redux.android.ui.core.AndroidPropInjector
 import org.swiften.redux.android.ui.core.endActivityInjection
 import org.swiften.redux.android.ui.core.startActivityInjection
+import org.swiften.redux.core.AsyncReduxStore
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.saga.ReduxSagaMiddlewareProvider
 import org.swiften.redux.ui.injectStaticProps
@@ -27,7 +27,7 @@ class MainApplication : Application() {
 
     val store = applyReduxMiddlewares(
       ReduxSagaMiddlewareProvider(MainSaga.sagas(repository)).middleware
-    )(SimpleReduxStore(State(), MainRedux.Reducer))
+    )(AsyncReduxStore(State(), MainRedux.Reducer))
 
     val injector = AndroidPropInjector(store)
     val dependency = MainDependency(injector)

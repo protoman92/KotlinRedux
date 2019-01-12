@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android/core/android-core.iml" filepath="$PROJECT_DIR$/android/core/android-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/async-store/async-store.iml" filepath="$PROJECT_DIR$/common/async-store/async-store.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/core/common-core.iml" filepath="$PROJECT_DIR$/common/core/common-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />

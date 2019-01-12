@@ -83,7 +83,6 @@ subprojects {
 project('core') {
   dependencies {
     api project(':common:core')
-    api project(':common:simple-store')
     api project(':common:ui')
   }
 }

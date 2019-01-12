@@ -119,6 +119,14 @@ project('simple-store') {
   }
 }
 
+project('async-store') {
+  dependencies {
+    api project(':common:core')
+    api project(':common:simple-store')
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+  }
+}
+
 project('ui') {
   dependencies {
     api project(':common:core')
