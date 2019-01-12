@@ -26,7 +26,7 @@ class DistinctTextWatcher(private val listener: TextWatcher) : TextWatcher {
     }
 
     fun update(s: CharSequence?, start: Int, count: Int, after: Int) {
-      this.s = s; this.start = start; this.count = count; this.after = count
+      this.s = s; this.start = start; this.count = count; this.after = after
     }
   }
 

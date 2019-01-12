@@ -81,6 +81,9 @@ class SearchFragment : Fragment(),
           this.artistName.text = it.next.artistName
         }
       }
+
+    override fun beforePropInjectionStarts() {}
+    override fun afterPropInjectionEnds() {}
   }
 
   companion object : IReduxPropMapper<State, Unit, S, A> {

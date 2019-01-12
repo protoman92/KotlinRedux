@@ -30,7 +30,7 @@ interface IStaticReduxPropContainer<GlobalState> {
 }
 
 /** Represents a view that contains [VariableProps] internal state */
-interface IVariableReduxPropContainer<StateProps, ActionProps> {
+interface IVariableReduxPropContainer<StateProps, ActionProps> : IReduxLifecycleOwner {
   /** This will be set any time a state update is received */
   var variableProps: VariableProps<StateProps, ActionProps>?
 }

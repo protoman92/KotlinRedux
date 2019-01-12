@@ -48,14 +48,15 @@ class PropInjectorTest {
 
     override var variableProps
       by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
-        this.didSetVariableProps(p)
+        this.variableInjectionCount += 1
       }
 
     var variableInjectionCount = 0
+    var beforeInjectionCount = 0
+    var afterInjectionCount = 0
 
-    private fun didSetVariableProps(props: VariableProps<S, A>?) {
-      this.variableInjectionCount += 1
-    }
+    override fun beforePropInjectionStarts() { this.beforeInjectionCount += 1 }
+    override fun afterPropInjectionEnds() { this.afterInjectionCount += 1 }
   }
 
   private lateinit var store: StoreWrapper
@@ -91,14 +92,14 @@ class PropInjectorTest {
     val view = View()
 
     // When
-    this.injector.injectRecyclerViewProps(view, Unit, this.mapper)
+    this.injector.injectProps(view, Unit, this.mapper)
     this.store.dispatch(Action.SetQuery("1"))
     this.store.dispatch(Action.SetQuery("1"))
     this.store.dispatch(Action.SetQuery("2"))
     this.store.dispatch(Action.SetQuery("2"))
     this.store.dispatch(Action.SetQuery("3"))
     this.store.dispatch(Action.SetQuery("3"))
-    this.injector.injectRecyclerViewProps(view, Unit, this.mapper)
+    this.injector.injectProps(view, Unit, this.mapper)
 
     // Then
     Assert.assertEquals(this.store.unsubCount, 1)

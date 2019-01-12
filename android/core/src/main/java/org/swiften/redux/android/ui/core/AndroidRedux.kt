@@ -85,10 +85,6 @@ internal fun runOnUIThread(runnable: () -> Unit) {
 
 /**
  * - When [ReduxLifecycleObserver.onStart] is called, create the [ReduxSubscription].
- * - When [ReduxLifecycleObserver.onResume] is called, call
- * [IReduxLifecycleOwner.onPropInjectionCompleted].
- * - When [ReduxLifecycleObserver.onPause] is called, call
- * [IReduxLifecycleOwner.onPropInjectionStopped].
  * - When [ReduxLifecycleObserver.onStop] is called, unsubscribe from [State] updates.
  *
  * This method is applicable to [Activity] and [Fragment].
@@ -247,6 +243,9 @@ class AndroidPropInjector<State>(
       override var variableProps: VariableProps<StateProps, ActionProps>?
         get() = view.variableProps
         set(value) { runOnUIThread { view.variableProps = value } }
+
+      override fun beforePropInjectionStarts() = runOnUIThread { view.beforePropInjectionStarts() }
+      override fun afterPropInjectionEnds() = runOnUIThread { view.afterPropInjectionEnds() }
     },
     outProps, mapper
   )

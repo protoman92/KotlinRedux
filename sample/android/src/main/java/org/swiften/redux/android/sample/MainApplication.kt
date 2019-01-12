@@ -12,6 +12,7 @@ import org.swiften.redux.android.ui.core.startActivityInjection
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.core.SimpleReduxStore
 import org.swiften.redux.middleware.applyReduxMiddlewares
+import org.swiften.redux.saga.ReduxSagaMiddlewareProvider
 import org.swiften.redux.ui.injectStaticProps
 
 /** Created by haipham on 2018/12/19 */
@@ -24,8 +25,8 @@ class MainApplication : Application() {
     val api = MainApi()
     val repository = MainRepository(api, JSONDecoder())
 
-    val store = applyReduxMiddlewares<State>(
-//      ReduxSagaMiddlewareProvider(MainSaga.sagas(repository)).middleware
+    val store = applyReduxMiddlewares(
+      ReduxSagaMiddlewareProvider(MainSaga.sagas(repository)).middleware
     )(SimpleReduxStore(State(), MainRedux.Reducer))
 
     val injector = AndroidPropInjector(store)
