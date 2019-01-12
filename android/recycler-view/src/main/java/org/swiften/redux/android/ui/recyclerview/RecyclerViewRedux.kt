@@ -114,7 +114,7 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
   VH : IReduxPropContainer<State, VHState, VHAction>,
   Adapter : RecyclerView.Adapter<VH>,
   Adapter : IReduxStatePropMapper<State, Unit, Int> =
-  this.injectRecyclerViewProps<State, Adapter, VH, VHState, VHAction>(adapter, adapter, vhMapper)
+  this.injectRecyclerViewProps(adapter, adapter, vhMapper)
 
 /** Similar to [IReduxPropInjector.injectRecyclerViewProps], but ignores action props */
 fun <State, Adapter, VH, VHState> IReduxPropInjector<State>.injectRecyclerViewProps(
