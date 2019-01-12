@@ -26,7 +26,7 @@ class PropInjectorTest {
   }
 
   class StoreWrapper(val store: IReduxStore<S>) : IReduxStore<S> by store {
-    var unsubCount: Int = 0
+    var unsubscribeCount: Int = 0
 
     override val subscribe = object : IReduxSubscriber<S> {
       override operator fun invoke(
@@ -36,7 +36,7 @@ class PropInjectorTest {
         val sub = this@StoreWrapper.store.subscribe(subscriberId, callback)
 
         return ReduxSubscription {
-          this@StoreWrapper.unsubCount += 1
+          this@StoreWrapper.unsubscribeCount += 1
           sub.unsubscribe()
         }
       }
@@ -55,7 +55,11 @@ class PropInjectorTest {
     var beforeInjectionCount = 0
     var afterInjectionCount = 0
 
-    override fun beforePropInjectionStarts() { this.beforeInjectionCount += 1 }
+    override fun beforePropInjectionStarts() {
+      Assert.assertNotNull(this.staticProps)
+      this.beforeInjectionCount += 1
+    }
+
     override fun afterPropInjectionEnds() { this.afterInjectionCount += 1 }
   }
 
@@ -102,7 +106,9 @@ class PropInjectorTest {
     this.injector.injectProps(view, Unit, this.mapper)
 
     // Then
-    Assert.assertEquals(this.store.unsubCount, 1)
+    Assert.assertEquals(this.store.unsubscribeCount, 1)
     Assert.assertEquals(view.variableInjectionCount, 4)
+    Assert.assertEquals(view.beforeInjectionCount, 2)
+    Assert.assertEquals(view.afterInjectionCount, 1)
   }
 }

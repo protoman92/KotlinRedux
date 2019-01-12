@@ -68,7 +68,10 @@ interface IReduxPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
 
 /** Inject state and actions into an [IReduxPropContainer] */
 interface IReduxPropInjector<State> : IReduxDispatchContainer, IReduxStateContainer<State> {
-  /** Inject [StateProps] and [ActionProps] into [view] */
+  /**
+   * Inject [StateProps] and [ActionProps] into [view]. This method does not handle lifecycles, so
+   * platform-specific methods can be defined for this purpose.
+   */
   fun <OutProps, StateProps, ActionProps> injectProps(
     view: IReduxPropContainer<State, StateProps, ActionProps>,
     outProps: OutProps,
@@ -105,6 +108,15 @@ class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     } catch (e: UninitializedPropertyAccessException) { }
 
     /**
+     * Inject [StaticProps] without a valid [StaticProps.subscription] because we want
+     * [StaticProps.injector] to be available in [IReduxLifecycleOwner.beforePropInjectionStarts].
+     */
+    this.injectStaticProps(view)
+
+    /** [StaticProps.injector] is available for child injections */
+    view.beforePropInjectionStarts()
+
+    /**
      * It does not matter what the id is, as long as it is unique. This is because we will be
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's not need to keep
      * track of the [view]'s id.
@@ -133,8 +145,15 @@ class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
      */
     onStateUpdate(this.store.stateGetter())
     val subscription = this.store.subscribe(id, onStateUpdate)
-    view.staticProps = StaticProps(this, subscription)
-    return subscription
+
+    /** Wrap a [ReduxSubscription] to perform [IReduxLifecycleOwner.afterPropInjectionEnds] */
+    val wrappedSubscription = ReduxSubscription {
+      subscription.unsubscribe()
+      view.afterPropInjectionEnds()
+    }
+
+    view.staticProps = StaticProps(this, wrappedSubscription)
+    return wrappedSubscription
   }
 }
 

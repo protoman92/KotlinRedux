@@ -17,7 +17,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import org.swiften.redux.android.ui.core.AndroidRedux.ReduxLifecycleObserver
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.core.IReduxStore
@@ -31,7 +30,6 @@ import org.swiften.redux.ui.IStaticReduxPropContainer
 import org.swiften.redux.ui.ReduxPropInjector
 import org.swiften.redux.ui.StaticProps
 import org.swiften.redux.ui.VariableProps
-import org.swiften.redux.ui.injectStaticProps
 import java.io.Serializable
 import java.util.Date
 
@@ -51,29 +49,26 @@ internal interface LifecycleCallback {
   fun onStop()
 }
 
-/** Top-level namespace for Android Redux UI functionalities */
-internal object AndroidRedux {
-  /** Use this [LifecycleObserver] to unsubscribe from a [ReduxSubscription] */
-  class ReduxLifecycleObserver<LC> constructor(
-    private val lifecycleOwner: LC,
-    private val callback: LifecycleCallback
-  ) : LifecycleObserver where LC : LifecycleOwner, LC : IReduxLifecycleOwner {
-    init { lifecycleOwner.lifecycle.addObserver(this) }
+/** Use this [LifecycleObserver] to unsubscribe from a [ReduxSubscription] */
+internal class ReduxLifecycleObserver<LC> constructor(
+  private val lifecycleOwner: LC,
+  private val callback: LifecycleCallback
+) : LifecycleObserver where LC : LifecycleOwner, LC : IReduxLifecycleOwner {
+  init { lifecycleOwner.lifecycle.addObserver(this) }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() { this.callback.onStart() }
+  @OnLifecycleEvent(Lifecycle.Event.ON_START)
+  fun onStart() { this.callback.onStart() }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() { this.callback.onResume() }
+  @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+  fun onResume() { this.callback.onResume() }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onPause() { this.callback.onPause() }
+  @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+  fun onPause() { this.callback.onPause() }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun onStop() {
-      this.callback.onStop()
-      this.lifecycleOwner.lifecycle.removeObserver(this)
-    }
+  @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+  fun onStop() {
+    this.callback.onStop()
+    this.lifecycleOwner.lifecycle.removeObserver(this)
   }
 }
 
@@ -103,18 +98,12 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
 
   ReduxLifecycleObserver(lifecycleOwner, object : LifecycleCallback {
     override fun onStart() {
-      this@injectLifecycleProps.injectStaticProps(lifecycleOwner)
-      lifecycleOwner.beforePropInjectionStarts()
       subscription = this@injectLifecycleProps.injectProps(view, outProps, mapper)
     }
 
     override fun onResume() {}
     override fun onPause() {}
-
-    override fun onStop() {
-      subscription?.unsubscribe?.invoke()
-      lifecycleOwner.afterPropInjectionEnds()
-    }
+    override fun onStop() { subscription?.unsubscribe?.invoke() }
   })
 }
 
