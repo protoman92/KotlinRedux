@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_music_detail.artistName
 import kotlinx.android.synthetic.main.fragment_music_detail.trackName
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxStatePropMapper
@@ -31,7 +32,10 @@ class MusicDetailFragment : Fragment(),
 
   override var variableProps
     by Delegates.observable<VariableProps<S, Unit>?>(null) { _, _, p ->
-      p?.next?.track?.also { this.trackName.text = it.trackName }
+      p?.next?.track?.also {
+        this.trackName.text = it.trackName
+        this.artistName.text = it.artistName
+      }
     }
 
   override fun onCreateView(
