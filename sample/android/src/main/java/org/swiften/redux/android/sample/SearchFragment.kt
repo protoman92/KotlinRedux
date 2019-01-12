@@ -56,16 +56,20 @@ class SearchFragment : Fragment(),
   }
 
   class ViewHolder(
-    parent: View,
+    private val parent: View,
     private val trackName: TextView,
     private val artistName: TextView
   ) :
     RecyclerView.ViewHolder(parent),
-    IReduxPropContainer<State, ViewHolder.S1, Unit>,
-    IReduxStatePropMapper<State, Int, ViewHolder.S1> by ViewHolder {
+    IReduxPropContainer<State, ViewHolder.S1, ViewHolder.A1>,
+    IReduxPropMapper<State, Int, ViewHolder.S1, ViewHolder.A1> by ViewHolder {
     data class S1(val trackName: String?, val artistName: String?)
+    data class A1(val goToMusicDetail: () -> Unit)
 
-    companion object : IReduxStatePropMapper<State, Int, S1> {
+    companion object : IReduxPropMapper<State, Int, S1, A1> {
+      override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: Int) =
+        A1 { dispatch(MainRedux.Screen.MusicDetail(outProps)) }
+
       override fun mapState(state: State, outProps: Int) = S1(
         state.musicResult?.results?.elementAtOrNull(outProps)?.trackName,
         state.musicResult?.results?.elementAtOrNull(outProps)?.artistName
@@ -75,15 +79,24 @@ class SearchFragment : Fragment(),
     override lateinit var staticProps: StaticProps<State>
 
     override var variableProps
-      by Delegates.observable<VariableProps<S1, Unit>?>(null) { _, _, p ->
+      by Delegates.observable<VariableProps<S1, A1>?>(null) { _, _, p ->
         p?.also {
           this.trackName.text = it.next.trackName
           this.artistName.text = it.next.artistName
         }
       }
 
-    override fun beforePropInjectionStarts() {}
-    override fun afterPropInjectionEnds() {}
+    private val clickListener: View.OnClickListener by lazy {
+      View.OnClickListener { this.variableProps?.actions?.also { it.goToMusicDetail() } }
+    }
+
+    override fun beforePropInjectionStarts() {
+      this.parent.setOnClickListener(this.clickListener)
+    }
+
+    override fun afterPropInjectionEnds() {
+      this.parent.setOnClickListener(null)
+    }
   }
 
   companion object : IReduxPropMapper<State, Unit, S, A> {
