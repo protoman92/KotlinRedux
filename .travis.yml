@@ -13,3 +13,4 @@ matrix:
         - yes | sdkmanager "platforms;android-28"
       script:
         - ./gradlew build connectedCheck -p android
+        - ./gradlew clean test
