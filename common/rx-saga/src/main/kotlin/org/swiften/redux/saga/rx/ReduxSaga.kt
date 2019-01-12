@@ -6,9 +6,7 @@
 package org.swiften.redux.saga.rx
 
 import io.reactivex.Flowable
-import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.rx2.rxSingle
@@ -20,20 +18,15 @@ import java.util.concurrent.TimeUnit
 /** @see [IReduxSagaOutput] */
 class ReduxSagaOutput<T> internal constructor(
   private val scope: CoroutineScope,
-  stream: Flowable<T>,
-  scheduler: Scheduler = Schedulers.computation(),
+  private val stream: Flowable<T>,
   override val onAction: IReduxDispatcher
 ) : IReduxSagaOutput<T>, CoroutineScope by scope {
   internal var source: ReduxSagaOutput<*>? = null
   private var onDispose: () -> Unit = { }
-  private val stream: Flowable<T> = stream.subscribeOn(scheduler)
   private val disposable by lazy { CompositeDisposable() }
 
-  private fun <T2> with(
-    newStream: Flowable<T2>,
-    scheduler: Scheduler = Schedulers.computation()
-  ): IReduxSagaOutput<T2> {
-    val result = ReduxSagaOutput(this.scope, newStream, scheduler, this.onAction)
+  private fun <T2> with(newStream: Flowable<T2>): IReduxSagaOutput<T2> {
+    val result = ReduxSagaOutput(this.scope, newStream, this.onAction)
     result.source = this
     result.onDispose = { this.dispose() }
     return result
