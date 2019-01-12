@@ -19,6 +19,7 @@
     android:layout_marginStart="@dimen/spacing2"
     android:layout_marginRight="@dimen/spacing2"
     android:layout_marginEnd="@dimen/spacing2"
+    android:gravity="center_horizontal"
     android:textSize="@dimen/title_text"
     android:saveEnabled="true"/>
 

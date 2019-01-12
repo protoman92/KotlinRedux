@@ -23,7 +23,7 @@ class AsyncReduxStore<State>(
     state: State,
     reducer: IReduxReducer<State>,
     context: CoroutineContext = EmptyCoroutineContext
-  ) : this(SimpleReduxStore(state, reducer))
+  ) : this(SimpleReduxStore(state, reducer), context)
 
   override val dispatch: IReduxDispatcher = { action ->
     GlobalScope.launch(this.context) { this@AsyncReduxStore.store.dispatch(action) }

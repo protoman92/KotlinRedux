@@ -9,9 +9,11 @@ import android.app.Application
 import org.swiften.redux.android.ui.core.AndroidPropInjector
 import org.swiften.redux.android.ui.core.endActivityInjection
 import org.swiften.redux.android.ui.core.startActivityInjection
+import org.swiften.redux.android.ui.router.SingleActivityRouter
 import org.swiften.redux.core.AsyncReduxStore
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.middleware.applyReduxMiddlewares
+import org.swiften.redux.router.createRouterMiddlewareProvider
 import org.swiften.redux.saga.ReduxSagaMiddlewareProvider
 import org.swiften.redux.ui.injectStaticProps
 
@@ -26,6 +28,13 @@ class MainApplication : Application() {
     val repository = MainRepository(api, JSONDecoder())
 
     val store = applyReduxMiddlewares(
+      createRouterMiddlewareProvider<State, MainRedux.Screen>(
+        SingleActivityRouter(
+          this,
+          { when (it) {is MainRedux.Screen.MusicDetail -> MusicDetailFragment() } },
+          { fm, f -> fm.beginTransaction().replace(R.id.fragment, f).commit() }
+        )
+      ).middleware,
       ReduxSagaMiddlewareProvider(MainSaga.sagas(repository)).middleware
     )(AsyncReduxStore(State(), MainRedux.Reducer))
 

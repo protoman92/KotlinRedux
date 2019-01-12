@@ -56,11 +56,11 @@ dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   api project(':common:async-store')
   api project(':common:middleware')
-  api project(':common:router')
   api project(':common:common-saga')
   api project(':common:rx-saga')
   api project(':android:core')
   api project(':android:recycler-view')
+  api project(':android:router')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin"
   implementation "androidx.appcompat:appcompat:$appCompat"
   implementation "androidx.recyclerview:recyclerview:$recyclerView"

@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity(), IStaticReduxPropContainer<State> {
     this.fragmentCallback = startFragmentInjection(this) {
       when (it) {
         is SearchFragment -> this.injector.injectLifecycleProps(it, Unit, it)
+        is MusicDetailFragment -> this.injector.injectLifecycleProps(it, 0, it)
       }
     }
   }
