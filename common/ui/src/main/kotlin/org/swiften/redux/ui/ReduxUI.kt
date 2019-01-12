@@ -14,13 +14,13 @@ import java.util.Date
 import java.util.concurrent.locks.ReentrantLock
 
 /** Created by haipham on 2018/12/16 */
-/** Handle lifecycles for a target of [ReduxPropInjector]  */
+/** Handle lifecycles for a target of [IReduxPropInjector]  */
 interface IReduxLifecycleOwner {
-  /** This is called when [ReduxPropInjector.injectRecyclerViewProps] completes */
-  fun onPropInjectionCompleted() {}
+  /** This is called before [IReduxPropInjector.injectProps] is called */
+  fun beforePropInjectionStarts()
 
-  /** This is called when [ReduxSubscription.unsubscribe] is called */
-  fun onPropInjectionStopped() {}
+  /** This is called after [ReduxSubscription.unsubscribe] is called */
+  fun afterPropInjectionEnds()
 }
 
 /** Represents a view that contains [StaticProps] dependencies */

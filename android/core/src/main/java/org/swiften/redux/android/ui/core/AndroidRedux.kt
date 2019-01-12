@@ -31,6 +31,7 @@ import org.swiften.redux.ui.IStaticReduxPropContainer
 import org.swiften.redux.ui.ReduxPropInjector
 import org.swiften.redux.ui.StaticProps
 import org.swiften.redux.ui.VariableProps
+import org.swiften.redux.ui.injectStaticProps
 import java.io.Serializable
 import java.util.Date
 
@@ -106,12 +107,18 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
 
   ReduxLifecycleObserver(lifecycleOwner, object : LifecycleCallback {
     override fun onStart() {
+      this@injectLifecycleProps.injectStaticProps(lifecycleOwner)
+      lifecycleOwner.beforePropInjectionStarts()
       subscription = this@injectLifecycleProps.injectProps(view, outProps, mapper)
     }
 
-    override fun onResume() { lifecycleOwner.onPropInjectionCompleted() }
-    override fun onPause() { lifecycleOwner.onPropInjectionStopped() }
-    override fun onStop() { subscription?.unsubscribe?.invoke() }
+    override fun onResume() {}
+    override fun onPause() {}
+
+    override fun onStop() {
+      subscription?.unsubscribe?.invoke()
+      lifecycleOwner.afterPropInjectionEnds()
+    }
   })
 }
 
@@ -219,9 +226,7 @@ fun <State, Activity> startFragmentInjection(
 fun endFragmentInjection(
   activity: AppCompatActivity,
   callback: FragmentManager.FragmentLifecycleCallbacks
-) {
-  activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
-}
+) = activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
 
 /** [IReduxPropInjector] specifically for Android that calls [injectProps] on the main thread */
 class AndroidPropInjector<State>(

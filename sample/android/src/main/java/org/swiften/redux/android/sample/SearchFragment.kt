@@ -57,7 +57,7 @@ class SearchFragment : Fragment(),
   }
 
   class ViewHolder(
-    private val parent: View,
+    parent: View,
     private val trackName: TextView,
     private val artistName: TextView) :
     RecyclerView.ViewHolder(parent),
@@ -114,17 +114,24 @@ class SearchFragment : Fragment(),
         if (prop.next.resultCount != prop.previous?.resultCount) {
           this.searchResult.adapter?.notifyDataSetChanged()
         }
+
+        this.querySearch.also {
+          it.removeTextChangedListener(this.querySearchWatcher)
+          it.setText(prop.next.query)
+          it.setSelection(prop.next.query?.length ?: 0)
+          it.addTextChangedListener(this.querySearchWatcher)
+        }
       }
     }
 
   private val querySearchWatcher: TextWatcher = object : TextWatcher {
-    override fun afterTextChanged(s: Editable?) {}
+    override fun afterTextChanged(s: Editable?) {
+      this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
+    }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-      this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
-    }
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
   }
 
   override fun onCreateView(
@@ -133,11 +140,8 @@ class SearchFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
-  override fun onPropInjectionCompleted() {
-    this.querySearch.also {
-      it.isSaveEnabled = false
-      it.addTextChangedListener(this.querySearchWatcher)
-    }
+  override fun beforePropInjectionStarts() {
+    this.querySearch.also { it.isSaveEnabled = false }
 
     this.searchResult.also {
       it.setHasFixedSize(true)
@@ -146,7 +150,7 @@ class SearchFragment : Fragment(),
     }
   }
 
-  override fun onPropInjectionStopped() {
+  override fun afterPropInjectionEnds() {
     this.querySearch.removeTextChangedListener(this.querySearchWatcher)
     this.searchResult.adapter = null
   }
