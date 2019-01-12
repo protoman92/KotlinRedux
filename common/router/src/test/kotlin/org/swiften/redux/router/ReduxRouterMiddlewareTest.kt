@@ -13,7 +13,7 @@ import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
 
 /** Created by haipham on 2018/12/16 */
-class ReduxRouterMiddlewareTest : IReduxRouter {
+class ReduxRouterMiddlewareTest : IReduxRouter<ReduxRouterMiddlewareTest.Screen> {
   sealed class Screen : IReduxRouterScreen {
     object Screen1 : Screen()
     object Screen2 : Screen()
@@ -26,7 +26,7 @@ class ReduxRouterMiddlewareTest : IReduxRouter {
 
   private val screens = arrayListOf<IReduxRouterScreen>()
 
-  override fun navigate(screen: IReduxRouterScreen) {
+  override fun navigate(screen: Screen) {
     this.screens.add(screen)
   }
 
@@ -41,7 +41,7 @@ class ReduxRouterMiddlewareTest : IReduxRouter {
     val store = SimpleReduxStore(0) { a, b -> a }
 
     val wrappedStore = applyReduxMiddlewares(
-      ReduxRouterMiddlewareProvider<Int>(this).middleware
+      ReduxRouterMiddlewareProvider<Int, Screen>(this, Screen::class).middleware
     )(store)
 
     // When
