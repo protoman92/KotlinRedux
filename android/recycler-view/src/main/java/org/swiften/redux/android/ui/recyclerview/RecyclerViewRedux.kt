@@ -102,6 +102,20 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
   }
 }
 
+/**
+ * Similar to [IReduxPropInjector.injectRecyclerViewProps], but [Adapter] now conforms to
+ * [IReduxStatePropMapper].
+ */
+fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecyclerViewProps(
+  adapter: Adapter,
+  vhMapper: IReduxPropMapper<State, Int, VHState, VHAction>
+): RecyclerView.Adapter<VH> where
+  VH : RecyclerView.ViewHolder,
+  VH : IReduxPropContainer<State, VHState, VHAction>,
+  Adapter : RecyclerView.Adapter<VH>,
+  Adapter : IReduxStatePropMapper<State, Unit, Int> =
+  this.injectRecyclerViewProps<State, Adapter, VH, VHState, VHAction>(adapter, adapter, vhMapper)
+
 /** Similar to [IReduxPropInjector.injectRecyclerViewProps], but ignores action props */
 fun <State, Adapter, VH, VHState> IReduxPropInjector<State>.injectRecyclerViewProps(
   adapter: Adapter,
