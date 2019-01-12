@@ -30,7 +30,8 @@ interface IReduxRouter<Screen> where Screen : IReduxRouterScreen {
 }
 
 /** [IReduxMiddlewareProvider] implementation for [IReduxRouter] middleware */
-class ReduxRouterMiddlewareProvider<State, Screen>(
+@PublishedApi
+internal class ReduxRouterMiddlewareProvider<State, Screen>(
   private val cls: Class<Screen>,
   private val router: IReduxRouter<Screen>
 ) : IReduxMiddlewareProvider<State> where Screen : IReduxRouterScreen {
@@ -55,3 +56,8 @@ class ReduxRouterMiddlewareProvider<State, Screen>(
     }
   }
 }
+
+/** Create a [ReduxRouterMiddlewareProvider] with [router] */
+inline fun <State, reified Screen> createRouterMiddlewareProvider(router: IReduxRouter<Screen>):
+  IReduxMiddlewareProvider<State> where Screen : IReduxRouterScreen =
+  ReduxRouterMiddlewareProvider(Screen::class, router)
