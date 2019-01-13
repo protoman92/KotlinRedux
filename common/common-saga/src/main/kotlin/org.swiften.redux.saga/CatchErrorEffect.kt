@@ -17,4 +17,4 @@ internal class CatchErrorEffect<State, R>(
 
 /** Catch [Throwable] from upstream with [catcher] */
 fun <State, R> ReduxSagaEffect<State, R>.catchError(catcher: (Throwable) -> R) =
-  CommonSagaEffects.catchError(this, catcher)
+  ReduxSagaEffects.catchError(this, catcher)

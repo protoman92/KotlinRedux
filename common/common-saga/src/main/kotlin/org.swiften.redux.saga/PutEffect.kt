@@ -21,7 +21,7 @@ internal class PutEffect<State, P>(
     source.invoke(p1).map { p1.dispatch(this@PutEffect.actionCreator(it)) as Any }
 }
 
-/** Invoke a [PutEffect] on the current [CommonSagaEffects] */
+/** Invoke a [PutEffect] on the current [ReduxSagaEffects] */
 fun <State, P> ReduxSagaEffect<State, P>.put(
   actionCreator: (P) -> IReduxAction
-) = CommonSagaEffects.put(this, actionCreator)
+) = ReduxSagaEffects.put(this, actionCreator)

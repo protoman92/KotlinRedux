@@ -15,5 +15,5 @@ internal class RetryEffect<State, R>(
 }
 
 /** Invoke a [RetryEffect] on [this] */
-fun <State, R> ReduxSagaEffect<State, R>.retry(times: Long) = CommonSagaEffects.retry(this, times)
+fun <State, R> ReduxSagaEffect<State, R>.retry(times: Long) = ReduxSagaEffects.retry(this, times)
 fun <State, R> ReduxSagaEffect<State, R>.retry(times: Int) = this.retry(times.toLong())

@@ -26,7 +26,7 @@ internal class ThenEffect<State, R, R2, R3>(
 fun <State, R, R2, R3> ReduxSagaEffect<State, R>.then(
   effect: ReduxSagaEffect<State, R2>,
   combiner: Function2<R, R2, R3>
-) = CommonSagaEffects.then(this, effect, combiner)
+) = ReduxSagaEffects.then(this, effect, combiner)
 
 /** Invoke a [ThenEffect] but ignore emissions from [this] */
 fun <State, R, R2> ReduxSagaEffect<State, R>.then(
