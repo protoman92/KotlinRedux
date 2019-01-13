@@ -156,7 +156,10 @@ class SearchFragment : Fragment(),
     this.searchResult.also {
       it.setHasFixedSize(true)
       it.layoutManager = LinearLayoutManager(this.context)
-      it.adapter = this.staticProps.injector.injectRecyclerViewProps(Adapter(), ViewHolder)
+
+      it.adapter = Adapter().let { a ->
+        this.staticProps.injector.injectRecyclerViewProps(a, a, ViewHolder)
+      }
     }
   }
 
