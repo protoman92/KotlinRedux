@@ -10,7 +10,6 @@ import android.app.Application
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import org.swiften.redux.router.IReduxRouter
 import org.swiften.redux.router.IReduxRouterScreen
 
@@ -18,8 +17,7 @@ import org.swiften.redux.router.IReduxRouterScreen
 /** [IReduxRouter] that works for a single [AppCompatActivity] and multiple [Fragment] */
 class SingleActivityRouter<Screen>(
   private val application: Application,
-  private val fragmentGetter: (Screen) -> Fragment,
-  private val navigate: (FragmentManager, Fragment) -> Unit
+  private val navigate: (AppCompatActivity, Screen) -> Unit
 ) : IReduxRouter<Screen> where Screen : IReduxRouterScreen {
   private lateinit var activity: AppCompatActivity
 
@@ -42,8 +40,5 @@ class SingleActivityRouter<Screen>(
       })
   }
 
-  override fun navigate(screen: Screen) {
-    val fragment = this.fragmentGetter(screen)
-    this.navigate(this.activity.supportFragmentManager, fragment)
-  }
+  override fun navigate(screen: Screen) = this.navigate(this.activity, screen)
 }

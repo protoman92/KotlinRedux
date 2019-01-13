@@ -6,6 +6,9 @@
 package org.swiften.redux.android.sample
 
 import android.app.Application
+import android.content.Intent
+import android.net.Uri
+import androidx.fragment.app.Fragment
 import org.swiften.redux.android.ui.core.AndroidPropInjector
 import org.swiften.redux.android.ui.core.endActivityInjection
 import org.swiften.redux.android.ui.core.startActivityInjection
@@ -29,11 +32,24 @@ class MainApplication : Application() {
 
     val store = applyReduxMiddlewares(
       createRouterMiddlewareProvider<State, MainRedux.Screen>(
-        SingleActivityRouter(
-          this,
-          { when (it) {is MainRedux.Screen.MusicDetail -> MusicDetailFragment() } },
-          { fm, f -> fm.beginTransaction().replace(R.id.fragment, f).commit() }
-        )
+        SingleActivityRouter(this) { activity, screen ->
+          val f: Fragment? = when (screen) {
+            is MainRedux.Screen.MusicDetail -> MusicDetailFragment()
+
+            is MainRedux.Screen.WebView -> {
+              val browserIntent = Intent (Intent.ACTION_VIEW, Uri.parse(screen.url))
+              activity.startActivity(browserIntent)
+              null
+            }
+          }
+
+          f?.also {
+            activity.supportFragmentManager
+              .beginTransaction()
+              .replace(R.id.fragment, it)
+              .commit()
+          }
+        }
       ).middleware,
       ReduxSagaMiddlewareProvider(MainSaga.sagas(repository)).middleware
     )(AsyncReduxStore(State(), MainRedux.Reducer))

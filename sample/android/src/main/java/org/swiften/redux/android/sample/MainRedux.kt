@@ -19,6 +19,7 @@ object MainRedux {
 
   sealed class Screen : IReduxRouterScreen {
     class MusicDetail(val index: Int) : Screen()
+    class WebView(val url: String) : Screen()
   }
 
   object Reducer : IReduxReducer<State> {
@@ -32,6 +33,7 @@ object MainRedux {
 
         is Screen -> when (action) {
           is Screen.MusicDetail -> previous.copy(selectedResultIndex = action.index)
+          else -> previous
         }
 
         else -> return previous

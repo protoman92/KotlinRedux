@@ -24,9 +24,9 @@ class MainActivity : AppCompatActivity(), IStaticReduxPropContainer<State> {
     setContentView(R.layout.activity_main)
 
     if (savedInstanceState == null) {
-      val tx = this.supportFragmentManager.beginTransaction()
-      tx.replace(R.id.fragment, MainFragment())
-      tx.commit()
+      this.supportFragmentManager.beginTransaction()
+        .replace(R.id.fragment, MainFragment())
+        .commit()
     }
 
     this.fragmentCallback = startFragmentInjection(this) {
