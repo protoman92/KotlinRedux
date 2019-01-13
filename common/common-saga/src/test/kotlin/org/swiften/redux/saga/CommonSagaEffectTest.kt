@@ -21,6 +21,7 @@ import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.util.Collections
+import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/07 */
 /** Use this test class for common [ReduxSagaEffect] tests */
@@ -141,14 +142,13 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     data class Action(private val value: Int) : IReduxAction
     val dispatched = Collections.synchronizedList(arrayListOf<IReduxAction>())
 
-    val finalOutput = justEffect(0)
+    justEffect(0)
       .map { it }
       .put { Action(it) }
       .invoke(this, State()) { dispatched.add(it) }
+      .subscribe({})
 
     // When
-    finalOutput.subscribe({})
-
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
         while (dispatched != arrayListOf(Action(0))) { }; Unit
@@ -156,6 +156,29 @@ abstract class CommonSagaEffectTest : CoroutineScope {
 
       // Then
       Assert.assertEquals(dispatched, arrayListOf(Action(0)))
+    }
+  }
+
+  @Test
+  fun `Retry effects should retry asynchronous calls`() {
+    // Setup
+    val retryCount = 3
+    val retries = AtomicInteger(0)
+
+    justEffect(0)
+      .mapSuspend { retries.incrementAndGet(); throw RuntimeException("Oh no!") }
+      .retry(retryCount)
+      .invoke(this, State()) {}
+      .subscribe({})
+
+    /// When
+    runBlocking {
+      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
+        while (retries.get() != retryCount + 1) { }; Unit
+      }
+
+      /// Then
+      Assert.assertEquals(retries.get(), retryCount + 1)
     }
   }
 

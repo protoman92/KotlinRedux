@@ -74,6 +74,9 @@ interface IReduxSagaOutput<T> {
    */
   fun <T2> switchMap(transform: (T) -> IReduxSagaOutput<T2>): IReduxSagaOutput<T2>
 
+  /** Retry [times] if a [Throwable] is encountered */
+  fun retry(times: Long): IReduxSagaOutput<T>
+
   /** Get the next [T], but only if it arrives before [timeoutMillis] */
   fun nextValue(timeoutMillis: Long): T?
 

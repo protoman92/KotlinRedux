@@ -74,6 +74,8 @@ class ReduxSagaOutput<T> internal constructor(
 
   override fun dispose() { this.disposable.clear(); this.onDispose() }
 
+  override fun retry(times: Long) = this.with(this.stream.retry(times))
+
   override fun nextValue(timeoutMillis: Long) = try {
     this.stream
       .timeout(timeoutMillis, TimeUnit.MILLISECONDS)

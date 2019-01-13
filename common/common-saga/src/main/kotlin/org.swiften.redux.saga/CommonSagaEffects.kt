@@ -52,6 +52,10 @@ object CommonSagaEffects {
     actionCreator: (P) -> IReduxAction
   ): ReduxSagaEffect<State, Any> = PutEffect(source, actionCreator)
 
+  /** Create a [RetryEffect] instance */
+  fun <State, R> retry(source: ReduxSagaEffect<State, R>, times: Long):
+    ReduxSagaEffect<State, R> = RetryEffect(source, times)
+
   /** Create a [ThenEffect] on [source1] and [source2] */
   fun <State, R, R2, R3> then(
     source1: ReduxSagaEffect<State, R>,
