@@ -7,14 +7,14 @@ package org.swiften.redux.saga
 
 /** Created by haipham on 2018/12/26 */
 /**
- * [ReduxSagaEffect] whose [IReduxSagaOutput] enforces ordering for two [IReduxSagaOutput] created
- * by two other [ReduxSagaEffect].
+ * [IReduxSagaEffect] whose [IReduxSagaOutput] enforces ordering for two [IReduxSagaOutput] created
+ * by two other [IReduxSagaEffect].
  */
 internal class ThenEffect<State, R, R2, R3>(
-  private val source1: ReduxSagaEffect<State, R>,
-  private val source2: ReduxSagaEffect<State, R2>,
+  private val source1: IReduxSagaEffect<State, R>,
+  private val source2: IReduxSagaEffect<State, R2>,
   private val combiner: Function2<R, R2, R3>
-) : ReduxSagaEffect<State, R3> {
+) : IReduxSagaEffect<State, R3> {
   @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
   override fun invoke(input: Input<State>) =
     this.source1.invoke(input).flatMap { value1 ->
@@ -22,16 +22,16 @@ internal class ThenEffect<State, R, R2, R3>(
     }
 }
 
-/** Invoke a [ThenEffect] on the current [ReduxSagaEffect] */
-fun <State, R, R2, R3> ReduxSagaEffect<State, R>.then(
-  effect: ReduxSagaEffect<State, R2>,
+/** Invoke a [ThenEffect] on the current [IReduxSagaEffect] */
+fun <State, R, R2, R3> IReduxSagaEffect<State, R>.then(
+  effect: IReduxSagaEffect<State, R2>,
   combiner: Function2<R, R2, R3>
 ) = CommonSagaEffects.then(this, effect, combiner)
 
 /** Invoke a [ThenEffect] but ignore emissions from [this] */
-fun <State, R, R2> ReduxSagaEffect<State, R>.then(
-  effect: ReduxSagaEffect<State, R2>
+fun <State, R, R2> IReduxSagaEffect<State, R>.then(
+  effect: IReduxSagaEffect<State, R2>
 ) = this.then(effect) { _, b -> b }
 
 /** Invoke [then] with a single [value] */
-fun <State, R, R2> ReduxSagaEffect<State, R>.justThen(value: R2) = this.map { value }
+fun <State, R, R2> IReduxSagaEffect<State, R>.justThen(value: R2) = this.map { value }

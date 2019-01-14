@@ -15,7 +15,7 @@ import org.swiften.redux.middleware.ReduxDispatchWrapper
 /** Created by haipham on 2018/12/22 */
 /** [IReduxMiddlewareProvider] implementation for Saga */
 internal class ReduxSagaMiddlewareProvider<State>(
-  private val effects: List<ReduxSagaEffect<State, *>>
+  private val effects: List<IReduxSagaEffect<State, *>>
 ) : IReduxMiddlewareProvider<State> {
   override val middleware: IReduxMiddleware<State> = { input ->
     { wrapper ->
@@ -38,5 +38,5 @@ internal class ReduxSagaMiddlewareProvider<State>(
 }
 
 /** Create a [ReduxSagaMiddlewareProvider] with [effects] */
-fun <State> createSagaMiddlewareProvider(effects: List<ReduxSagaEffect<State, *>>):
+fun <State> createSagaMiddlewareProvider(effects: List<IReduxSagaEffect<State, *>>):
   IReduxMiddlewareProvider<State> = ReduxSagaMiddlewareProvider(effects)

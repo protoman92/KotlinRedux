@@ -6,16 +6,16 @@
 package org.swiften.redux.saga
 
 /** Created by haipham on 2019/01/13 */
-/** [ReduxSagaEffect] whose [IReduxSagaOutput] retries [times] if a [Throwable] is encountered */
+/** [IReduxSagaEffect] whose [IReduxSagaOutput] retries [times] if a [Throwable] is encountered */
 internal class RetryEffect<State, R>(
-  private val source: ReduxSagaEffect<State, R>,
+  private val source: IReduxSagaEffect<State, R>,
   private val times: Long
-) : ReduxSagaEffect<State, R> {
+) : IReduxSagaEffect<State, R> {
   override fun invoke(p1: Input<State>) = this.source.invoke(p1).retry(this.times)
 }
 
 /** Invoke a [RetryEffect] on [this] */
-fun <State, R> ReduxSagaEffect<State, R>.retry(times: Long) =
+fun <State, R> IReduxSagaEffect<State, R>.retry(times: Long) =
   this.transform(CommonSagaEffects.retry(times))
 
-fun <State, R> ReduxSagaEffect<State, R>.retry(times: Int) = this.retry(times.toLong())
+fun <State, R> IReduxSagaEffect<State, R>.retry(times: Int) = this.retry(times.toLong())

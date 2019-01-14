@@ -15,14 +15,14 @@ import org.swiften.redux.core.IReduxStore
 
 /** Created by haipham on 2019/01/07 */
 /** Abstraction for Redux saga that handles [IReduxAction] in the pipeline */
-typealias ReduxSagaEffect<State, R> = Function1<Input<State>, IReduxSagaOutput<R>>
+typealias IReduxSagaEffect<State, R> = Function1<Input<State>, IReduxSagaOutput<R>>
 
-/** Transform one [ReduxSagaEffect] to another */
-typealias ReduxSagaEffectTransformer<State, R, R2> =
-  Function1<ReduxSagaEffect<State, R>, ReduxSagaEffect<State, R2>>
+/** Transform one [IReduxSagaEffect] to another */
+typealias IReduxSagaEffectTransformer<State, R, R2> =
+  Function1<IReduxSagaEffect<State, R>, IReduxSagaEffect<State, R2>>
 
 /**
- * [Input] for an [ReduxSagaEffect], which exposes a [IReduxStore]'s internal
+ * [Input] for an [IReduxSagaEffect], which exposes a [IReduxStore]'s internal
  * functionalities.
  */
 class Input<State>(
@@ -32,7 +32,7 @@ class Input<State>(
 )
 
 /**
- * Stream values for a [ReduxSagaEffect]. This stream has functional operators
+ * Stream values for a [IReduxSagaEffect]. This stream has functional operators
  * that can transform emitted values.
  */
 interface IReduxSagaOutput<T> {
@@ -100,16 +100,16 @@ interface IReduxSagaOutput<T> {
 }
 
 /**
- * Convenience method to call [ReduxSagaEffect] with convenience parameters
+ * Convenience method to call [IReduxSagaEffect] with convenience parameters
  * for testing.
  */
-fun <State, R> ReduxSagaEffect<State, R>.invoke(
+fun <State, R> IReduxSagaEffect<State, R>.invoke(
   scope: CoroutineScope,
   state: State,
   dispatch: IReduxDispatcher
 ) = this.invoke(Input(scope, { state }, dispatch))
 
 /** Transform [this] with [transformer] */
-fun <State, R, R2> ReduxSagaEffect<State, R>.transform(
-  transformer: ReduxSagaEffectTransformer<State, R, R2>
-): ReduxSagaEffect<State, R2> = transformer(this)
+fun <State, R, R2> IReduxSagaEffect<State, R>.transform(
+  transformer: IReduxSagaEffectTransformer<State, R, R2>
+): IReduxSagaEffect<State, R2> = transformer(this)
