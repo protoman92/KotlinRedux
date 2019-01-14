@@ -20,6 +20,18 @@ object ReduxSagaEffects {
   fun <State, R> catchError(source: ReduxSagaEffect<State, R>, catcher: (Throwable) -> R):
     ReduxSagaEffect<State, R> = CatchErrorEffect(source, catcher)
 
+  /** Create a [SuspendCatchErrorEffect] */
+  fun <State, R> catchErrorSuspend(
+    source: ReduxSagaEffect<State, R>,
+    catcher: suspend CoroutineScope.(Throwable) -> R
+  ): ReduxSagaEffect<State, R> = SuspendCatchErrorEffect(source, catcher)
+
+  /** Create a [AsyncCatchErrorEffect] */
+  fun <State, R> catchErrorAsync(
+    source: ReduxSagaEffect<State, R>,
+    catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>
+  ): ReduxSagaEffect<State, R> = AsyncCatchErrorEffect(source, catcher)
+
   /** Create a [DoOnValueEffect] instance */
   fun <State, R> doOnValue(source: ReduxSagaEffect<State, R>, block: (R) -> Unit):
     ReduxSagaEffect<State, R> = DoOnValueEffect(source, block)

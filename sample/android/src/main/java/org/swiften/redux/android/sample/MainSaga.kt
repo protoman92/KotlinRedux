@@ -6,7 +6,7 @@
 package org.swiften.redux.android.sample
 
 import kotlinx.coroutines.async
-import org.swiften.redux.saga.catchError
+import org.swiften.redux.saga.catchErrorAsync
 import org.swiften.redux.saga.justThen
 import org.swiften.redux.saga.mapAsync
 import org.swiften.redux.saga.put
@@ -32,7 +32,7 @@ object MainSaga {
     justPut<State>(MainRedux.Action.UpdateLoadingResult(true))
       .justThen(query)
       .mapAsync { this.async { api.searchMusicStore(it) } }
-      .catchError { api.createFakeResult() }
+      .catchErrorAsync { this.async { api.createFakeResult() } }
       .put { MainRedux.Action.UpdateMusicResult(it) }
       .then(justPut(MainRedux.Action.UpdateLoadingResult(false)))
 }

@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/22 */
 /** Use this for [rxSingle] to avoid forcing [T] to be subtype of [Any] */
-internal class Boxed<T>(val value: T)
+internal data class Boxed<T>(val value: T)
 
 /** @see [IReduxSagaOutput] */
 class ReduxSagaOutput<T> internal constructor(
@@ -35,22 +35,15 @@ class ReduxSagaOutput<T> internal constructor(
     return result
   }
 
-  override fun <T2> map(transform: (T) -> T2) =
-    this.with(this.stream.map(transform))
+  override fun <T2> map(transform: (T) -> T2) = this.with(this.stream.map(transform))
 
-  override fun <T2> mapSuspend(
-    transform: suspend CoroutineScope.(T) -> T2
-  ) = this.with(this.stream.flatMap { v ->
-    this@ReduxSagaOutput.rxSingle { Boxed(transform(this, v)) }.map(Boxed<T2>::value).toFlowable()
-  })
+  override fun <T2> mapSuspend(transform: suspend CoroutineScope.(T) -> T2) =
+    this.with(this.stream.flatMap { v ->
+      this@ReduxSagaOutput.rxSingle { Boxed(transform(this, v)) }.map(Boxed<T2>::value).toFlowable()
+    })
 
-  override fun <T2> mapAsync(
-    transform: suspend CoroutineScope.(T) -> Deferred<T2>
-  ) = this.with(this.stream.flatMap {
-    this@ReduxSagaOutput.rxSingle { Boxed(transform(this, it).await()) }
-      .map(Boxed<T2>::value)
-      .toFlowable()
-  })
+  override fun <T2> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>) =
+    this.mapSuspend { transform(it).await() }
 
   override fun doOnValue(perform: (T) -> Unit) =
     this.with(this.stream.doOnNext(perform))
@@ -76,6 +69,14 @@ class ReduxSagaOutput<T> internal constructor(
 
   override fun catchError(fallback: (Throwable) -> T) =
     this.with(this.stream.onErrorReturn(fallback))
+
+  override fun catchErrorSuspend(fallback: suspend CoroutineScope.(Throwable) -> T) =
+    this.with(this.stream.onErrorResumeNext { e: Throwable ->
+      this@ReduxSagaOutput.rxSingle { Boxed(fallback(this, e)) }.map { it.value }.toFlowable()
+    })
+
+  override fun catchErrorAsync(fallback: suspend CoroutineScope.(Throwable) -> Deferred<T>) =
+    this.catchErrorSuspend { fallback(it).await() }
 
   override fun dispose() { this.disposable.clear(); this.onDispose() }
 

@@ -38,6 +38,14 @@ interface IReduxSagaOutput<T> {
   /** Catch error with [fallback] */
   fun catchError(fallback: (Throwable) -> T): IReduxSagaOutput<T>
 
+  /** Catch error with suspending [fallback] */
+  fun catchErrorSuspend(fallback: suspend CoroutineScope.(Throwable) -> T): IReduxSagaOutput<T>
+
+  /** Catch error with async [fallback] */
+  fun catchErrorAsync(
+    fallback: suspend CoroutineScope.(Throwable) -> Deferred<T>
+  ): IReduxSagaOutput<T>
+
   /** Delay each emission by [delayMillis] */
   fun delay(delayMillis: Long): IReduxSagaOutput<T>
 
