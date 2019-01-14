@@ -17,7 +17,6 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.CommonSagaEffectTest
 import org.swiften.redux.saga.cast
 import org.swiften.redux.saga.catchError
-import org.swiften.redux.saga.invoke
 import org.swiften.redux.saga.map
 import org.swiften.redux.saga.mapAsync
 import org.swiften.redux.saga.rx.ReduxSagaEffects.from

@@ -12,12 +12,11 @@ import kotlinx.coroutines.CoroutineScope
 internal class SuspendMapEffect<State, P, R>(
   private val source: IReduxSagaEffect<State, P>,
   private val block: suspend CoroutineScope.(P) -> R
-) : IReduxSagaEffect<State, R> {
-  override fun invoke(p1: Input<State>) =
-    this.source.invoke(p1).mapSuspend(this.block)
+) : ReduxSagaEffect<State, R>() {
+  override fun invoke(p1: Input<State>) = this.source.invoke(p1).mapSuspend(this.block)
 }
 
 /** Invoke a [SuspendMapEffect] on [this] */
-fun <State, P, R> IReduxSagaEffect<State, P>.mapSuspend(
+fun <State, P, R> ReduxSagaEffect<State, P>.mapSuspend(
   block: suspend CoroutineScope.(P) -> R
 ) = this.transform(CommonSagaEffects.mapSuspend(block))

@@ -7,9 +7,10 @@ package org.swiften.redux.saga.rx
 
 import io.reactivex.processors.PublishProcessor
 import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.saga.IReduxSagaEffect
 import org.swiften.redux.saga.IReduxSagaOutput
 import org.swiften.redux.saga.Input
-import org.swiften.redux.saga.IReduxSagaEffect
+import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/23 */
 /**
@@ -20,7 +21,7 @@ internal abstract class TakeEffect<State, P, R>(
   private val extract: Function1<IReduxAction, P?>,
   private val block: Function1<P, IReduxSagaEffect<State, R>>,
   private val options: TakeEffectOptions
-) : IReduxSagaEffect<State, R> {
+) : ReduxSagaEffect<State, R>() {
   /**
    * Flatten an [ReduxSagaOutput] that streams [ReduxSagaOutput] to access the values streamed by
    * the inner [ReduxSagaOutput].

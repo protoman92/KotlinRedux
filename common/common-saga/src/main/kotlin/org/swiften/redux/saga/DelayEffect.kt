@@ -10,10 +10,10 @@ package org.swiften.redux.saga
 internal class DelayEffect<State, R>(
   private val source: IReduxSagaEffect<State, R>,
   private val delayMillis: Long
-) : IReduxSagaEffect<State, R> {
+) : ReduxSagaEffect<State, R>() {
   override fun invoke(p1: Input<State>) = this.source.invoke(p1).delay(this.delayMillis)
 }
 
 /** Invoke a [DelayEffect] on [this] */
-fun <State, R> IReduxSagaEffect<State, R>.delay(delayMillis: Long) =
+fun <State, R> ReduxSagaEffect<State, R>.delay(delayMillis: Long) =
   this.transform(CommonSagaEffects.delay(delayMillis))

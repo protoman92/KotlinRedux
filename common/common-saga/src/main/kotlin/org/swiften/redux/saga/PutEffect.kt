@@ -16,11 +16,11 @@ import org.swiften.redux.core.IReduxStore
 internal class PutEffect<State, P>(
   private val source: IReduxSagaEffect<State, P>,
   private val actionCreator: (P) -> IReduxAction
-) : IReduxSagaEffect<State, Any> {
+) : ReduxSagaEffect<State, Any>() {
   override fun invoke(p1: Input<State>) =
     source.invoke(p1).map { p1.dispatch(this@PutEffect.actionCreator(it)) as Any }
 }
 
 /** Invoke a [PutEffect] on the current [CommonSagaEffects] */
-fun <State, P> IReduxSagaEffect<State, P>.put(actionCreator: (P) -> IReduxAction) =
+fun <State, P> ReduxSagaEffect<State, P>.put(actionCreator: (P) -> IReduxAction) =
   this.transform(CommonSagaEffects.put(actionCreator))

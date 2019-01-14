@@ -17,9 +17,9 @@ import org.swiften.redux.core.IReduxStore
 /** Abstraction for Redux saga that handles [IReduxAction] in the pipeline */
 typealias IReduxSagaEffect<State, R> = Function1<Input<State>, IReduxSagaOutput<R>>
 
-/** Transform one [IReduxSagaEffect] to another */
+/** Transform one [ReduxSagaEffect] to another */
 typealias IReduxSagaEffectTransformer<State, R, R2> =
-  Function1<IReduxSagaEffect<State, R>, IReduxSagaEffect<State, R2>>
+  Function1<ReduxSagaEffect<State, R>, ReduxSagaEffect<State, R2>>
 
 /**
  * [Input] for an [IReduxSagaEffect], which exposes a [IReduxStore]'s internal
@@ -99,17 +99,12 @@ interface IReduxSagaOutput<T> {
   fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit = { })
 }
 
-/**
- * Convenience method to call [IReduxSagaEffect] with convenience parameters
- * for testing.
- */
-fun <State, R> IReduxSagaEffect<State, R>.invoke(
-  scope: CoroutineScope,
-  state: State,
-  dispatch: IReduxDispatcher
-) = this.invoke(Input(scope, { state }, dispatch))
+/** Abstract class to allow better interfacing with Java */
+abstract class ReduxSagaEffect<State, R> : IReduxSagaEffect<State, R> {
+  /** Convenience method to call [IReduxSagaEffect] with convenience parameters for testing */
+  fun invoke(scope: CoroutineScope, state: State, dispatch: IReduxDispatcher) =
+    this.invoke(Input(scope, { state }, dispatch))
 
-/** Transform [this] with [transformer] */
-fun <State, R, R2> IReduxSagaEffect<State, R>.transform(
-  transformer: IReduxSagaEffectTransformer<State, R, R2>
-): IReduxSagaEffect<State, R2> = transformer(this)
+  fun <R2> transform(transformer: IReduxSagaEffectTransformer<State, R, R2>):
+    ReduxSagaEffect<State, R2> = transformer(this)
+}

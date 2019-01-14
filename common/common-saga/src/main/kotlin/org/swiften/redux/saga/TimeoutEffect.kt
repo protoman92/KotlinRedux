@@ -13,10 +13,10 @@ package org.swiften.redux.saga
 internal class TimeoutEffect<State, R>(
   private val source: IReduxSagaEffect<State, R>,
   private val millis: Long
-) : IReduxSagaEffect<State, R> {
+) : ReduxSagaEffect<State, R>() {
   override fun invoke(p1: Input<State>) = this.source.invoke(p1).timeout(this.millis)
 }
 
 /** Invoke a [TimeoutEffect] on [this] */
-fun <State, R> IReduxSagaEffect<State, R>.timeout(millis: Long) =
+fun <State, R> ReduxSagaEffect<State, R>.timeout(millis: Long) =
   this.transform(CommonSagaEffects.timeout(millis))

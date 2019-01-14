@@ -73,7 +73,7 @@ object CommonSagaEffects {
     source1: IReduxSagaEffect<State, R>,
     source2: IReduxSagaEffect<State, R2>,
     selector: Function2<R, R2, R3>
-  ): IReduxSagaEffect<State, R3> = ThenEffect(source1, source2, selector)
+  ): ReduxSagaEffect<State, R3> = ThenEffect(source1, source2, selector)
 
   /** Create a [TimeoutEffect] */
   @JvmStatic

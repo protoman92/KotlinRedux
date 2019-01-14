@@ -5,8 +5,13 @@
 
 package org.swiften.redux.saga.rx;
 
+import kotlin.Unit;
+import kotlinx.coroutines.GlobalScope;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import static org.swiften.redux.saga.CommonSagaEffects.map;
+import static org.swiften.redux.saga.CommonSagaEffects.retry;
 import static org.swiften.redux.saga.rx.ReduxSagaEffects.just;
 
 /**
@@ -15,7 +20,14 @@ import static org.swiften.redux.saga.rx.ReduxSagaEffects.just;
 public final class ReduxSagaTest {
   @Test
   public void test_invokingSagaWithJava_shouldWork() {
-    /// Setup
-    just(1);
+    // Setup
+    Object value = just(1)
+      .transform(map(i -> i * 2))
+      .transform(retry(3))
+      .invoke(GlobalScope.INSTANCE, 0, a -> Unit.INSTANCE)
+      .nextValue(1000);
+
+    // When && Then
+    Assert.assertEquals(value, 2);
   }
 }

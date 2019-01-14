@@ -10,12 +10,12 @@ package org.swiften.redux.saga
 internal class RetryEffect<State, R>(
   private val source: IReduxSagaEffect<State, R>,
   private val times: Long
-) : IReduxSagaEffect<State, R> {
+) : ReduxSagaEffect<State, R>() {
   override fun invoke(p1: Input<State>) = this.source.invoke(p1).retry(this.times)
 }
 
 /** Invoke a [RetryEffect] on [this] */
-fun <State, R> IReduxSagaEffect<State, R>.retry(times: Long) =
+fun <State, R> ReduxSagaEffect<State, R>.retry(times: Long) =
   this.transform(CommonSagaEffects.retry(times))
 
-fun <State, R> IReduxSagaEffect<State, R>.retry(times: Int) = this.retry(times.toLong())
+fun <State, R> ReduxSagaEffect<State, R>.retry(times: Int) = this.retry(times.toLong())

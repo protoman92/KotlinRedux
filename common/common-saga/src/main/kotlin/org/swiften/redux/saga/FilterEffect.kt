@@ -10,11 +10,10 @@ package org.swiften.redux.saga
 internal class FilterEffect<State, R>(
   private val source: IReduxSagaEffect<State, R>,
   private val selector: (R) -> Boolean
-) : IReduxSagaEffect<State, R> {
-  override fun invoke(p1: Input<State>) =
-    this.source.invoke(p1).filter(this.selector)
+) : ReduxSagaEffect<State, R>() {
+  override fun invoke(p1: Input<State>) = this.source.invoke(p1).filter(this.selector)
 }
 
 /** Invoke a [FilterEffect] on the current [IReduxSagaEffect] */
-fun <State, R> IReduxSagaEffect<State, R>.filter(selector: (R) -> Boolean) =
+fun <State, R> ReduxSagaEffect<State, R>.filter(selector: (R) -> Boolean) =
   this.transform(CommonSagaEffects.filter(selector))

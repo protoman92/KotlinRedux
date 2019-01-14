@@ -13,39 +13,37 @@ import kotlinx.coroutines.Deferred
 internal class CatchErrorEffect<State, R>(
   private val source: IReduxSagaEffect<State, R>,
   private val catcher: (Throwable) -> R
-) : IReduxSagaEffect<State, R> {
-  override fun invoke(p1: Input<State>) =
-    this.source.invoke(p1).catchError(this.catcher)
+) : ReduxSagaEffect<State, R>() {
+  override fun invoke(p1: Input<State>) = this.source.invoke(p1).catchError(this.catcher)
 }
 
 /** Similar to [CatchErrorEffect], but handles suspending [catcher] */
 internal class SuspendCatchErrorEffect<State, R>(
   private val source: IReduxSagaEffect<State, R>,
   private val catcher: suspend CoroutineScope.(Throwable) -> R
-) : IReduxSagaEffect<State, R> {
-  override fun invoke(p1: Input<State>) =
-    this.source.invoke(p1).catchErrorSuspend(this.catcher)
+) : ReduxSagaEffect<State, R>() {
+  override fun invoke(p1: Input<State>) = this.source.invoke(p1).catchErrorSuspend(this.catcher)
 }
 
 /** Similar to [CatchErrorEffect], but handles async [catcher] */
 internal class AsyncCatchErrorEffect<State, R>(
   private val source: IReduxSagaEffect<State, R>,
   private val catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>
-) : IReduxSagaEffect<State, R> {
+) : ReduxSagaEffect<State, R>() {
   override fun invoke(p1: Input<State>) =
     this.source.invoke(p1).catchErrorAsync(this.catcher)
 }
 
 /** Catch [Throwable] from upstream with [catcher] */
-fun <State, R> IReduxSagaEffect<State, R>.catchError(catcher: (Throwable) -> R) =
+fun <State, R> ReduxSagaEffect<State, R>.catchError(catcher: (Throwable) -> R) =
   this.transform(CommonSagaEffects.catchError(catcher))
 
 /** Invoke a [SuspendCatchErrorEffect] on [this] */
-fun <State, R> IReduxSagaEffect<State, R>.catchErrorSuspend(
+fun <State, R> ReduxSagaEffect<State, R>.catchErrorSuspend(
   catcher: suspend CoroutineScope.(Throwable) -> R
 ) = this.transform(CommonSagaEffects.catchErrorSuspend(catcher))
 
 /** Invoke a [AsyncCatchErrorEffect] on [this] */
-fun <State, R> IReduxSagaEffect<State, R>.catchErrorAsync(
+fun <State, R> ReduxSagaEffect<State, R>.catchErrorAsync(
   catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>
 ) = this.transform(CommonSagaEffects.catchErrorAsync(catcher))
