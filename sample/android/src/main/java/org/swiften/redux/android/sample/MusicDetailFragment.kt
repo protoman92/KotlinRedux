@@ -47,8 +47,8 @@ class MusicDetailFragment : Fragment(),
       }
     }
 
-  private val trackOpenListener: View.OnClickListener by lazy {
-    View.OnClickListener { this.variableProps?.actions?.also { a -> a.goToTrackInformation() } }
+  private val trackOpenListener = View.OnClickListener {
+    this.variableProps?.actions?.also { a -> a.goToTrackInformation() }
   }
 
   override fun onCreateView(

@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.artistName
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
-import org.swiften.redux.android.ui.core.DistinctTextWatcher
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.IReduxDispatcher
@@ -84,8 +83,8 @@ class SearchFragment : Fragment(),
       }
     }
 
-    private val clickListener: View.OnClickListener by lazy {
-      View.OnClickListener { _ -> this.variableProps?.actions?.also { it.goToMusicDetail() } }
+    private val clickListener = View.OnClickListener { _ ->
+      this.variableProps?.actions?.also { it.goToMusicDetail() }
     }
 
     override fun beforePropInjectionStarts() {
@@ -129,16 +128,14 @@ class SearchFragment : Fragment(),
     }
   }
 
-  private val querySearchWatcher: TextWatcher by lazy {
-    DistinctTextWatcher(object : TextWatcher {
-      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+  private val querySearchWatcher = object : TextWatcher {
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-      override fun afterTextChanged(s: Editable?) {
-        this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
-      }
-    })
+    override fun afterTextChanged(s: Editable?) {
+      this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
+    }
   }
 
   override fun onCreateView(

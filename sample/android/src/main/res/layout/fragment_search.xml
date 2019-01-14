@@ -4,8 +4,9 @@
   ~ Any attempt to reproduce this source code in any form shall be met with legal actions.
   -->
 
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@android:color/white"
@@ -29,35 +30,48 @@
     android:paddingEnd="@dimen/spacing1"
     android:hint="@string/search_hint"
     android:inputType="text"
-    android:textSize="@dimen/normal_text"/>
+    android:textSize="@dimen/normal_text"
+    app:layout_constraintTop_toTopOf="parent"/>
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/searchResult"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@id/querySearch"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
     android:layout_marginTop="@dimen/spacing1"
-    android:layout_marginLeft="@dimen/spacing2"
-    android:layout_marginStart="@dimen/spacing2"
-    android:layout_marginRight="@dimen/spacing2"
-    android:layout_marginEnd="@dimen/spacing2"
     android:layout_marginBottom="@dimen/spacing2"
     android:inputType="textNoSuggestions"
-    android:saveEnabled="false"/>
+    android:saveEnabled="false"
+    app:layout_constraintTop_toBottomOf="@id/querySearch"
+    app:layout_constraintLeft_toLeftOf="@id/querySearch"
+    app:layout_constraintStart_toStartOf="@id/querySearch"
+    app:layout_constraintRight_toRightOf="@id/querySearch"
+    app:layout_constraintEnd_toEndOf="@id/querySearch"
+    app:layout_constraintBottom_toBottomOf="parent"/>
 
   <FrameLayout
     android:id="@+id/backgroundDim"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:alpha="0.1"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:alpha="0.3"
     android:background="@android:color/black"
-    android:visibility="gone"/>
+    android:visibility="invisible"
+    app:layout_constraintTop_toTopOf="@id/searchResult"
+    app:layout_constraintLeft_toLeftOf="@id/searchResult"
+    app:layout_constraintStart_toStartOf="@id/searchResult"
+    app:layout_constraintRight_toRightOf="@id/searchResult"
+    app:layout_constraintEnd_toEndOf="@id/searchResult"
+    app:layout_constraintBottom_toBottomOf="@id/searchResult"/>
 
   <ProgressBar
     android:id="@+id/progressBar"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
-    android:visibility="gone"/>
+    android:visibility="invisible"
+    app:layout_constraintTop_toTopOf="@id/searchResult"
+    app:layout_constraintLeft_toLeftOf="@id/searchResult"
+    app:layout_constraintStart_toStartOf="@id/searchResult"
+    app:layout_constraintRight_toRightOf="@id/searchResult"
+    app:layout_constraintEnd_toEndOf="@id/searchResult"
+    app:layout_constraintBottom_toBottomOf="@id/searchResult"/>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
