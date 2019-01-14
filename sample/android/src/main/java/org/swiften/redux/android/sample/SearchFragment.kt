@@ -85,7 +85,7 @@ class SearchFragment : Fragment(),
     }
 
     private val clickListener: View.OnClickListener by lazy {
-      View.OnClickListener { this.variableProps?.actions?.also { it.goToMusicDetail() } }
+      View.OnClickListener { _ -> this.variableProps?.actions?.also { it.goToMusicDetail() } }
     }
 
     override fun beforePropInjectionStarts() {

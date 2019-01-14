@@ -9,7 +9,7 @@ import org.swiften.redux.ui.IReduxPropInjector;
 
 /** Created by haipham on 2018/12/19 */
 public final class MainDependency {
-  IReduxPropInjector<State> injector;
+  final IReduxPropInjector<State> injector;
 
   MainDependency(IReduxPropInjector<State> injector) {
     this.injector = injector;

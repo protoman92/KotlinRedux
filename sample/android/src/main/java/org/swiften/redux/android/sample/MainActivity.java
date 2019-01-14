@@ -27,11 +27,12 @@ import static org.swiften.redux.android.ui.core.AndroidReduxKt.injectLifecyclePr
 import static org.swiften.redux.android.ui.core.AndroidReduxKt.startFragmentInjection;
 
 /** Created by haipham on 2018/12/19 */
-class MainActivity extends AppCompatActivity implements
+public final class MainActivity extends AppCompatActivity implements
   IReduxPropContainer<State, Unit, MainActivity.A>,
   IReduxPropMapper<State, Unit, Unit, MainActivity.A> {
   static class A {
-    @NonNull Function0<Unit> goToMainScreen;
+    @NonNull
+    final Function0<Unit> goToMainScreen;
 
     A(@NonNull Function0<Unit> goToMainScreen) {
       this.goToMainScreen = goToMainScreen;

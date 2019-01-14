@@ -179,7 +179,7 @@ inline fun <reified State> startActivityInjection(
     injector,
     inject,
     { it.putSerializable(stateKey, this) },
-    { it.getSerializable(stateKey)?.takeIf { it is State }?.run { this as State } }
+    { b -> b.getSerializable(stateKey)?.takeIf { it is State }?.run { this as State } }
   )
 }
 

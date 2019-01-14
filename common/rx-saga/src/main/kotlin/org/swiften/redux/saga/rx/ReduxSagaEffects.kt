@@ -29,7 +29,7 @@ object ReduxSagaEffects {
   @JvmStatic
   fun <State, R> just(value: R): ReduxSagaEffect<State, R> = JustEffect(value)
 
-  /** Call [CommonSagaEffects.put] with [CommonSagaEffects.just] */
+  /** Call [CommonSagaEffects.put] with [ReduxSagaEffects.just] */
   @JvmStatic
   fun <State, P> put(value: P, actionCreator: (P) -> IReduxAction): ReduxSagaEffect<State, Any> =
     CommonSagaEffects.put<State, P>(actionCreator)(this.just(value))

@@ -28,11 +28,12 @@ internal abstract class TakeEffect<State, P, R>(
    */
   abstract fun flatten(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>): IReduxSagaOutput<R>
 
+  @Suppress("MoveLambdaOutsideParentheses")
   override operator fun invoke(p1: Input<State>): IReduxSagaOutput<R> {
     val subject = PublishProcessor.create<P>()
 
-    val nested = ReduxSagaOutput(
-      p1.scope, subject) { this@TakeEffect.extractor(it)?.also { subject.offer(it) } }
+    val nested = ReduxSagaOutput(p1.scope, subject,
+      { p -> this@TakeEffect.extractor(p)?.also { subject.offer(it) } })
       .debounce(this@TakeEffect.options.debounceMillis)
       .map { this@TakeEffect.creator(it).invoke(p1) }
 

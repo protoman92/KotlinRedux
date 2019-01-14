@@ -39,13 +39,13 @@ interface IReduxSagaOutput<T> {
   /** Trigger every time an [IReduxAction] arrives */
   val onAction: IReduxDispatcher
 
-  /** Catch error with [fallback] */
+  /** Catch error with [catcher] */
   fun catchError(catcher: (Throwable) -> T): IReduxSagaOutput<T>
 
-  /** Catch error with suspending [fallback] */
+  /** Catch error with suspending [catcher] */
   fun catchErrorSuspend(catcher: suspend CoroutineScope.(Throwable) -> T): IReduxSagaOutput<T>
 
-  /** Catch error with async [fallback] */
+  /** Catch error with async [catcher] */
   fun catchErrorAsync(
     catcher: suspend CoroutineScope.(Throwable) -> Deferred<T>
   ): IReduxSagaOutput<T>
