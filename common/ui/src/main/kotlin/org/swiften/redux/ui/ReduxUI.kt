@@ -106,7 +106,8 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     /** If [view] has received an injection before, unsubscribe from that */
     try {
       view.staticProps.subscription.unsubscribe()
-    } catch (e: UninitializedPropertyAccessException) { }
+    } catch (e: UninitializedPropertyAccessException) {
+    } catch (e: NullPointerException) { }
 
     /**
      * Inject [StaticProps] without a valid [StaticProps.subscription] because we want
