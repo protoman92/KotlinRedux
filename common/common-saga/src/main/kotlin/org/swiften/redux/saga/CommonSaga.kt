@@ -40,14 +40,14 @@ interface IReduxSagaOutput<T> {
   val onAction: IReduxDispatcher
 
   /** Catch error with [fallback] */
-  fun catchError(fallback: (Throwable) -> T): IReduxSagaOutput<T>
+  fun catchError(catcher: (Throwable) -> T): IReduxSagaOutput<T>
 
   /** Catch error with suspending [fallback] */
-  fun catchErrorSuspend(fallback: suspend CoroutineScope.(Throwable) -> T): IReduxSagaOutput<T>
+  fun catchErrorSuspend(catcher: suspend CoroutineScope.(Throwable) -> T): IReduxSagaOutput<T>
 
   /** Catch error with async [fallback] */
   fun catchErrorAsync(
-    fallback: suspend CoroutineScope.(Throwable) -> Deferred<T>
+    catcher: suspend CoroutineScope.(Throwable) -> Deferred<T>
   ): IReduxSagaOutput<T>
 
   /** Delay each emission by [delayMillis] */
@@ -56,8 +56,8 @@ interface IReduxSagaOutput<T> {
   /** Terminate internal stream subscriptions */
   fun dispose()
 
-  /** Perform some side effects with [perform] on each emission */
-  fun doOnValue(perform: (T) -> Unit): IReduxSagaOutput<T>
+  /** Perform some side effects with [performer] on each emission */
+  fun doOnValue(performer: (T) -> Unit): IReduxSagaOutput<T>
 
   /**
    * Debounce emissions by [timeMillis], i.e. accepting only values that are [timeMillis] away
@@ -65,8 +65,8 @@ interface IReduxSagaOutput<T> {
    */
   fun debounce(timeMillis: Long): IReduxSagaOutput<T>
 
-  /** Filter out values that do not pass [selector] */
-  fun filter(selector: (T) -> Boolean): IReduxSagaOutput<T>
+  /** Filter out values that do not pass [predicate] */
+  fun filter(predicate: (T) -> Boolean): IReduxSagaOutput<T>
 
   /** Map emissions from [T] to [T2] with [transform] */
   fun <T2> map(transform: (T) -> T2): IReduxSagaOutput<T2>

@@ -17,10 +17,10 @@ import org.swiften.redux.saga.ReduxSagaEffect
  * autocomplete search implementation. Contrast this with [TakeEveryEffect]
  */
 internal class TakeLatestEffect<State, P, R>(
-  extract: Function1<IReduxAction, P?>,
-  block: Function1<P, ReduxSagaEffect<State, R>>,
+  extractor: Function1<IReduxAction, P?>,
+  creator: Function1<P, ReduxSagaEffect<State, R>>,
   options: TakeEffectOptions
-) : TakeEffect<State, P, R>(extract, block, options) {
+) : TakeEffect<State, P, R>(extractor, creator, options) {
   @ExperimentalCoroutinesApi
   override fun flattenOutput(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>) =
     nestedOutput.switchMap { it }

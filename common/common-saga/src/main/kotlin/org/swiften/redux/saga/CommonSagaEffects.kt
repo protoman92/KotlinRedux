@@ -34,28 +34,28 @@ object CommonSagaEffects {
 
   /** Create a [DoOnValueEffect] instance */
   @JvmStatic
-  fun <State, R> doOnValue(block: (R) -> Unit): IReduxSagaEffectTransformer<State, R, R> =
-    { DoOnValueEffect(it, block) }
+  fun <State, R> doOnValue(performer: (R) -> Unit): IReduxSagaEffectTransformer<State, R, R> =
+    { DoOnValueEffect(it, performer) }
 
   /** Create a [FilterEffect] */
   @JvmStatic
-  fun <State, R> filter(selector: (R) -> Boolean): IReduxSagaEffectTransformer<State, R, R> =
-    { FilterEffect(it, selector) }
+  fun <State, R> filter(predicate: (R) -> Boolean): IReduxSagaEffectTransformer<State, R, R> =
+    { FilterEffect(it, predicate) }
 
   /** Create a [MapEffect] */
   @JvmStatic
-  fun <State, P, R> map(block: (P) -> R): IReduxSagaEffectTransformer<State, P, R> =
-    { MapEffect(it, block) }
+  fun <State, P, R> map(transformer: (P) -> R): IReduxSagaEffectTransformer<State, P, R> =
+    { MapEffect(it, transformer) }
 
   /** Create a [SuspendMapEffect] */
   @JvmStatic
-  fun <State, P, R> mapSuspend(block: suspend CoroutineScope.(P) -> R):
-    IReduxSagaEffectTransformer<State, P, R> = { SuspendMapEffect(it, block) }
+  fun <State, P, R> mapSuspend(transformer: suspend CoroutineScope.(P) -> R):
+    IReduxSagaEffectTransformer<State, P, R> = { SuspendMapEffect(it, transformer) }
 
   /** Create a [AsyncMapEffect] */
   @JvmStatic
-  fun <State, P, R> mapAsync(block: suspend CoroutineScope.(P) -> Deferred<R>):
-    IReduxSagaEffectTransformer<State, P, R> = { AsyncMapEffect(it, block) }
+  fun <State, P, R> mapAsync(transformer: suspend CoroutineScope.(P) -> Deferred<R>):
+    IReduxSagaEffectTransformer<State, P, R> = { AsyncMapEffect(it, transformer) }
 
   /** Create a [PutEffect] */
   @JvmStatic
@@ -72,8 +72,8 @@ object CommonSagaEffects {
   fun <State, R, R2, R3> then(
     source1: IReduxSagaEffect<State, R>,
     source2: IReduxSagaEffect<State, R2>,
-    selector: Function2<R, R2, R3>
-  ): ReduxSagaEffect<State, R3> = ThenEffect(source1, source2, selector)
+    combiner: Function2<R, R2, R3>
+  ): ReduxSagaEffect<State, R3> = ThenEffect(source1, source2, combiner)
 
   /** Create a [TimeoutEffect] */
   @JvmStatic

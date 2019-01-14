@@ -16,12 +16,12 @@ import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/23 */
 /**
- * [TakeEffect] instances produces streams that filter [IReduxAction] with [extract] and pluck
- * out the appropriate ones to perform additional work on with [block].
+ * [TakeEffect] instances produces streams that filter [IReduxAction] with [extractor] and pluck
+ * out the appropriate ones to perform additional work on with [creator].
  */
 internal abstract class TakeEffect<State, P, R>(
-  private val extract: Function1<IReduxAction, P?>,
-  private val block: Function1<P, ReduxSagaEffect<State, R>>,
+  private val extractor: Function1<IReduxAction, P?>,
+  private val creator: Function1<P, ReduxSagaEffect<State, R>>,
   private val options: TakeEffectOptions
 ) : ReduxSagaEffect<State, R> {
   /**
@@ -37,10 +37,10 @@ internal abstract class TakeEffect<State, P, R>(
     val nested = ReduxSagaOutput(this, p1.scope,
       p1.scope.produce {
         for (action in actionChannel) {
-          val param = this@TakeEffect.extract(action)
+          val param = this@TakeEffect.extractor(action)
 
           if (param != null) {
-            this@produce.send(this@TakeEffect.block(param).invoke(p1))
+            this@produce.send(this@TakeEffect.creator(param).invoke(p1))
           }
         }
       }) { action -> p1.scope.launch { actionChannel.send(action) } }

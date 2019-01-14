@@ -14,28 +14,28 @@ import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/23 */
 /**
- * [TakeEffect] instances produces streams that filter [IReduxAction] with [extract] and pluck out
- * the appropriate ones to perform additional work on with [block].
+ * [TakeEffect] instances produces streams that filter [IReduxAction] with [extractor] and pluck out
+ * the appropriate ones to perform additional work on with [creator].
  */
 internal abstract class TakeEffect<State, P, R>(
-  private val extract: Function1<IReduxAction, P?>,
-  private val block: Function1<P, IReduxSagaEffect<State, R>>,
+  private val extractor: Function1<IReduxAction, P?>,
+  private val creator: Function1<P, IReduxSagaEffect<State, R>>,
   private val options: TakeEffectOptions
 ) : ReduxSagaEffect<State, R>() {
   /**
-   * Flatten an [ReduxSagaOutput] that streams [ReduxSagaOutput] to access the values streamed by
-   * the inner [ReduxSagaOutput].
+   * Flatten an [IReduxSagaOutput] that streams [IReduxSagaOutput] to access the values streamed by
+   * the inner [IReduxSagaOutput].
    */
-  abstract fun flattenOutput(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>): IReduxSagaOutput<R>
+  abstract fun flatten(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>): IReduxSagaOutput<R>
 
   override operator fun invoke(p1: Input<State>): IReduxSagaOutput<R> {
     val subject = PublishProcessor.create<P>()
 
     val nested = ReduxSagaOutput(
-      p1.scope, subject) { this@TakeEffect.extract(it)?.also { subject.offer(it) } }
+      p1.scope, subject) { this@TakeEffect.extractor(it)?.also { subject.offer(it) } }
       .debounce(this@TakeEffect.options.debounceMillis)
-      .map { this@TakeEffect.block(it).invoke(p1) }
+      .map { this@TakeEffect.creator(it).invoke(p1) }
 
-    return this.flattenOutput(nested)
+    return this.flatten(nested)
   }
 }

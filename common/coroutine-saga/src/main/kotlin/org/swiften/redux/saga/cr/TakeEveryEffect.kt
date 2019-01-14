@@ -16,10 +16,10 @@ import org.swiften.redux.saga.ReduxSagaEffect
  * flattens and emits all values. Contrast this with [TakeLatestEffect].
  */
 internal class TakeEveryEffect<State, P, R>(
-  extract: Function1<IReduxAction, P?>,
-  block: Function1<P, ReduxSagaEffect<State, R>>,
+  extractor: Function1<IReduxAction, P?>,
+  transformer: Function1<P, ReduxSagaEffect<State, R>>,
   options: TakeEffectOptions
-) : TakeEffect<State, P, R>(extract, block, options) {
+) : TakeEffect<State, P, R>(extractor, transformer, options) {
   @ExperimentalCoroutinesApi
   override fun flattenOutput(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>) =
     nestedOutput.flatMap { it }

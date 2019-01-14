@@ -53,8 +53,8 @@ abstract class CommonSagaEffectTest : CoroutineScope {
   @ObsoleteCoroutinesApi
   fun test_takeEffect_shouldTakeCorrectActions(
     createTakeEffect: (
-      extract: Function1<TakeAction, Int?>,
-      block: Function1<Int, IReduxSagaEffect<State, Any>>
+      extractor: Function1<TakeAction, Int?>,
+      creator: Function1<Int, IReduxSagaEffect<State, Any>>
     ) -> ReduxSagaEffect<State, Any>,
     actualValues: List<Int>
   ) {

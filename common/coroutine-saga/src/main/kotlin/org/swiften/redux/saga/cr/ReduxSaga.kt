@@ -129,8 +129,8 @@ class ReduxSagaOutput<T> internal constructor(
       }
     })
 
-  override fun filter(selector: (T) -> Boolean) = this.with("Filter",
-    this.channel.filter(this.coroutineContext) { selector(it) })
+  override fun filter(predicate: (T) -> Boolean) = this.with("Filter",
+    this.channel.filter(this.coroutineContext) { predicate(it) })
 
   @ExperimentalCoroutinesApi
   override fun debounce(timeMillis: Long): ReduxSagaOutput<T> {
@@ -156,9 +156,9 @@ class ReduxSagaOutput<T> internal constructor(
   })
 
   @ExperimentalCoroutinesApi
-  override fun catchError(fallback: (Throwable) -> T) = this.with("CatchError", this.produce {
+  override fun catchError(catcher: (Throwable) -> T) = this.with("CatchError", this.produce {
     try { this@ReduxSagaOutput.channel.toChannel(this) } catch (e1: Throwable) {
-      try { this.send(fallback(e1)); this.close() } catch (e2: Throwable) { this.close(e2) }
+      try { this.send(catcher(e1)); this.close() } catch (e2: Throwable) { this.close(e2) }
     }
   })
 

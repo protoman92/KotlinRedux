@@ -18,8 +18,8 @@ import org.swiften.redux.saga.ReduxSagaEffect
 object ReduxSagaEffects {
   /** Create a [CallEffect] */
   @JvmStatic
-  fun <State, P, R> call(block: (P) -> Single<R>): IReduxSagaEffectTransformer<State, P, R> =
-    { CallEffect(it, block) }
+  fun <State, P, R> call(transformer: (P) -> Single<R>): IReduxSagaEffectTransformer<State, P, R> =
+    { CallEffect(it, transformer) }
 
   /** Create a [FromEffect] */
   @JvmStatic
@@ -45,37 +45,37 @@ object ReduxSagaEffects {
   /** Create a [TakeEveryEffect] instance. */
   @JvmStatic
   fun <State, P, R> takeEvery(
-    extract: Function1<IReduxAction, P?>,
-    block: Function1<P, IReduxSagaEffect<State, R>>,
+    extractor: Function1<IReduxAction, P?>,
+    creator: Function1<P, IReduxSagaEffect<State, R>>,
     options: TakeEffectOptions = TakeEffectOptions()
-  ): ReduxSagaEffect<State, R> = TakeEveryEffect(extract, block, options)
+  ): ReduxSagaEffect<State, R> = TakeEveryEffect(extractor, creator, options)
 
   /** Convenience function to create [TakeEveryEffect] for a specific type of [IReduxAction] */
   @JvmStatic
   inline fun <State, reified Action, P, R> takeEveryAction(
-    crossinline extract: Function1<Action, P?>,
-    noinline block: Function1<P, IReduxSagaEffect<State, R>>,
+    crossinline extractor: Function1<Action, P?>,
+    noinline creator: Function1<P, IReduxSagaEffect<State, R>>,
     options: TakeEffectOptions = TakeEffectOptions()
   ) where Action : IReduxAction = this.takeEvery(
-    { when (it) {is Action -> extract(it); else -> null } },
-    block, options
+    { when (it) {is Action -> extractor(it); else -> null } },
+    creator, options
   )
 
   /** Create a [TakeLatestEffect] instance. */
   @JvmStatic
   fun <State, P, R> takeLatest(
-    extract: Function1<IReduxAction, P?>,
-    block: Function1<P, IReduxSagaEffect<State, R>>,
+    extractor: Function1<IReduxAction, P?>,
+    creator: Function1<P, IReduxSagaEffect<State, R>>,
     options: TakeEffectOptions = TakeEffectOptions()
-  ): ReduxSagaEffect<State, R> = TakeLatestEffect(extract, block, options)
+  ): ReduxSagaEffect<State, R> = TakeLatestEffect(extractor, creator, options)
 
   /** Convenience function to create [TakeLatestEffect] for a specific type of [IReduxAction] */
   @JvmStatic
   inline fun <State, reified Action, P, R> takeLatestAction(
-    crossinline extract: Function1<Action, P?>,
-    noinline block: Function1<P, IReduxSagaEffect<State, R>>,
+    crossinline extractor: Function1<Action, P?>,
+    noinline creator: Function1<P, IReduxSagaEffect<State, R>>,
     options: TakeEffectOptions = TakeEffectOptions()
   ) where Action : IReduxAction = this.takeLatest(
-    { when (it) {is Action -> extract(it); else -> null } }, block, options
+    { when (it) {is Action -> extractor(it); else -> null } }, creator, options
   )
 }

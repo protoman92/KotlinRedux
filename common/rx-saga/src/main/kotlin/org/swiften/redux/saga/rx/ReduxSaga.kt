@@ -45,8 +45,8 @@ class ReduxSagaOutput<T> internal constructor(
   override fun <T2> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>) =
     this.mapSuspend { transform(it).await() }
 
-  override fun doOnValue(perform: (T) -> Unit) =
-    this.with(this.stream.doOnNext(perform))
+  override fun doOnValue(performer: (T) -> Unit) =
+    this.with(this.stream.doOnNext(performer))
 
   override fun <T2> flatMap(transform: (T) -> IReduxSagaOutput<T2>) =
     this.with(this.stream.flatMap { (transform(it) as ReduxSagaOutput<T2>).stream })
@@ -54,8 +54,8 @@ class ReduxSagaOutput<T> internal constructor(
   override fun <T2> switchMap(transform: (T) -> IReduxSagaOutput<T2>) =
     this.with(this.stream.switchMap { (transform(it) as ReduxSagaOutput<T2>).stream })
 
-  override fun filter(selector: (T) -> Boolean) =
-    this.with(this.stream.filter(selector))
+  override fun filter(predicate: (T) -> Boolean) =
+    this.with(this.stream.filter(predicate))
 
   override fun delay(delayMillis: Long): IReduxSagaOutput<T> {
     if (delayMillis <= 0) { return this }
@@ -67,16 +67,16 @@ class ReduxSagaOutput<T> internal constructor(
     return this.with(this.stream.debounce(timeMillis, TimeUnit.MILLISECONDS))
   }
 
-  override fun catchError(fallback: (Throwable) -> T) =
-    this.with(this.stream.onErrorReturn(fallback))
+  override fun catchError(catcher: (Throwable) -> T) =
+    this.with(this.stream.onErrorReturn(catcher))
 
-  override fun catchErrorSuspend(fallback: suspend CoroutineScope.(Throwable) -> T) =
+  override fun catchErrorSuspend(catcher: suspend CoroutineScope.(Throwable) -> T) =
     this.with(this.stream.onErrorResumeNext { e: Throwable ->
-      this@ReduxSagaOutput.rxSingle { Boxed(fallback(this, e)) }.map { it.value }.toFlowable()
+      this@ReduxSagaOutput.rxSingle { Boxed(catcher(this, e)) }.map { it.value }.toFlowable()
     })
 
-  override fun catchErrorAsync(fallback: suspend CoroutineScope.(Throwable) -> Deferred<T>) =
-    this.catchErrorSuspend { fallback(it).await() }
+  override fun catchErrorAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<T>) =
+    this.catchErrorSuspend { catcher(it).await() }
 
   override fun dispose() { this.disposable.clear(); this.onDispose() }
 

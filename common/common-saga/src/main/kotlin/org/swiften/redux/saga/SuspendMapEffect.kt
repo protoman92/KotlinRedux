@@ -11,12 +11,12 @@ import kotlinx.coroutines.CoroutineScope
 /** Similar to [MapEffect], but handles suspend functions */
 internal class SuspendMapEffect<State, P, R>(
   private val source: IReduxSagaEffect<State, P>,
-  private val block: suspend CoroutineScope.(P) -> R
+  private val transformer: suspend CoroutineScope.(P) -> R
 ) : ReduxSagaEffect<State, R>() {
-  override fun invoke(p1: Input<State>) = this.source.invoke(p1).mapSuspend(this.block)
+  override fun invoke(p1: Input<State>) = this.source.invoke(p1).mapSuspend(this.transformer)
 }
 
 /** Invoke a [SuspendMapEffect] on [this] */
 fun <State, P, R> ReduxSagaEffect<State, P>.mapSuspend(
-  block: suspend CoroutineScope.(P) -> R
-) = this.transform(CommonSagaEffects.mapSuspend(block))
+  transformer: suspend CoroutineScope.(P) -> R
+) = this.transform(CommonSagaEffects.mapSuspend(transformer))

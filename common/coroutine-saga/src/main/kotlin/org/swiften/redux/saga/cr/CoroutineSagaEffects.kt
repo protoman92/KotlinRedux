@@ -30,43 +30,39 @@ fun <State, R> ReduxSagaEffects.select(selector: (State) -> R): ReduxSagaEffect<
 
 /** Create a [TakeEveryEffect] instance. */
 fun <State, P, R> ReduxSagaEffects.takeEvery(
-  extract: Function1<IReduxAction, P?>,
-  block: Function1<P, ReduxSagaEffect<State, R>>,
+  extractor: Function1<IReduxAction, P?>,
+  creator: Function1<P, ReduxSagaEffect<State, R>>,
   options: TakeEffectOptions = TakeEffectOptions()
-): ReduxSagaEffect<State, R> = TakeEveryEffect(extract, block, options)
+): ReduxSagaEffect<State, R> = TakeEveryEffect(extractor, creator, options)
 
 /** Convenience function to create [TakeEveryEffect] for a specific type of [IReduxAction] */
 inline fun <State, reified Action, P, R> ReduxSagaEffects.takeEveryAction(
-  crossinline extract: Function1<Action, P?>,
-  noinline block: Function1<P, ReduxSagaEffect<State, R>>,
+  crossinline extractor: Function1<Action, P?>,
+  noinline creator: Function1<P, ReduxSagaEffect<State, R>>,
   options: TakeEffectOptions = TakeEffectOptions()
 ) where Action: IReduxAction = this.takeEvery(
   {
     when (it) {
-      is Action -> extract(it); else -> null
+      is Action -> extractor(it); else -> null
     }
   },
-  block, options
+  creator, options
 )
 
 /** Create a [TakeLatestEffect] instance. */
 fun <State, P, R> ReduxSagaEffects.takeLatest(
-  extract: Function1<IReduxAction, P?>,
-  block: Function1<P, ReduxSagaEffect<State, R>>,
+  extractor: Function1<IReduxAction, P?>,
+  creator: Function1<P, ReduxSagaEffect<State, R>>,
   options: TakeEffectOptions = TakeEffectOptions()
 ): ReduxSagaEffect<State, R> =
-  TakeLatestEffect(extract, block, options)
+  TakeLatestEffect(extractor, creator, options)
 
 /** Convenience function to create [TakeLatestEffect] for a specific type of [IReduxAction] */
 inline fun <State, reified Action, P, R> ReduxSagaEffects.takeLatestAction(
-  crossinline extract: Function1<Action, P?>,
-  noinline block: Function1<P, ReduxSagaEffect<State, R>>,
+  crossinline extractor: Function1<Action, P?>,
+  noinline creator: Function1<P, ReduxSagaEffect<State, R>>,
   options: TakeEffectOptions = TakeEffectOptions()
 ) where Action: IReduxAction = this.takeLatest(
-  {
-    when (it) {
-      is Action -> extract(it); else -> null
-    }
-  },
-  block, options
+  { when (it) {is Action -> extractor(it); else -> null } },
+  creator, options
 )
