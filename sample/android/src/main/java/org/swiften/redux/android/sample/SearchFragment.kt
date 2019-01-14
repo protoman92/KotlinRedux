@@ -59,8 +59,7 @@ class SearchFragment : Fragment(),
     private val parent: View,
     private val trackName: TextView,
     private val artistName: TextView
-  ) :
-    RecyclerView.ViewHolder(parent),
+  ) : RecyclerView.ViewHolder(parent),
     IReduxPropContainer<State, ViewHolder.S1, ViewHolder.A1>,
     IReduxPropMapper<State, Int, ViewHolder.S1, ViewHolder.A1> by ViewHolder {
     data class S1(val trackName: String?, val artistName: String?)
@@ -78,13 +77,12 @@ class SearchFragment : Fragment(),
 
     override lateinit var staticProps: StaticProps<State>
 
-    override var variableProps
-      by Delegates.observable<VariableProps<S1, A1>?>(null) { _, _, p ->
-        p?.also {
-          this.trackName.text = it.next.trackName
-          this.artistName.text = it.next.artistName
-        }
+    override var variableProps by Delegates.observable<VariableProps<S1, A1>?>(null) { _, _, p ->
+      p?.also {
+        this.trackName.text = it.next.trackName
+        this.artistName.text = it.next.artistName
       }
+    }
 
     private val clickListener: View.OnClickListener by lazy {
       View.OnClickListener { this.variableProps?.actions?.also { it.goToMusicDetail() } }
@@ -115,22 +113,21 @@ class SearchFragment : Fragment(),
 
   override lateinit var staticProps: StaticProps<State>
 
-  override var variableProps
-    by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
-      p?.also { prop ->
-        if (prop.next.loading == true) {
-          this.backgroundDim.visibility = View.VISIBLE
-          this.progressBar.visibility = View.VISIBLE
-        } else {
-          this.backgroundDim.visibility = View.GONE
-          this.progressBar.visibility = View.GONE
-        }
+  override var variableProps by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
+    p?.also { prop ->
+      if (prop.next.loading == true) {
+        this.backgroundDim.visibility = View.VISIBLE
+        this.progressBar.visibility = View.VISIBLE
+      } else {
+        this.backgroundDim.visibility = View.GONE
+        this.progressBar.visibility = View.GONE
+      }
 
-        if (prop.next.resultCount != prop.previous?.resultCount) {
-          this.searchResult.adapter?.notifyDataSetChanged()
-        }
+      if (prop.next.resultCount != prop.previous?.resultCount) {
+        this.searchResult.adapter?.notifyDataSetChanged()
       }
     }
+  }
 
   private val querySearchWatcher: TextWatcher by lazy {
     DistinctTextWatcher(object : TextWatcher {

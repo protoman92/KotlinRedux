@@ -5,6 +5,8 @@
 
 package org.swiften.redux.android.sample
 
+import java.io.Serializable
+
 /** Created by haipham on 2019/01/05 */
 data class MusicTrack(
   val artistName: String,
@@ -13,9 +15,9 @@ data class MusicTrack(
   val trackName: String,
   val trackPrice: Double,
   val trackTimeMillis: Int
-)
+) : Serializable
 
 data class MusicResult(
   val resultCount: Int,
   val results: List<MusicTrack>
-)
+) : Serializable

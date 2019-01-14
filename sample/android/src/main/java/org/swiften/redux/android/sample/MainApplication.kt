@@ -18,7 +18,6 @@ import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddlewareProvider
 import org.swiften.redux.saga.ReduxSagaMiddlewareProvider
-import org.swiften.redux.ui.injectStaticProps
 
 /** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
@@ -34,6 +33,7 @@ class MainApplication : Application() {
       createRouterMiddlewareProvider<State, MainRedux.Screen>(
         SingleActivityRouter(this) { activity, screen ->
           val f: Fragment? = when (screen) {
+            is MainRedux.Screen.MainScreen -> MainFragment()
             is MainRedux.Screen.MusicDetail -> MusicDetailFragment()
 
             is MainRedux.Screen.WebView -> {
@@ -46,7 +46,8 @@ class MainApplication : Application() {
           f?.also {
             activity.supportFragmentManager
               .beginTransaction()
-              .replace(R.id.fragment, it)
+              .add(R.id.fragment, it, it.javaClass.canonicalName)
+              .addToBackStack(null)
               .commit()
           }
         }
@@ -59,7 +60,7 @@ class MainApplication : Application() {
 
     this.activityCallback = startActivityInjection(this, injector) {
       when (it) {
-        is MainActivity -> dependency.injector.injectStaticProps(it)
+        is MainActivity -> dependency.injector.injectProps(it, Unit, it)
       }
     }
   }

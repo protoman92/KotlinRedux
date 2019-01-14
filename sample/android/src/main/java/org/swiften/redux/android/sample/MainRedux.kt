@@ -18,6 +18,7 @@ object MainRedux {
   }
 
   sealed class Screen : IReduxRouterScreen {
+    object MainScreen : Screen()
     class MusicDetail(val index: Int) : Screen()
     class WebView(val url: String) : Screen()
   }

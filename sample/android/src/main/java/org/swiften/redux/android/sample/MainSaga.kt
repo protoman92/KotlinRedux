@@ -14,6 +14,7 @@ import org.swiften.redux.saga.rx.ReduxSagaEffects.justPut
 import org.swiften.redux.saga.rx.ReduxSagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.TakeEffectOptions
 import org.swiften.redux.saga.then
+import org.swiften.redux.saga.timeout
 
 /** Created by haipham on 2019/01/04 */
 object MainSaga {
@@ -32,7 +33,8 @@ object MainSaga {
     justPut<State>(MainRedux.Action.UpdateLoadingResult(true))
       .justThen(query)
       .mapAsync { this.async { api.searchMusicStore(it) } }
+      .timeout(10000)
+      .catchError { api.createFakeResult() }
       .put { MainRedux.Action.UpdateMusicResult(it) }
-      .catchError { }
       .then(justPut(MainRedux.Action.UpdateLoadingResult(false)))
 }
