@@ -20,4 +20,4 @@ internal class MapEffect<State, P, R>(
 
 /** Invoke a [MapEffect] on the current [ReduxSagaEffect] */
 fun <State, R, R2> ReduxSagaEffect<State, R>.map(block: (R) -> R2) =
-  this.transform(ReduxSagaEffects.map(block))
+  this.transform(CommonSagaEffects.map(block))

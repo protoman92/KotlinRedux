@@ -8,7 +8,6 @@ package org.swiften.redux.saga.rx
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.Input
 import org.swiften.redux.saga.ReduxSagaEffect
-import org.swiften.redux.saga.ReduxSagaEffects
 import org.swiften.redux.saga.map
 
 /** Created by haipham on 2019/01/10 */

@@ -15,12 +15,15 @@ import kotlinx.coroutines.rx2.rxFlowable
 import kotlinx.coroutines.withTimeoutOrNull
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.CommonSagaEffectTest
-import org.swiften.redux.saga.ReduxSagaEffects
 import org.swiften.redux.saga.cast
 import org.swiften.redux.saga.catchError
 import org.swiften.redux.saga.invoke
 import org.swiften.redux.saga.map
 import org.swiften.redux.saga.mapAsync
+import org.swiften.redux.saga.rx.ReduxSagaEffects.from
+import org.swiften.redux.saga.rx.ReduxSagaEffects.just
+import org.swiften.redux.saga.rx.ReduxSagaEffects.takeEveryAction
+import org.swiften.redux.saga.rx.ReduxSagaEffects.takeLatestAction
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.net.URL
@@ -28,34 +31,34 @@ import java.util.Collections
 
 /** Created by haipham on 2018/12/23 */
 class SagaEffectTest : CommonSagaEffectTest() {
-  override fun <T> justEffect(value: T) = ReduxSagaEffects.just<State, T>(value)
+  override fun <T> justEffect(value: T) = just<State, T>(value)
 
   @ExperimentalCoroutinesApi
   override fun <T : Any> fromEffect(vararg values: T) =
-    ReduxSagaEffects.from<State, T>(this.rxFlowable { values.forEach { this.send(it) } })
+    from<State, T>(this.rxFlowable { values.forEach { this.send(it) } })
 
   @Test
   @ObsoleteCoroutinesApi
   fun `Take every effect should take all actions`() {
     test_takeEffect_shouldTakeCorrectActions(
-      { a, b -> ReduxSagaEffects.takeEveryAction(a, b) }, arrayListOf(0, 1, 2, 3))
+      { a, b -> takeEveryAction(a, b) }, arrayListOf(0, 1, 2, 3))
   }
 
   @Test
   @ObsoleteCoroutinesApi
   fun `Take latest effect should take latest actions`() {
     test_takeEffect_shouldTakeCorrectActions(
-      { a, b -> ReduxSagaEffects.takeLatestAction(a, b) }, arrayListOf(3))
+      { a, b -> takeLatestAction(a, b) }, arrayListOf(3))
   }
 
   @Test
   fun `Select effect should extract some value from a state`() {
     // Setup
-    val sourceOutput1 = ReduxSagaEffects.just<State, Int>(1)
+    val sourceOutput1 = just<State, Int>(1)
       .select({ 2 }, { a, b -> a + b })
       .invoke(this, State()) { }
 
-    val sourceOutput2 = ReduxSagaEffects.just<State, Int>(2)
+    val sourceOutput2 = just<State, Int>(2)
       .select { 4 }
       .invoke(this, State()) { }
 
@@ -76,10 +79,10 @@ class SagaEffectTest : CommonSagaEffectTest() {
       "Input: $q, Result: $result"
     }
 
-    val sourceOutput = ReduxSagaEffects.takeLatestAction<Unit, Action, String, Any>(
+    val sourceOutput = takeLatestAction<Unit, Action, String, Any>(
       { it.query },
       { query ->
-        ReduxSagaEffects.just<Unit, String>(query)
+        just<Unit, String>(query)
           .map { "unavailable$it" }
           .mapAsync { this.searchMusicStore(it) }
           .cast<Unit, String, Any>()

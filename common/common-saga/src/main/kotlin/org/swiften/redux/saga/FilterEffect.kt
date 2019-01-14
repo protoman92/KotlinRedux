@@ -17,4 +17,4 @@ internal class FilterEffect<State, R>(
 
 /** Invoke a [FilterEffect] on the current [ReduxSagaEffect] */
 fun <State, R> ReduxSagaEffect<State, R>.filter(selector: (R) -> Boolean) =
-  this.transform(ReduxSagaEffects.filter(selector))
+  this.transform(CommonSagaEffects.filter(selector))

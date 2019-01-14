@@ -9,7 +9,6 @@ import io.reactivex.Single
 import org.swiften.redux.saga.IReduxSagaOutput
 import org.swiften.redux.saga.Input
 import org.swiften.redux.saga.ReduxSagaEffect
-import org.swiften.redux.saga.ReduxSagaEffects
 
 /** Created by haipham on 2019/01/05 */
 /** [ReduxSagaEffect] whose [IReduxSagaOutput] awaits for a [Single] to complete */
