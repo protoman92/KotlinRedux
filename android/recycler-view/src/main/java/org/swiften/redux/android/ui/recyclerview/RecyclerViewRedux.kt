@@ -12,6 +12,7 @@ import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropInjector
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.unsubscribeSafely
 
 /** Created by haipham on 2019/01/08 */
 /**
@@ -59,10 +60,7 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
     override fun onViewRecycled(holder: VH) {
       super.onViewRecycled(holder)
       adapter.onViewRecycled(holder)
-
-      try {
-        holder.staticProps.subscription.unsubscribe()
-      } catch (e: UninitializedPropertyAccessException) { }
+      holder.unsubscribeSafely()
     }
 
     override fun onViewAttachedToWindow(holder: VH) {

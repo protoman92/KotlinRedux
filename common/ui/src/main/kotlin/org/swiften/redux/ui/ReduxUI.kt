@@ -83,7 +83,7 @@ interface IReduxPropInjector<State> : IReduxDispatchContainer,
 /** Container for an [IReduxPropContainer] static properties */
 class StaticProps<State>(
   val injector: IReduxPropInjector<State>,
-  val subscription: ReduxSubscription
+  internal val subscription: ReduxSubscription
 )
 
 /** Container for an [IReduxPropContainer] mutable properties */
@@ -104,10 +104,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
   ): ReduxSubscription {
     /** If [view] has received an injection before, unsubscribe from that */
-    try {
-      view.staticProps.subscription.unsubscribe()
-    } catch (e: UninitializedPropertyAccessException) {
-    } catch (e: NullPointerException) { }
+    view.unsubscribeSafely()
 
     /**
      * Inject [StaticProps] without a valid [StaticProps.subscription] because we want
@@ -165,6 +162,18 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
  */
 fun <S> IReduxPropInjector<S>.injectStaticProps(view: IStaticReduxPropContainer<S>) {
   view.staticProps = StaticProps(this, ReduxSubscription {})
+}
+
+/**
+ * Unsubscribe from [IStaticReduxPropContainer.staticProps] safely, i.e.
+ * catch [UninitializedPropertyAccessException] because this is most probably declare as lateinit
+ * in Kotlin code, and catch [NullPointerException] to satisfy Java code.
+ */
+fun <State> IStaticReduxPropContainer<State>.unsubscribeSafely() {
+  try {
+    this.staticProps.subscription.unsubscribe()
+  } catch (e: UninitializedPropertyAccessException) {
+  } catch (e: NullPointerException) { }
 }
 
 internal fun <T> ReentrantLock.read(fn: () -> T): T {
