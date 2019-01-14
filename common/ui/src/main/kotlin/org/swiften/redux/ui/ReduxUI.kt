@@ -93,10 +93,11 @@ class VariableProps<StateProps, ActionProps>(
 )
 
 /** A [IReduxPropInjector] implementation */
-class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
+open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
   IReduxPropInjector<State>,
   IReduxDispatchContainer by store,
-  IReduxStateContainer<State> by store {
+  IReduxStateContainer<State> by store
+{
   override fun <OutProps, StateProps, ActionProps> injectProps(
     view: IReduxPropContainer<State, StateProps, ActionProps>,
     outProps: OutProps,

@@ -215,17 +215,16 @@ fun endFragmentInjection(
   callback: FragmentManager.FragmentLifecycleCallbacks
 ) = activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
 
-/** [IReduxPropInjector] specifically for Android that calls [injectProps] on the main thread */
-class AndroidPropInjector<State>(
-  private val injector: IReduxPropInjector<State>
-) : IReduxPropInjector<State> by injector {
-  constructor(store: IReduxStore<State>) : this(ReduxPropInjector(store))
-
+/**
+ * [IReduxPropInjector] specifically for Android that calls [injectProps] on the main thread. We
+ * use inheritance here to ensure [StaticProps.injector] is set with this class instance.
+ */
+class AndroidPropInjector<State>(store: IReduxStore<State>) : ReduxPropInjector<State>(store) {
   override fun <OutProps, StateProps, ActionProps> injectProps(
     view: IReduxPropContainer<State, StateProps, ActionProps>,
     outProps: OutProps,
     mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
-  ) = this.injector.injectProps(
+  ) = super.injectProps(
     object : IReduxPropContainer<State, StateProps, ActionProps> {
       override var staticProps: StaticProps<State>
         get() = view.staticProps
