@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) haipham 2019. All rights reserved.
+ * Any attempt to reproduce this source code in any form shall be met with legal actions.
+ */
+
 package org.swiften.redux.core
 
 import kotlinx.coroutines.CoroutineScope
@@ -34,7 +39,8 @@ open class BaseReduxStoreTest : CoroutineScope {
       )
 
       fun random(): Action {
-        return allActions[random.nextInt(allActions.size)]
+        return allActions[random.nextInt(
+          allActions.size)]
       }
     }
 

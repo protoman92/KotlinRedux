@@ -33,7 +33,6 @@ object MainSaga {
     justPut<State>(MainRedux.Action.UpdateLoadingResult(true))
       .justThen(query)
       .mapAsync { this.async { api.searchMusicStore(it) } }
-      .timeout(10000)
       .catchError { api.createFakeResult() }
       .put { MainRedux.Action.UpdateMusicResult(it) }
       .then(justPut(MainRedux.Action.UpdateLoadingResult(false)))

@@ -10,7 +10,7 @@ import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.core.SimpleReduxStore
+import org.swiften.redux.store.SimpleReduxStore
 import org.testng.Assert
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -71,7 +71,9 @@ class PropInjectorTest {
   fun beforeMethod() {
     val store = SimpleReduxStore(S()) { s, a ->
       when (a) {
-        is Action -> when (a) { is Action.SetQuery -> s.copy(query = a.query) }
+        is Action -> when (a) {
+          is Action.SetQuery -> s.copy(query = a.query)
+        }
         else -> s
       }
     }

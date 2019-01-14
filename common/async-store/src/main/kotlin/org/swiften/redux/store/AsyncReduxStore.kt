@@ -1,12 +1,15 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.core
+package org.swiften.redux.store
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.core.IReduxReducer
+import org.swiften.redux.core.IReduxStore
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 

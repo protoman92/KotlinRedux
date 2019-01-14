@@ -6,7 +6,7 @@
 package org.swiften.redux.middleware
 
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.SimpleReduxStore
+import org.swiften.redux.store.SimpleReduxStore
 import org.testng.Assert
 import org.testng.annotations.Test
 

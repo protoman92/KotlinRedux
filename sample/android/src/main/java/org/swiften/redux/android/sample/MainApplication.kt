@@ -13,7 +13,7 @@ import org.swiften.redux.android.ui.core.AndroidPropInjector
 import org.swiften.redux.android.ui.core.endActivityInjection
 import org.swiften.redux.android.ui.core.startActivityInjection
 import org.swiften.redux.android.ui.router.SingleActivityRouter
-import org.swiften.redux.core.AsyncReduxStore
+import org.swiften.redux.store.AsyncReduxStore
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddlewareProvider

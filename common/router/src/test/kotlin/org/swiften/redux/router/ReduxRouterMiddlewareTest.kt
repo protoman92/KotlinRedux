@@ -6,7 +6,7 @@
 package org.swiften.redux.router
 
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.SimpleReduxStore
+import org.swiften.redux.store.SimpleReduxStore
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.testng.Assert
 import org.testng.annotations.AfterMethod

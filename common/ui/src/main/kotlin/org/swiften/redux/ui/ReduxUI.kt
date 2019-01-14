@@ -67,7 +67,8 @@ interface IReduxPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
   IReduxActionPropMapper<GlobalState, OutProps, ActionProps>
 
 /** Inject state and actions into an [IReduxPropContainer] */
-interface IReduxPropInjector<State> : IReduxDispatchContainer, IReduxStateContainer<State> {
+interface IReduxPropInjector<State> : IReduxDispatchContainer,
+  IReduxStateContainer<State> {
   /**
    * Inject [StateProps] and [ActionProps] into [view]. This method does not handle lifecycles, so
    * platform-specific methods can be defined for this purpose.

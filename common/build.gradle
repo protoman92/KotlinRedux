@@ -79,7 +79,22 @@ subprojects {
   }
 }
 
-project('core') {}
+project('core') {
+  configurations { testArtifacts.extendsFrom testRuntime }
+
+  task testJar (type: Jar) {
+    classifier "test"
+    from sourceSets.test.output
+  }
+
+  artifacts {
+    testArtifacts testJar
+  }
+
+  dependencies {
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+  }
+}
 
 project('middleware') {
   dependencies {
@@ -129,6 +144,7 @@ project('rx-saga') {
 project('simple-store') {
   dependencies {
     api project(':common:core')
+    testApi project (path: ":common:core", configuration: 'testArtifacts')
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
   }
 }
@@ -138,6 +154,8 @@ project('async-store') {
     api project(':common:core')
     api project(':common:simple-store')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    testApi project (path: ":common:core", configuration: 'testArtifacts')
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
   }
 }
 

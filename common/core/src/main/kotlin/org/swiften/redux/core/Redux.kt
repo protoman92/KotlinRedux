@@ -1,5 +1,5 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
@@ -47,7 +47,8 @@ interface IReduxStateContainer<State> {
  * Represents a Redux store that can dispatch [IReduxAction] with a [IReduxDispatcher] to mutate
  * some internal [State]. Other objects can subscribe to [State] updates using [subscribe].
  */
-interface IReduxStore<State> : IReduxDispatchContainer, IReduxStateContainer<State> {
+interface IReduxStore<State> : IReduxDispatchContainer,
+  IReduxStateContainer<State> {
   val subscribe: IReduxSubscriber<State>
 }
 
