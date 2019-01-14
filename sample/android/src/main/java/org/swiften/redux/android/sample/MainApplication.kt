@@ -19,6 +19,7 @@ import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddlewareProvider
 import org.swiften.redux.saga.createSagaMiddlewareProvider
 import org.swiften.redux.store.AsyncReduxStore
+import org.swiften.redux.ui.injectStaticProps
 
 /** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
@@ -51,7 +52,7 @@ class MainApplication : Application() {
               .beginTransaction()
               .add(R.id.fragment, it, it.javaClass.canonicalName)
               .addToBackStack(null)
-              .commit()
+              .commitAllowingStateLoss()
           }
         }
       ).middleware,
@@ -63,7 +64,7 @@ class MainApplication : Application() {
 
     this.activityCallback = startActivityInjection(this, injector) {
       when (it) {
-        is MainActivity -> dependency.injector.injectProps(it, Unit, it)
+        is MainActivity -> dependency.injector.injectStaticProps(it)
       }
     }
   }

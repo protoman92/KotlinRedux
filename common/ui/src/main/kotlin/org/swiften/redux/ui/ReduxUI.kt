@@ -161,6 +161,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
  * interactions.
  */
 fun <S> IReduxPropInjector<S>.injectStaticProps(view: IStaticReduxPropContainer<S>) {
+  view.unsubscribeSafely()
   view.staticProps = StaticProps(this, ReduxSubscription {})
 }
 

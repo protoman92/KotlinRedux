@@ -62,17 +62,17 @@ class SearchFragment : Fragment(),
   ) : RecyclerView.ViewHolder(parent),
     IReduxPropContainer<State, ViewHolder.S1, ViewHolder.A1>,
     IReduxPropMapper<State, Int, ViewHolder.S1, ViewHolder.A1> by ViewHolder {
-    data class S1(val trackName: String?, val artistName: String?)
+    data class S1(val trackName: String? = null, val artistName: String? = null)
     data class A1(val goToMusicDetail: () -> Unit)
 
     companion object : IReduxPropMapper<State, Int, S1, A1> {
       override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: Int) =
         A1 { dispatch(MainRedux.Screen.MusicDetail(outProps)) }
 
-      override fun mapState(state: State, outProps: Int) = S1(
-        state.musicResult?.results?.elementAtOrNull(outProps)?.trackName,
-        state.musicResult?.results?.elementAtOrNull(outProps)?.artistName
-      )
+      override fun mapState(state: State, outProps: Int) =
+        state.musicResult?.results
+          ?.elementAtOrNull(outProps)?.let { S1(it.trackName, it.artistName) }
+          ?: S1()
     }
 
     override lateinit var staticProps: StaticProps<State>
