@@ -1,5 +1,5 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
@@ -14,8 +14,8 @@ import org.swiften.redux.middleware.ReduxDispatchWrapper
 
 /** Created by haipham on 2018/12/22 */
 /** [IReduxMiddlewareProvider] implementation for Saga */
-class ReduxSagaMiddlewareProvider<State>(
-  private val effects: List<ReduxSagaEffect<State, Any>>
+internal class ReduxSagaMiddlewareProvider<State>(
+  private val effects: List<ReduxSagaEffect<State, *>>
 ) : IReduxMiddlewareProvider<State> {
   override val middleware: IReduxMiddleware<State> = { input ->
     { wrapper ->
@@ -36,3 +36,7 @@ class ReduxSagaMiddlewareProvider<State>(
     }
   }
 }
+
+/** Create a [ReduxSagaMiddlewareProvider] with [effects] */
+fun <State> createSagaMiddlewareProvider(effects: List<ReduxSagaEffect<State, *>>):
+  IReduxMiddlewareProvider<State> = ReduxSagaMiddlewareProvider(effects)

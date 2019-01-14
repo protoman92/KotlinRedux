@@ -13,11 +13,11 @@ import org.swiften.redux.android.ui.core.AndroidPropInjector
 import org.swiften.redux.android.ui.core.endActivityInjection
 import org.swiften.redux.android.ui.core.startActivityInjection
 import org.swiften.redux.android.ui.router.SingleActivityRouter
-import org.swiften.redux.store.AsyncReduxStore
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddlewareProvider
-import org.swiften.redux.saga.ReduxSagaMiddlewareProvider
+import org.swiften.redux.saga.createSagaMiddlewareProvider
+import org.swiften.redux.store.AsyncReduxStore
 
 /** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
@@ -37,7 +37,7 @@ class MainApplication : Application() {
             is MainRedux.Screen.MusicDetail -> MusicDetailFragment()
 
             is MainRedux.Screen.WebView -> {
-              val browserIntent = Intent (Intent.ACTION_VIEW, Uri.parse(screen.url))
+              val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(screen.url))
               activity.startActivity(browserIntent)
               null
             }
@@ -52,7 +52,7 @@ class MainApplication : Application() {
           }
         }
       ).middleware,
-      ReduxSagaMiddlewareProvider(MainSaga.sagas(repository)).middleware
+      createSagaMiddlewareProvider(MainSaga.sagas(repository)).middleware
     )(AsyncReduxStore(State(), MainRedux.Reducer))
 
     val injector = AndroidPropInjector(store)
