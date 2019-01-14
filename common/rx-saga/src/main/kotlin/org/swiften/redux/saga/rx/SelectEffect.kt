@@ -7,7 +7,7 @@ package org.swiften.redux.saga.rx
 
 import org.swiften.redux.saga.Input
 import org.swiften.redux.saga.ReduxSagaEffect
-import org.swiften.redux.saga.rx.ReduxSagaEffects.just
+import org.swiften.redux.saga.ReduxSagaEffects
 import org.swiften.redux.saga.then
 
 /** Created by haipham on 2019/01/01 */
@@ -19,7 +19,7 @@ internal class SelectEffect<State, R>(
   private val selector: (State) -> R
 ) : ReduxSagaEffect<State, R> {
   override fun invoke(p1: Input<State>) =
-    just<State, R>(this.selector(p1.stateGetter())).invoke(p1)
+    ReduxSagaEffects.just<State, R>(this.selector(p1.stateGetter())).invoke(p1)
 }
 
 /**
