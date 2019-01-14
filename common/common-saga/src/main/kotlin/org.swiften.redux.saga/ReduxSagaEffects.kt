@@ -17,10 +17,8 @@ object ReduxSagaEffects {
     ReduxSagaEffect<State, R> = DelayEffect(source, delayMillis)
 
   /** Create a [CatchErrorEffect] instance. */
-  fun <State, R> catchError(
-    source: ReduxSagaEffect<State, R>,
-    catcher: (Throwable) -> R
-  ): ReduxSagaEffect<State, R> = CatchErrorEffect(source, catcher)
+  fun <State, R> catchError(source: ReduxSagaEffect<State, R>, catcher: (Throwable) -> R):
+    ReduxSagaEffect<State, R> = CatchErrorEffect(source, catcher)
 
   /** Create a [DoOnValueEffect] instance */
   fun <State, R> doOnValue(source: ReduxSagaEffect<State, R>, block: (R) -> Unit):
@@ -47,10 +45,8 @@ object ReduxSagaEffects {
   ): ReduxSagaEffect<State, R> = AsyncMapEffect(source, block)
 
   /** Create a [PutEffect] */
-  fun <State, P> put(
-    source: ReduxSagaEffect<State, P>,
-    actionCreator: (P) -> IReduxAction
-  ): ReduxSagaEffect<State, Any> = PutEffect(source, actionCreator)
+  fun <State, P> put(source: ReduxSagaEffect<State, P>, actionCreator: (P) -> IReduxAction):
+    ReduxSagaEffect<State, Any> = PutEffect(source, actionCreator)
 
   /** Create a [RetryEffect] instance */
   fun <State, R> retry(source: ReduxSagaEffect<State, R>, times: Long):
@@ -62,4 +58,8 @@ object ReduxSagaEffects {
     source2: ReduxSagaEffect<State, R2>,
     selector: Function2<R, R2, R3>
   ): ReduxSagaEffect<State, R3> = ThenEffect(source1, source2, selector)
+
+  /** Create a [TimeoutEffect] */
+  fun <State, R> timeout(source: ReduxSagaEffect<State, R>, millis: Long):
+    ReduxSagaEffect<State, R> = TimeoutEffect(source, millis)
 }

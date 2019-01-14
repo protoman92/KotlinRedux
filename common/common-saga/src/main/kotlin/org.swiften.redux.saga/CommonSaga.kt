@@ -68,14 +68,17 @@ interface IReduxSagaOutput<T> {
   /** Flatten emissions from [IReduxSagaOutput] produced by [transform] */
   fun <T2> flatMap(transform: (T) -> IReduxSagaOutput<T2>): IReduxSagaOutput<T2>
 
+  /** Retry [times] if a [Throwable] is encountered */
+  fun retry(times: Long): IReduxSagaOutput<T>
+
   /**
-   * Flatten emissions from [IReduxSagaOutput] produced by [transform], but accept only those from the
-   * latest one.
+   * Flatten emissions from [IReduxSagaOutput] produced by [transform], but accept only those from
+   * the latest one.
    */
   fun <T2> switchMap(transform: (T) -> IReduxSagaOutput<T2>): IReduxSagaOutput<T2>
 
-  /** Retry [times] if a [Throwable] is encountered */
-  fun retry(times: Long): IReduxSagaOutput<T>
+  /** Time out if no element is emitted within [millis]] */
+  fun timeout(millis: Long): IReduxSagaOutput<T>
 
   /** Get the next [T], but only if it arrives before [timeoutMillis] */
   fun nextValue(timeoutMillis: Long): T?

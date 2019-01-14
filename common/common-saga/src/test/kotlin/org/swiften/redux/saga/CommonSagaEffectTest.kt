@@ -194,4 +194,17 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     // When && Then
     Assert.assertEquals(finalOutput.nextValue(this.timeout), "12")
   }
+
+  @Test
+  fun `Timeout effect should error with timeout`() {
+    // Setup
+    val finalOutput = justEffect(1)
+      .mapSuspend { delay(this@CommonSagaEffectTest.timeout); it }
+      .timeout(1000)
+      .catchError { 100 }
+      .invoke(this, State()) { }
+
+    /// When && Then
+    Assert.assertEquals(finalOutput.nextValue(this.timeout), 100)
+  }
 }
