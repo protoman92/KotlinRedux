@@ -10,7 +10,7 @@ import kotlinx.coroutines.Deferred
 
 /** Created by haipham on 2019/01/07 */
 /** Similar to [MapEffect], but handles async functions */
-internal class AsyncMapEffect<State, P, R : Any>(
+internal class AsyncMapEffect<State, P, R>(
   private val source: ReduxSagaEffect<State, P>,
   private val block: suspend CoroutineScope.(P) -> Deferred<R>
 ) : ReduxSagaEffect<State, R> {
@@ -19,6 +19,6 @@ internal class AsyncMapEffect<State, P, R : Any>(
 }
 
 /** Invoke a [AsyncMapEffect] on [this] */
-fun <State, P, R : Any> ReduxSagaEffect<State, P>.mapAsync(
+fun <State, P, R> ReduxSagaEffect<State, P>.mapAsync(
   block: suspend CoroutineScope.(P) -> Deferred<R>
 ) = ReduxSagaEffects.mapAsync(this, block)

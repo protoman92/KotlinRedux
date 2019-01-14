@@ -33,13 +33,13 @@ object ReduxSagaEffects {
     ReduxSagaEffect<State, R> = MapEffect(param, block)
 
   /** Create a [SuspendMapEffect] */
-  fun <State, P, R : Any> mapSuspend(
+  fun <State, P, R> mapSuspend(
     source: ReduxSagaEffect<State, P>,
     block: suspend CoroutineScope.(P) -> R
   ): ReduxSagaEffect<State, R> = SuspendMapEffect(source, block)
 
   /** Create a [AsyncMapEffect] */
-  fun <State, P, R : Any> mapAsync(
+  fun <State, P, R> mapAsync(
     source: ReduxSagaEffect<State, P>,
     block: suspend CoroutineScope.(P) -> Deferred<R>
   ): ReduxSagaEffect<State, R> = AsyncMapEffect(source, block)

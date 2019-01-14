@@ -7,23 +7,17 @@ package org.swiften.redux.android.sample
 
 /** Created by haipham on 2019/01/05 */
 interface IMainRepository {
-  fun searchMusicStore(input: String): MusicResult
-  fun createFakeResult(): MusicResult
+  fun searchMusicStore(input: String): MusicResult?
+  fun createFakeResult(): MusicResult?
 }
 
 class MainRepository(
   private val api: IMainApi,
   private val decoder: JSONDecoder
 ) : IMainRepository {
-  override fun searchMusicStore(input: String): MusicResult {
+  override fun searchMusicStore(input: String): MusicResult? {
     val result = this.api.searchMusicStore(input)
-    val parsed = this.decoder.parse<MusicResult>(result)
-
-    if (parsed != null) {
-      return parsed
-    } else {
-      throw RuntimeException("Invalid JSON: $result")
-    }
+    return this.decoder.parse<MusicResult>(result)
   }
 
   override fun createFakeResult() = MusicResult(5, arrayListOf(

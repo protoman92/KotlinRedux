@@ -60,10 +60,10 @@ interface IReduxSagaOutput<T> {
   fun <T2> map(transform: (T) -> T2): IReduxSagaOutput<T2>
 
   /** Map emissions from [T] to [T2] with suspending [transform] */
-  fun <T2 : Any> mapSuspend(transform: suspend CoroutineScope.(T) -> T2): IReduxSagaOutput<T2>
+  fun <T2> mapSuspend(transform: suspend CoroutineScope.(T) -> T2): IReduxSagaOutput<T2>
 
   /** Map emissions from [T] to [T2] with async [transform] */
-  fun <T2 : Any> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>): IReduxSagaOutput<T2>
+  fun <T2> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>): IReduxSagaOutput<T2>
 
   /** Flatten emissions from [IReduxSagaOutput] produced by [transform] */
   fun <T2> flatMap(transform: (T) -> IReduxSagaOutput<T2>): IReduxSagaOutput<T2>

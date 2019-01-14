@@ -15,6 +15,9 @@ import org.swiften.redux.saga.IReduxSagaOutput
 import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/22 */
+/** Use this for [rxSingle] to avoid forcing [T] to be subtype of [Any] */
+internal class Boxed<T>(val value: T)
+
 /** @see [IReduxSagaOutput] */
 class ReduxSagaOutput<T> internal constructor(
   private val scope: CoroutineScope,
@@ -35,16 +38,18 @@ class ReduxSagaOutput<T> internal constructor(
   override fun <T2> map(transform: (T) -> T2) =
     this.with(this.stream.map(transform))
 
-  override fun <T2 : Any> mapSuspend(
+  override fun <T2> mapSuspend(
     transform: suspend CoroutineScope.(T) -> T2
-  ) = this.with(this.stream.flatMap {
-    this@ReduxSagaOutput.rxSingle { transform(it) }.toFlowable()
+  ) = this.with(this.stream.flatMap { v ->
+    this@ReduxSagaOutput.rxSingle { Boxed(transform(this, v)) }.map(Boxed<T2>::value).toFlowable()
   })
 
-  override fun <T2 : Any> mapAsync(
+  override fun <T2> mapAsync(
     transform: suspend CoroutineScope.(T) -> Deferred<T2>
   ) = this.with(this.stream.flatMap {
-    this@ReduxSagaOutput.rxSingle { transform(it).await() }.toFlowable()
+    this@ReduxSagaOutput.rxSingle { Boxed(transform(this, it).await()) }
+      .map(Boxed<T2>::value)
+      .toFlowable()
   })
 
   override fun doOnValue(perform: (T) -> Unit) =
