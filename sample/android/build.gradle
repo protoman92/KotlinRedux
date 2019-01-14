@@ -1,6 +1,7 @@
 buildscript {
   project.apply from: "${rootDir}/constants.gradle"
   project.apply from: "${rootDir}/android/constants.gradle"
+  project.apply from: "${rootDir}/sample/android/constants.gradle"
 
   repositories {
     google()
@@ -72,4 +73,7 @@ dependencies {
   implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
   implementation "com.beust:klaxon:5.0.1"
+  debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanary"
+  releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
+  debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanary"
 }

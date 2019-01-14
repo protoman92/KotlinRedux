@@ -9,6 +9,7 @@ import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.Fragment
+import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.ui.core.AndroidPropInjector
 import org.swiften.redux.android.ui.core.endActivityInjection
 import org.swiften.redux.android.ui.core.startActivityInjection
@@ -26,6 +27,8 @@ class MainApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
+    if (LeakCanary.isInAnalyzerProcess(this)) { return }
+    LeakCanary.install(this)
     val api = MainApi()
     val repository = MainRepository(api, JSONDecoder())
 
