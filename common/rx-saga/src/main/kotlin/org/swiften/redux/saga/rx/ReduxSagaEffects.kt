@@ -10,6 +10,7 @@ import io.reactivex.Single
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.CommonSagaEffects
 import org.swiften.redux.saga.IReduxSagaEffect
+import org.swiften.redux.saga.IReduxSagaEffectTransformer
 import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2019/01/13 */
@@ -17,8 +18,8 @@ import org.swiften.redux.saga.ReduxSagaEffect
 object ReduxSagaEffects {
   /** Create a [CallEffect] */
   @JvmStatic
-  fun <State, P, R> call(source: IReduxSagaEffect<State, P>, block: (P) -> Single<R>):
-    IReduxSagaEffect<State, R> = CallEffect(source, block)
+  fun <State, P, R> call(block: (P) -> Single<R>): IReduxSagaEffectTransformer<State, P, R> =
+    { CallEffect(it, block) }
 
   /** Create a [FromEffect] */
   @JvmStatic
@@ -30,18 +31,16 @@ object ReduxSagaEffects {
 
   /** Call [CommonSagaEffects.put] with [CommonSagaEffects.just] */
   @JvmStatic
-  fun <State, P> put(value: P, actionCreator: (P) -> IReduxAction):
-    ReduxSagaEffect<State, Any> = CommonSagaEffects.put<State, P>(actionCreator)(this.just(value))
+  fun <State, P> put(value: P, actionCreator: (P) -> IReduxAction): ReduxSagaEffect<State, Any> =
+    CommonSagaEffects.put<State, P>(actionCreator)(this.just(value))
 
   /** Create a [JustPutEffect] */
   @JvmStatic
-  fun <State> justPut(action: IReduxAction): ReduxSagaEffect<State, Any> =
-    JustPutEffect(action)
+  fun <State> justPut(action: IReduxAction): ReduxSagaEffect<State, Any> = JustPutEffect(action)
 
   /** Create a [SelectEffect] */
   @JvmStatic
-  fun <State, R> select(selector: (State) -> R): ReduxSagaEffect<State, R> =
-    SelectEffect(selector)
+  fun <State, R> select(selector: (State) -> R): ReduxSagaEffect<State, R> = SelectEffect(selector)
 
   /** Create a [TakeEveryEffect] instance. */
   @JvmStatic

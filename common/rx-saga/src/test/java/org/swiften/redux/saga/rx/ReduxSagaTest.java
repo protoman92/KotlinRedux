@@ -5,6 +5,7 @@
 
 package org.swiften.redux.saga.rx;
 
+import io.reactivex.Single;
 import kotlin.Unit;
 import kotlinx.coroutines.GlobalScope;
 import org.testng.Assert;
@@ -12,6 +13,7 @@ import org.testng.annotations.Test;
 
 import static org.swiften.redux.saga.CommonSagaEffects.map;
 import static org.swiften.redux.saga.CommonSagaEffects.retry;
+import static org.swiften.redux.saga.rx.ReduxSagaEffects.call;
 import static org.swiften.redux.saga.rx.ReduxSagaEffects.just;
 
 /**
@@ -23,11 +25,12 @@ public final class ReduxSagaTest {
     // Setup
     Object value = just(1)
       .transform(map(i -> i * 2))
+      .transform(call(i -> Single.just(i * 3)))
       .transform(retry(3))
       .invoke(GlobalScope.INSTANCE, 0, a -> Unit.INSTANCE)
       .nextValue(1000);
 
     // When && Then
-    Assert.assertEquals(value, 2);
+    Assert.assertEquals(value, 6);
   }
 }
