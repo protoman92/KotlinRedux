@@ -19,4 +19,4 @@ internal class TimeoutEffect<State, R>(
 
 /** Invoke a [TimeoutEffect] on [this] */
 fun <State, R> ReduxSagaEffect<State, R>.timeout(millis: Long) =
-  ReduxSagaEffects.timeout(this, millis)
+  this.transform(ReduxSagaEffects.timeout(millis))

@@ -31,6 +31,11 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 24, 'hours'
 }
 
+// TODO Investigate why this fails locally.
+afterEvaluate { project ->
+  project.tasks.lint { onlyIf { return false } }
+}
+
 android {
   compileSdkVersion compileSdk
 
@@ -67,10 +72,4 @@ dependencies {
   implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
   implementation "com.beust:klaxon:5.0.1"
-}
-
-// TODO Investigate why this fails locally.
-afterEvaluate { project ->
-  project.tasks.lint { onlyIf { return false } }
-  project.tasks.lintVitalRelease { onlyIf { return false }}
 }

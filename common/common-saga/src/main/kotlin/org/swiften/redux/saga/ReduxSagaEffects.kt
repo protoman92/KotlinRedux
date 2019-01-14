@@ -13,56 +13,48 @@ import org.swiften.redux.core.IReduxAction
 /** Top-level namespace for [ReduxSagaEffect] helpers */
 object ReduxSagaEffects {
   /** Create a [DelayEffect] */
-  fun <State, R> delay(source: ReduxSagaEffect<State, R>, delayMillis: Long):
-    ReduxSagaEffect<State, R> = DelayEffect(source, delayMillis)
+  fun <State, R> delay(delayMillis: Long): ReduxSagaEffectTransformer<State, R, R> =
+    { DelayEffect(it, delayMillis) }
 
   /** Create a [CatchErrorEffect] instance. */
-  fun <State, R> catchError(source: ReduxSagaEffect<State, R>, catcher: (Throwable) -> R):
-    ReduxSagaEffect<State, R> = CatchErrorEffect(source, catcher)
+  fun <State, R> catchError(catcher: (Throwable) -> R): ReduxSagaEffectTransformer<State, R, R> =
+    { CatchErrorEffect(it, catcher) }
 
   /** Create a [SuspendCatchErrorEffect] */
-  fun <State, R> catchErrorSuspend(
-    source: ReduxSagaEffect<State, R>,
-    catcher: suspend CoroutineScope.(Throwable) -> R
-  ): ReduxSagaEffect<State, R> = SuspendCatchErrorEffect(source, catcher)
+  fun <State, R> catchErrorSuspend(catcher: suspend CoroutineScope.(Throwable) -> R):
+    ReduxSagaEffectTransformer<State, R, R> = { SuspendCatchErrorEffect(it, catcher) }
 
   /** Create a [AsyncCatchErrorEffect] */
-  fun <State, R> catchErrorAsync(
-    source: ReduxSagaEffect<State, R>,
-    catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>
-  ): ReduxSagaEffect<State, R> = AsyncCatchErrorEffect(source, catcher)
+  fun <State, R> catchErrorAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>):
+    ReduxSagaEffectTransformer<State, R, R> = { AsyncCatchErrorEffect(it, catcher) }
 
   /** Create a [DoOnValueEffect] instance */
-  fun <State, R> doOnValue(source: ReduxSagaEffect<State, R>, block: (R) -> Unit):
-    ReduxSagaEffect<State, R> = DoOnValueEffect(source, block)
+  fun <State, R> doOnValue(block: (R) -> Unit): ReduxSagaEffectTransformer<State, R, R> =
+    { DoOnValueEffect(it, block) }
 
   /** Create a [FilterEffect] */
-  fun <State, R> filter(source: ReduxSagaEffect<State, R>, selector: (R) -> Boolean):
-    ReduxSagaEffect<State, R> = FilterEffect(source, selector)
+  fun <State, R> filter(selector: (R) -> Boolean): ReduxSagaEffectTransformer<State, R, R> =
+    { FilterEffect(it, selector) }
 
   /** Create a [MapEffect] */
-  fun <State, P, R> map(param: ReduxSagaEffect<State, P>, block: (P) -> R):
-    ReduxSagaEffect<State, R> = MapEffect(param, block)
+  fun <State, P, R> map(block: (P) -> R): ReduxSagaEffectTransformer<State, P, R> =
+    { MapEffect(it, block) }
 
   /** Create a [SuspendMapEffect] */
-  fun <State, P, R> mapSuspend(
-    source: ReduxSagaEffect<State, P>,
-    block: suspend CoroutineScope.(P) -> R
-  ): ReduxSagaEffect<State, R> = SuspendMapEffect(source, block)
+  fun <State, P, R> mapSuspend(block: suspend CoroutineScope.(P) -> R):
+    ReduxSagaEffectTransformer<State, P, R> = { SuspendMapEffect(it, block) }
 
   /** Create a [AsyncMapEffect] */
-  fun <State, P, R> mapAsync(
-    source: ReduxSagaEffect<State, P>,
-    block: suspend CoroutineScope.(P) -> Deferred<R>
-  ): ReduxSagaEffect<State, R> = AsyncMapEffect(source, block)
+  fun <State, P, R> mapAsync(block: suspend CoroutineScope.(P) -> Deferred<R>):
+    ReduxSagaEffectTransformer<State, P, R> = { AsyncMapEffect(it, block) }
 
   /** Create a [PutEffect] */
-  fun <State, P> put(source: ReduxSagaEffect<State, P>, actionCreator: (P) -> IReduxAction):
-    ReduxSagaEffect<State, Any> = PutEffect(source, actionCreator)
+  fun <State, P> put(actionCreator: (P) -> IReduxAction):
+    ReduxSagaEffectTransformer<State, P, Any> = { PutEffect(it, actionCreator) }
 
   /** Create a [RetryEffect] instance */
-  fun <State, R> retry(source: ReduxSagaEffect<State, R>, times: Long):
-    ReduxSagaEffect<State, R> = RetryEffect(source, times)
+  fun <State, R> retry(times: Long): ReduxSagaEffectTransformer<State, R, R> =
+    { RetryEffect(it, times) }
 
   /** Create a [ThenEffect] on [source1] and [source2] */
   fun <State, R, R2, R3> then(
@@ -72,6 +64,6 @@ object ReduxSagaEffects {
   ): ReduxSagaEffect<State, R3> = ThenEffect(source1, source2, selector)
 
   /** Create a [TimeoutEffect] */
-  fun <State, R> timeout(source: ReduxSagaEffect<State, R>, millis: Long):
-    ReduxSagaEffect<State, R> = TimeoutEffect(source, millis)
+  fun <State, R> timeout(millis: Long): ReduxSagaEffectTransformer<State, R, R> =
+    { TimeoutEffect(it, millis) }
 }

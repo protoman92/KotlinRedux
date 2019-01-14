@@ -17,6 +17,10 @@ import org.swiften.redux.core.IReduxStore
 /** Abstraction for Redux saga that handles [IReduxAction] in the pipeline */
 typealias ReduxSagaEffect<State, R> = Function1<Input<State>, IReduxSagaOutput<R>>
 
+/** Transform one [ReduxSagaEffect] to another */
+typealias ReduxSagaEffectTransformer<State, R, R2> =
+  Function1<ReduxSagaEffect<State, R>, ReduxSagaEffect<State, R2>>
+
 /**
  * [Input] for an [ReduxSagaEffect], which exposes a [IReduxStore]'s internal
  * functionalities.
@@ -104,3 +108,8 @@ fun <State, R> ReduxSagaEffect<State, R>.invoke(
   state: State,
   dispatch: IReduxDispatcher
 ) = this.invoke(Input(scope, { state }, dispatch))
+
+/** Transform [this] with [transformer] */
+fun <State, R, R2> ReduxSagaEffect<State, R>.transform(
+  transformer: ReduxSagaEffectTransformer<State, R, R2>
+): ReduxSagaEffect<State, R2> = transformer(this)

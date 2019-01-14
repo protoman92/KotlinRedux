@@ -20,4 +20,4 @@ internal class SuspendMapEffect<State, P, R>(
 /** Invoke a [SuspendMapEffect] on [this] */
 fun <State, P, R> ReduxSagaEffect<State, P>.mapSuspend(
   block: suspend CoroutineScope.(P) -> R
-) = ReduxSagaEffects.mapSuspend(this, block)
+) = this.transform(ReduxSagaEffects.mapSuspend(block))

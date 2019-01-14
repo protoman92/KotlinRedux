@@ -38,14 +38,14 @@ internal class AsyncCatchErrorEffect<State, R>(
 
 /** Catch [Throwable] from upstream with [catcher] */
 fun <State, R> ReduxSagaEffect<State, R>.catchError(catcher: (Throwable) -> R) =
-  ReduxSagaEffects.catchError(this, catcher)
+  this.transform(ReduxSagaEffects.catchError(catcher))
 
 /** Invoke a [SuspendCatchErrorEffect] on [this] */
 fun <State, R> ReduxSagaEffect<State, R>.catchErrorSuspend(
   catcher: suspend CoroutineScope.(Throwable) -> R
-) = ReduxSagaEffects.catchErrorSuspend(this, catcher)
+) = this.transform(ReduxSagaEffects.catchErrorSuspend(catcher))
 
 /** Invoke a [AsyncCatchErrorEffect] on [this] */
 fun <State, R> ReduxSagaEffect<State, R>.catchErrorAsync(
   catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>
-) = ReduxSagaEffects.catchErrorAsync(this, catcher)
+) = this.transform(ReduxSagaEffects.catchErrorAsync(catcher))
