@@ -5,6 +5,7 @@
 
 package org.swiften.redux.android.sample
 
+import android.net.Uri
 import java.net.URL
 
 /** Created by haipham on 2019/01/05 */
@@ -14,7 +15,16 @@ interface IMainApi {
 
 class MainApi : IMainApi {
   override fun searchMusicStore(input: String): String {
-    val url = "https://itunes.apple.com/search?term=$input&limit=5&media=music"
+    val url = Uri.Builder()
+      .scheme("https")
+      .authority("itunes.apple.com")
+      .appendPath("search")
+      .appendQueryParameter("term", input)
+      .appendQueryParameter("limit", "5")
+      .appendQueryParameter("media", "music")
+      .build()
+      .toString()
+
     return URL(url).readText()
   }
 }
