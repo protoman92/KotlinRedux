@@ -10,6 +10,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -89,17 +90,40 @@ abstract class CommonSagaEffectTest : CoroutineScope {
   fun `Catch error effect should handle errors gracefully`() {
     // Setup
     val error = Exception("Oh no!")
+    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
-    val finalOutput = justEffect(1)
+    // When
+    justEffect(1)
       .map { throw error; 1 }
       .delay(1000)
       .catchError { 100 }
       .invoke(this, State()) { }
+      .subscribe({ finalValues.add(it) })
 
+    runBlocking {
+      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
+        while (finalValues != arrayListOf(100)) { }; Unit
+      }
+
+      // Then
+      Assert.assertEquals(finalValues, arrayListOf(100))
+    }
+  }
+
+  @Test
+  @Suppress("UNREACHABLE_CODE")
+  fun `Async catch error effect should handle errors gracefully`() {
+    // Setup
+    val error = Exception("Oh no!")
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
     // When
-    finalOutput.subscribe({ finalValues.add(it) })
+    justEffect(1)
+      .map { throw error; 1 }
+      .delay(1000)
+      .catchErrorAsync { this.async { 100 } }
+      .invoke(this, State()) { }
+      .subscribe({ finalValues.add(it) })
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
@@ -115,16 +139,15 @@ abstract class CommonSagaEffectTest : CoroutineScope {
   @ExperimentalCoroutinesApi
   fun `Filter effect should filter out unwanted values`() {
     // Setup
-    val finalOutput = fromEffect(0, 1, 2, 3)
+    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+
+    // When
+    fromEffect(0, 1, 2, 3)
       .filter { it % 2 == 0 }
       .delay(100)
       .cast<State, Int, Int>()
       .invoke(this, State()) { }
-
-    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
-
-    // When
-    finalOutput.subscribe({ finalValues.add(it) })
+      .subscribe({ finalValues.add(it) })
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
@@ -165,13 +188,13 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     val retryCount = 3
     val retries = AtomicInteger(0)
 
+    // When
     justEffect(0)
       .mapSuspend { retries.incrementAndGet(); throw RuntimeException("Oh no!") }
       .retry(retryCount)
       .invoke(this, State()) {}
       .subscribe({})
 
-    // When
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
         while (retries.get() != retryCount + 1) { }; Unit
@@ -201,7 +224,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     val finalOutput = justEffect(1)
       .mapSuspend { delay(this@CommonSagaEffectTest.timeout); it }
       .timeout(1000)
-      .catchError { 100 }
+      .catchErrorSuspend { 100 }
       .invoke(this, State()) { }
 
     // When && Then
