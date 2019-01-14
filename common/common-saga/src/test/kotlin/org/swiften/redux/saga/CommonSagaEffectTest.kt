@@ -171,13 +171,13 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       .invoke(this, State()) {}
       .subscribe({})
 
-    /// When
+    // / When
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
         while (retries.get() != retryCount + 1) { }; Unit
       }
 
-      /// Then
+      // / Then
       Assert.assertEquals(retries.get(), retryCount + 1)
     }
   }
@@ -204,7 +204,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       .catchError { 100 }
       .invoke(this, State()) { }
 
-    /// When && Then
+    // / When && Then
     Assert.assertEquals(finalOutput.nextValue(this.timeout), 100)
   }
 }

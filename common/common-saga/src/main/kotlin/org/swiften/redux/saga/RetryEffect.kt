@@ -9,8 +9,8 @@ package org.swiften.redux.saga
 /** [ReduxSagaEffect] whose [IReduxSagaOutput] retries [times] if a [Throwable] is encountered */
 internal class RetryEffect<State, R>(
   private val source: ReduxSagaEffect<State, R>,
-  private val times: Long) : ReduxSagaEffect<State, R>
-{
+  private val times: Long
+) : ReduxSagaEffect<State, R> {
   override fun invoke(p1: Input<State>) = this.source.invoke(p1).retry(this.times)
 }
 

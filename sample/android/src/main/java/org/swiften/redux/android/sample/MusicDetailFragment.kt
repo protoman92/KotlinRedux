@@ -23,8 +23,7 @@ import kotlin.properties.Delegates
 /** Created by haipham on 2019/01/12 */
 class MusicDetailFragment : Fragment(),
   IReduxPropContainer<State, MusicDetailFragment.S, MusicDetailFragment.A>,
-  IReduxPropMapper<State, Unit, MusicDetailFragment.S, MusicDetailFragment.A> by MusicDetailFragment
-{
+  IReduxPropMapper<State, Unit, MusicDetailFragment.S, MusicDetailFragment.A> by MusicDetailFragment {
   class S(val track: MusicTrack?)
   class A(val goToTrackInformation: () -> Unit)
 

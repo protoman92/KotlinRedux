@@ -5,7 +5,6 @@
 
 package org.swiften.redux.saga.cr
 
-import kotlinx.coroutines.channels.ReceiveChannel
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.ReduxSagaEffect
 

@@ -21,8 +21,7 @@ import kotlin.properties.Delegates
 /** Created by haipham on 2018/12/19 */
 class MainActivity : AppCompatActivity(),
   IReduxPropContainer<State, Unit, MainActivity.A>,
-  IReduxPropMapper<State, Unit, Unit, MainActivity.A> by MainActivity
-{
+  IReduxPropMapper<State, Unit, Unit, MainActivity.A> by MainActivity {
   class A(val goToMainScreen: () -> Unit)
 
   companion object : IReduxPropMapper<State, Unit, Unit, A> {
