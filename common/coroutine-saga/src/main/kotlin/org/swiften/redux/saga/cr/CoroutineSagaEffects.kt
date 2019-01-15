@@ -63,6 +63,6 @@ inline fun <State, reified Action, P, R> ReduxSagaEffects.takeLatestAction(
   noinline creator: Function1<P, ReduxSagaEffect<State, R>>,
   options: TakeEffectOptions = TakeEffectOptions()
 ) where Action: IReduxAction = this.takeLatest(
-  { when (it) {is Action -> extractor(it); else -> null } },
+  { when (it) { is Action -> extractor(it); else -> null } },
   creator, options
 )

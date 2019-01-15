@@ -104,6 +104,7 @@ abstract class BaseReduxStoreTest : CoroutineScope {
   }
 
   @Test
+  @Suppress("ForEachParameterNotUsed")
   fun test_deinitializingStore_shouldRemoveAllSubscriptions() {
     // Setup
     val store = this.createStore()
@@ -112,7 +113,7 @@ abstract class BaseReduxStoreTest : CoroutineScope {
     store.subscribe("2") { receivedUpdates.incrementAndGet() }
     store.subscribe("3") { receivedUpdates.incrementAndGet() }
 
-    /// When
+    // / When
     runBlocking {
       store.dispatch(DefaultReduxAction.Dummy)
       delay(1000)
@@ -121,7 +122,7 @@ abstract class BaseReduxStoreTest : CoroutineScope {
       (0 until 100).forEach { store.dispatch(DefaultReduxAction.Dummy) }
       delay(1000)
 
-      /// Then
+      // / Then
       Assert.assertEquals(receivedUpdates.get(), currentUpdates)
     }
   }

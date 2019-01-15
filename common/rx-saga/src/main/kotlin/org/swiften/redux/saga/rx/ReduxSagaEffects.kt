@@ -57,7 +57,7 @@ object ReduxSagaEffects {
     noinline creator: Function1<P, IReduxSagaEffect<State, R>>,
     options: TakeEffectOptions = TakeEffectOptions()
   ) where Action : IReduxAction = this.takeEvery(
-    { when (it) {is Action -> extractor(it); else -> null } },
+    { when (it) { is Action -> extractor(it); else -> null } },
     creator, options
   )
 
@@ -76,6 +76,6 @@ object ReduxSagaEffects {
     noinline creator: Function1<P, IReduxSagaEffect<State, R>>,
     options: TakeEffectOptions = TakeEffectOptions()
   ) where Action : IReduxAction = this.takeLatest(
-    { when (it) {is Action -> extractor(it); else -> null } }, creator, options
+    { when (it) { is Action -> extractor(it); else -> null } }, creator, options
   )
 }

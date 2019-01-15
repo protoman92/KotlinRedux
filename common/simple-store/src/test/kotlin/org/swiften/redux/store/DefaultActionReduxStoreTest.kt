@@ -24,7 +24,7 @@ class DefaultActionReduxStoreTest : BaseReduxStoreTest() {
     // Setup
     val store = this.createStore()
 
-    /// When
+    // / When
     store.deinitialize()
 
     // Then
