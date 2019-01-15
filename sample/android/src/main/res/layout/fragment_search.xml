@@ -56,22 +56,23 @@
     android:background="@android:color/black"
     android:visibility="invisible"
     app:layout_constraintTop_toTopOf="@id/searchResult"
-    app:layout_constraintLeft_toLeftOf="@id/searchResult"
-    app:layout_constraintStart_toStartOf="@id/searchResult"
-    app:layout_constraintRight_toRightOf="@id/searchResult"
-    app:layout_constraintEnd_toEndOf="@id/searchResult"
-    app:layout_constraintBottom_toBottomOf="@id/searchResult"/>
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"/>
 
   <ProgressBar
     android:id="@+id/progressBar"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:visibility="invisible"
-    app:layout_constraintTop_toTopOf="@id/searchResult"
-    app:layout_constraintLeft_toLeftOf="@id/searchResult"
-    app:layout_constraintStart_toStartOf="@id/searchResult"
-    app:layout_constraintRight_toRightOf="@id/searchResult"
-    app:layout_constraintEnd_toEndOf="@id/searchResult"
-    app:layout_constraintBottom_toBottomOf="@id/searchResult"/>
+    style="@style/Widget.AppCompat.ProgressBar"
+    app:layout_constraintTop_toTopOf="@id/backgroundDim"
+    app:layout_constraintLeft_toLeftOf="@id/backgroundDim"
+    app:layout_constraintStart_toStartOf="@id/backgroundDim"
+    app:layout_constraintRight_toRightOf="@id/backgroundDim"
+    app:layout_constraintEnd_toEndOf="@id/backgroundDim"
+    app:layout_constraintBottom_toBottomOf="@id/backgroundDim"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

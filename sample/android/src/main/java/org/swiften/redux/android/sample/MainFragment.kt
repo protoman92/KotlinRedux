@@ -29,11 +29,12 @@ class MainFragment : Fragment() {
     this.viewPager.adapter = object : FragmentPagerAdapter(fm) {
       override fun getItem(position: Int): Fragment = when (position) {
         1 -> Fragment2()
-        2 -> CameraFragment()
+        2 -> Fragment3()
+        3 -> CameraFragment()
         else -> SearchFragment()
       }
 
-      override fun getCount(): Int = 3
+      override fun getCount(): Int = 4
     }
   }
 }
