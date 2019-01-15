@@ -5,6 +5,8 @@
 
 package org.swiften.redux.core
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 /** Created by haipham on 2018/03/31 */
 /** Represents an [IReduxAction] dispatcher */
 typealias IReduxDispatcher = Function1<IReduxAction, Unit>
@@ -28,7 +30,13 @@ typealias IReduxSubscriber<State> = Function2<String, Function1<State, Unit>, Re
  * Use this class to perform some [unsubscribe] logic. For e.g.: terminate a [ReduxSubscription]
  * from [IReduxStore.subscribe].
  */
-class ReduxSubscription(val unsubscribe: () -> Unit)
+class ReduxSubscription(private val _unsubscribe: () -> Unit) {
+  private val isUnsubscribed = AtomicBoolean()
+
+  fun unsubscribe() {
+    if (!this.isUnsubscribed.getAndSet(true)) this._unsubscribe()
+  }
+}
 
 /** Represents a Redux action */
 interface IReduxAction
@@ -53,11 +61,9 @@ interface IReduxStore<State> : IReduxDispatchContainer,
 }
 
 /** Dispatch all [actions] in a [Collection] of [IReduxAction] */
-fun <State> IReduxStore<State>.dispatch(actions: Collection<IReduxAction>) {
+fun <State> IReduxStore<State>.dispatch(actions: Collection<IReduxAction>) =
   actions.forEach { this.dispatch(it) }
-}
 
 /** Dispatch all [actions] passed via vararg parameters */
-fun <State> IReduxStore<State>.dispatch(vararg actions: IReduxAction) {
+fun <State> IReduxStore<State>.dispatch(vararg actions: IReduxAction) =
   this.dispatch(actions.asList())
-}

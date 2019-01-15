@@ -103,7 +103,7 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
 
     override fun onResume() {}
     override fun onPause() {}
-    override fun onStop() { subscription?.unsubscribe?.invoke() }
+    override fun onStop() { subscription?.unsubscribe() }
   })
 
   return lifecycleOwner
