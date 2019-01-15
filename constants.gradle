@@ -4,5 +4,6 @@ project.ext {
   kotlinCoroutines = "1.1.0"
   rxKotlin = "2.3.0"
   testNG = "+"
+  mockito = "2.1.0"
   testHeapSize = "4g"
 }

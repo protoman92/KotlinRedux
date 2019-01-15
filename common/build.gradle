@@ -127,6 +127,7 @@ project('common-saga') {
     api project(':common:core')
     api project(':common:middleware')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito"
   }
 }
 

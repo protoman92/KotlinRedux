@@ -8,6 +8,7 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.middleware.IReduxMiddleware
 import org.swiften.redux.middleware.IReduxMiddlewareProvider
 import org.swiften.redux.middleware.ReduxDispatchWrapper
@@ -15,7 +16,7 @@ import org.swiften.redux.middleware.ReduxDispatchWrapper
 /** Created by haipham on 2018/12/22 */
 /** [IReduxMiddlewareProvider] implementation for Saga */
 internal class ReduxSagaMiddlewareProvider<State>(
-  private val effects: List<IReduxSagaEffect<State, *>>
+  private val effects: Collection<IReduxSagaEffect<State, *>>
 ) : IReduxMiddlewareProvider<State> {
   override val middleware: IReduxMiddleware<State> = { input ->
     { wrapper ->
@@ -32,11 +33,16 @@ internal class ReduxSagaMiddlewareProvider<State>(
       ReduxDispatchWrapper("${wrapper.id}-saga") { action ->
         wrapper.dispatch(action)
         outputs.forEach { it.onAction(action) }
+
+        /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [IReduxSagaOutput] */
+        if (action == DefaultReduxAction.Deinitialize) {
+          outputs.forEach { it.dispose() }
+        }
       }
     }
   }
 }
 
 /** Create a [ReduxSagaMiddlewareProvider] with [effects] */
-fun <State> createSagaMiddlewareProvider(effects: List<IReduxSagaEffect<State, *>>):
+fun <State> createSagaMiddlewareProvider(effects: Collection<IReduxSagaEffect<State, *>>):
   IReduxMiddlewareProvider<State> = ReduxSagaMiddlewareProvider(effects)
