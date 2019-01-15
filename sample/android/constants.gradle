@@ -1,3 +1,4 @@
 project.ext {
+  minSdk = 15
   leakCanary = '1.6.3'
 }
