@@ -10,7 +10,6 @@ import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.core.IReduxReducer
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
-import org.swiften.redux.core.ReduxReducerWrapper
 import org.swiften.redux.core.ReduxSubscription
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
@@ -23,12 +22,10 @@ import kotlin.concurrent.write
  */
 class SimpleReduxStore<State>(
   private var state: State,
-  reducer: IReduxReducer<State>
+  override val reducer: IReduxReducer<State>
 ) : IReduxStore<State> {
   private val lock = ReentrantReadWriteLock()
   private val subscribers = HashMap<String, (State) -> Unit>()
-  private val reducer: IReduxReducer<State>
-  init { this.reducer = ReduxReducerWrapper(reducer) }
 
   override val lastState = { this.lock.read { this.state } }
 

@@ -45,6 +45,11 @@ class ReduxSubscription(private val _unsubscribe: () -> Unit) {
 /** Represents a Redux action */
 interface IReduxAction
 
+/** Represents an object that provides [IReduxReducer] */
+interface IReduxReducerProvider<State> {
+  val reducer: IReduxReducer<State>
+}
+
 /** Represents an object that provides [IReduxDispatcher] */
 interface IReduxDispatcherProvider {
   val dispatch: IReduxDispatcher
@@ -70,6 +75,7 @@ interface IReduxSubscriberProvider<State> {
  * some internal [State]. Other objects can subscribe to [State] updates using [subscribe].
  */
 interface IReduxStore<State> :
+  IReduxReducerProvider<State>,
   IReduxDispatcherProvider,
   IReduxStateGetterProvider<State>,
   IReduxSubscriberProvider<State>,

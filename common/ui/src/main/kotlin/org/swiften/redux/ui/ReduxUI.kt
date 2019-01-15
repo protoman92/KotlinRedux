@@ -5,8 +5,9 @@
 
 package org.swiften.redux.ui
 
-import org.swiften.redux.core.IReduxDispatcherProvider
+import org.swiften.redux.core.IReduxDeinitializerProvider
 import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.core.IReduxDispatcherProvider
 import org.swiften.redux.core.IReduxStateGetterProvider
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.ReduxSubscription
@@ -67,8 +68,10 @@ interface IReduxPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
   IReduxActionPropMapper<GlobalState, OutProps, ActionProps>
 
 /** Inject state and actions into an [IReduxPropContainer] */
-interface IReduxPropInjector<State> : IReduxDispatcherProvider,
-  IReduxStateGetterProvider<State> {
+interface IReduxPropInjector<State> :
+  IReduxDispatcherProvider,
+  IReduxStateGetterProvider<State>,
+  IReduxDeinitializerProvider {
   /**
    * Inject [StateProps] and [ActionProps] into [view]. This method does not handle lifecycles, so
    * platform-specific methods can be defined for this purpose.
@@ -97,7 +100,8 @@ class VariableProps<StateProps, ActionProps>(
 open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
   IReduxPropInjector<State>,
   IReduxDispatcherProvider by store,
-  IReduxStateGetterProvider<State> by store {
+  IReduxStateGetterProvider<State> by store,
+  IReduxDeinitializerProvider by store {
   override fun <OutProps, StateProps, ActionProps> injectProps(
     view: IReduxPropContainer<State, StateProps, ActionProps>,
     outProps: OutProps,
@@ -107,8 +111,9 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     view.unsubscribeSafely()
 
     /**
-     * Inject [StaticProps] without a valid [StaticProps.subscription] because we want
-     * [StaticProps.injector] to be available in [IReduxPropLifecycleOwner.beforePropInjectionStarts].
+     * Inject [StaticProps] with a placebo [StaticProps.subscription] because we want
+     * [IStaticReduxPropContainer.staticProps] to be available in
+     * [IReduxPropLifecycleOwner.beforePropInjectionStarts].
      */
     this.injectStaticProps(view)
 

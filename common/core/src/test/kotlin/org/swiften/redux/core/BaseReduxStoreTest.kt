@@ -64,9 +64,7 @@ abstract class BaseReduxStoreTest : CoroutineScope {
 
   override val coroutineContext = Dispatchers.Default
 
-  fun reducer(): IReduxReducer<Int> = { s, a ->
-    when (a) { is Action -> a(s); else -> throw RuntimeException() }
-  }
+  fun reducer(): IReduxReducer<Int> = { s, a -> when (a) { is Action -> a(s); else -> s } }
 
   abstract fun createStore(): IReduxStore<Int>
 
@@ -119,11 +117,12 @@ abstract class BaseReduxStoreTest : CoroutineScope {
       store.dispatch(DefaultReduxAction.Dummy)
       delay(1000)
       store.deinitialize()
+      val currentUpdates = receivedUpdates.get()
       (0 until 100).forEach { store.dispatch(DefaultReduxAction.Dummy) }
       delay(1000)
 
       /// Then
-      Assert.assertEquals(receivedUpdates.get(), 3)
+      Assert.assertEquals(receivedUpdates.get(), currentUpdates)
     }
   }
 }
