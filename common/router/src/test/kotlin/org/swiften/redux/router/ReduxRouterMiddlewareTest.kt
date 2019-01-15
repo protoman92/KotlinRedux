@@ -6,14 +6,15 @@
 package org.swiften.redux.router
 
 import org.swiften.redux.core.DefaultReduxAction
+import org.swiften.redux.core.IReduxDeinitializer
 import org.swiften.redux.middleware.applyReduxMiddlewares
+import org.swiften.redux.store.DefaultActionReduxStore
 import org.swiften.redux.store.SimpleReduxStore
 import org.testng.Assert
-import org.testng.annotations.AfterMethod
 import org.testng.annotations.Test
 
 /** Created by haipham on 2018/12/16 */
-class ReduxRouterMiddlewareTest : IReduxRouter<ReduxRouterMiddlewareTest.Screen> {
+class ReduxRouterMiddlewareTest {
   sealed class Screen : IReduxRouterScreen {
     object Screen1 : Screen()
     object Screen2 : Screen()
@@ -24,24 +25,25 @@ class ReduxRouterMiddlewareTest : IReduxRouter<ReduxRouterMiddlewareTest.Screen>
     }
   }
 
-  private val screens = arrayListOf<IReduxRouterScreen>()
+  class Router : IReduxRouter<Screen> {
+    val screens = arrayListOf<IReduxRouterScreen>()
+    var deinitialized = false
 
-  override fun navigate(screen: Screen) {
-    this.screens.add(screen)
-  }
+    override fun navigate(screen: Screen) {
+      this.screens.add(screen)
+    }
 
-  @AfterMethod
-  fun afterMethod() {
-    this.screens.clear()
+    override val deinitialize: IReduxDeinitializer get() = { this.deinitialized = true }
   }
 
   @Test
   fun `Dispatching screen actions should navigate to the assoc screen`() {
     // Setup
     val store = SimpleReduxStore(0) { a, _ -> a }
+    val router = Router()
 
     val wrappedStore = applyReduxMiddlewares(
-      createRouterMiddlewareProvider<Int, Screen>(this).middleware
+      createRouterMiddlewareProvider<Int, Screen>(router).middleware
     )(store)
 
     // When
@@ -51,10 +53,26 @@ class ReduxRouterMiddlewareTest : IReduxRouter<ReduxRouterMiddlewareTest.Screen>
     wrappedStore.dispatch(Screen.Screen3)
 
     // Then
-    Assert.assertEquals(this.screens, arrayListOf(
+    Assert.assertEquals(router.screens, arrayListOf(
       Screen.Screen1,
       Screen.Screen2,
       Screen.Screen3
     ))
+  }
+
+  @Test
+  fun `Sending deinitialize action should deinitialize router`() {
+    // Setup
+    val router = Router()
+
+    val wrappedStore = applyReduxMiddlewares(
+      createRouterMiddlewareProvider<Int, Screen>(router).middleware
+    )(DefaultActionReduxStore(SimpleReduxStore(0) { a, _ -> a }))
+
+    // When
+    wrappedStore.dispatch(DefaultReduxAction.Deinitialize)
+
+    // Then
+    Assert.assertTrue(router.deinitialized)
   }
 }

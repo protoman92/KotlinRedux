@@ -14,7 +14,6 @@ import org.swiften.redux.android.ui.core.AndroidPropInjector
 import org.swiften.redux.android.ui.core.endActivityInjection
 import org.swiften.redux.android.ui.core.startActivityInjection
 import org.swiften.redux.android.ui.router.SingleActivityRouter
-import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddlewareProvider
 import org.swiften.redux.saga.createSagaMiddlewareProvider
@@ -23,8 +22,8 @@ import org.swiften.redux.ui.injectStaticProps
 
 /** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
+  private lateinit var dependency: MainDependency
   private lateinit var activityCallback: ActivityLifecycleCallbacks
-  private lateinit var subscription: ReduxSubscription
 
   override fun onCreate() {
     super.onCreate()
@@ -61,6 +60,7 @@ class MainApplication : Application() {
 
     val injector = AndroidPropInjector(store)
     val dependency = MainDependency(injector)
+    this.dependency = dependency
 
     this.activityCallback = startActivityInjection(this, injector) {
       when (it) {
@@ -71,7 +71,7 @@ class MainApplication : Application() {
 
   override fun onTerminate() {
     super.onTerminate()
-    this.subscription.unsubscribe()
     endActivityInjection(this, this.activityCallback)
+    this.dependency.injector.deinitialize()
   }
 }

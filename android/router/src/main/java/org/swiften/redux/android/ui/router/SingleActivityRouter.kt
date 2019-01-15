@@ -10,6 +10,7 @@ import android.app.Application
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import org.swiften.redux.core.IReduxDeinitializer
 import org.swiften.redux.router.IReduxRouter
 import org.swiften.redux.router.IReduxRouterScreen
 
@@ -19,26 +20,33 @@ class SingleActivityRouter<Screen>(
   private val application: Application,
   private val navigate: (AppCompatActivity, Screen) -> Unit
 ) : IReduxRouter<Screen> where Screen : IReduxRouterScreen {
-  private lateinit var activity: AppCompatActivity
+  private var activity: AppCompatActivity? = null
 
-  init {
-    this.application.registerActivityLifecycleCallbacks(
-      object : Application.ActivityLifecycleCallbacks {
-        override fun onActivityPaused(activity: Activity?) {}
-        override fun onActivityResumed(activity: Activity?) {}
-        override fun onActivityStarted(activity: Activity?) {}
-        override fun onActivityDestroyed(activity: Activity?) {}
-        override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-        override fun onActivityStopped(activity: Activity?) {}
+  private val callbacks by lazy {
+    object : Application.ActivityLifecycleCallbacks {
+      override fun onActivityPaused(activity: Activity?) {}
+      override fun onActivityResumed(activity: Activity?) {}
+      override fun onActivityStarted(activity: Activity?) {}
+      override fun onActivityDestroyed(activity: Activity?) {}
+      override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
+      override fun onActivityStopped(activity: Activity?) {}
 
-        override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-          activity?.also {
-            require(it is AppCompatActivity)
-            this@SingleActivityRouter.activity = it
-          }
+      override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+        activity?.also {
+          require(it is AppCompatActivity)
+          this@SingleActivityRouter.activity = it
         }
-      })
+      }
+    }
   }
 
-  override fun navigate(screen: Screen) = this.navigate(this.activity, screen)
+  init { this.application.registerActivityLifecycleCallbacks(this.callbacks) }
+
+  override val deinitialize: IReduxDeinitializer get() = {
+    this.application.unregisterActivityLifecycleCallbacks(this.callbacks)
+  }
+
+  override fun navigate(screen: Screen) {
+    this.activity?.also { this.navigate(it, screen) }
+  }
 }
