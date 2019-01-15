@@ -37,7 +37,7 @@ internal class ReduxRouterMiddlewareProvider<State, Screen>(
 ) : IReduxMiddlewareProvider<State> where Screen : IReduxRouterScreen {
   constructor(cls: KClass<Screen>, router: IReduxRouter<Screen>) : this(cls.java, router)
 
-  override val middleware: IReduxMiddleware<State> = { input ->
+  override val middleware: IReduxMiddleware<State> = {
     { wrapper -> ReduxDispatchWrapper("$wrapper.id-router",
       object : IReduxDispatcher {
         override fun invoke(action: IReduxAction) {

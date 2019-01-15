@@ -18,7 +18,7 @@ import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddlewareProvider
 import org.swiften.redux.saga.createSagaMiddlewareProvider
-import org.swiften.redux.store.AsyncReduxStore
+import org.swiften.redux.store.FinalReduxStore
 import org.swiften.redux.ui.injectStaticProps
 
 /** Created by haipham on 2018/12/19 */
@@ -57,7 +57,7 @@ class MainApplication : Application() {
         }
       ).middleware,
       createSagaMiddlewareProvider(MainSaga.sagas(repository)).middleware
-    )(AsyncReduxStore(State(), MainRedux.Reducer))
+    )(FinalReduxStore(State(), MainRedux.Reducer))
 
     val injector = AndroidPropInjector(store)
     val dependency = MainDependency(injector)

@@ -152,8 +152,18 @@ project('simple-store') {
 project('async-store') {
   dependencies {
     api project(':common:core')
-    api project(':common:simple-store')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    testApi project (path: ":common:core", configuration: 'testArtifacts')
+    testApi project(':common:simple-store')
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+  }
+}
+
+project('final-store') {
+  dependencies {
+    api project(':common:core')
+    api project(':common:simple-store')
+    api project(':common:async-store')
     testApi project (path: ":common:core", configuration: 'testArtifacts')
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
   }

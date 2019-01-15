@@ -15,9 +15,9 @@ import org.testng.annotations.Test
 class DefaultActionReduxStoreTest : BaseReduxStoreTest() {
   private var lastAction: IReduxAction? = null
 
-  override fun createStore() = DefaultActionReduxStore(0) { p, a ->
+  override fun createStore() = DefaultActionReduxStore(SimpleReduxStore(0) { p, a ->
     this.lastAction = a; this.reducer()(p, a)
-  }
+  })
 
   @Test
   fun test_deinitializingStore_shouldSendDeinitializeAction() {
