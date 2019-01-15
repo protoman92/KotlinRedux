@@ -5,6 +5,7 @@
 
 package org.swiften.redux.store
 
+import org.swiften.redux.core.IReduxDeinitializer
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.core.IReduxReducer
 import org.swiften.redux.core.IReduxStore
@@ -27,9 +28,9 @@ class SimpleReduxStore<State>(
   private val lock = ReentrantReadWriteLock()
   private val subscribers = HashMap<String, (State) -> Unit>()
   private val reducer: IReduxReducer<State>
-  init { this.reducer = ReduxReducerWrapper(reducer)
-  }
-  override val stateGetter = { this.lock.read { this.state } }
+  init { this.reducer = ReduxReducerWrapper(reducer) }
+
+  override val lastState = { this.lock.read { this.state } }
 
   override val dispatch: IReduxDispatcher = { action ->
     this.lock.write { this.state = this.reducer(this.state, action) }
@@ -42,5 +43,9 @@ class SimpleReduxStore<State>(
     /** Relay the last [State] to this subscriber */
     this.lock.read { callback(this.state) }
     ReduxSubscription { this.lock.write { this.subscribers.remove(id) } }
+  }
+
+  override val deinitialize: IReduxDeinitializer = {
+    this.lock.write { this.subscribers.clear() }
   }
 }

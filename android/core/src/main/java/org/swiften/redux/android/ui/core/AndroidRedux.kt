@@ -145,7 +145,7 @@ fun <State> startActivityInjection(
     override fun onActivityDestroyed(activity: Activity?) {}
 
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
-      outState?.also { saveState(injector.stateGetter(), it) }
+      outState?.also { saveState(injector.lastState(), it) }
     }
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {

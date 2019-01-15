@@ -142,7 +142,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
      * Immediately set [IReduxPropContainer.variableProps] based on [store]'s last [State], in case
      * this [store] does not relay last [State] on subscription.
      */
-    onStateUpdate(this.store.stateGetter())
+    onStateUpdate(this.store.lastState())
     val subscription = this.store.subscribe(id, onStateUpdate)
 
     /** Wrap a [ReduxSubscription] to perform [IReduxLifecycleOwner.afterPropInjectionEnds] */

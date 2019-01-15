@@ -46,7 +46,7 @@ internal fun <State> combineReduxMiddlewares(
   middlewares: Collection<IReduxMiddleware<State>>
 ): (IReduxStore<State>) -> ReduxDispatchWrapper {
   return fun(store): ReduxDispatchWrapper {
-    val input = ReduxMiddlewareInput(store.stateGetter)
+    val input = ReduxMiddlewareInput(store.lastState)
     val rootWrapper = ReduxDispatchWrapper("root", store.dispatch)
     if (middlewares.isEmpty()) return rootWrapper
 

@@ -46,10 +46,9 @@ class PropInjectorTest {
   class View : IReduxPropContainer<S, S, A> {
     override lateinit var staticProps: StaticProps<S>
 
-    override var variableProps
-      by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
-        this.variableInjectionCount += 1
-      }
+    override var variableProps by Delegates.observable<VariableProps<S, A>?>(null) { _, _, _ ->
+      this.variableInjectionCount += 1
+    }
 
     var variableInjectionCount = 0
     var beforeInjectionCount = 0

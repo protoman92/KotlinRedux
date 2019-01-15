@@ -6,13 +6,8 @@
 package org.swiften.redux.store
 
 import org.swiften.redux.core.BaseReduxStoreTest
-import org.testng.annotations.Test
 
 /** Created by haipham on 2018/01/14 */
 class AsyncReduxStoreTest : BaseReduxStoreTest() {
-  @Test
-  fun `Dispatching actions with async store should ensure thread safety`() {
-    val store = AsyncReduxStore(0, this.reducer())
-    this.dispatchingAction_shouldResultInCorrectState(store)
-  }
+  override fun createStore() = AsyncReduxStore(0, this.reducer())
 }

@@ -11,15 +11,18 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.testng.Assert
+import org.testng.annotations.Test
 import java.util.Random
+import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2018/12/16 */
 /** Use this test class to test [IReduxStore] implementations */
 @Suppress("FunctionName")
-open class BaseReduxStoreTest : CoroutineScope {
+abstract class BaseReduxStoreTest : CoroutineScope {
   sealed class Action : IReduxAction {
     object AddOne : Action()
     object AddTwo : Action()
@@ -65,7 +68,11 @@ open class BaseReduxStoreTest : CoroutineScope {
     when (a) { is Action -> a(s); else -> throw RuntimeException() }
   }
 
-  fun dispatchingAction_shouldResultInCorrectState(store: IReduxStore<Int>) {
+  abstract fun createStore(): IReduxStore<Int>
+
+  @Test
+  fun test_dispatchingAction_shouldResultInCorrectState() {
+    val store = this.createStore()
     var currentState = 0
     val allDispatches = arrayListOf<Deferred<Unit>>()
 
@@ -90,11 +97,33 @@ open class BaseReduxStoreTest : CoroutineScope {
 
     runBlocking(this.coroutineContext) {
       withTimeoutOrNull(100000) {
-        while (store.stateGetter() != currentState) { }; 1
+        while (store.lastState() != currentState) { }; 1
       }
 
       // Then
-      Assert.assertEquals(store.stateGetter(), currentState)
+      Assert.assertEquals(store.lastState(), currentState)
+    }
+  }
+
+  @Test
+  fun test_deinitializingStore_shouldRemoveAllSubscriptions() {
+    // Setup
+    val store = this.createStore()
+    val receivedUpdates = AtomicInteger()
+    store.subscribe("1") { receivedUpdates.incrementAndGet() }
+    store.subscribe("2") { receivedUpdates.incrementAndGet() }
+    store.subscribe("3") { receivedUpdates.incrementAndGet() }
+
+    /// When
+    runBlocking {
+      store.dispatch(DefaultReduxAction.Dummy)
+      delay(1000)
+      store.deinitialize()
+      (0 until 100).forEach { store.dispatch(DefaultReduxAction.Dummy) }
+      delay(1000)
+
+      /// Then
+      Assert.assertEquals(receivedUpdates.get(), 3)
     }
   }
 }

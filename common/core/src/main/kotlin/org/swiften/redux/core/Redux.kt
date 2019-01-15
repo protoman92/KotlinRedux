@@ -26,6 +26,9 @@ typealias IReduxStateGetter<State> = Function0<State>
  */
 typealias IReduxSubscriber<State> = Function2<String, Function1<State, Unit>, ReduxSubscription>
 
+/** Perform some deinitialization logic */
+typealias IReduxDeinitializer = Function<Unit>
+
 /**
  * Use this class to perform some [unsubscribe] logic. For e.g.: terminate a [ReduxSubscription]
  * from [IReduxStore.subscribe].
@@ -33,9 +36,7 @@ typealias IReduxSubscriber<State> = Function2<String, Function1<State, Unit>, Re
 class ReduxSubscription(private val _unsubscribe: () -> Unit) {
   private val isUnsubscribed = AtomicBoolean()
 
-  fun unsubscribe() {
-    if (!this.isUnsubscribed.getAndSet(true)) this._unsubscribe()
-  }
+  fun unsubscribe() { if (!this.isUnsubscribed.getAndSet(true)) this._unsubscribe() }
 }
 
 /** Represents a Redux action */
@@ -48,17 +49,23 @@ interface IReduxDispatchContainer {
 
 /** Represents an object that has some internal [State] and can fetch the latest [State] */
 interface IReduxStateContainer<State> {
-  val stateGetter: IReduxStateGetter<State>
+  val lastState: IReduxStateGetter<State>
+}
+
+/** Represents an object that can broadcast [State] updates and unsubscribe from said updates */
+interface IReduxStateBroadcaster<State> {
+  val subscribe: IReduxSubscriber<State>
+  val deinitialize: IReduxDeinitializer
 }
 
 /**
  * Represents a Redux store that can dispatch [IReduxAction] with a [IReduxDispatcher] to mutate
  * some internal [State]. Other objects can subscribe to [State] updates using [subscribe].
  */
-interface IReduxStore<State> : IReduxDispatchContainer,
-  IReduxStateContainer<State> {
-  val subscribe: IReduxSubscriber<State>
-}
+interface IReduxStore<State> :
+  IReduxDispatchContainer,
+  IReduxStateContainer<State>,
+  IReduxStateBroadcaster<State>
 
 /** Dispatch all [actions] in a [Collection] of [IReduxAction] */
 fun <State> IReduxStore<State>.dispatch(actions: Collection<IReduxAction>) =
