@@ -17,6 +17,7 @@
       <module fileurl="file://$PROJECT_DIR$/common/rx-saga/rx-saga.iml" filepath="$PROJECT_DIR$/common/rx-saga/rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/android/sample-android.iml" filepath="$PROJECT_DIR$/sample/android/sample-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample/android/simple/simple.iml" filepath="$PROJECT_DIR$/sample/android/simple/simple.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/simple-store/simple-store.iml" filepath="$PROJECT_DIR$/common/simple-store/simple-store.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/ui/ui.iml" filepath="$PROJECT_DIR$/common/ui/ui.iml" />
     </modules>
