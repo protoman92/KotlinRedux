@@ -5,9 +5,9 @@
 
 package org.swiften.redux.ui
 
-import org.swiften.redux.core.IReduxDispatchContainer
+import org.swiften.redux.core.IReduxDispatcherProvider
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.core.IReduxStateContainer
+import org.swiften.redux.core.IReduxStateGetterProvider
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.ReduxSubscription
 import java.util.Date
@@ -67,8 +67,8 @@ interface IReduxPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
   IReduxActionPropMapper<GlobalState, OutProps, ActionProps>
 
 /** Inject state and actions into an [IReduxPropContainer] */
-interface IReduxPropInjector<State> : IReduxDispatchContainer,
-  IReduxStateContainer<State> {
+interface IReduxPropInjector<State> : IReduxDispatcherProvider,
+  IReduxStateGetterProvider<State> {
   /**
    * Inject [StateProps] and [ActionProps] into [view]. This method does not handle lifecycles, so
    * platform-specific methods can be defined for this purpose.
@@ -96,8 +96,8 @@ class VariableProps<StateProps, ActionProps>(
 /** A [IReduxPropInjector] implementation */
 open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
   IReduxPropInjector<State>,
-  IReduxDispatchContainer by store,
-  IReduxStateContainer<State> by store {
+  IReduxDispatcherProvider by store,
+  IReduxStateGetterProvider<State> by store {
   override fun <OutProps, StateProps, ActionProps> injectProps(
     view: IReduxPropContainer<State, StateProps, ActionProps>,
     outProps: OutProps,

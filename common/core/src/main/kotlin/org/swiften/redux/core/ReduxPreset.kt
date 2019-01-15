@@ -9,6 +9,7 @@ package org.swiften.redux.core
 /** Default [IReduxAction] implementation */
 sealed class DefaultReduxAction : IReduxAction {
   object Dummy : DefaultReduxAction()
+  object Deinitialize : DefaultReduxAction()
 
   /** Replace the current [State] with [state] */
   class ReplaceState<out State>(val state: State) : DefaultReduxAction()
@@ -28,8 +29,9 @@ class ReduxReducerWrapper<State>(private val reducer: IReduxReducer<State>) :
         is DefaultReduxAction.Dummy -> previous
         is DefaultReduxAction.ReplaceState<*> -> action.state as State
         is DefaultReduxAction.MapState<*> -> (action.fn as (State) -> State)(previous)
+        is DefaultReduxAction.Deinitialize -> this.reducer(previous, action)
       }
-      else -> reducer(previous, action)
+      else -> this.reducer(previous, action)
     }
   }
 }

@@ -26,8 +26,11 @@ typealias IReduxStateGetter<State> = Function0<State>
  */
 typealias IReduxSubscriber<State> = Function2<String, Function1<State, Unit>, ReduxSubscription>
 
+/** Perform some initialization logic */
+typealias IReduxInitializer = Function0<Unit>
+
 /** Perform some deinitialization logic */
-typealias IReduxDeinitializer = Function<Unit>
+typealias IReduxDeinitializer = Function0<Unit>
 
 /**
  * Use this class to perform some [unsubscribe] logic. For e.g.: terminate a [ReduxSubscription]
@@ -42,20 +45,24 @@ class ReduxSubscription(private val _unsubscribe: () -> Unit) {
 /** Represents a Redux action */
 interface IReduxAction
 
-/** Represents an object that can dispatch [IReduxAction] */
-interface IReduxDispatchContainer {
+/** Represents an object that provides [IReduxDispatcher] */
+interface IReduxDispatcherProvider {
   val dispatch: IReduxDispatcher
 }
 
-/** Represents an object that has some internal [State] and can fetch the latest [State] */
-interface IReduxStateContainer<State> {
+/** Represents an object that provides [IReduxStateGetter] */
+interface IReduxStateGetterProvider<State> {
   val lastState: IReduxStateGetter<State>
 }
 
-/** Represents an object that can broadcast [State] updates and unsubscribe from said updates */
-interface IReduxStateBroadcaster<State> {
-  val subscribe: IReduxSubscriber<State>
+/** Represents an object that provides [IReduxDeinitializer] */
+interface IReduxDeinitializerProvider {
   val deinitialize: IReduxDeinitializer
+}
+
+/** Represents an object that provides [IReduxSubscriber] */
+interface IReduxSubscriberProvider<State> {
+  val subscribe: IReduxSubscriber<State>
 }
 
 /**
@@ -63,14 +70,7 @@ interface IReduxStateBroadcaster<State> {
  * some internal [State]. Other objects can subscribe to [State] updates using [subscribe].
  */
 interface IReduxStore<State> :
-  IReduxDispatchContainer,
-  IReduxStateContainer<State>,
-  IReduxStateBroadcaster<State>
-
-/** Dispatch all [actions] in a [Collection] of [IReduxAction] */
-fun <State> IReduxStore<State>.dispatch(actions: Collection<IReduxAction>) =
-  actions.forEach { this.dispatch(it) }
-
-/** Dispatch all [actions] passed via vararg parameters */
-fun <State> IReduxStore<State>.dispatch(vararg actions: IReduxAction) =
-  this.dispatch(actions.asList())
+  IReduxDispatcherProvider,
+  IReduxStateGetterProvider<State>,
+  IReduxSubscriberProvider<State>,
+  IReduxDeinitializerProvider
