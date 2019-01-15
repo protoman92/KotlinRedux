@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.view_search_result.view.trackName
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.IReduxLifecycleOwner
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.IReduxStatePropMapper
@@ -36,7 +36,7 @@ import kotlin.properties.Delegates
 class SearchFragment : Fragment(),
   IReduxPropContainer<State, SearchFragment.S, SearchFragment.A>,
   IReduxPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment,
-  IReduxLifecycleOwner {
+  IReduxPropLifecycleOwner {
   data class S(val query: String?, val resultCount: Int?, val loading: Boolean?)
   class A(val updateQuery: (String?) -> Unit)
 

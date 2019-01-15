@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 /** Created by haipham on 2018/12/16 */
 /** Handle lifecycles for a target of [IReduxPropInjector]  */
-interface IReduxLifecycleOwner {
+interface IReduxPropLifecycleOwner {
   /** This is called before [IReduxPropInjector.injectProps] is called */
   fun beforePropInjectionStarts()
 
@@ -30,7 +30,7 @@ interface IStaticReduxPropContainer<GlobalState> {
 }
 
 /** Represents a view that contains [VariableProps] internal state */
-interface IVariableReduxPropContainer<StateProps, ActionProps> : IReduxLifecycleOwner {
+interface IVariableReduxPropContainer<StateProps, ActionProps> : IReduxPropLifecycleOwner {
   /** This will be set any time a state update is received */
   var variableProps: VariableProps<StateProps, ActionProps>?
 }
@@ -108,7 +108,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
 
     /**
      * Inject [StaticProps] without a valid [StaticProps.subscription] because we want
-     * [StaticProps.injector] to be available in [IReduxLifecycleOwner.beforePropInjectionStarts].
+     * [StaticProps.injector] to be available in [IReduxPropLifecycleOwner.beforePropInjectionStarts].
      */
     this.injectStaticProps(view)
 
@@ -145,7 +145,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     onStateUpdate(this.store.lastState())
     val subscription = this.store.subscribe(id, onStateUpdate)
 
-    /** Wrap a [ReduxSubscription] to perform [IReduxLifecycleOwner.afterPropInjectionEnds] */
+    /** Wrap a [ReduxSubscription] to perform [IReduxPropLifecycleOwner.afterPropInjectionEnds] */
     val wrappedSubscription = ReduxSubscription {
       subscription.unsubscribe()
       view.afterPropInjectionEnds()

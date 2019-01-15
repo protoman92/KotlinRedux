@@ -21,7 +21,7 @@ import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.IReduxLifecycleOwner
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropInjector
 import org.swiften.redux.ui.IReduxPropMapper
@@ -53,7 +53,7 @@ internal interface LifecycleCallback {
 internal class ReduxLifecycleObserver<LC> constructor(
   private val lifecycleOwner: LC,
   private val callback: LifecycleCallback
-) : LifecycleObserver where LC : LifecycleOwner, LC : IReduxLifecycleOwner {
+) : LifecycleObserver where LC : LifecycleOwner, LC : IReduxPropLifecycleOwner {
   init { lifecycleOwner.lifecycle.addObserver(this) }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
@@ -91,7 +91,7 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
 ): LC where
   LC : LifecycleOwner,
   LC : IReduxPropContainer<State, SP, AP>,
-  LC : IReduxLifecycleOwner
+  LC : IReduxPropLifecycleOwner
 {
   val view: IReduxPropContainer<State, SP, AP> = lifecycleOwner
   var subscription: ReduxSubscription? = null
@@ -120,7 +120,7 @@ fun <State, LC, OP, SP> IReduxPropInjector<State>.injectLifecycleProps(
 ): LC where
   LC : LifecycleOwner,
   LC : IReduxPropContainer<State, SP, Unit>,
-  LC : IReduxLifecycleOwner =
+  LC : IReduxPropLifecycleOwner =
   this.injectLifecycleProps<State, LC, OP, SP, Unit>(lifecycleOwner, outProps,
     object : IReduxPropMapper<State, OP, SP, Unit> {
       override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: OP) = Unit
