@@ -6,6 +6,4 @@
 package com.google.samples.apps.sunflower.dependency
 
 /** Created by haipham on 2019/01/17 */
-object MainSaga {
-
-}
+object Saga {}

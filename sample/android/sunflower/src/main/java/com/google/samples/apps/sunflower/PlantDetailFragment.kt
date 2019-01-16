@@ -32,13 +32,34 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.google.samples.apps.sunflower.databinding.FragmentPlantDetailBinding
+import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
+import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.ObservableReduxProps
 
 /**
  * A fragment representing a single Plant detail screen.
  */
-class PlantDetailFragment : Fragment() {
+class PlantDetailFragment : Fragment(),
+  IReduxPropContainer<Redux.State, PlantDetailFragment.S, PlantDetailFragment.A>,
+  IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
+  IReduxPropMapper<Redux.State, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
+  by PlantDetailFragment {
+  class S
+  class A
+
+  companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
+    override fun mapState(state: Redux.State, outProps: Unit) = S()
+    override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) = A()
+  }
+
+  override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, _ -> }
+
   private lateinit var shareText: String
 
   override fun onCreateView(

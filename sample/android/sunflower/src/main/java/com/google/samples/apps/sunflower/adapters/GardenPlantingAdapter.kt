@@ -28,6 +28,7 @@ import com.google.samples.apps.sunflower.GardenFragmentDirections
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.databinding.ListItemGardenPlantingBinding
 import com.google.samples.apps.sunflower.viewmodels.PlantAndGardenPlantingsViewModel
+import com.google.samples.apps.sunflower.R
 
 class GardenPlantingAdapter :
   ListAdapter<PlantAndGardenPlantings, GardenPlantingAdapter.ViewHolder>(GardenPlantDiffCallback()) {

@@ -10,7 +10,7 @@ import org.swiften.redux.core.IReduxReducer
 import java.io.Serializable
 
 /** Created by haipham on 2019/01/16 */
-object MainRedux {
+object Redux {
   class State : Serializable
 
   object Reducer : IReduxReducer<State> {

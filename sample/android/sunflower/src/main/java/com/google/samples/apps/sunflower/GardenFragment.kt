@@ -25,10 +25,30 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
 import com.google.samples.apps.sunflower.databinding.FragmentGardenBinding
+import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.GardenPlantingListViewModel
+import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.ObservableReduxProps
 
-class GardenFragment : Fragment() {
+class GardenFragment : Fragment(),
+  IReduxPropContainer<Redux.State, GardenFragment.S, GardenFragment.A>,
+  IReduxPropMapper<Redux.State, Unit, GardenFragment.S, GardenFragment.A> by GardenFragment,
+  IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner {
+  class S
+  class A
+
+  companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
+    override fun mapState(state: Redux.State, outProps: Unit) = S()
+    override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) = A()
+  }
+
+  override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, _ -> }
+
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,

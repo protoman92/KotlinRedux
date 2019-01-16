@@ -28,10 +28,31 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.databinding.FragmentPlantListBinding
+import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
+import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.ObservableReduxProps
 
-class PlantListFragment : Fragment() {
+class PlantListFragment : Fragment(),
+  IReduxPropContainer<Redux.State, PlantListFragment.S, PlantListFragment.A>,
+  IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
+  IReduxPropMapper<Redux.State, Unit, PlantListFragment.S, PlantListFragment.A>
+  by PlantListFragment {
+  class S
+  class A
+
+  companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
+    override fun mapState(state: Redux.State, outProps: Unit) = S()
+    override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) = A()
+  }
+
+  override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, _ -> }
+
   private lateinit var viewModel: PlantListViewModel
 
   override fun onCreateView(

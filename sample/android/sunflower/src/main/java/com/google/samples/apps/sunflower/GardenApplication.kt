@@ -7,7 +7,7 @@ package com.google.samples.apps.sunflower
 
 import android.app.Application
 import com.google.samples.apps.sunflower.dependency.MainDependency
-import com.google.samples.apps.sunflower.dependency.MainRedux
+import com.google.samples.apps.sunflower.dependency.Redux
 import org.swiften.redux.android.ui.core.AndroidPropInjector
 import org.swiften.redux.android.ui.core.endActivityInjection
 import org.swiften.redux.android.ui.core.startActivityInjection
@@ -21,7 +21,7 @@ class GardenApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
-    val store = FinalReduxStore(MainRedux.State(), MainRedux.Reducer)
+    val store = FinalReduxStore(Redux.State(), Redux.Reducer)
     val injector = AndroidPropInjector(store)
     val dependency = MainDependency(injector)
     this.dependency = dependency
