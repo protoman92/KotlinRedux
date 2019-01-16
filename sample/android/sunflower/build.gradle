@@ -102,6 +102,10 @@ dependencies {
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$project.ext.coroutinesVersion"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.coroutinesVersion"
 
+  api project(':android:core')
+  api project(':android:recycler-view')
+  api project(':android:router')
+
   // Testing dependencies
   androidTestImplementation "androidx.arch.core:core-testing:$project.ext.coreTestingVersion"
   androidTestImplementation "androidx.test.espresso:espresso-contrib:$project.ext.espressoVersion"
