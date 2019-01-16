@@ -29,10 +29,6 @@ import org.swiften.redux.ui.IReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.IReduxStatePropMapper
 import org.swiften.redux.ui.ObservableReduxProps
-import org.swiften.redux.ui.ReduxProps
-import org.swiften.redux.ui.StaticProps
-import org.swiften.redux.ui.VariableProps
-import kotlin.properties.Delegates
 
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
@@ -77,7 +73,7 @@ class SearchFragment : Fragment(),
     }
 
     override var reduxProps by ObservableReduxProps<State, S1, A1> { _, next ->
-      next.variable?.next?.also {
+      next.variable?.state?.also {
         this.trackName.text = it.trackName
         this.artistName.text = it.artistName
       }
@@ -110,8 +106,8 @@ class SearchFragment : Fragment(),
     )
   }
 
-  override var reduxProps by ObservableReduxProps<State, S, A> { _, next ->
-    if (next.variable?.next?.loading == true) {
+  override var reduxProps by ObservableReduxProps<State, S, A> { prev, next ->
+    if (next.variable?.state?.loading == true) {
       this.backgroundDim.visibility = View.VISIBLE
       this.progressBar.visibility = View.VISIBLE
     } else {
@@ -119,7 +115,7 @@ class SearchFragment : Fragment(),
       this.progressBar.visibility = View.GONE
     }
 
-    if (next.variable?.next?.resultCount != next.variable?.previous?.resultCount) {
+    if (next.variable?.state?.resultCount != prev?.variable?.state?.resultCount) {
       this.searchResult.adapter?.notifyDataSetChanged()
     }
   }
@@ -148,7 +144,7 @@ class SearchFragment : Fragment(),
       it.layoutManager = LinearLayoutManager(this.context)
 
       it.adapter = Adapter().let { a ->
-        this.reduxProps?.static?.injector?.injectRecyclerViewProps(a, a, ViewHolder)
+        this.reduxProps.static.injector.injectRecyclerViewProps(a, a, ViewHolder)
       }
     }
   }

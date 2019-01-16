@@ -12,7 +12,9 @@ import org.swiften.redux.core.IReduxStateGetterProvider
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.ReduxSubscription
 import java.util.Date
-import java.util.concurrent.locks.ReentrantLock
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 /** Created by haipham on 2018/12/16 */
 /** Handle lifecycles for a target of [IReduxPropInjector]  */
@@ -85,12 +87,6 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
   IReduxDispatcherProvider by store,
   IReduxStateGetterProvider<State> by store,
   IReduxDeinitializerProvider by store {
-  private fun <T> ReentrantLock.read(fn: () -> T): T {
-    try { this.lock(); return fn() } finally { this.unlock() }
-  }
-
-  private fun ReentrantLock.write(fn: () -> Unit) = this.read(fn)
-
   override fun <O, S, A> injectProps(
     view: IReduxPropContainer<State, S, A>,
     outProps: O,
@@ -115,18 +111,19 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
      * track of the [view]'s id.
      */
     val id = "${view.javaClass.simpleName}${Date().time}"
-    val lock = ReentrantLock()
-    var previousState: S? = lock.read { view.reduxProps.variable?.next }
+    val lock = ReentrantReadWriteLock()
+    var previousState: S? = lock.read { view.reduxProps.variable?.state }
 
     val onStateUpdate: (State) -> Unit = {
       val next = mapper.mapState(it, outProps)
+      val prev = lock.read { previousState }
 
       lock.write {
-        val prev = previousState; previousState = next
+        previousState = next
 
         if (next != prev) {
           val actions = mapper.mapAction(this.store.dispatch, it, outProps)
-          view.reduxProps = view.reduxProps.copy(variable = VariableProps(prev, next, actions))
+          view.reduxProps = view.reduxProps.copy(variable = VariableProps(next, actions))
         }
       }
     }

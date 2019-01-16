@@ -17,10 +17,6 @@ import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
-import org.swiften.redux.ui.ReduxProps
-import org.swiften.redux.ui.StaticProps
-import org.swiften.redux.ui.VariableProps
-import kotlin.properties.Delegates
 
 /** Created by haipham on 2019/01/12 */
 class MusicDetailFragment : Fragment(),
@@ -40,7 +36,7 @@ class MusicDetailFragment : Fragment(),
   }
 
   override var reduxProps by ObservableReduxProps<State, S, A> { _, next ->
-    next.variable?.next?.track?.also {
+    next.variable?.state?.track?.also {
       this.trackName.text = it.trackName
       this.artistName.text = it.artistName
     }

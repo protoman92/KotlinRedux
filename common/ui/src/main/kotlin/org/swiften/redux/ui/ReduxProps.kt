@@ -21,8 +21,7 @@ data class StaticProps<State>(
 
 /** Container for an [IReduxPropContainer] mutable properties */
 data class VariableProps<StateProps, ActionProps>(
-  val previous: StateProps?,
-  val next: StateProps,
+  val state: StateProps,
   val actions: ActionProps
 )
 
@@ -58,5 +57,5 @@ internal open class LateinitObservableProp<T>(
 data class ObservableReduxProps<State, S, A>(
   private val notifier: (ReduxProps<State, S, A>?, ReduxProps<State, S, A>) -> Unit
 ) : ReadWriteProperty<Any?, ReduxProps<State, S, A>> by LateinitObservableProp({ a, b ->
-  a?.variable?.next == b.variable?.next
+  a?.variable?.state == b.variable?.state
 }, notifier)

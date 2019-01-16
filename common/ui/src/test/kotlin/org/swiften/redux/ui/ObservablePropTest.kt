@@ -18,9 +18,7 @@ class ObservablePropTest {
     var prop by LateinitObservableProp<Int> { _, _ -> setCount += 1 }
 
     // When
-    prop = 1
-    prop = 2
-    prop = 3
+    prop = 1; prop = 2; prop = 3
 
     // Then
     Assert.assertEquals(setCount, 3)
