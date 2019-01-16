@@ -27,9 +27,6 @@ interface IReduxPropLifecycleOwner {
 /** Represents a container for [ReduxProps] */
 interface IReduxPropContainer<GlobalState, StateProps, ActionProps> : IReduxPropLifecycleOwner {
   var reduxProps: ReduxProps<GlobalState, StateProps, ActionProps>
-
-  /** Call this method when [reduxProps] is set */
-  fun didSetReduxProps(props: ReduxProps<GlobalState, StateProps, ActionProps>)
 }
 
 /**
@@ -88,11 +85,11 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
   IReduxDispatcherProvider by store,
   IReduxStateGetterProvider<State> by store,
   IReduxDeinitializerProvider by store {
-  internal fun <T> ReentrantLock.read(fn: () -> T): T {
+  private fun <T> ReentrantLock.read(fn: () -> T): T {
     try { this.lock(); return fn() } finally { this.unlock() }
   }
 
-  internal fun ReentrantLock.write(fn: () -> Unit) = this.read(fn)
+  private fun ReentrantLock.write(fn: () -> Unit) = this.read(fn)
 
   override fun <O, S, A> injectProps(
     view: IReduxPropContainer<State, S, A>,
@@ -129,9 +126,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
 
         if (next != prev) {
           val actions = mapper.mapAction(this.store.dispatch, it, outProps)
-          val newProps = view.reduxProps.copy(variable = VariableProps(prev, next, actions))
-          view.reduxProps = newProps
-          newProps.also { view.didSetReduxProps(it) }
+          view.reduxProps = view.reduxProps.copy(variable = VariableProps(prev, next, actions))
         }
       }
     }

@@ -28,6 +28,7 @@ import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ReduxProps
 import org.swiften.redux.ui.StaticProps
 import org.swiften.redux.ui.VariableProps
@@ -75,7 +76,12 @@ class SearchFragment : Fragment(),
           ?: S1()
     }
 
-    override lateinit var reduxProps: ReduxProps<State, S1, A1>
+    override var reduxProps by ObservableReduxProps<State, S1, A1> {
+      it.variable?.next?.also {
+        this.trackName.text = it.trackName
+        this.artistName.text = it.artistName
+      }
+    }
 
     private val clickListener = View.OnClickListener { _ ->
       this.reduxProps.variable?.actions?.also { it.goToMusicDetail() }
@@ -87,11 +93,6 @@ class SearchFragment : Fragment(),
 
     override fun afterPropInjectionEnds() {
       this.parent.setOnClickListener(null)
-    }
-
-    override fun didSetReduxProps(props: ReduxProps<State, S1, A1>) {
-      this.trackName.text = props.variable?.next?.trackName
-      this.artistName.text = props.variable?.next?.artistName
     }
   }
 
@@ -109,7 +110,19 @@ class SearchFragment : Fragment(),
     )
   }
 
-  override lateinit var reduxProps: ReduxProps<State, S, A>
+  override var reduxProps by ObservableReduxProps<State, S, A> {
+    if (it.variable?.next?.loading == true) {
+      this.backgroundDim.visibility = View.VISIBLE
+      this.progressBar.visibility = View.VISIBLE
+    } else {
+      this.backgroundDim.visibility = View.GONE
+      this.progressBar.visibility = View.GONE
+    }
+
+    if (it.variable?.next?.resultCount != it.variable?.previous?.resultCount) {
+      this.searchResult.adapter?.notifyDataSetChanged()
+    }
+  }
 
   private val querySearchWatcher = object : TextWatcher {
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -143,19 +156,5 @@ class SearchFragment : Fragment(),
   override fun afterPropInjectionEnds() {
     this.querySearch.removeTextChangedListener(this.querySearchWatcher)
     this.searchResult.adapter = null
-  }
-
-  override fun didSetReduxProps(props: ReduxProps<State, S, A>) {
-    if (props.variable?.next?.loading == true) {
-      this.backgroundDim.visibility = View.VISIBLE
-      this.progressBar.visibility = View.VISIBLE
-    } else {
-      this.backgroundDim.visibility = View.GONE
-      this.progressBar.visibility = View.GONE
-    }
-
-    if (props.variable?.next?.resultCount != props.variable?.previous?.resultCount) {
-      this.searchResult.adapter?.notifyDataSetChanged()
-    }
   }
 }

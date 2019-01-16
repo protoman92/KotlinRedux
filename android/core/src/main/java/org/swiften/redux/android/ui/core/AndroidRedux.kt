@@ -229,10 +229,6 @@ class AndroidPropInjector<State>(store: IReduxStore<State>) : ReduxPropInjector<
         get() = view.reduxProps
         set(value) { runOnUIThread { view.reduxProps = value } }
 
-      override fun didSetReduxProps(props: ReduxProps<State, StateProps, ActionProps>) {
-        runOnUIThread { view.didSetReduxProps(props) }
-      }
-
       override fun beforePropInjectionStarts() = runOnUIThread { view.beforePropInjectionStarts() }
       override fun afterPropInjectionEnds() = runOnUIThread { view.afterPropInjectionEnds() }
     },

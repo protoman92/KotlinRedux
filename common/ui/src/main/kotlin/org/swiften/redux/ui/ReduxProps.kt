@@ -6,6 +6,11 @@
 package org.swiften.redux.ui
 
 import org.swiften.redux.core.ReduxSubscription
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 /** Created by haipham on 2019/01/16 */
 /** Container for an [IReduxPropContainer] static properties */
@@ -26,3 +31,32 @@ data class ReduxProps<State, StateProps, ActionProps>(
   val static: StaticProps<State>,
   val variable: VariableProps<StateProps, ActionProps>?
 )
+
+/**
+ * Using observable delegates requires us to provide an initial value and does not work with
+ * lateinit modifier. We can use this [ReadWriteProperty] to implement change listener for lateinit
+ * properties.
+ */
+internal open class LateinitObservableProp<T>(
+  private val checkEqual: (T?, T) -> Boolean = { a, b -> a == b },
+  private val onChange: (T) -> Unit
+) : ReadWriteProperty<Any?, T> where T : Any {
+  private lateinit var value: T
+  private val lock by lazy { ReentrantReadWriteLock() }
+
+  @Throws(UninitializedPropertyAccessException::class)
+  override fun getValue(thisRef: Any?, property: KProperty<*>) = this.lock.read { this.value }
+
+  override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+    val previous = this.lock.read { if (this::value.isInitialized) this.value else null }
+    this.lock.write { this.value = value }
+    this.lock.read { if (!this.checkEqual(previous, value)) { this.onChange(value) } }
+  }
+}
+
+/** Use this to avoid lateinit modifiers for [ReduxProps] */
+data class ObservableReduxProps<State, S, A>(
+  private val onChange: (ReduxProps<State, S, A>) -> Unit
+) : ReadWriteProperty<Any?, ReduxProps<State, S, A>> by LateinitObservableProp({ a, b ->
+  a?.variable?.next == b.variable?.next
+}, onChange)

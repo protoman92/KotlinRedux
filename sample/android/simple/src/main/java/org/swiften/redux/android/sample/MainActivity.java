@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
+import kotlin.properties.Delegates;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.redux.ui.IReduxPropContainer;
@@ -78,7 +79,4 @@ public final class MainActivity extends AppCompatActivity implements
 
   @Override
   public void afterPropInjectionEnds() { }
-
-  @Override
-  public void didSetReduxProps(@NotNull ReduxProps<State, Unit, Unit> props) { }
 }

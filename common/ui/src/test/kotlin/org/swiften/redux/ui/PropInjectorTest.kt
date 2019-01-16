@@ -43,7 +43,7 @@ class PropInjectorTest {
   }
 
   class View : IReduxPropContainer<S, S, A> {
-    override lateinit var reduxProps: ReduxProps<S, S, A>
+    override var reduxProps by ObservableReduxProps<S, S, A> { this.reduxPropsInjectionCount += 1 }
 
     var reduxPropsInjectionCount = 0
     var beforeInjectionCount = 0
@@ -55,10 +55,6 @@ class PropInjectorTest {
     }
 
     override fun afterPropInjectionEnds() { this.afterInjectionCount += 1 }
-
-    override fun didSetReduxProps(props: ReduxProps<S, S, A>) {
-      this.reduxPropsInjectionCount += 1
-    }
   }
 
   private lateinit var store: StoreWrapper
