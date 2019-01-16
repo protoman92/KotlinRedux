@@ -1,6 +1,0 @@
-subprojects {
-  // TODO Investigate why this fails locally.
-  afterEvaluate { project ->
-    project.tasks.lint { onlyIf { return false } }
-  }
-}

@@ -32,55 +32,54 @@ import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
 
 class PlantListFragment : Fragment() {
+  private lateinit var viewModel: PlantListViewModel
 
-    private lateinit var viewModel: PlantListViewModel
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    val binding = FragmentPlantListBinding.inflate(inflater, container, false)
+    val context = context ?: return binding.root
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val binding = FragmentPlantListBinding.inflate(inflater, container, false)
-        val context = context ?: return binding.root
+    val factory = InjectorUtils.providePlantListViewModelFactory(context)
+    viewModel = ViewModelProviders.of(this, factory).get(PlantListViewModel::class.java)
 
-        val factory = InjectorUtils.providePlantListViewModelFactory(context)
-        viewModel = ViewModelProviders.of(this, factory).get(PlantListViewModel::class.java)
+    val adapter = PlantAdapter()
+    binding.plantList.adapter = adapter
+    subscribeUi(adapter)
 
-        val adapter = PlantAdapter()
-        binding.plantList.adapter = adapter
-        subscribeUi(adapter)
+    setHasOptionsMenu(true)
+    return binding.root
+  }
 
-        setHasOptionsMenu(true)
-        return binding.root
+  override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    inflater?.inflate(R.menu.menu_plant_list, menu)
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return when (item.itemId) {
+      R.id.filter_zone -> {
+        updateData()
+        true
+      }
+      else -> super.onOptionsItemSelected(item)
     }
+  }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_plant_list, menu)
-    }
+  private fun subscribeUi(adapter: PlantAdapter) {
+    viewModel.getPlants().observe(viewLifecycleOwner, Observer { plants ->
+      if (plants != null) adapter.submitList(plants)
+    })
+  }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.filter_zone -> {
-                updateData()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
+  private fun updateData() {
+    with(viewModel) {
+      if (isFiltered()) {
+        clearGrowZoneNumber()
+      } else {
+        setGrowZoneNumber(9)
+      }
     }
-
-    private fun subscribeUi(adapter: PlantAdapter) {
-        viewModel.getPlants().observe(viewLifecycleOwner, Observer { plants ->
-            if (plants != null) adapter.submitList(plants)
-        })
-    }
-
-    private fun updateData() {
-        with(viewModel) {
-            if (isFiltered()) {
-                clearGrowZoneNumber()
-            } else {
-                setGrowZoneNumber(9)
-            }
-        }
-    }
+  }
 }
