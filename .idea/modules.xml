@@ -19,6 +19,7 @@
       <module fileurl="file://$PROJECT_DIR$/sample/android/sample-android.iml" filepath="$PROJECT_DIR$/sample/android/sample-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/android/simple/simple.iml" filepath="$PROJECT_DIR$/sample/android/simple/simple.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/simple-store/simple-store.iml" filepath="$PROJECT_DIR$/common/simple-store/simple-store.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample/android/sunflower/sunflower.iml" filepath="$PROJECT_DIR$/sample/android/sunflower/sunflower.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/ui/ui.iml" filepath="$PROJECT_DIR$/common/ui/ui.iml" />
     </modules>
   </component>

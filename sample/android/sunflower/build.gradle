@@ -1,0 +1,112 @@
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+buildscript {
+  project.apply from: "${rootDir}/sample/android/sunflower/constants.gradle"
+
+  repositories {
+    google()
+    jcenter()
+    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:$gradleVersion"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
+  }
+}
+
+plugins {
+  id "com.diffplug.gradle.spotless" version "3.13.0"
+}
+
+allprojects {
+  repositories {
+    google()
+    jcenter()
+    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
+  }
+}
+
+spotless {
+  kotlin {
+    target "**/*.kt"
+    ktlint(ktlintVersion)
+  }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
+
+project.apply from: "${rootDir}/sample/android/sunflower/constants.gradle"
+
+android {
+  compileSdkVersion project.ext.compileSdkVersion
+  dataBinding {
+    enabled = true
+  }
+  defaultConfig {
+    applicationId "com.google.samples.apps.sunflower"
+    minSdkVersion project.ext.minSdkVersion
+    targetSdkVersion project.ext.targetSdkVersion
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    versionCode 1
+    versionName "0.1.6"
+    vectorDrawables.useSupportLibrary true
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+dependencies {
+  kapt "androidx.room:room-compiler:$project.ext.roomVersion"
+  kapt "com.github.bumptech.glide:compiler:$project.ext.glideVersion"
+  implementation "android.arch.navigation:navigation-fragment-ktx:$project.ext.navigationVersion"
+  implementation "android.arch.navigation:navigation-ui-ktx:$project.ext.navigationVersion"
+  implementation "android.arch.work:work-runtime-ktx:$project.ext.workVersion"
+  implementation "androidx.appcompat:appcompat:$project.ext.supportLibraryVersion"
+  implementation "androidx.constraintlayout:constraintlayout:$project.ext.constraintLayoutVersion"
+  implementation "androidx.core:core-ktx:$project.ext.ktxVersion"
+  implementation "androidx.lifecycle:lifecycle-extensions:$project.ext.lifecycleVersion"
+  implementation "androidx.recyclerview:recyclerview:$project.ext.recyclerViewVersion"
+  implementation "androidx.room:room-runtime:$project.ext.roomVersion"
+  implementation "com.github.bumptech.glide:glide:$project.ext.glideVersion"
+  implementation "com.google.android.material:material:$project.ext.materialVersion"
+  implementation "com.google.code.gson:gson:$project.ext.gsonVersion"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$project.ext.kotlinVersion"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$project.ext.coroutinesVersion"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.coroutinesVersion"
+
+  // Testing dependencies
+  androidTestImplementation "androidx.arch.core:core-testing:$project.ext.coreTestingVersion"
+  androidTestImplementation "androidx.test.espresso:espresso-contrib:$project.ext.espressoVersion"
+  androidTestImplementation "androidx.test.espresso:espresso-core:$project.ext.espressoVersion"
+  androidTestImplementation "androidx.test.espresso:espresso-intents:$project.ext.espressoVersion"
+  androidTestImplementation "androidx.test.uiautomator:uiautomator:$project.ext.uiAutomatorVersion"
+  testImplementation "junit:junit:$project.ext.junitVersion"
+}
