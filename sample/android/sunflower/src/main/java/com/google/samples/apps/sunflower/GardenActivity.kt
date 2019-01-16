@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
@@ -28,40 +29,59 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.samples.apps.sunflower.databinding.ActivityGardenBinding
+import com.google.samples.apps.sunflower.dependency.MainRedux
+import org.swiften.redux.android.ui.core.endFragmentInjection
+import org.swiften.redux.android.ui.core.startFragmentInjection
+import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.ReduxProps
 
-class GardenActivity : AppCompatActivity() {
+class GardenActivity : AppCompatActivity(),
+  IReduxPropContainer<MainRedux.State, Unit, Unit>,
+  IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner {
+  override lateinit var reduxProps: ReduxProps<MainRedux.State, Unit, Unit>
 
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var navController: NavController
+  private lateinit var fragmentCallbacks: FragmentManager.FragmentLifecycleCallbacks
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+  private lateinit var drawerLayout: DrawerLayout
+  private lateinit var appBarConfiguration: AppBarConfiguration
+  private lateinit var navController: NavController
 
-        val binding: ActivityGardenBinding = DataBindingUtil.setContentView(this,
-                R.layout.activity_garden)
-        drawerLayout = binding.drawerLayout
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        navController = Navigation.findNavController(this, R.id.garden_nav_fragment)
-        appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
+    val binding: ActivityGardenBinding = DataBindingUtil.setContentView(this,
+      R.layout.activity_garden)
+    drawerLayout = binding.drawerLayout
 
-        // Set up ActionBar
-        setSupportActionBar(binding.toolbar)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+    navController = Navigation.findNavController(this, R.id.garden_nav_fragment)
+    appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
 
-        // Set up navigation menu
-        binding.navigationView.setupWithNavController(navController)
+    // Set up ActionBar
+    setSupportActionBar(binding.toolbar)
+    setupActionBarWithNavController(navController, appBarConfiguration)
+
+    // Set up navigation menu
+    binding.navigationView.setupWithNavController(navController)
+
+    this.fragmentCallbacks = startFragmentInjection(this) {}
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    endFragmentInjection(this, this.fragmentCallbacks)
+  }
+
+  override fun onSupportNavigateUp(): Boolean {
+    return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+  }
+
+  override fun onBackPressed() {
+    if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+      drawerLayout.closeDrawer(GravityCompat.START)
+    } else {
+      super.onBackPressed()
     }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
-
-    override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
-    }
+  }
 }

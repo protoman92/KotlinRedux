@@ -26,6 +26,12 @@ interface IReduxPropLifecycleOwner {
   fun afterPropInjectionEnds()
 }
 
+/** Treat this as a delegate for [IReduxPropLifecycleOwner] that does not hold any logic */
+object EmptyReduxPropLifecycleOwner : IReduxPropLifecycleOwner {
+  override fun beforePropInjectionStarts() {}
+  override fun afterPropInjectionEnds() {}
+}
+
 /** Represents a container for [ReduxProps] */
 interface IReduxPropContainer<GlobalState, StateProps, ActionProps> : IReduxPropLifecycleOwner {
   var reduxProps: ReduxProps<GlobalState, StateProps, ActionProps>
