@@ -23,16 +23,17 @@ class ReduxSagaMiddlewareTest {
       on { this.onAction } doReturn {}
     } }
 
-    val effects = outputs.map<IReduxSagaOutput<Any>, IReduxSagaEffect<Unit, Any>> { o -> { o } }
-    val input = ReduxMiddlewareInput { }
-    val dispatchWrapper = ReduxDispatchWrapper("root") { }
-    val wrappedDispatch = createSagaMiddlewareProvider(effects).middleware(input)(dispatchWrapper)
+    val effects = outputs.map<IReduxSagaOutput<Any>, IReduxSagaEffect<Any>> { o -> { o } }
+
+    val wrappedDispatch = createSagaMiddlewareProvider<Unit>(effects)
+      .middleware(ReduxMiddlewareInput { })(ReduxDispatchWrapper("root") { })
+      .dispatch
 
     // When
-    wrappedDispatch.dispatch(DefaultReduxAction.Dummy)
-    wrappedDispatch.dispatch(DefaultReduxAction.Dummy)
-    wrappedDispatch.dispatch(DefaultReduxAction.Dummy)
-    wrappedDispatch.dispatch(DefaultReduxAction.Deinitialize)
+    wrappedDispatch(DefaultReduxAction.Dummy)
+    wrappedDispatch(DefaultReduxAction.Dummy)
+    wrappedDispatch(DefaultReduxAction.Dummy)
+    wrappedDispatch(DefaultReduxAction.Deinitialize)
 
     // Then
     outputs.forEach { verify(it, times(4)).onAction }

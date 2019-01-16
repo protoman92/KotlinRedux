@@ -14,11 +14,11 @@ import org.swiften.redux.saga.IReduxSagaOutput
  * [TakeEffect] whose [ReduxSagaOutput] takes all [IReduxAction] that pass some conditions, then
  * flattens and emits all values. Contrast this with [TakeLatestEffect].
  */
-internal class TakeEveryEffect<State, P, R>(
+internal class TakeEveryEffect<P, R>(
   extractor: Function1<IReduxAction, P?>,
-  creator: Function1<P, IReduxSagaEffect<State, R>>,
+  creator: Function1<P, IReduxSagaEffect<R>>,
   options: TakeEffectOptions
-) : TakeEffect<State, P, R>(extractor, creator, options) {
+) : TakeEffect<P, R>(extractor, creator, options) {
   override fun flatten(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>) =
     nestedOutput.flatMap { it }
 }

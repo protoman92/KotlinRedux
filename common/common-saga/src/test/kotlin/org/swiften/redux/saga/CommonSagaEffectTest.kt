@@ -47,15 +47,15 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     runBlocking { delay(1000) }
   }
 
-  abstract fun <T> justEffect(value: T): ReduxSagaEffect<State, T>
-  abstract fun <T : Any> fromEffect(vararg values: T): ReduxSagaEffect<State, T>
+  abstract fun <T> justEffect(value: T): ReduxSagaEffect<T>
+  abstract fun <T : Any> fromEffect(vararg values: T): ReduxSagaEffect<T>
 
   @ObsoleteCoroutinesApi
   fun test_takeEffect_shouldTakeCorrectActions(
     createTakeEffect: (
       extractor: Function1<TakeAction, Int?>,
-      creator: Function1<Int, IReduxSagaEffect<State, Any>>
-    ) -> ReduxSagaEffect<State, Any>,
+      creator: Function1<Int, IReduxSagaEffect<Any>>
+    ) -> ReduxSagaEffect<Any>,
     actualValues: List<Int>
   ) {
     // Setup

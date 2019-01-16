@@ -30,11 +30,11 @@ import java.util.Collections
 
 /** Created by haipham on 2018/12/23 */
 class SagaEffectTest : CommonSagaEffectTest() {
-  override fun <T> justEffect(value: T) = just<State, T>(value)
+  override fun <T> justEffect(value: T) = just<T>(value)
 
   @ExperimentalCoroutinesApi
   override fun <T : Any> fromEffect(vararg values: T) =
-    from<State, T>(this.rxFlowable { values.forEach { this.send(it) } })
+    from<T>(this.rxFlowable { values.forEach { this.send(it) } })
 
   @Test
   @ObsoleteCoroutinesApi
@@ -53,12 +53,12 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `Select effect should extract some value from a state`() {
     // Setup
-    val sourceOutput1 = just<State, Int>(1)
-      .select({ 2 }, { a, b -> a + b })
+    val sourceOutput1 = just(1)
+      .select<State, Int, Int, Int>({ 2 }, { a, b -> a + b })
       .invoke(this, State()) { }
 
-    val sourceOutput2 = just<State, Int>(2)
-      .select { 4 }
+    val sourceOutput2 = just(2)
+      .select<State, Int, Int> { 4 }
       .invoke(this, State()) { }
 
     // When && Then
@@ -78,10 +78,10 @@ class SagaEffectTest : CommonSagaEffectTest() {
       "Input: $q, Result: $result"
     }
 
-    val sourceOutput = takeLatestAction<Unit, Action, String, Any>(
+    val sourceOutput = takeLatestAction<Action, String, Any>(
       { it.query },
       { query ->
-        just<Unit, String>(query)
+        just(query)
           .map { "unavailable$it" }
           .mapAsync { this.searchMusicStore(it) }
           .cast<Unit, String, Any>()

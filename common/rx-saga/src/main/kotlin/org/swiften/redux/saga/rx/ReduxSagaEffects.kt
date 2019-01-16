@@ -18,43 +18,47 @@ import org.swiften.redux.saga.ReduxSagaEffect
 object ReduxSagaEffects {
   /** Create a [CallEffect] */
   @JvmStatic
-  fun <State, P, R> call(transformer: (P) -> Single<R>): IReduxSagaEffectTransformer<State, P, R> =
+  fun <P, R> call(transformer: (P) -> Single<R>): IReduxSagaEffectTransformer<P, R> =
     { CallEffect(it, transformer) }
 
   /** Create a [FromEffect] */
   @JvmStatic
-  fun <State, R> from(stream: Flowable<R>): ReduxSagaEffect<State, R> = FromEffect(stream)
+  fun <R> from(stream: Flowable<R>): ReduxSagaEffect<R> = FromEffect(stream)
 
   /** Create a [JustEffect] */
   @JvmStatic
-  fun <State, R> just(value: R): ReduxSagaEffect<State, R> = JustEffect(value)
+  fun <R> just(value: R): ReduxSagaEffect<R> = JustEffect(value)
 
   /** Call [CommonSagaEffects.put] with [ReduxSagaEffects.just] */
   @JvmStatic
-  fun <State, P> put(value: P, actionCreator: (P) -> IReduxAction): ReduxSagaEffect<State, Any> =
-    CommonSagaEffects.put<State, P>(actionCreator)(this.just(value))
+  fun <P> put(value: P, actionCreator: (P) -> IReduxAction): ReduxSagaEffect<Any> =
+    CommonSagaEffects.put(actionCreator)(this.just(value))
 
   /** Create a [JustPutEffect] */
   @JvmStatic
-  fun <State> justPut(action: IReduxAction): ReduxSagaEffect<State, Any> = JustPutEffect(action)
+  fun justPut(action: IReduxAction): ReduxSagaEffect<Any> = JustPutEffect(action)
 
   /** Create a [SelectEffect] */
   @JvmStatic
-  fun <State, R> select(selector: (State) -> R): ReduxSagaEffect<State, R> = SelectEffect(selector)
+  fun <State, R> select(cls: Class<State>, selector: (State) -> R): ReduxSagaEffect<R> =
+    SelectEffect(cls, selector)
+
+  inline fun <reified State, R> select(noinline selector: (State) -> R) =
+    this.select(State::class.java, selector)
 
   /** Create a [TakeEveryEffect] instance. */
   @JvmStatic
-  fun <State, P, R> takeEvery(
+  fun <P, R> takeEvery(
     extractor: Function1<IReduxAction, P?>,
-    creator: Function1<P, IReduxSagaEffect<State, R>>,
+    creator: Function1<P, IReduxSagaEffect<R>>,
     options: TakeEffectOptions = TakeEffectOptions()
-  ): ReduxSagaEffect<State, R> = TakeEveryEffect(extractor, creator, options)
+  ): ReduxSagaEffect<R> = TakeEveryEffect(extractor, creator, options)
 
   /** Convenience function to create [TakeEveryEffect] for a specific type of [IReduxAction] */
   @JvmStatic
-  inline fun <State, reified Action, P, R> takeEveryAction(
+  inline fun <reified Action, P, R> takeEveryAction(
     crossinline extractor: Function1<Action, P?>,
-    noinline creator: Function1<P, IReduxSagaEffect<State, R>>,
+    noinline creator: Function1<P, IReduxSagaEffect<R>>,
     options: TakeEffectOptions = TakeEffectOptions()
   ) where Action : IReduxAction = this.takeEvery(
     { when (it) { is Action -> extractor(it); else -> null } },
@@ -63,17 +67,17 @@ object ReduxSagaEffects {
 
   /** Create a [TakeLatestEffect] instance. */
   @JvmStatic
-  fun <State, P, R> takeLatest(
+  fun <P, R> takeLatest(
     extractor: Function1<IReduxAction, P?>,
-    creator: Function1<P, IReduxSagaEffect<State, R>>,
+    creator: Function1<P, IReduxSagaEffect<R>>,
     options: TakeEffectOptions = TakeEffectOptions()
-  ): ReduxSagaEffect<State, R> = TakeLatestEffect(extractor, creator, options)
+  ): ReduxSagaEffect<R> = TakeLatestEffect(extractor, creator, options)
 
   /** Convenience function to create [TakeLatestEffect] for a specific type of [IReduxAction] */
   @JvmStatic
-  inline fun <State, reified Action, P, R> takeLatestAction(
+  inline fun <reified Action, P, R> takeLatestAction(
     crossinline extractor: Function1<Action, P?>,
-    noinline creator: Function1<P, IReduxSagaEffect<State, R>>,
+    noinline creator: Function1<P, IReduxSagaEffect<R>>,
     options: TakeEffectOptions = TakeEffectOptions()
   ) where Action : IReduxAction = this.takeLatest(
     { when (it) { is Action -> extractor(it); else -> null } }, creator, options

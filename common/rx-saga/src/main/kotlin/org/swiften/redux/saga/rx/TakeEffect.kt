@@ -17,11 +17,11 @@ import org.swiften.redux.saga.ReduxSagaEffect
  * [TakeEffect] instances produces streams that filter [IReduxAction] with [extractor] and pluck out
  * the appropriate ones to perform additional work on with [creator].
  */
-internal abstract class TakeEffect<State, P, R>(
+internal abstract class TakeEffect<P, R>(
   private val extractor: Function1<IReduxAction, P?>,
-  private val creator: Function1<P, IReduxSagaEffect<State, R>>,
+  private val creator: Function1<P, IReduxSagaEffect<R>>,
   private val options: TakeEffectOptions
-) : ReduxSagaEffect<State, R>() {
+) : ReduxSagaEffect<R>() {
   /**
    * Flatten an [IReduxSagaOutput] that streams [IReduxSagaOutput] to access the values streamed by
    * the inner [IReduxSagaOutput].
@@ -29,7 +29,7 @@ internal abstract class TakeEffect<State, P, R>(
   abstract fun flatten(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>): IReduxSagaOutput<R>
 
   @Suppress("MoveLambdaOutsideParentheses")
-  override operator fun invoke(p1: Input<State>): IReduxSagaOutput<R> {
+  override operator fun invoke(p1: Input): IReduxSagaOutput<R> {
     val subject = PublishProcessor.create<P>()
 
     val nested = ReduxSagaOutput(p1.scope, subject,

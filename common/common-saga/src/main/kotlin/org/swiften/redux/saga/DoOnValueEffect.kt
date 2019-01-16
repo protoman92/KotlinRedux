@@ -10,13 +10,13 @@ package org.swiften.redux.saga
  * [IReduxSagaEffect] whose [IReduxSagaOutput] performs some side effects on value emissions
  * with [performer].
  */
-internal class DoOnValueEffect<State, R>(
-  private val source: IReduxSagaEffect<State, R>,
+internal class DoOnValueEffect<R>(
+  private val source: IReduxSagaEffect<R>,
   private val performer: (R) -> Unit
-) : ReduxSagaEffect<State, R>() {
-  override fun invoke(p1: Input<State>) = this.source.invoke(p1).doOnValue(this.performer)
+) : ReduxSagaEffect<R>() {
+  override fun invoke(p1: Input) = this.source.invoke(p1).doOnValue(this.performer)
 }
 
 /** Invoke a [DoOnValueEffect] on [this] */
-fun <State, R> ReduxSagaEffect<State, R>.doOnValue(performer: (R) -> Unit) =
+fun <State, R> ReduxSagaEffect<R>.doOnValue(performer: (R) -> Unit) =
   this.transform(CommonSagaEffects.doOnValue(performer))

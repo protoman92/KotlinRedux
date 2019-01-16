@@ -55,7 +55,7 @@ class MainApplication : Application() {
           }
         }
       ).middleware,
-      createSagaMiddlewareProvider(MainSaga.sagas(repository)).middleware
+      createSagaMiddlewareProvider<State>(MainSaga.sagas(repository)).middleware
     )(FinalReduxStore(State(), MainRedux.Reducer))
 
     val injector = AndroidPropInjector(store)

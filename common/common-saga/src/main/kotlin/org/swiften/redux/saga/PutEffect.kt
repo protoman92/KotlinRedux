@@ -13,14 +13,14 @@ import org.swiften.redux.core.IReduxStore
  * [IReduxSagaEffect] whose [IReduxSagaOutput] deposits some values emitted by [source] into a
  * [IReduxStore] using [actionCreator].
  */
-internal class PutEffect<State, P>(
-  private val source: IReduxSagaEffect<State, P>,
+internal class PutEffect<P>(
+  private val source: IReduxSagaEffect<P>,
   private val actionCreator: (P) -> IReduxAction
-) : ReduxSagaEffect<State, Any>() {
-  override fun invoke(p1: Input<State>) =
+) : ReduxSagaEffect<Any>() {
+  override fun invoke(p1: Input) =
     source.invoke(p1).map { p1.dispatch(this@PutEffect.actionCreator(it)) as Any }
 }
 
 /** Invoke a [PutEffect] on the current [CommonSagaEffects] */
-fun <State, P> ReduxSagaEffect<State, P>.put(actionCreator: (P) -> IReduxAction) =
+fun <P> ReduxSagaEffect<P>.put(actionCreator: (P) -> IReduxAction) =
   this.transform(CommonSagaEffects.put(actionCreator))

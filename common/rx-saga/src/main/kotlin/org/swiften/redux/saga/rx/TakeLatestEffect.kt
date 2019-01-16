@@ -15,11 +15,11 @@ import org.swiften.redux.saga.IReduxSagaOutput
  * best used for cases whereby we are only interested in the latest value, such as in an
  * autocomplete search implementation. Contrast this with [TakeEveryEffect]
  */
-internal class TakeLatestEffect<State, P, R>(
+internal class TakeLatestEffect<P, R>(
   extractor: Function1<IReduxAction, P?>,
-  creator: Function1<P, IReduxSagaEffect<State, R>>,
+  creator: Function1<P, IReduxSagaEffect<R>>,
   options: TakeEffectOptions
-) : TakeEffect<State, P, R>(extractor, creator, options) {
+) : TakeEffect<P, R>(extractor, creator, options) {
   override fun flatten(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>) =
     nestedOutput.switchMap { it }
 }

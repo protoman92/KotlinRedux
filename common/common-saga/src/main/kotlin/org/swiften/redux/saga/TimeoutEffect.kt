@@ -10,13 +10,12 @@ package org.swiften.redux.saga
  * [IReduxSagaEffect] whose [IReduxSagaOutput] can time out if no value is emitted within
  * [millis]
  */
-internal class TimeoutEffect<State, R>(
-  private val source: IReduxSagaEffect<State, R>,
+internal class TimeoutEffect<R>(
+  private val source: IReduxSagaEffect<R>,
   private val millis: Long
-) : ReduxSagaEffect<State, R>() {
-  override fun invoke(p1: Input<State>) = this.source.invoke(p1).timeout(this.millis)
+) : ReduxSagaEffect<R>() {
+  override fun invoke(p1: Input) = this.source.invoke(p1).timeout(this.millis)
 }
 
 /** Invoke a [TimeoutEffect] on [this] */
-fun <State, R> ReduxSagaEffect<State, R>.timeout(millis: Long) =
-  this.transform(CommonSagaEffects.timeout(millis))
+fun <R> ReduxSagaEffect<R>.timeout(millis: Long) = this.transform(CommonSagaEffects.timeout(millis))

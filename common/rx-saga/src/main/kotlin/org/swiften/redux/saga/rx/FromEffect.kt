@@ -12,8 +12,8 @@ import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2019/01/05 */
 /** [IReduxSagaEffect] whose [ReduxSagaOutput] is provided via [stream] */
-internal class FromEffect<State, R>(
+internal class FromEffect<R>(
   private val stream: Flowable<R>
-) : ReduxSagaEffect<State, R>() {
-  override fun invoke(p1: Input<State>) = ReduxSagaOutput(p1.scope, this.stream) { }
+) : ReduxSagaEffect<R>() {
+  override fun invoke(p1: Input) = ReduxSagaOutput(p1.scope, this.stream) { }
 }

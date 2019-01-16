@@ -10,15 +10,14 @@ import kotlinx.coroutines.Deferred
 
 /** Created by haipham on 2019/01/07 */
 /** Similar to [MapEffect], but handles async functions */
-internal class AsyncMapEffect<State, P, R>(
-  private val source: IReduxSagaEffect<State, P>,
+internal class AsyncMapEffect<P, R>(
+  private val source: IReduxSagaEffect<P>,
   private val transformer: suspend CoroutineScope.(P) -> Deferred<R>
-) : ReduxSagaEffect<State, R>() {
-  override fun invoke(p1: Input<State>) =
-    this.source.invoke(p1).mapAsync(this.transformer)
+) : ReduxSagaEffect<R>() {
+  override fun invoke(p1: Input) = this.source.invoke(p1).mapAsync(this.transformer)
 }
 
 /** Invoke a [AsyncMapEffect] on [this] */
-fun <State, P, R> ReduxSagaEffect<State, P>.mapAsync(
+fun <P, R> ReduxSagaEffect<P>.mapAsync(
   transformer: suspend CoroutineScope.(P) -> Deferred<R>
 ) = this.transform(CommonSagaEffects.mapAsync(transformer))

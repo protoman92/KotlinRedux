@@ -13,10 +13,8 @@ import org.swiften.redux.saga.map
 
 /** Created by haipham on 2019/01/10 */
 /** [IReduxSagaEffect] whose [ReduxSagaOutput] simply dispatches [action] */
-internal class JustPutEffect<State>(
-  private val action: IReduxAction
-) : ReduxSagaEffect<State, Any>() {
-  override fun invoke(p1: Input<State>) = ReduxSagaEffects.just<State, Unit>(Unit)
+internal class JustPutEffect(private val action: IReduxAction) : ReduxSagaEffect<Any>() {
+  override fun invoke(p1: Input) = ReduxSagaEffects.just(Unit)
     .map { p1.dispatch(this@JustPutEffect.action) as Any }
     .invoke(p1)
 }

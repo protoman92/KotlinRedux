@@ -13,15 +13,15 @@ import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2019/01/05 */
 /** [IReduxSagaEffect] whose [IReduxSagaOutput] awaits for a [Single] to complete */
-internal class CallEffect<State, P, R>(
-  private val source: IReduxSagaEffect<State, P>,
+internal class CallEffect<P, R>(
+  private val source: IReduxSagaEffect<P>,
   private val transformer: (P) -> Single<R>
-) : ReduxSagaEffect<State, R>() {
-  override fun invoke(p1: Input<State>) = this.source.invoke(p1).flatMap {
+) : ReduxSagaEffect<R>() {
+  override fun invoke(p1: Input) = this.source.invoke(p1).flatMap {
     ReduxSagaOutput(p1.scope, this.transformer(it).toFlowable()) { }
   }
 }
 
 /** Invoke a [CallEffect] on [this] */
-fun <State, P, R> ReduxSagaEffect<State, P>.call(transformer: (P) -> Single<R>) =
+fun <State, P, R> ReduxSagaEffect<P>.call(transformer: (P) -> Single<R>) =
   this.transform(ReduxSagaEffects.call(transformer))

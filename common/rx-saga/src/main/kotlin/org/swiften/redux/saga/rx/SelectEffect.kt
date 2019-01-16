@@ -6,6 +6,7 @@
 package org.swiften.redux.saga.rx
 
 import org.swiften.redux.saga.IReduxSagaEffect
+import org.swiften.redux.saga.IReduxSagaOutput
 import org.swiften.redux.saga.Input
 import org.swiften.redux.saga.ReduxSagaEffect
 import org.swiften.redux.saga.then
@@ -16,21 +17,25 @@ import org.swiften.redux.saga.then
  * [selector].
  */
 internal class SelectEffect<State, R>(
+  private val cls: Class<State>,
   private val selector: (State) -> R
-) : ReduxSagaEffect<State, R>() {
-  override fun invoke(p1: Input<State>) =
-    ReduxSagaEffects.just<State, R>(this.selector(p1.stateGetter())).invoke(p1)
+) : ReduxSagaEffect<R>() {
+  override fun invoke(p1: Input): IReduxSagaOutput<R> {
+    val lastState = p1.stateGetter()
+    require(this.cls.isInstance(lastState))
+    return ReduxSagaEffects.just(this.selector(this.cls.cast(lastState))).invoke(p1)
+  }
 }
 
 /**
  * Invoke a [SelectEffect] on the current [IReduxSagaEffect] and combine the emitted values with
  * [selector].
  */
-fun <State, R, R2, R3> ReduxSagaEffect<State, R>.select(
-  selector: (State) -> R2,
-  combiner: (R, R2) -> R3
+inline fun <reified State, R, R2, R3> ReduxSagaEffect<R>.select(
+  noinline selector: (State) -> R2,
+  noinline combiner: (R, R2) -> R3
 ) = this.then(ReduxSagaEffects.select(selector), combiner)
 
 /** Invoke a [SelectEffect] but ignore emissions from [this] */
-fun <State, R, R2> ReduxSagaEffect<State, R>.select(selector: (State) -> R2) =
+inline fun <reified State, R, R2> ReduxSagaEffect<R>.select(noinline selector: (State) -> R2) =
   this.then(ReduxSagaEffects.select(selector))

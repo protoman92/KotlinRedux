@@ -34,11 +34,6 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 24, 'hours'
 }
 
-// TODO Investigate why this fails locally.
-afterEvaluate { project ->
-  project.tasks.lint { onlyIf { return false } }
-}
-
 android {
   compileSdkVersion compileSdk
 

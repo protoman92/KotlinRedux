@@ -15,19 +15,15 @@ import org.swiften.redux.core.IReduxStore
 
 /** Created by haipham on 2019/01/07 */
 /** Abstraction for Redux saga that handles [IReduxAction] in the pipeline */
-typealias IReduxSagaEffect<State, R> = Function1<Input<State>, IReduxSagaOutput<R>>
+typealias IReduxSagaEffect<R> = Function1<Input, IReduxSagaOutput<R>>
 
 /** Transform one [ReduxSagaEffect] to another */
-typealias IReduxSagaEffectTransformer<State, R, R2> =
-  Function1<ReduxSagaEffect<State, R>, ReduxSagaEffect<State, R2>>
+typealias IReduxSagaEffectTransformer<R, R2> = Function1<ReduxSagaEffect<R>, ReduxSagaEffect<R2>>
 
-/**
- * [Input] for an [IReduxSagaEffect], which exposes a [IReduxStore]'s internal
- * functionalities.
- */
-class Input<State>(
+/** [Input] for an [IReduxSagaEffect], which exposes a [IReduxStore]'s internal functionalities */
+class Input(
   val scope: CoroutineScope = GlobalScope,
-  val stateGetter: IReduxStateGetter<State>,
+  val stateGetter: IReduxStateGetter<*>,
   val dispatch: IReduxDispatcher
 )
 
@@ -100,11 +96,11 @@ interface IReduxSagaOutput<T> {
 }
 
 /** Abstract class to allow better interfacing with Java */
-abstract class ReduxSagaEffect<State, R> : IReduxSagaEffect<State, R> {
+abstract class ReduxSagaEffect<R> : IReduxSagaEffect<R> {
   /** Convenience method to call [IReduxSagaEffect] with convenience parameters for testing */
-  fun invoke(scope: CoroutineScope, state: State, dispatch: IReduxDispatcher) =
+  fun invoke(scope: CoroutineScope, state: Any, dispatch: IReduxDispatcher) =
     this.invoke(Input(scope, { state }, dispatch))
 
-  fun <R2> transform(transformer: IReduxSagaEffectTransformer<State, R, R2>):
-    ReduxSagaEffect<State, R2> = transformer(this)
+  fun <R2> transform(transformer: IReduxSagaEffectTransformer<R, R2>):
+    ReduxSagaEffect<R2> = transformer(this)
 }
