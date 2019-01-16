@@ -28,6 +28,7 @@ import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.ReduxProps
 import org.swiften.redux.ui.StaticProps
 import org.swiften.redux.ui.VariableProps
 import kotlin.properties.Delegates
@@ -74,17 +75,10 @@ class SearchFragment : Fragment(),
           ?: S1()
     }
 
-    override lateinit var staticProps: StaticProps<State>
-
-    override var variableProps by Delegates.observable<VariableProps<S1, A1>?>(null) { _, _, p ->
-      p?.also {
-        this.trackName.text = it.next.trackName
-        this.artistName.text = it.next.artistName
-      }
-    }
+    override lateinit var reduxProps: ReduxProps<State, S1, A1>
 
     private val clickListener = View.OnClickListener { _ ->
-      this.variableProps?.actions?.also { it.goToMusicDetail() }
+      this.reduxProps.variable?.actions?.also { it.goToMusicDetail() }
     }
 
     override fun beforePropInjectionStarts() {
@@ -93,6 +87,11 @@ class SearchFragment : Fragment(),
 
     override fun afterPropInjectionEnds() {
       this.parent.setOnClickListener(null)
+    }
+
+    override fun didSetReduxProps(props: ReduxProps<State, S1, A1>) {
+      this.trackName.text = props.variable?.next?.trackName
+      this.artistName.text = props.variable?.next?.artistName
     }
   }
 
@@ -110,23 +109,7 @@ class SearchFragment : Fragment(),
     )
   }
 
-  override lateinit var staticProps: StaticProps<State>
-
-  override var variableProps by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
-    p?.also { prop ->
-      if (prop.next.loading == true) {
-        this.backgroundDim.visibility = View.VISIBLE
-        this.progressBar.visibility = View.VISIBLE
-      } else {
-        this.backgroundDim.visibility = View.GONE
-        this.progressBar.visibility = View.GONE
-      }
-
-      if (prop.next.resultCount != prop.previous?.resultCount) {
-        this.searchResult.adapter?.notifyDataSetChanged()
-      }
-    }
-  }
+  override lateinit var reduxProps: ReduxProps<State, S, A>
 
   private val querySearchWatcher = object : TextWatcher {
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -134,7 +117,7 @@ class SearchFragment : Fragment(),
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable?) {
-      this@SearchFragment.variableProps?.also { it.actions.updateQuery(s?.toString()) }
+      this@SearchFragment.reduxProps.variable?.also { it.actions.updateQuery(s?.toString()) }
     }
   }
 
@@ -152,7 +135,7 @@ class SearchFragment : Fragment(),
       it.layoutManager = LinearLayoutManager(this.context)
 
       it.adapter = Adapter().let { a ->
-        this.staticProps.injector.injectRecyclerViewProps(a, a, ViewHolder)
+        this.reduxProps?.static?.injector?.injectRecyclerViewProps(a, a, ViewHolder)
       }
     }
   }
@@ -160,5 +143,19 @@ class SearchFragment : Fragment(),
   override fun afterPropInjectionEnds() {
     this.querySearch.removeTextChangedListener(this.querySearchWatcher)
     this.searchResult.adapter = null
+  }
+
+  override fun didSetReduxProps(props: ReduxProps<State, S, A>) {
+    if (props.variable?.next?.loading == true) {
+      this.backgroundDim.visibility = View.VISIBLE
+      this.progressBar.visibility = View.VISIBLE
+    } else {
+      this.backgroundDim.visibility = View.GONE
+      this.progressBar.visibility = View.GONE
+    }
+
+    if (props.variable?.next?.resultCount != props.variable?.previous?.resultCount) {
+      this.searchResult.adapter?.notifyDataSetChanged()
+    }
   }
 }

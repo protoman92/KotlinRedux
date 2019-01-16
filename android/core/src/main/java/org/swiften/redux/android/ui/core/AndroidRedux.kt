@@ -21,15 +21,14 @@ import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropInjector
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.IReduxStatePropMapper
-import org.swiften.redux.ui.IStaticReduxPropContainer
 import org.swiften.redux.ui.ReduxPropInjector
+import org.swiften.redux.ui.ReduxProps
 import org.swiften.redux.ui.StaticProps
-import org.swiften.redux.ui.VariableProps
 import java.io.Serializable
 import java.util.Date
 
@@ -197,11 +196,11 @@ fun <State, Activity> startFragmentInjection(
   inject: StaticProps<State>.(Fragment) -> Unit
 ): FragmentManager.FragmentLifecycleCallbacks where
   Activity : AppCompatActivity,
-  Activity : IStaticReduxPropContainer<State>
+  Activity : IReduxPropContainer<State, *, *>
 {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
-      inject(activity.staticProps, f)
+      activity.reduxProps.static.also { inject(it, f) }
     }
   }
 
@@ -226,13 +225,13 @@ class AndroidPropInjector<State>(store: IReduxStore<State>) : ReduxPropInjector<
     mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
   ) = super.injectProps(
     object : IReduxPropContainer<State, StateProps, ActionProps> {
-      override var staticProps: StaticProps<State>
-        get() = view.staticProps
-        set(value) { view.staticProps = value }
+      override var reduxProps: ReduxProps<State, StateProps, ActionProps>
+        get() = view.reduxProps
+        set(value) { runOnUIThread { view.reduxProps = value } }
 
-      override var variableProps: VariableProps<StateProps, ActionProps>?
-        get() = view.variableProps
-        set(value) { runOnUIThread { view.variableProps = value } }
+      override fun didSetReduxProps(props: ReduxProps<State, StateProps, ActionProps>) {
+        runOnUIThread { view.didSetReduxProps(props) }
+      }
 
       override fun beforePropInjectionStarts() = runOnUIThread { view.beforePropInjectionStarts() }
       override fun afterPropInjectionEnds() = runOnUIThread { view.afterPropInjectionEnds() }

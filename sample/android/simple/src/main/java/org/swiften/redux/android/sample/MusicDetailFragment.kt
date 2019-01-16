@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_music_detail.trackOpen
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.ReduxProps
 import org.swiften.redux.ui.StaticProps
 import org.swiften.redux.ui.VariableProps
 import kotlin.properties.Delegates
@@ -37,18 +38,10 @@ class MusicDetailFragment : Fragment(),
     override fun mapState(state: State, outProps: Unit) = S(state.currentSelectedTrack())
   }
 
-  override lateinit var staticProps: StaticProps<State>
-
-  override var variableProps
-    by Delegates.observable<VariableProps<S, A>?>(null) { _, _, p ->
-      p?.next?.track?.also {
-        this.trackName.text = it.trackName
-        this.artistName.text = it.artistName
-      }
-    }
+  override lateinit var reduxProps: ReduxProps<State, S, A>
 
   private val trackOpenListener = View.OnClickListener {
-    this.variableProps?.actions?.also { a -> a.goToTrackInformation() }
+    this.reduxProps.variable?.actions?.also { a -> a.goToTrackInformation() }
   }
 
   override fun onCreateView(
@@ -63,5 +56,12 @@ class MusicDetailFragment : Fragment(),
 
   override fun afterPropInjectionEnds() {
     this.trackOpen.setOnClickListener(null)
+  }
+
+  override fun didSetReduxProps(props: ReduxProps<State, S, A>) {
+    props.variable?.next?.track?.also {
+      this.trackName.text = it.trackName
+      this.artistName.text = it.artistName
+    }
   }
 }

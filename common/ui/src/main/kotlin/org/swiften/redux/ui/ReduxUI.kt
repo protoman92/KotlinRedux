@@ -17,32 +17,20 @@ import java.util.concurrent.locks.ReentrantLock
 /** Created by haipham on 2018/12/16 */
 /** Handle lifecycles for a target of [IReduxPropInjector]  */
 interface IReduxPropLifecycleOwner {
-  /** This is called before [IReduxPropInjector.injectProps] is called */
+  /** This is called before [IReduxPropInjector.injectStaticProps] is called */
   fun beforePropInjectionStarts()
 
   /** This is called after [ReduxSubscription.unsubscribe] is called */
   fun afterPropInjectionEnds()
 }
 
-/** Represents a view that contains [StaticProps] dependencies */
-interface IStaticReduxPropContainer<GlobalState> {
-  /** This will only be set once after injection commences */
-  var staticProps: StaticProps<GlobalState>
-}
+/** Represents a container for [ReduxProps] */
+interface IReduxPropContainer<GlobalState, StateProps, ActionProps> : IReduxPropLifecycleOwner {
+  var reduxProps: ReduxProps<GlobalState, StateProps, ActionProps>
 
-/** Represents a view that contains [VariableProps] internal state */
-interface IVariableReduxPropContainer<StateProps, ActionProps> : IReduxPropLifecycleOwner {
-  /** This will be set any time a state update is received */
-  var variableProps: VariableProps<StateProps, ActionProps>?
+  /** Call this method when [reduxProps] is set */
+  fun didSetReduxProps(props: ReduxProps<GlobalState, StateProps, ActionProps>)
 }
-
-/**
- * Represents a Redux compatible view, combining [IStaticReduxPropContainer] and
- * [IVariableReduxPropContainer].
- */
-interface IReduxPropContainer<GlobalState, StateProps, ActionProps> :
-  IStaticReduxPropContainer<GlobalState>,
-  IVariableReduxPropContainer<StateProps, ActionProps>
 
 /**
  * Maps [GlobalState] to [StateProps] for a [IReduxPropContainer]. [OutProps] is the view's
@@ -83,18 +71,16 @@ interface IReduxPropInjector<State> :
   ): ReduxSubscription
 }
 
-/** Container for an [IReduxPropContainer] static properties */
-class StaticProps<State>(
-  val injector: IReduxPropInjector<State>,
-  internal val subscription: ReduxSubscription
-)
-
-/** Container for an [IReduxPropContainer] mutable properties */
-class VariableProps<StateProps, ActionProps>(
-  val previous: StateProps?,
-  val next: StateProps,
-  val actions: ActionProps
-)
+/**
+ * Call [IReduxPropInjector.injectStaticProps] for a [IReduxPropInjector] that is not interested in
+ * [ReduxProps.variable].
+ */
+fun <State> IReduxPropInjector<State>.injectStaticProps(view: IReduxPropContainer<State, Unit, Unit>) {
+  this.injectProps(view, Unit, object : IReduxPropMapper<State, Unit, Unit, Unit> {
+    override fun mapState(state: State, outProps: Unit) = Unit
+    override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: Unit) = Unit
+  })
+}
 
 /** A [IReduxPropInjector] implementation */
 open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
@@ -102,20 +88,26 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
   IReduxDispatcherProvider by store,
   IReduxStateGetterProvider<State> by store,
   IReduxDeinitializerProvider by store {
-  override fun <OutProps, StateProps, ActionProps> injectProps(
-    view: IReduxPropContainer<State, StateProps, ActionProps>,
-    outProps: OutProps,
-    mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
+  internal fun <T> ReentrantLock.read(fn: () -> T): T {
+    try { this.lock(); return fn() } finally { this.unlock() }
+  }
+
+  internal fun ReentrantLock.write(fn: () -> Unit) = this.read(fn)
+
+  override fun <O, S, A> injectProps(
+    view: IReduxPropContainer<State, S, A>,
+    outProps: O,
+    mapper: IReduxPropMapper<State, O, S, A>
   ): ReduxSubscription {
     /** If [view] has received an injection before, unsubscribe from that */
-    view.unsubscribeSafely()
+    val previousProps = view.unsubscribeSafely()
 
     /**
      * Inject [StaticProps] with a placebo [StaticProps.subscription] because we want
-     * [IStaticReduxPropContainer.staticProps] to be available in
+     * [IReduxPropContainer.reduxProps] to be available in
      * [IReduxPropLifecycleOwner.beforePropInjectionStarts].
      */
-    this.injectStaticProps(view)
+    view.reduxProps = ReduxProps(StaticProps(this, ReduxSubscription {}), previousProps?.variable)
 
     /** [StaticProps.injector] is available for child injections */
     view.beforePropInjectionStarts()
@@ -125,20 +117,21 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's not need to keep
      * track of the [view]'s id.
      */
-    val id = "${view.javaClass.canonicalName}${Date().time}"
+    val id = "${view.javaClass.simpleName}${Date().time}"
     val lock = ReentrantLock()
-    var previousState: StateProps? = lock.read { view.variableProps?.next }
+    var previousState: S? = lock.read { view.reduxProps.variable?.next }
 
     val onStateUpdate: (State) -> Unit = {
-      val nextState = mapper.mapState(it, outProps)
+      val next = mapper.mapState(it, outProps)
 
       lock.write {
-        val prevState = previousState
-        previousState = nextState
+        val prev = previousState; previousState = next
 
-        if (nextState != prevState) {
+        if (next != prev) {
           val actions = mapper.mapAction(this.store.dispatch, it, outProps)
-          view.variableProps = VariableProps(prevState, nextState, actions)
+          val newProps = view.reduxProps.copy(variable = VariableProps(prev, next, actions))
+          view.reduxProps = newProps
+          newProps.also { view.didSetReduxProps(it) }
         }
       }
     }
@@ -151,23 +144,10 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     val subscription = this.store.subscribe(id, onStateUpdate)
 
     /** Wrap a [ReduxSubscription] to perform [IReduxPropLifecycleOwner.afterPropInjectionEnds] */
-    val wrappedSubscription = ReduxSubscription {
-      subscription.unsubscribe()
-      view.afterPropInjectionEnds()
-    }
-
-    view.staticProps = StaticProps(this, wrappedSubscription)
-    return wrappedSubscription
+    val wrappedSub = ReduxSubscription { subscription.unsubscribe(); view.afterPropInjectionEnds() }
+    view.reduxProps = view.reduxProps.copy(StaticProps(this, wrappedSub))
+    return wrappedSub
   }
-}
-
-/**
- * Inject props into [view], basically a view that does not have internal state and handles no
- * interactions.
- */
-fun <S> IReduxPropInjector<S>.injectStaticProps(view: IStaticReduxPropContainer<S>) {
-  view.unsubscribeSafely()
-  view.staticProps = StaticProps(this, ReduxSubscription {})
 }
 
 /**
@@ -175,15 +155,12 @@ fun <S> IReduxPropInjector<S>.injectStaticProps(view: IStaticReduxPropContainer<
  * catch [UninitializedPropertyAccessException] because this is most probably declare as lateinit
  * in Kotlin code, and catch [NullPointerException] to satisfy Java code.
  */
-fun <State> IStaticReduxPropContainer<State>.unsubscribeSafely() {
+fun <State, S, A> IReduxPropContainer<State, S, A>.unsubscribeSafely(): ReduxProps<State, S, A>? {
   try {
-    this.staticProps.subscription.unsubscribe()
+    this.reduxProps.static.subscription.unsubscribe()
+    return this.reduxProps
   } catch (e: UninitializedPropertyAccessException) {
   } catch (e: NullPointerException) { }
-}
 
-internal fun <T> ReentrantLock.read(fn: () -> T): T {
-  try { this.lock(); return fn() } finally { this.unlock() }
+  return null
 }
-
-internal fun ReentrantLock.write(fn: () -> Unit) = this.read(fn)

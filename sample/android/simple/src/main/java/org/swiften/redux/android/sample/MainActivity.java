@@ -13,7 +13,8 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.redux.ui.IStaticReduxPropContainer;
+import org.swiften.redux.ui.IReduxPropContainer;
+import org.swiften.redux.ui.ReduxProps;
 import org.swiften.redux.ui.StaticProps;
 
 import static org.swiften.redux.android.ui.core.AndroidReduxKt.endFragmentInjection;
@@ -22,8 +23,8 @@ import static org.swiften.redux.android.ui.core.AndroidReduxKt.startFragmentInje
 
 /** Created by haipham on 2018/12/19 */
 public final class MainActivity extends AppCompatActivity implements
-  IStaticReduxPropContainer<State> {
-  private StaticProps<State> staticProps;
+  IReduxPropContainer<State, Unit, Unit> {
+  private ReduxProps<State, Unit, Unit> reduxProps;
   private FragmentManager.FragmentLifecycleCallbacks fragmentCallback;
 
   @Override
@@ -63,12 +64,21 @@ public final class MainActivity extends AppCompatActivity implements
 
   @NotNull
   @Override
-  public StaticProps<State> getStaticProps() {
-    return this.staticProps;
+  public ReduxProps<State, Unit, Unit> getReduxProps() {
+    return this.reduxProps;
   }
 
   @Override
-  public void setStaticProps(@NotNull StaticProps<State> staticProps) {
-    this.staticProps = staticProps;
+  public void setReduxProps(@NotNull ReduxProps<State, Unit, Unit> reduxProps) {
+    this.reduxProps = reduxProps;
   }
+
+  @Override
+  public void beforePropInjectionStarts() { }
+
+  @Override
+  public void afterPropInjectionEnds() { }
+
+  @Override
+  public void didSetReduxProps(@NotNull ReduxProps<State, Unit, Unit> props) { }
 }

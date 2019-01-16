@@ -14,7 +14,6 @@ import org.swiften.redux.store.SimpleReduxStore
 import org.testng.Assert
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import kotlin.properties.Delegates
 
 /** Created by haipham on 2018/12/20 */
 class PropInjectorTest {
@@ -44,22 +43,22 @@ class PropInjectorTest {
   }
 
   class View : IReduxPropContainer<S, S, A> {
-    override lateinit var staticProps: StaticProps<S>
+    override lateinit var reduxProps: ReduxProps<S, S, A>
 
-    override var variableProps by Delegates.observable<VariableProps<S, A>?>(null) { _, _, _ ->
-      this.variableInjectionCount += 1
-    }
-
-    var variableInjectionCount = 0
+    var reduxPropsInjectionCount = 0
     var beforeInjectionCount = 0
     var afterInjectionCount = 0
 
     override fun beforePropInjectionStarts() {
-      Assert.assertNotNull(this.staticProps)
+      Assert.assertNotNull(this.reduxProps)
       this.beforeInjectionCount += 1
     }
 
     override fun afterPropInjectionEnds() { this.afterInjectionCount += 1 }
+
+    override fun didSetReduxProps(props: ReduxProps<S, S, A>) {
+      this.reduxPropsInjectionCount += 1
+    }
   }
 
   private lateinit var store: StoreWrapper
@@ -82,12 +81,7 @@ class PropInjectorTest {
 
     this.mapper = object : IReduxPropMapper<S, Unit, S, A> {
       override fun mapState(state: S, outProps: Unit) = state
-
-      override fun mapAction(
-        dispatch: IReduxDispatcher,
-        state: S,
-        outProps: Unit
-      ) = A()
+      override fun mapAction(dispatch: IReduxDispatcher, state: S, outProps: Unit) = A()
     }
   }
 
@@ -108,7 +102,7 @@ class PropInjectorTest {
 
     // Then
     Assert.assertEquals(this.store.unsubscribeCount, 1)
-    Assert.assertEquals(view.variableInjectionCount, 4)
+    Assert.assertEquals(view.reduxPropsInjectionCount, 4)
     Assert.assertEquals(view.beforeInjectionCount, 2)
     Assert.assertEquals(view.afterInjectionCount, 1)
   }
