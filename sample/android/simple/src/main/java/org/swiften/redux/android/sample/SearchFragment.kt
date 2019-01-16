@@ -76,8 +76,8 @@ class SearchFragment : Fragment(),
           ?: S1()
     }
 
-    override var reduxProps by ObservableReduxProps<State, S1, A1> {
-      it.variable?.next?.also {
+    override var reduxProps by ObservableReduxProps<State, S1, A1> { _, next ->
+      next.variable?.next?.also {
         this.trackName.text = it.trackName
         this.artistName.text = it.artistName
       }
@@ -110,8 +110,8 @@ class SearchFragment : Fragment(),
     )
   }
 
-  override var reduxProps by ObservableReduxProps<State, S, A> {
-    if (it.variable?.next?.loading == true) {
+  override var reduxProps by ObservableReduxProps<State, S, A> { _, next ->
+    if (next.variable?.next?.loading == true) {
       this.backgroundDim.visibility = View.VISIBLE
       this.progressBar.visibility = View.VISIBLE
     } else {
@@ -119,7 +119,7 @@ class SearchFragment : Fragment(),
       this.progressBar.visibility = View.GONE
     }
 
-    if (it.variable?.next?.resultCount != it.variable?.previous?.resultCount) {
+    if (next.variable?.next?.resultCount != next.variable?.previous?.resultCount) {
       this.searchResult.adapter?.notifyDataSetChanged()
     }
   }

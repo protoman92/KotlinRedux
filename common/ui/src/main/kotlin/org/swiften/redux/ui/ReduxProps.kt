@@ -35,11 +35,11 @@ data class ReduxProps<State, StateProps, ActionProps>(
 /**
  * Using observable delegates requires us to provide an initial value and does not work with
  * lateinit modifier. We can use this [ReadWriteProperty] to implement change listener for lateinit
- * properties.
+ * properties. Note that [notifier] passes along both the previous and upcoming [T] values.
  */
 internal open class LateinitObservableProp<T>(
-  private val checkEqual: (T?, T) -> Boolean = { a, b -> a == b },
-  private val onChange: (T) -> Unit
+  private val equalChecker: (T?, T) -> Boolean = { a, b -> a == b },
+  private val notifier: (T?, T) -> Unit
 ) : ReadWriteProperty<Any?, T> where T : Any {
   private lateinit var value: T
   private val lock by lazy { ReentrantReadWriteLock() }
@@ -50,13 +50,13 @@ internal open class LateinitObservableProp<T>(
   override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
     val previous = this.lock.read { if (this::value.isInitialized) this.value else null }
     this.lock.write { this.value = value }
-    this.lock.read { if (!this.checkEqual(previous, value)) { this.onChange(value) } }
+    this.lock.read { if (!this.equalChecker(previous, value)) { this.notifier(previous, value) } }
   }
 }
 
 /** Use this to avoid lateinit modifiers for [ReduxProps] */
 data class ObservableReduxProps<State, S, A>(
-  private val onChange: (ReduxProps<State, S, A>) -> Unit
+  private val notifier: (ReduxProps<State, S, A>?, ReduxProps<State, S, A>) -> Unit
 ) : ReadWriteProperty<Any?, ReduxProps<State, S, A>> by LateinitObservableProp({ a, b ->
   a?.variable?.next == b.variable?.next
-}, onChange)
+}, notifier)

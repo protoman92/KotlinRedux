@@ -43,7 +43,9 @@ class PropInjectorTest {
   }
 
   class View : IReduxPropContainer<S, S, A> {
-    override var reduxProps by ObservableReduxProps<S, S, A> { this.reduxPropsInjectionCount += 1 }
+    override var reduxProps by ObservableReduxProps<S, S, A> { _, _ ->
+      this.reduxPropsInjectionCount += 1
+    }
 
     var reduxPropsInjectionCount = 0
     var beforeInjectionCount = 0

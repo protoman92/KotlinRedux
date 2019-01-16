@@ -15,7 +15,7 @@ class ObservablePropTest {
   fun `Lateinit observable prop should work correctly`() {
     // Setup
     var setCount = 0
-    var prop by LateinitObservableProp<Int> { setCount += 1 }
+    var prop by LateinitObservableProp<Int> { _, _ -> setCount += 1 }
 
     // When
     prop = 1

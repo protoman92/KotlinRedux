@@ -39,8 +39,8 @@ class MusicDetailFragment : Fragment(),
     override fun mapState(state: State, outProps: Unit) = S(state.currentSelectedTrack())
   }
 
-  override var reduxProps by ObservableReduxProps<State, S, A> {
-    it.variable?.next?.track?.also {
+  override var reduxProps by ObservableReduxProps<State, S, A> { _, next ->
+    next.variable?.next?.track?.also {
       this.trackName.text = it.trackName
       this.artistName.text = it.artistName
     }
