@@ -103,6 +103,15 @@ project('core') {
   }
 }
 
+project('livedata-rx-saga') {
+  dependencies {
+    api project(':common:rx-saga')
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle"
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle"
+  }
+}
+
 project('recycler-view') {
   dependencies {
     api project(':android:core')

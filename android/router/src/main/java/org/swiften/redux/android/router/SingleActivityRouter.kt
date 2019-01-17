@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.ui.router
+package org.swiften.redux.android.router
 
 import android.app.Activity
 import android.app.Application
