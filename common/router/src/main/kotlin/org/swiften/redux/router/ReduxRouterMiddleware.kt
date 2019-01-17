@@ -9,8 +9,9 @@ import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxDeinitializerProvider
 import org.swiften.redux.middleware.IReduxMiddleware
-import org.swiften.redux.middleware.IReduxMiddlewareProvider
+import org.swiften.redux.middleware.ReduxDispatchMapper
 import org.swiften.redux.middleware.ReduxDispatchWrapper
+import org.swiften.redux.middleware.ReduxMiddlewareInput
 import kotlin.reflect.KClass
 
 /** Created by haipham on 2018/12/16 */
@@ -30,37 +31,37 @@ interface IReduxRouter<Screen> : IReduxDeinitializerProvider where Screen : IRed
   fun navigate(screen: Screen)
 }
 
-/** [IReduxMiddlewareProvider] implementation for [IReduxRouter] middleware */
+/** [IReduxMiddleware] implementation for [IReduxRouter] middleware */
 @PublishedApi
-internal class ReduxRouterMiddlewareProvider<State, Screen>(
+internal class ReduxRouterMiddleware<State, Screen>(
   private val cls: Class<Screen>,
   private val router: IReduxRouter<Screen>
-) : IReduxMiddlewareProvider<State> where Screen : IReduxRouterScreen {
+) : IReduxMiddleware<State> where Screen : IReduxRouterScreen {
   constructor(cls: KClass<Screen>, router: IReduxRouter<Screen>) : this(cls.java, router)
 
-  override val middleware: IReduxMiddleware<State> = {
-    { wrapper ->
+  override fun invoke(p1: ReduxMiddlewareInput<State>): ReduxDispatchMapper {
+    return { wrapper ->
       ReduxDispatchWrapper("$wrapper.id-router") { action ->
         wrapper.dispatch(action)
         /**
          * If [action] is an [IReduxRouterScreen] instance, use the [router] to navigate to the
          * associated screen.
          */
-        if (this@ReduxRouterMiddlewareProvider.cls.isInstance(action)) {
-          val screen = this@ReduxRouterMiddlewareProvider.cls.cast(action)
-          this@ReduxRouterMiddlewareProvider.router.navigate(screen)
+        if (this@ReduxRouterMiddleware.cls.isInstance(action)) {
+          val screen = this@ReduxRouterMiddleware.cls.cast(action)
+          this@ReduxRouterMiddleware.router.navigate(screen)
         }
 
         /** If [DefaultReduxAction.Deinitialize] is sent, call [IReduxRouter.deinitialize] */
         if (action == DefaultReduxAction.Deinitialize) {
-          this@ReduxRouterMiddlewareProvider.router.deinitialize()
+          this@ReduxRouterMiddleware.router.deinitialize()
         }
       }
     }
   }
 }
 
-/** Create a [ReduxRouterMiddlewareProvider] with [router] */
-inline fun <State, reified Screen> createRouterMiddlewareProvider(router: IReduxRouter<Screen>):
-  IReduxMiddlewareProvider<State> where Screen : IReduxRouterScreen =
-  ReduxRouterMiddlewareProvider(Screen::class, router)
+/** Create a [ReduxRouterMiddleware] with [router] */
+inline fun <State, reified Screen> createRouterMiddleware(router: IReduxRouter<Screen>):
+  IReduxMiddleware<State> where Screen : IReduxRouterScreen =
+  ReduxRouterMiddleware(Screen::class, router)

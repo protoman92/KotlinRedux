@@ -14,7 +14,7 @@ import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.endActivityInjection
 import org.swiften.redux.android.ui.startActivityInjection
 import org.swiften.redux.middleware.applyReduxMiddlewares
-import org.swiften.redux.saga.createSagaMiddlewareProvider
+import org.swiften.redux.saga.createSagaMiddleware
 import org.swiften.redux.store.FinalReduxStore
 import org.swiften.redux.ui.injectStaticProps
 
@@ -27,7 +27,7 @@ class GardenApplication : Application() {
     super.onCreate()
 
     val store = applyReduxMiddlewares(
-      createSagaMiddlewareProvider<Redux.State>(
+      createSagaMiddleware<Redux.State>(
         Saga.Plant.allSagas(InjectorUtils.getPlantRepository(this))
       ).middleware
     )(FinalReduxStore(Redux.State(), Redux.Reducer))

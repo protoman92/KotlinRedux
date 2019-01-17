@@ -15,8 +15,8 @@ import org.swiften.redux.android.ui.endActivityInjection
 import org.swiften.redux.android.ui.startActivityInjection
 import org.swiften.redux.android.router.SingleActivityRouter
 import org.swiften.redux.middleware.applyReduxMiddlewares
-import org.swiften.redux.router.createRouterMiddlewareProvider
-import org.swiften.redux.saga.createSagaMiddlewareProvider
+import org.swiften.redux.router.createRouterMiddleware
+import org.swiften.redux.saga.createSagaMiddleware
 import org.swiften.redux.store.FinalReduxStore
 import org.swiften.redux.ui.injectStaticProps
 
@@ -33,7 +33,7 @@ class MainApplication : Application() {
     val repository = MainRepository(api, JSONDecoder())
 
     val store = applyReduxMiddlewares(
-      createRouterMiddlewareProvider<State, MainRedux.Screen>(
+      createRouterMiddleware<State, MainRedux.Screen>(
         SingleActivityRouter(this) { activity, screen ->
           val f: Fragment? = when (screen) {
             is MainRedux.Screen.MainScreen -> MainFragment()
@@ -54,8 +54,8 @@ class MainApplication : Application() {
               .commitAllowingStateLoss()
           }
         }
-      ).middleware,
-      createSagaMiddlewareProvider<State>(MainSaga.sagas(repository)).middleware
+      ),
+      createSagaMiddleware<State>(MainSaga.sagas(repository))
     )(FinalReduxStore(State(), MainRedux.Reducer))
 
     val injector = AndroidPropInjector(store)

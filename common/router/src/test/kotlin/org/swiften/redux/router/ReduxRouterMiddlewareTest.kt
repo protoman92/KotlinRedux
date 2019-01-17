@@ -41,10 +41,7 @@ class ReduxRouterMiddlewareTest {
     // Setup
     val store = SimpleReduxStore(0) { a, _ -> a }
     val router = Router()
-
-    val wrappedStore = applyReduxMiddlewares(
-      createRouterMiddlewareProvider<Int, Screen>(router).middleware
-    )(store)
+    val wrappedStore = applyReduxMiddlewares(createRouterMiddleware<Int, Screen>(router))(store)
 
     // When
     wrappedStore.dispatch(DefaultReduxAction.Dummy)
@@ -66,7 +63,7 @@ class ReduxRouterMiddlewareTest {
     val router = Router()
 
     val wrappedStore = applyReduxMiddlewares(
-      createRouterMiddlewareProvider<Int, Screen>(router).middleware
+      createRouterMiddleware<Int, Screen>(router)
     )(DefaultActionReduxStore(SimpleReduxStore(0) { a, _ -> a }))
 
     // When

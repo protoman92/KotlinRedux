@@ -25,8 +25,8 @@ class ReduxSagaMiddlewareTest {
 
     val effects = outputs.map<IReduxSagaOutput<Any>, IReduxSagaEffect<Any>> { o -> { o } }
 
-    val wrappedDispatch = createSagaMiddlewareProvider<Unit>(effects)
-      .middleware(ReduxMiddlewareInput { })(ReduxDispatchWrapper("root") { })
+    val wrappedDispatch = createSagaMiddleware<Unit>(effects)
+      .invoke(ReduxMiddlewareInput { })(ReduxDispatchWrapper("root") { })
       .dispatch
 
     // When

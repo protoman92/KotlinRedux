@@ -11,24 +11,25 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.middleware.IReduxMiddleware
-import org.swiften.redux.middleware.IReduxMiddlewareProvider
+import org.swiften.redux.middleware.ReduxDispatchMapper
 import org.swiften.redux.middleware.ReduxDispatchWrapper
+import org.swiften.redux.middleware.ReduxMiddlewareInput
 
 /** Created by haipham on 2018/12/22 */
-/** [IReduxMiddlewareProvider] implementation for Saga */
-internal class ReduxSagaMiddlewareProvider<State>(
+/** [IReduxMiddleware] implementation for [IReduxSagaEffect] */
+internal class ReduxSagaMiddleware<State>(
   private val effects: Collection<IReduxSagaEffect<*>>
-) : IReduxMiddlewareProvider<State> {
-  override val middleware: IReduxMiddleware<State> = { input ->
-    { wrapper ->
+) : IReduxMiddleware<State> {
+  override fun invoke(p1: ReduxMiddlewareInput<State>): ReduxDispatchMapper {
+    return { wrapper ->
       val job = SupervisorJob()
 
       val scope = object : CoroutineScope {
         override val coroutineContext = Dispatchers.Default + job
       }
 
-      val sgi = Input(scope, input.stateGetter, wrapper.dispatch)
-      val outputs = this@ReduxSagaMiddlewareProvider.effects.map { it(sgi) }
+      val sgi = Input(scope, p1.stateGetter, wrapper.dispatch)
+      val outputs = this@ReduxSagaMiddleware.effects.map { it(sgi) }
       outputs.forEach { it.subscribe({}) }
 
       ReduxDispatchWrapper("${wrapper.id}-saga") { action ->
@@ -45,6 +46,6 @@ internal class ReduxSagaMiddlewareProvider<State>(
   }
 }
 
-/** Create a [ReduxSagaMiddlewareProvider] with [effects] */
-fun <State> createSagaMiddlewareProvider(effects: Collection<IReduxSagaEffect<*>>):
-  IReduxMiddlewareProvider<State> = ReduxSagaMiddlewareProvider(effects)
+/** Create a [ReduxSagaMiddleware] with [effects] */
+fun <State> createSagaMiddleware(effects: Collection<IReduxSagaEffect<*>>):
+  IReduxMiddleware<State> = ReduxSagaMiddleware(effects)

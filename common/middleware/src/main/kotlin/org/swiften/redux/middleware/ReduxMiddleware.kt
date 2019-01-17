@@ -20,12 +20,6 @@ typealias ReduxDispatchMapper = Function1<ReduxDispatchWrapper, ReduxDispatchWra
  */
 typealias IReduxMiddleware<State> = Function1<ReduxMiddlewareInput<State>, ReduxDispatchMapper>
 
-/** Implement [IReduxMiddlewareProvider] to provide a middleware instance */
-interface IReduxMiddlewareProvider<State> {
-  /** Wrap a [ReduxDispatchWrapper.dispatch] to provide extra functionalities */
-  val middleware: IReduxMiddleware<State>
-}
-
 /** Input for middlewares that includes some functionalities from [IReduxStore] */
 class ReduxMiddlewareInput<State>(val stateGetter: IReduxStateGetter<State>)
 
