@@ -19,9 +19,6 @@ package com.google.samples.apps.sunflower.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.PlantListFragment
 import com.google.samples.apps.sunflower.dependency.Redux
@@ -33,7 +30,6 @@ import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.IReduxStatePropMapper
 import org.swiften.redux.ui.ObservableReduxProps
-
 
 /**
  * Adapter for the [RecyclerView] in [PlantListFragment].
@@ -73,7 +69,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
 
     override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, _ -> }
 
-    private val clickListener by lazy { View.OnClickListener {  } }
+    private val clickListener by lazy { View.OnClickListener { } }
 
     override fun beforePropInjectionStarts() {
       this.itemView.setOnClickListener(this.clickListener)

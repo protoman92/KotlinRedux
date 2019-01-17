@@ -20,7 +20,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
 class GardenPlantingRepository private constructor(
-    private val gardenPlantingDao: GardenPlantingDao
+  private val gardenPlantingDao: GardenPlantingDao
 ) {
 
     suspend fun createGardenPlanting(plantId: String) {

@@ -25,8 +25,8 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlantAndGardenPlantingsViewModel(
-    context: Context,
-    plantings: PlantAndGardenPlantings
+  context: Context,
+  plantings: PlantAndGardenPlantings
 ) : ViewModel() {
 
     private val plant = checkNotNull(plantings.plant)

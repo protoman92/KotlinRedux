@@ -19,7 +19,7 @@ import org.swiften.redux.saga.rx.ReduxSagaOutput
  * [ReduxSagaEffect] whose [IReduxSagaOutput] streams all values emitted by the [LiveData] created
  * by [creator].
  */
-internal class TakeEveryEffect<R>(private val creator: () -> LiveData<R>): ReduxSagaEffect<R>() {
+internal class TakeEveryEffect<R>(private val creator: () -> LiveData<R>) : ReduxSagaEffect<R>() {
   override fun invoke(p1: Input): IReduxSagaOutput<R> {
     val stream = Observable.create<R> { emitter ->
       val observer = Observer<R> { emitter.onNext(it) }
