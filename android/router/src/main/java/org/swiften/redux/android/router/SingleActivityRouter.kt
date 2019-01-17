@@ -16,11 +16,13 @@ import org.swiften.redux.router.IReduxRouterScreen
 
 /** Created by haipham on 2019/01/12 */
 /** [IReduxRouter] that works for a single [AppCompatActivity] and multiple [Fragment] */
-class SingleActivityRouter<Screen>(
+@PublishedApi
+internal class SingleActivityRouter<AT, Screen>(
   private val application: Application,
-  private val navigate: (AppCompatActivity, Screen) -> Unit
-) : IReduxRouter<Screen> where Screen : IReduxRouterScreen {
-  private var activity: AppCompatActivity? = null
+  private val cls: Class<AT>,
+  private val navigate: (AT, Screen) -> Unit
+) : IReduxRouter<Screen> where AT : AppCompatActivity, Screen : IReduxRouterScreen {
+  private var activity: AT? = null
 
   private val callbacks by lazy {
     object : Application.ActivityLifecycleCallbacks {
@@ -33,8 +35,8 @@ class SingleActivityRouter<Screen>(
 
       override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
         activity?.also {
-          require(it is AppCompatActivity)
-          this@SingleActivityRouter.activity = it
+          require(this@SingleActivityRouter.cls.isInstance(activity))
+          this@SingleActivityRouter.activity = this@SingleActivityRouter.cls.cast(it)
         }
       }
     }
@@ -50,3 +52,10 @@ class SingleActivityRouter<Screen>(
     this.activity?.also { this.navigate(it, screen) }
   }
 }
+
+/** Create a [SingleActivityRouter] */
+inline fun <reified AT, Screen> createSingleActivityRouter(
+  application: Application,
+  noinline navigate: (AT, Screen) -> Unit
+) : IReduxRouter<Screen> where AT : AppCompatActivity, Screen : IReduxRouterScreen =
+  SingleActivityRouter(application, AT::class.java, navigate)

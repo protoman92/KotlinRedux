@@ -14,6 +14,7 @@ import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.endActivityInjection
 import org.swiften.redux.android.ui.startActivityInjection
 import org.swiften.redux.android.router.SingleActivityRouter
+import org.swiften.redux.android.router.createSingleActivityRouter
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.createSagaMiddleware
@@ -33,8 +34,8 @@ class MainApplication : Application() {
     val repository = MainRepository(api, JSONDecoder())
 
     val store = applyReduxMiddlewares(
-      createRouterMiddleware<State, MainRedux.Screen>(
-        SingleActivityRouter(this) { activity, screen ->
+      createRouterMiddleware(
+        createSingleActivityRouter<MainActivity, MainRedux.Screen>(this) { activity, screen ->
           val f: Fragment? = when (screen) {
             is MainRedux.Screen.MainScreen -> MainFragment()
             is MainRedux.Screen.MusicDetail -> MusicDetailFragment()
