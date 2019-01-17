@@ -10,8 +10,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.testng.Assert
-import org.testng.annotations.Test
+import org.junit.Assert
+import org.junit.Test
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/15 */

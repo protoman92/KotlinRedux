@@ -77,7 +77,6 @@ subprojects {
 
   test {
     maxHeapSize = project.ext.testHeapSize
-    useTestNG()
   }
 }
 

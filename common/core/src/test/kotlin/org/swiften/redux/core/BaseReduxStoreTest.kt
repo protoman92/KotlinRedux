@@ -14,8 +14,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
-import org.testng.Assert
-import org.testng.annotations.Test
+import org.junit.Assert
+import org.junit.Test
 import java.util.Random
 import java.util.concurrent.atomic.AtomicInteger
 

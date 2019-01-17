@@ -13,6 +13,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxFlowable
 import kotlinx.coroutines.withTimeoutOrNull
+import org.junit.Assert
+import org.junit.Test
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.CommonSagaEffectTest
 import org.swiften.redux.saga.cast
@@ -23,8 +25,6 @@ import org.swiften.redux.saga.rx.ReduxSagaEffects.from
 import org.swiften.redux.saga.rx.ReduxSagaEffects.just
 import org.swiften.redux.saga.rx.ReduxSagaEffects.takeEveryAction
 import org.swiften.redux.saga.rx.ReduxSagaEffects.takeLatestAction
-import org.testng.Assert
-import org.testng.annotations.Test
 import java.net.URL
 import java.util.Collections
 

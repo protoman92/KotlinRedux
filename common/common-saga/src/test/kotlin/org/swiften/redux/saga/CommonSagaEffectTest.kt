@@ -15,12 +15,12 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
+import org.junit.After
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxAction
-import org.testng.Assert
-import org.testng.annotations.AfterMethod
-import org.testng.annotations.BeforeMethod
-import org.testng.annotations.Test
 import java.util.Collections
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -38,10 +38,10 @@ abstract class CommonSagaEffectTest : CoroutineScope {
   private lateinit var job: Job
   protected val timeout: Long = 10000
 
-  @BeforeMethod
+  @Before
   fun beforeMethod() { this.job = SupervisorJob() }
 
-  @AfterMethod
+  @After
   fun afterMethod() {
     this.coroutineContext.cancelChildren()
     runBlocking { delay(1000) }

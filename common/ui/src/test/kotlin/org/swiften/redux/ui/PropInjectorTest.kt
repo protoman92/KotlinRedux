@@ -5,15 +5,15 @@
 
 package org.swiften.redux.ui
 
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.store.SimpleReduxStore
-import org.testng.Assert
-import org.testng.annotations.BeforeMethod
-import org.testng.annotations.Test
 
 /** Created by haipham on 2018/12/20 */
 class PropInjectorTest {
@@ -63,7 +63,7 @@ class PropInjectorTest {
   private lateinit var injector: IReduxPropInjector<S>
   private lateinit var mapper: IReduxPropMapper<S, Unit, S, A>
 
-  @BeforeMethod
+  @Before
   fun beforeMethod() {
     val store = SimpleReduxStore(S()) { s, a ->
       when (a) {

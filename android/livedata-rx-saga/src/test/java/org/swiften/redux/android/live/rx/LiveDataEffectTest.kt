@@ -44,7 +44,6 @@ class LiveDataEffectTest {
       delay(1500)
 
       // Then
-      Assert.fail()
       Assert.assertEquals(finalValues.sorted(), arrayListOf(0, 2, 4))
     }
   }

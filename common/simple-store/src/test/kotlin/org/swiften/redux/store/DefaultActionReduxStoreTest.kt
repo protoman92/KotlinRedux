@@ -5,11 +5,11 @@
 
 package org.swiften.redux.store
 
+import org.junit.Assert
+import org.junit.Test
 import org.swiften.redux.core.BaseReduxStoreTest
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxAction
-import org.testng.Assert
-import org.testng.annotations.Test
 
 /** Created by haipham on 2019/01/15 */
 class DefaultActionReduxStoreTest : BaseReduxStoreTest() {

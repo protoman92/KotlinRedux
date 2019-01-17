@@ -9,10 +9,10 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
+import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.middleware.ReduxDispatchWrapper
 import org.swiften.redux.middleware.ReduxMiddlewareInput
-import org.testng.annotations.Test
 
 /** Created by haipham on 2019/01/15 */
 class ReduxSagaMiddlewareTest {

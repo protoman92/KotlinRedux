@@ -9,7 +9,6 @@ project.ext {
   appCompat = "1.0.2"
   lifecycle = "2.0.0"
   recyclerView = "1.0.0"
-  junit = "+"
   androidxCoreTest = "2.0.0"
   androidxJunit = "1.1.0"
   testRunner = "1.1.0"

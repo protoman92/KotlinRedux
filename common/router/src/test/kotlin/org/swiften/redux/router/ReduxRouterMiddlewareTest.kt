@@ -5,13 +5,13 @@
 
 package org.swiften.redux.router
 
+import org.junit.Assert
+import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxDeinitializer
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.store.DefaultActionReduxStore
 import org.swiften.redux.store.SimpleReduxStore
-import org.testng.Assert
-import org.testng.annotations.Test
 
 /** Created by haipham on 2018/12/16 */
 class ReduxRouterMiddlewareTest {

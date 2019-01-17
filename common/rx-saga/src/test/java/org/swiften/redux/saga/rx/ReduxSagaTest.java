@@ -8,8 +8,8 @@ package org.swiften.redux.saga.rx;
 import io.reactivex.Single;
 import kotlin.Unit;
 import kotlinx.coroutines.GlobalScope;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 import static org.swiften.redux.saga.CommonSagaEffects.map;
 import static org.swiften.redux.saga.CommonSagaEffects.retry;

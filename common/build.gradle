@@ -52,13 +52,12 @@ subprojects {
   }
 
   dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    testImplementation "org.testng:testng:$testNG"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
+    testImplementation "junit:junit:$junit"
   }
 
   test {
     maxHeapSize = project.ext.testHeapSize
-    useTestNG()
   }
 }
 

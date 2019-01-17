@@ -5,8 +5,8 @@
 
 package org.swiften.redux.ui
 
-import org.testng.Assert
-import org.testng.annotations.Test
+import org.junit.Assert
+import org.junit.Test
 
 /** Created by haipham on 2019/01/16 */
 class ObservablePropTest {
