@@ -21,8 +21,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.PlantListFragment
+import com.google.samples.apps.sunflower.PlantListFragmentDirections
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
@@ -51,24 +53,21 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
     return ViewHolder(itemView)
   }
 
-//  private fun createOnClickListener(plantId: String): View.OnClickListener {
-//    return View.OnClickListener {
-//      val direction = PlantListFragmentDirections.ActionPlantListFragmentToPlantDetailFragment(plantId)
-//      it.findNavController().navigate(direction)
-//    }
-//  }
-
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     IReduxPropContainer<Redux.State, ViewHolder.S, ViewHolder.A>,
     IReduxPropMapper<Redux.State, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
     data class S(val plant: Plant?)
-    class A
+    class A(val goToPlantDetail: () -> Unit)
 
     companion object : IReduxPropMapper<Redux.State, Int, S, A> {
       override fun mapState(state: Redux.State, outProps: Int) =
         S(state.plants?.elementAtOrNull(outProps))
 
-      override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Int) = A()
+      override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Int) = A {
+        this.mapState(state, outProps).plant?.plantId?.also {
+          dispatch(Redux.Screen.PlantDetail(it))
+        }
+      }
     }
 
     override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
@@ -77,7 +76,10 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
 
     private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
     private val title: TextView = itemView.findViewById(R.id.plant_item_title)
-    private val clickListener by lazy { View.OnClickListener { } }
+
+    private val clickListener by lazy { View.OnClickListener {
+      this@ViewHolder.reduxProps.variable?.actions?.goToPlantDetail?.invoke()
+    } }
 
     override fun beforePropInjectionStarts() {
       this.itemView.setOnClickListener(this.clickListener)

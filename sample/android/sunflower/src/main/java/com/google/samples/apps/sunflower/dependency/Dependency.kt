@@ -8,4 +8,4 @@ package com.google.samples.apps.sunflower.dependency
 import org.swiften.redux.ui.IReduxPropInjector
 
 /** Created by haipham on 2019/01/17 */
-class MainDependency(val injector: IReduxPropInjector<Redux.State>)
+class Dependency(val injector: IReduxPropInjector<Redux.State>)
