@@ -8,6 +8,7 @@ package org.swiften.redux.saga
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.middleware.IReduxMiddleware
 import org.swiften.redux.middleware.IReduxMiddlewareProvider
@@ -37,6 +38,7 @@ internal class ReduxSagaMiddlewareProvider<State>(
         /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [IReduxSagaOutput] */
         if (action == DefaultReduxAction.Deinitialize) {
           outputs.forEach { it.dispose() }
+          job.cancelChildren()
         }
       }
     }

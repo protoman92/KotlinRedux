@@ -72,25 +72,10 @@ subprojects {
     testImplementation "junit:junit:$junit"
     androidTestImplementation "androidx.test:runner:$testRunner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunit"
   }
 
   test {
-    testLogging  {
-      // showing skipped occasionally should prevent CI timeout due to lack of standard output
-      events=["skipped", "failed"] // "started", "passed"
-      // showStandardStreams = true
-      exceptionFormat="full"
-
-      debug.events = ["skipped", "failed"]
-      debug.exceptionFormat="full"
-
-      info.events = ["failed", "skipped"]
-      info.exceptionFormat="full"
-
-      warn.events = ["failed", "skipped"]
-      warn.exceptionFormat="full"
-    }
-
     maxHeapSize = project.ext.testHeapSize
     useTestNG()
   }
@@ -105,10 +90,11 @@ project('core') {
 
 project('livedata-rx-saga') {
   dependencies {
+    api project(':common:common-saga')
     api project(':common:rx-saga')
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle"
-    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle"
+    testImplementation "androidx.arch.core:core-testing:$androidxCoreTest"
   }
 }
 

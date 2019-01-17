@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
 internal data class Boxed<T>(val value: T)
 
 /** @see [IReduxSagaOutput] */
-class ReduxSagaOutput<T> internal constructor(
+class ReduxSagaOutput<T>(
   private val scope: CoroutineScope,
   private val stream: Flowable<T>,
   override val onAction: IReduxDispatcher
