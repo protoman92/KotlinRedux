@@ -80,12 +80,6 @@ class PlantListFragment : Fragment(),
     }
   }
 
-//  private fun subscribeUi(adapter: PlantAdapter) {
-//    viewModel.getPlants().observe(viewLifecycleOwner, Observer { plants ->
-//      if (plants != null) adapter.submitList(plants)
-//    })
-//  }
-
 //  private fun updateData() {
 //    with(viewModel) {
 //      if (isFiltered()) {

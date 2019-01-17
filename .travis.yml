@@ -33,8 +33,9 @@ android:
 before_install:
   - yes | sdkmanager "platforms;android-28"
 
-#script:
+script:
 #  - ./gradlew clean connectedCheck -PdisablePreDex --stacktrace -p android
+  - echo "Disabled"
 
 after_failure:
   - lynx -dump /home/travis/build/protoman92/KotlinRedux/common/core/build/reports/tests/test/index.html

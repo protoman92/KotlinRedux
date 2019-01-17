@@ -20,6 +20,7 @@ import org.swiften.redux.ui.IReduxStatePropMapper
 /** Created by haipham on 2018/12/17 */
 /** Callbacks for lifecycle for use with [LifecycleObserver] */
 interface LifecycleCallback {
+  /** Called on [Lifecycle.Event.ON_CREATE] */
   fun onCreate()
 
   /** Called on [Lifecycle.Event.ON_START] */
@@ -34,6 +35,7 @@ interface LifecycleCallback {
   /** Called on [Lifecycle.Event.ON_STOP] */
   fun onStop()
 
+  /** Called on [Lifecycle.Event.ON_DESTROY] */
   fun onDestroy()
 }
 
@@ -44,20 +46,29 @@ internal class ReduxLifecycleObserver(
 ) : LifecycleObserver, LifecycleCallback by callback {
   init { lifecycleOwner.lifecycle.addObserver(this) }
 
+  @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+  override fun onCreate() { this.callback.onCreate() }
+
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   override fun onStart() { this.callback.onStart() }
 
+  @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+  override fun onResume() { this.callback.onResume() }
+
+  @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+  override fun onPause() { this.callback.onPause() }
+
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-  override fun onStop() {
-    this.callback.onStop()
+  override fun onStop() { this.callback.onStop() }
+
+  @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+  override fun onDestroy() {
+    this.callback.onDestroy()
     this.lifecycleOwner.lifecycle.removeObserver(this)
   }
 }
 
-/**
- * - When [ReduxLifecycleObserver.onStart] is called, create the [ReduxSubscription].
- * - When [ReduxLifecycleObserver.onStop] is called, unsubscribe from [State] updates.
- */
+/** Call [IReduxPropInjector.injectProps] for [lifecycleOwner] */
 fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
   lifecycleOwner: LC,
   outProps: OP,
@@ -71,17 +82,16 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
   var subscription: ReduxSubscription? = null
 
   ReduxLifecycleObserver(lifecycleOwner, object : LifecycleCallback {
-    override fun onCreate() {}
-    override fun onDestroy() {}
-
-    override fun onStart() {
+    override fun onCreate() {
       subscription = this@injectLifecycleProps.injectProps(view, outProps, mapper)
     }
 
-    override fun onStop() {
+    override fun onDestroy() {
       subscription?.unsubscribe()
     }
 
+    override fun onStart() {}
+    override fun onStop() {}
     override fun onResume() {}
     override fun onPause() {}
   })
