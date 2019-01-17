@@ -68,7 +68,6 @@ subprojects {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin"
-    implementation "androidx.appcompat:appcompat:$appCompat"
     testImplementation "junit:junit:$junit"
     androidTestImplementation "androidx.test:runner:$testRunner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
@@ -80,10 +79,39 @@ subprojects {
   }
 }
 
-project('core') {
+project('ui') {
   dependencies {
     api project(':common:core')
     api project(':common:ui')
+  }
+}
+
+project('lifecycle') {
+  dependencies {
+    api project(':common:core')
+    api project(':common:ui')
+    implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle"
+  }
+}
+
+project('activity') {
+  dependencies {
+    api project(':android:lifecycle')
+    implementation "androidx.appcompat:appcompat:$appCompat"
+  }
+}
+
+project('fragment') {
+  dependencies {
+    api project(':android:lifecycle')
+    implementation "androidx.appcompat:appcompat:$appCompat"
+  }
+}
+
+project('recycler-view') {
+  dependencies {
+    api project(':android:ui')
+    implementation "androidx.recyclerview:recyclerview:$recyclerView"
   }
 }
 
@@ -97,16 +125,10 @@ project('livedata-rx-saga') {
   }
 }
 
-project('recycler-view') {
-  dependencies {
-    api project(':android:core')
-    implementation "androidx.recyclerview:recyclerview:$recyclerView"
-  }
-}
-
 project('router') {
   dependencies {
     api project(':common:core')
     api project(':common:router')
+    implementation "androidx.appcompat:appcompat:$appCompat"
   }
 }

@@ -135,7 +135,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     }
 
     /**
-     * Immediately set [IReduxPropContainer.variableProps] based on [store]'s last [State], in case
+     * Immediately set [IReduxPropContainer.reduxProps] based on [store]'s last [State], in case
      * this [store] does not relay last [State] on subscription.
      */
     onStateUpdate(this.store.lastState())
@@ -149,7 +149,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
 }
 
 /**
- * Unsubscribe from [IStaticReduxPropContainer.staticProps] safely, i.e.
+ * Unsubscribe from [IReduxPropContainer.reduxProps] safely, i.e.
  * catch [UninitializedPropertyAccessException] because this is most probably declare as lateinit
  * in Kotlin code, and catch [NullPointerException] to satisfy Java code.
  */

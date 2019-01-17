@@ -11,16 +11,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
-import kotlin.properties.Delegates;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.redux.ui.IReduxPropContainer;
 import org.swiften.redux.ui.ReduxProps;
 import org.swiften.redux.ui.StaticProps;
 
-import static org.swiften.redux.android.ui.core.AndroidReduxKt.endFragmentInjection;
-import static org.swiften.redux.android.ui.core.AndroidReduxKt.injectLifecycleProps;
-import static org.swiften.redux.android.ui.core.AndroidReduxKt.startFragmentInjection;
+import static org.swiften.redux.android.ui.AndroidReduxFragmentKt.endFragmentInjection;
+import static org.swiften.redux.android.ui.AndroidReduxFragmentKt.startFragmentInjection;
+import static org.swiften.redux.android.ui.AndroidReduxLifecycleKt.injectLifecycleProps;
 
 /** Created by haipham on 2018/12/19 */
 public final class MainActivity extends AppCompatActivity implements

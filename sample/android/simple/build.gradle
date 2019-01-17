@@ -60,7 +60,8 @@ dependencies {
   api project(':common:final-store')
   api project(':common:common-saga')
   api project(':common:rx-saga')
-  api project(':android:core')
+  api project(':android:activity')
+  api project(':android:fragment')
   api project(':android:recycler-view')
   api project(':android:router')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin"

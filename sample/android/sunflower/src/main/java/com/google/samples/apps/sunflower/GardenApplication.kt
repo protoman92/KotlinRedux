@@ -10,9 +10,9 @@ import com.google.samples.apps.sunflower.dependency.MainDependency
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.dependency.Saga
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
-import org.swiften.redux.android.ui.core.AndroidPropInjector
-import org.swiften.redux.android.ui.core.endActivityInjection
-import org.swiften.redux.android.ui.core.startActivityInjection
+import org.swiften.redux.android.ui.AndroidPropInjector
+import org.swiften.redux.android.ui.endActivityInjection
+import org.swiften.redux.android.ui.startActivityInjection
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.saga.createSagaMiddlewareProvider
 import org.swiften.redux.store.FinalReduxStore

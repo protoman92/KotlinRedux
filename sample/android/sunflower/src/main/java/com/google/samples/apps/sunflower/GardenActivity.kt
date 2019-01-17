@@ -30,9 +30,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.samples.apps.sunflower.databinding.ActivityGardenBinding
 import com.google.samples.apps.sunflower.dependency.Redux
-import org.swiften.redux.android.ui.core.endFragmentInjection
-import org.swiften.redux.android.ui.core.injectLifecycleProps
-import org.swiften.redux.android.ui.core.startFragmentInjection
+import org.swiften.redux.android.ui.endFragmentInjection
+import org.swiften.redux.android.ui.injectLifecycleProps
+import org.swiften.redux.android.ui.startFragmentInjection
 import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropLifecycleOwner

@@ -30,11 +30,11 @@ import java.util.Collections
 
 /** Created by haipham on 2018/12/23 */
 class SagaEffectTest : CommonSagaEffectTest() {
-  override fun <T> justEffect(value: T) = just<T>(value)
+  override fun <T> justEffect(value: T) = just(value)
 
   @ExperimentalCoroutinesApi
   override fun <T : Any> fromEffect(vararg values: T) =
-    from<T>(this.rxFlowable { values.forEach { this.send(it) } })
+    from(this.rxFlowable { values.forEach { this.send(it) } })
 
   @Test
   @ObsoleteCoroutinesApi
