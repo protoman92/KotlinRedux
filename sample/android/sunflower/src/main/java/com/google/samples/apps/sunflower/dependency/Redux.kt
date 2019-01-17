@@ -5,13 +5,14 @@
 
 package com.google.samples.apps.sunflower.dependency
 
+import com.google.samples.apps.sunflower.data.Plant
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxReducer
 import java.io.Serializable
 
 /** Created by haipham on 2019/01/16 */
 object Redux {
-  class State : Serializable
+  data class State(val plants: List<Plant>? = null) : Serializable
 
   object Reducer : IReduxReducer<State> {
     override fun invoke(p1: State, p2: IReduxAction) = p1

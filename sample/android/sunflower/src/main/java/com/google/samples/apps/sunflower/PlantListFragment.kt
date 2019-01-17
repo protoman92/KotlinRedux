@@ -44,15 +44,21 @@ class PlantListFragment : Fragment(),
   IReduxPropContainer<Redux.State, PlantListFragment.S, PlantListFragment.A>,
   IReduxPropMapper<Redux.State, Unit, PlantListFragment.S, PlantListFragment.A>
   by PlantListFragment {
-  class S
+  data class S(val plantCount: Int)
   class A
 
   companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
-    override fun mapState(state: Redux.State, outProps: Unit) = S()
+    override fun mapState(state: Redux.State, outProps: Unit) =
+      S(plantCount = state.plants?.size ?: 0)
+
     override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) = A()
   }
 
-  override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, _ -> }
+  override var reduxProps by ObservableReduxProps<Redux.State, S, A> { prev, next ->
+    if (next.variable?.state?.plantCount != prev?.variable?.state?.plantCount) {
+      this.plantList.adapter?.notifyDataSetChanged()
+    }
+  }
 
   private lateinit var plantList: RecyclerView
 

@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.PlantListFragment
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.R
+import com.google.samples.apps.sunflower.data.Plant
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.IReduxPropContainer
@@ -40,7 +41,7 @@ import org.swiften.redux.ui.ObservableReduxProps
 class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
   IReduxStatePropMapper<Redux.State, Unit, Int> by PlantAdapter {
   companion object : IReduxStatePropMapper<Redux.State, Unit, Int> {
-    override fun mapState(state: Redux.State, outProps: Unit) = 0
+    override fun mapState(state: Redux.State, outProps: Unit) = state.plants?.size ?: 0
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -60,11 +61,13 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     IReduxPropContainer<Redux.State, ViewHolder.S, ViewHolder.A>,
     IReduxPropMapper<Redux.State, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
-    class S
+    data class S(val plant: Plant?)
     class A
 
     companion object : IReduxPropMapper<Redux.State, Int, S, A> {
-      override fun mapState(state: Redux.State, outProps: Int) = S()
+      override fun mapState(state: Redux.State, outProps: Int) =
+        S(state.plants?.elementAtOrNull(outProps))
+
       override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Int) = A()
     }
 
