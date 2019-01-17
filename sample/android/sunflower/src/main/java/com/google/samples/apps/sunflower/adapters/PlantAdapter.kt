@@ -19,11 +19,15 @@ package com.google.samples.apps.sunflower.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.PlantListFragment
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
+import kotlinx.android.synthetic.main.list_item_plant.view.plant_item_image
+import kotlinx.android.synthetic.main.list_item_plant.view.plant_item_title
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.IReduxPropContainer
@@ -67,8 +71,12 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
       override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Int) = A()
     }
 
-    override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, _ -> }
+    override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
+      next?.state?.plant?.also { this.title.text = it.name }
+    }
 
+    private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
+    private val title: TextView = itemView.findViewById(R.id.plant_item_title)
     private val clickListener by lazy { View.OnClickListener { } }
 
     override fun beforePropInjectionStarts() {
