@@ -26,11 +26,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.databinding.FragmentPlantListBinding
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
+import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
@@ -40,7 +42,6 @@ import org.swiften.redux.ui.ObservableReduxProps
 
 class PlantListFragment : Fragment(),
   IReduxPropContainer<Redux.State, PlantListFragment.S, PlantListFragment.A>,
-  IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
   IReduxPropMapper<Redux.State, Unit, PlantListFragment.S, PlantListFragment.A>
   by PlantListFragment {
   class S
@@ -53,25 +54,17 @@ class PlantListFragment : Fragment(),
 
   override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, _ -> }
 
-  private lateinit var viewModel: PlantListViewModel
+  private lateinit var plantList: RecyclerView
 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val binding = FragmentPlantListBinding.inflate(inflater, container, false)
-    val context = context ?: return binding.root
-
-    val factory = InjectorUtils.providePlantListViewModelFactory(context)
-    viewModel = ViewModelProviders.of(this, factory).get(PlantListViewModel::class.java)
-
-    val adapter = PlantAdapter()
-    binding.plantList.adapter = adapter
-    subscribeUi(adapter)
-
+    val view: View = inflater.inflate(R.layout.fragment_plant_list, container, false)
+    this.plantList = view.findViewById(R.id.plant_list) as RecyclerView
     setHasOptionsMenu(true)
-    return binding.root
+    return view
   }
 
   override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -81,26 +74,36 @@ class PlantListFragment : Fragment(),
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
       R.id.filter_zone -> {
-        updateData()
+//        updateData()
         true
       }
       else -> super.onOptionsItemSelected(item)
     }
   }
 
-  private fun subscribeUi(adapter: PlantAdapter) {
-    viewModel.getPlants().observe(viewLifecycleOwner, Observer { plants ->
-      if (plants != null) adapter.submitList(plants)
-    })
+//  private fun subscribeUi(adapter: PlantAdapter) {
+//    viewModel.getPlants().observe(viewLifecycleOwner, Observer { plants ->
+//      if (plants != null) adapter.submitList(plants)
+//    })
+//  }
+
+//  private fun updateData() {
+//    with(viewModel) {
+//      if (isFiltered()) {
+//        clearGrowZoneNumber()
+//      } else {
+//        setGrowZoneNumber(9)
+//      }
+//    }
+//  }
+
+  override fun beforePropInjectionStarts() {
+    this.plantList.adapter = PlantAdapter().let {
+      this.reduxProps.static.injector.injectRecyclerViewProps(it, it, PlantAdapter.ViewHolder)
+    }
   }
 
-  private fun updateData() {
-    with(viewModel) {
-      if (isFiltered()) {
-        clearGrowZoneNumber()
-      } else {
-        setGrowZoneNumber(9)
-      }
-    }
+  override fun afterPropInjectionEnds() {
+    this.plantList.adapter = null
   }
 }
