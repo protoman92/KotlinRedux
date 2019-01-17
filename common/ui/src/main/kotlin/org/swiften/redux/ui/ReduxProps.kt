@@ -54,8 +54,8 @@ internal open class LateinitObservableProp<T>(
 }
 
 /** Use this to avoid lateinit modifiers for [ReduxProps] */
-data class ObservableReduxProps<State, S, A>(
-  private val notifier: (ReduxProps<State, S, A>?, ReduxProps<State, S, A>) -> Unit
-) : ReadWriteProperty<Any?, ReduxProps<State, S, A>> by LateinitObservableProp({ a, b ->
+class ObservableReduxProps<State, S, A>(
+  notifier: (VariableProps<S, A>?, VariableProps<S, A>?) -> Unit
+) : ReadWriteProperty<Any?, ReduxProps<State, S, A>> by LateinitObservableProp<ReduxProps<State, S, A>>({ a, b ->
   a?.variable?.state == b.variable?.state
-}, notifier)
+}, { prev, next -> notifier(prev?.variable, next.variable) })
