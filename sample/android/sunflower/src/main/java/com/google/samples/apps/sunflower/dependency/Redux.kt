@@ -14,7 +14,17 @@ import java.io.Serializable
 object Redux {
   data class State(val plants: List<Plant>? = null) : Serializable
 
+  sealed class Action : IReduxAction {
+    class UpdatePlants(val plants: List<Plant>?) : Action()
+  }
+
   object Reducer : IReduxReducer<State> {
-    override fun invoke(p1: State, p2: IReduxAction) = p1
+    override fun invoke(p1: State, p2: IReduxAction) = when (p2) {
+      is Action -> when (p2) {
+        is Action.UpdatePlants -> p1.copy(plants = p2.plants)
+      }
+
+      else -> p1
+    }
   }
 }

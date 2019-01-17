@@ -28,33 +28,32 @@ import com.google.samples.apps.sunflower.viewmodels.PlantListViewModelFactory
  * Static methods used to inject classes needed for various Activities and Fragments.
  */
 object InjectorUtils {
+  fun getPlantRepository(context: Context): PlantRepository {
+    return PlantRepository.getInstance(AppDatabase.getInstance(context).plantDao())
+  }
 
-    private fun getPlantRepository(context: Context): PlantRepository {
-        return PlantRepository.getInstance(AppDatabase.getInstance(context).plantDao())
-    }
+  private fun getGardenPlantingRepository(context: Context): GardenPlantingRepository {
+    return GardenPlantingRepository.getInstance(
+      AppDatabase.getInstance(context).gardenPlantingDao())
+  }
 
-    private fun getGardenPlantingRepository(context: Context): GardenPlantingRepository {
-        return GardenPlantingRepository.getInstance(
-                AppDatabase.getInstance(context).gardenPlantingDao())
-    }
+  fun provideGardenPlantingListViewModelFactory(
+    context: Context
+  ): GardenPlantingListViewModelFactory {
+    val repository = getGardenPlantingRepository(context)
+    return GardenPlantingListViewModelFactory(repository)
+  }
 
-    fun provideGardenPlantingListViewModelFactory(
-      context: Context
-    ): GardenPlantingListViewModelFactory {
-        val repository = getGardenPlantingRepository(context)
-        return GardenPlantingListViewModelFactory(repository)
-    }
+  fun providePlantListViewModelFactory(context: Context): PlantListViewModelFactory {
+    val repository = getPlantRepository(context)
+    return PlantListViewModelFactory(repository)
+  }
 
-    fun providePlantListViewModelFactory(context: Context): PlantListViewModelFactory {
-        val repository = getPlantRepository(context)
-        return PlantListViewModelFactory(repository)
-    }
-
-    fun providePlantDetailViewModelFactory(
-      context: Context,
-      plantId: String
-    ): PlantDetailViewModelFactory {
-        return PlantDetailViewModelFactory(getPlantRepository(context),
-                getGardenPlantingRepository(context), plantId)
-    }
+  fun providePlantDetailViewModelFactory(
+    context: Context,
+    plantId: String
+  ): PlantDetailViewModelFactory {
+    return PlantDetailViewModelFactory(getPlantRepository(context),
+      getGardenPlantingRepository(context), plantId)
+  }
 }

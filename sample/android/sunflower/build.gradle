@@ -91,8 +91,10 @@ dependencies {
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$project.ext.coroutinesVersion"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.coroutinesVersion"
 
+  api project(':common:middleware')
   api project(':common:final-store')
   api project(':android:core')
+  api project(':android:livedata-rx-saga')
   api project(':android:recycler-view')
   api project(':android:router')
 
