@@ -29,7 +29,7 @@ class GardenApplication : Application() {
     val store = applyReduxMiddlewares(
       createSagaMiddleware<Redux.State>(
         Saga.Plant.allSagas(InjectorUtils.getPlantRepository(this))
-      ).middleware
+      )
     )(FinalReduxStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)

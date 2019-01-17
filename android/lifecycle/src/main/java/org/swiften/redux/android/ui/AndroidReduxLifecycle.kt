@@ -20,6 +20,8 @@ import org.swiften.redux.ui.IReduxStatePropMapper
 /** Created by haipham on 2018/12/17 */
 /** Callbacks for lifecycle for use with [LifecycleObserver] */
 interface LifecycleCallback {
+  fun onCreate()
+
   /** Called on [Lifecycle.Event.ON_START] */
   fun onStart()
 
@@ -31,20 +33,22 @@ interface LifecycleCallback {
 
   /** Called on [Lifecycle.Event.ON_STOP] */
   fun onStop()
+
+  fun onDestroy()
 }
 
 /** Use this [LifecycleObserver] to unsubscribe from a [ReduxSubscription] */
-internal class ReduxLifecycleObserver<LC> constructor(
-  private val lifecycleOwner: LC,
+internal class ReduxLifecycleObserver(
+  private val lifecycleOwner: LifecycleOwner,
   private val callback: LifecycleCallback
-) : LifecycleObserver where LC : LifecycleOwner, LC : IReduxPropLifecycleOwner {
+) : LifecycleObserver, LifecycleCallback by callback {
   init { lifecycleOwner.lifecycle.addObserver(this) }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
-  fun onStart() { this.callback.onStart() }
+  override fun onStart() { this.callback.onStart() }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-  fun onStop() {
+  override fun onStop() {
     this.callback.onStop()
     this.lifecycleOwner.lifecycle.removeObserver(this)
   }
@@ -66,20 +70,21 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
   val view: IReduxPropContainer<State, SP, AP> = lifecycleOwner
   var subscription: ReduxSubscription? = null
 
-  ReduxLifecycleObserver(
-    lifecycleOwner,
-    object : LifecycleCallback {
-      override fun onStart() {
-        subscription = this@injectLifecycleProps.injectProps(view, outProps, mapper)
-      }
+  ReduxLifecycleObserver(lifecycleOwner, object : LifecycleCallback {
+    override fun onCreate() {}
+    override fun onDestroy() {}
 
-      override fun onStop() {
-        subscription?.unsubscribe()
-      }
+    override fun onStart() {
+      subscription = this@injectLifecycleProps.injectProps(view, outProps, mapper)
+    }
 
-      override fun onResume() {}
-      override fun onPause() {}
-    })
+    override fun onStop() {
+      subscription?.unsubscribe()
+    }
+
+    override fun onResume() {}
+    override fun onPause() {}
+  })
 
   return lifecycleOwner
 }

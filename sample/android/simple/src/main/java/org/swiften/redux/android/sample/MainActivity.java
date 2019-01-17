@@ -17,7 +17,6 @@ import org.swiften.redux.ui.IReduxPropContainer;
 import org.swiften.redux.ui.ReduxProps;
 import org.swiften.redux.ui.StaticProps;
 
-import static org.swiften.redux.android.ui.AndroidReduxFragmentKt.endFragmentInjection;
 import static org.swiften.redux.android.ui.AndroidReduxFragmentKt.startFragmentInjection;
 import static org.swiften.redux.android.ui.AndroidReduxLifecycleKt.injectLifecycleProps;
 
@@ -25,7 +24,6 @@ import static org.swiften.redux.android.ui.AndroidReduxLifecycleKt.injectLifecyc
 public final class MainActivity extends AppCompatActivity implements
   IReduxPropContainer<State, Unit, Unit> {
   private ReduxProps<State, Unit, Unit> reduxProps;
-  private FragmentManager.FragmentLifecycleCallbacks fragmentCallback;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,7 +37,7 @@ public final class MainActivity extends AppCompatActivity implements
         .commit();
     }
 
-    this.fragmentCallback = startFragmentInjection(this,
+    startFragmentInjection(this,
       new Function2<StaticProps<State>, Fragment, Unit>() {
         @Override
         public Unit invoke(StaticProps<State> staticProps, Fragment fragment) {
@@ -54,12 +52,6 @@ public final class MainActivity extends AppCompatActivity implements
           return Unit.INSTANCE;
         }
       });
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    endFragmentInjection(this, this.fragmentCallback);
   }
 
   @NotNull

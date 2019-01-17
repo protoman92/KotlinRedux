@@ -30,7 +30,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.samples.apps.sunflower.databinding.ActivityGardenBinding
 import com.google.samples.apps.sunflower.dependency.Redux
-import org.swiften.redux.android.ui.endFragmentInjection
 import org.swiften.redux.android.ui.injectLifecycleProps
 import org.swiften.redux.android.ui.startFragmentInjection
 import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
@@ -42,8 +41,6 @@ class GardenActivity : AppCompatActivity(),
   IReduxPropContainer<Redux.State, Unit, Unit>,
   IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner {
   override lateinit var reduxProps: ReduxProps<Redux.State, Unit, Unit>
-
-  private lateinit var fragmentCallbacks: FragmentManager.FragmentLifecycleCallbacks
 
   private lateinit var drawerLayout: DrawerLayout
   private lateinit var appBarConfiguration: AppBarConfiguration
@@ -66,18 +63,13 @@ class GardenActivity : AppCompatActivity(),
     // Set up navigation menu
     binding.navigationView.setupWithNavController(navController)
 
-    this.fragmentCallbacks = startFragmentInjection(this) {
+    startFragmentInjection(this) {
       when (it) {
         is GardenFragment -> this.injector.injectLifecycleProps(it, Unit, it)
         is PlantDetailFragment -> this.injector.injectLifecycleProps(it, Unit, it)
         is PlantListFragment -> this.injector.injectLifecycleProps(it, Unit, it)
       }
     }
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    endFragmentInjection(this, this.fragmentCallbacks)
   }
 
   override fun onSupportNavigateUp(): Boolean {
