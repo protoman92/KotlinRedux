@@ -7,23 +7,37 @@ package org.swiften.redux.android.ui
 
 import android.app.Activity
 import android.app.Application
+import android.net.http.SslCertificate.restoreState
+import android.net.http.SslCertificate.saveState
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.ui.IReduxPropInjector
 import java.io.Serializable
 import java.util.Date
 
 /** Created by haipham on 2018/12/17 */
+/** Handle saving/restoring [State] instances. */
+interface IReduxInstanceStateSaver<State> {
+  fun saveState(bundle: Bundle, state: State)
+  fun restoreState(bundle: Bundle): State?
+}
+
 /**
  * Listen to [Activity] lifecycle callbacks and perform [inject] when necessary. We can also
  * declare [saveState] and [restoreState] to handle [State] persistence.
+ *
+ * When [Application.ActivityLifecycleCallbacks.onActivityCreated] is called, perform [inject]
+ * on the [AppCompatActivity] being created, and also call [startFragmentInjection]. This is why
+ * [inject] accepts [LifecycleOwner] as its only parameter so that it can handle both
+ * [AppCompatActivity] and [Fragment].
  */
-fun <State> startActivityInjection(
+fun <State> IReduxPropInjector<State>.startLifecycleInjections(
   application: Application,
-  injector: IReduxPropInjector<State>,
-  inject: IReduxPropInjector<State>.(Activity) -> Unit,
-  saveState: State.(Bundle) -> Unit = {},
-  restoreState: (Bundle) -> State? = { null }
+  inject: IReduxPropInjector<State>.(LifecycleOwner) -> Unit,
+  saver: IReduxInstanceStateSaver<State>
 ): Application.ActivityLifecycleCallbacks {
   val callback = object : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity?) {}
@@ -32,18 +46,22 @@ fun <State> startActivityInjection(
     override fun onActivityDestroyed(activity: Activity?) {}
 
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
-      outState?.also { saveState(injector.lastState(), it) }
+      outState?.also { saver.saveState(it, this@startLifecycleInjections.lastState()) }
     }
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
       savedInstanceState
         ?.run { restoreState(this) }
-        ?.apply { injector.dispatch(DefaultReduxAction.ReplaceState(this)) }
+        ?.apply { this@startLifecycleInjections.dispatch(DefaultReduxAction.ReplaceState(this)) }
+
+      activity?.also {
+        require(it is AppCompatActivity)
+        inject(this@startLifecycleInjections, it)
+        this@startLifecycleInjections.startFragmentInjection(it, inject)
+      }
     }
 
-    override fun onActivityStarted(activity: Activity?) {
-      activity?.also { inject(injector, it) }
-    }
+    override fun onActivityStarted(activity: Activity?) {}
   }
 
   application.registerActivityLifecycleCallbacks(callback)
@@ -51,29 +69,23 @@ fun <State> startActivityInjection(
 }
 
 /**
- * Similar to [startActivityInjection], but provides default persistence for when [State] is
+ * Similar to [startLifecycleInjections], but provides default persistence for when [State] is
  * [Serializable]
  */
-inline fun <reified State> startActivityInjection(
+inline fun <reified State> IReduxPropInjector<State>.startLifecycleInjections(
   application: Application,
-  injector: IReduxPropInjector<State>,
-  noinline inject: IReduxPropInjector<State>.(Activity) -> Unit
+  noinline inject: IReduxPropInjector<State>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks where State : Serializable {
-  val stateKey = "REDUX_STATE_${Date().time}"
+  val key = "REDUX_STATE_${Date().time}"
 
-  return startActivityInjection(
+  return this.startLifecycleInjections(
     application,
-    injector,
     inject,
-    { it.putSerializable(stateKey, this) },
-    { b -> b.getSerializable(stateKey)?.takeIf { it is State }?.run { this as State } }
-  )
-}
+    object : IReduxInstanceStateSaver<State> {
+      override fun saveState(bundle: Bundle, state: State) = bundle.putSerializable(key, state)
 
-/** End lifecycle [callback] for [Activity] */
-fun endActivityInjection(
-  application: Application,
-  callback: Application.ActivityLifecycleCallbacks
-) {
-  application.unregisterActivityLifecycleCallbacks(callback)
+      override fun restoreState(bundle: Bundle) =
+        bundle.getSerializable(key)?.takeIf { it is State }?.run { this as State }
+    }
+  )
 }

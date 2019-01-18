@@ -12,8 +12,8 @@ import com.google.samples.apps.sunflower.dependency.Router
 import com.google.samples.apps.sunflower.dependency.Saga
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import org.swiften.redux.android.ui.AndroidPropInjector
-import org.swiften.redux.android.ui.endActivityInjection
-import org.swiften.redux.android.ui.startActivityInjection
+import org.swiften.redux.android.ui.injectLifecycleProps
+import org.swiften.redux.android.ui.startLifecycleInjections
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.createSagaMiddleware
@@ -39,16 +39,18 @@ class GardenApplication : Application() {
     val dependency = Dependency(injector)
     this.dependency = dependency
 
-    this.activityCallbacks = startActivityInjection(this, injector) {
+    this.activityCallbacks = injector.startLifecycleInjections(this) {
       when (it) {
         is GardenActivity -> this.injectStaticProps(it)
+        is GardenFragment -> this.injectLifecycleProps(it, Unit, it)
+        is PlantDetailFragment -> this.injectLifecycleProps(it, Unit, it)
+        is PlantListFragment -> this.injectLifecycleProps(it, Unit, it)
       }
     }
   }
 
   override fun onTerminate() {
     super.onTerminate()
-    endActivityInjection(this, this.activityCallbacks)
     this.dependency.injector.deinitialize()
   }
 }

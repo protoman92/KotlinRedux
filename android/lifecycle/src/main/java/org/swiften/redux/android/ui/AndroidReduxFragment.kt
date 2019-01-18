@@ -13,18 +13,20 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.IReduxPropInjector
 
+/** Created by haipham on 2018/12/17 */
 /** Use this [LifecycleObserver] to unsubscribe from a [ReduxSubscription] */
-internal class FragmentInjectionLifecycleObserver constructor(
+internal class FragmentInjectionLifecycleObserver(
   private val lifecycleOwner: LifecycleOwner,
   private val callback: LifecycleCallback
 ) : LifecycleObserver, LifecycleCallback by callback {
-  init { lifecycleOwner.lifecycle.addObserver(this) }
+  init { this.lifecycleOwner.lifecycle.addObserver(this) }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-  override fun onCreate() { this.callback.onCreate() }
+  override fun onCreate() {
+    this.callback.onCreate()
+  }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
   override fun onDestroy() {
@@ -33,35 +35,32 @@ internal class FragmentInjectionLifecycleObserver constructor(
   }
 }
 
-/** Created by haipham on 2018/12/17 */
 /**
  * Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary. This injection
  * session automatically disposes of itself when [LifecycleCallback.onDestroy] is called.
  */
-fun <State, Activity> startFragmentInjection(
-  activity: Activity,
-  inject: StaticProps<State>.(Fragment) -> Unit
-) where Activity : AppCompatActivity, Activity : IReduxPropContainer<State, *, *> {
+internal fun <State> IReduxPropInjector<State>.startFragmentInjection(
+  activity: AppCompatActivity,
+  inject: IReduxPropInjector<State>.(LifecycleOwner) -> Unit
+) {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
-      activity.reduxProps.static.also { inject(it, f) }
+      inject(this@startFragmentInjection, f)
     }
   }
 
-  FragmentInjectionLifecycleObserver(
-    activity,
-    object : LifecycleCallback {
-      override fun onCreate() {
-        activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
-      }
+  FragmentInjectionLifecycleObserver(activity, object : LifecycleCallback {
+    override fun onCreate() {
+      activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
+    }
 
-      override fun onDestroy() {
-        activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
-      }
+    override fun onDestroy() {
+      activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
+    }
 
-      override fun onStart() {}
-      override fun onResume() {}
-      override fun onPause() {}
-      override fun onStop() {}
-    })
+    override fun onStart() {}
+    override fun onResume() {}
+    override fun onPause() {}
+    override fun onStop() {}
+  })
 }
