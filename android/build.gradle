@@ -90,20 +90,6 @@ project('lifecycle') {
   dependencies {
     api project(':common:core')
     api project(':common:ui')
-    implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle"
-  }
-}
-
-project('activity') {
-  dependencies {
-    api project(':android:lifecycle')
-    implementation "androidx.appcompat:appcompat:$appCompat"
-  }
-}
-
-project('fragment') {
-  dependencies {
-    api project(':android:lifecycle')
     implementation "androidx.appcompat:appcompat:$appCompat"
   }
 }

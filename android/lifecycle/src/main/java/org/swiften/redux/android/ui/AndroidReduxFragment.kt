@@ -48,18 +48,20 @@ fun <State, Activity> startFragmentInjection(
     }
   }
 
-  FragmentInjectionLifecycleObserver(activity, object : LifecycleCallback {
-    override fun onCreate() {
-      activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
-    }
+  FragmentInjectionLifecycleObserver(
+    activity,
+    object : LifecycleCallback {
+      override fun onCreate() {
+        activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
+      }
 
-    override fun onDestroy() {
-      activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
-    }
+      override fun onDestroy() {
+        activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
+      }
 
-    override fun onStart() {}
-    override fun onResume() {}
-    override fun onPause() {}
-    override fun onStop() {}
-  })
+      override fun onStart() {}
+      override fun onResume() {}
+      override fun onPause() {}
+      override fun onStop() {}
+    })
 }

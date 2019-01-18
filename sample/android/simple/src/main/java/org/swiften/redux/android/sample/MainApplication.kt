@@ -13,7 +13,6 @@ import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.endActivityInjection
 import org.swiften.redux.android.ui.startActivityInjection
-import org.swiften.redux.android.router.SingleActivityRouter
 import org.swiften.redux.android.router.createSingleActivityRouter
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddleware

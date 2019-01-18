@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/android/activity/activity.iml" filepath="$PROJECT_DIR$/android/activity/activity.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/router/android-router.iml" filepath="$PROJECT_DIR$/android/router/android-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/ui/android-ui.iml" filepath="$PROJECT_DIR$/android/ui/android-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/async-store/async-store.iml" filepath="$PROJECT_DIR$/common/async-store/async-store.iml" />
@@ -12,7 +11,6 @@
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/ui/common-ui.iml" filepath="$PROJECT_DIR$/common/ui/common-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/final-store/final-store.iml" filepath="$PROJECT_DIR$/common/final-store/final-store.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android/fragment/fragment.iml" filepath="$PROJECT_DIR$/android/fragment/fragment.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/lifecycle/lifecycle.iml" filepath="$PROJECT_DIR$/android/lifecycle/lifecycle.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/livedata-rx-saga/livedata-rx-saga.iml" filepath="$PROJECT_DIR$/android/livedata-rx-saga/livedata-rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/middleware/middleware.iml" filepath="$PROJECT_DIR$/common/middleware/middleware.iml" />
