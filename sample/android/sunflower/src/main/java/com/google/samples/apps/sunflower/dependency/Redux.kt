@@ -21,15 +21,19 @@ import java.io.Serializable
 
 /** Created by haipham on 2019/01/16 */
 object Redux {
+  const val NO_GROW_ZONE = -1
+
   data class SelectedPlant(val id: String, val isPlanted: Boolean? = null)
 
   data class State(
     val plants: List<Plant>? = null,
-    val selectedPlant: SelectedPlant? = null
+    val selectedPlant: SelectedPlant? = null,
+    val selectedGrowZone: Int = NO_GROW_ZONE
   ) : Serializable
 
   sealed class Action : IReduxAction {
     class AddPlantToGarden(val plantId: String) : Action()
+    class SelectGrowZone(val zone: Int) : Action()
     class UpdatePlants(val plants: List<Plant>?) : Action()
     class UpdateSelectedPlantStatus(val isPlanted: Boolean) : Action()
   }
@@ -41,6 +45,7 @@ object Redux {
   object Reducer : IReduxReducer<State> {
     override fun invoke(p1: State, p2: IReduxAction) = when (p2) {
       is Action -> when (p2) {
+        is Action.SelectGrowZone -> p1.copy(selectedGrowZone = p2.zone)
         is Action.UpdatePlants -> p1.copy(plants = p2.plants)
 
         is Action.UpdateSelectedPlantStatus ->

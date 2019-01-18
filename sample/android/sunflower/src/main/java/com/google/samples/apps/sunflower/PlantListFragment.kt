@@ -38,13 +38,19 @@ class PlantListFragment : Fragment(),
   IReduxPropMapper<Redux.State, Unit, PlantListFragment.S, PlantListFragment.A>
   by PlantListFragment {
   data class S(val plantCount: Int)
-  class A
+  class A(val updateGrowZone: () -> Unit)
 
   companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
     override fun mapState(state: Redux.State, outProps: Unit) =
       S(plantCount = state.plants?.size ?: 0)
 
-    override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) = A()
+    override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) = A {
+      if (state.selectedGrowZone == Redux.NO_GROW_ZONE) {
+        dispatch(Redux.Action.SelectGrowZone(9))
+      } else {
+        dispatch(Redux.Action.SelectGrowZone(Redux.NO_GROW_ZONE))
+      }
+    }
   }
 
   override var reduxProps by ObservableReduxProps<Redux.State, S, A> { prev, next ->
@@ -76,22 +82,12 @@ class PlantListFragment : Fragment(),
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
       R.id.filter_zone -> {
-//        updateData()
+        this.reduxProps.variable?.actions?.updateGrowZone?.invoke()
         true
       }
       else -> super.onOptionsItemSelected(item)
     }
   }
-
-//  private fun updateData() {
-//    with(viewModel) {
-//      if (isFiltered()) {
-//        clearGrowZoneNumber()
-//      } else {
-//        setGrowZoneNumber(9)
-//      }
-//    }
-//  }
 
   override fun beforePropInjectionStarts() {
     this.plantList.adapter = PlantAdapter().let {
