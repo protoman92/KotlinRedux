@@ -12,7 +12,6 @@ import org.swiften.redux.android.livedata.rx.LiveDataEffects.takeEveryData
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxReducer
 import org.swiften.redux.router.IReduxRouterScreen
-import org.swiften.redux.saga.doOnValue
 import org.swiften.redux.saga.map
 import org.swiften.redux.saga.mapSuspend
 import org.swiften.redux.saga.put
@@ -62,7 +61,7 @@ object Redux {
   object Saga {
     object GardenPlanting {
       @Suppress("MemberVisibilityCanBePrivate")
-      fun addGardenPlantingSaga(api: GardenPlantingRepository) =
+      fun addGardenPlanting(api: GardenPlantingRepository) =
         takeLatestAction<Action.AddPlantToGarden, String, Any>({ it.plantId }, { plantId ->
           just(plantId)
             .mapSuspend { api.createGardenPlanting(it) }
@@ -70,26 +69,25 @@ object Redux {
         })
 
       @Suppress("SENSELESS_COMPARISON")
-      fun checkSelectedPlantStatusSaga(api: GardenPlantingRepository) =
+      fun checkSelectedPlantStatus(api: GardenPlantingRepository) =
         takeLatestAction<Screen.PlantDetail, String, Any>({ it.plantId }, { plantId ->
           takeEveryData { api.getGardenPlantingForPlant(plantId) }
             .map { it != null }
-            .doOnValue { println("Redux $it") }
             .put { Action.UpdateSelectedPlantStatus(it) }
         })
 
       fun allSagas(api: GardenPlantingRepository) = arrayListOf(
-        this.addGardenPlantingSaga(api),
-        this.checkSelectedPlantStatusSaga(api)
+        this.addGardenPlanting(api),
+        this.checkSelectedPlantStatus(api)
       )
     }
 
     object Plant {
       @Suppress("MemberVisibilityCanBePrivate")
-      fun plantSyncSaga(api: PlantRepository) =
+      fun syncPlants(api: PlantRepository) =
         takeEveryData { api.getPlants() }.put { Redux.Action.UpdatePlants(it) }
 
-      fun allSagas(api: PlantRepository) = arrayListOf(this.plantSyncSaga(api))
+      fun allSagas(api: PlantRepository) = arrayListOf(this.syncPlants(api))
     }
   }
 }
