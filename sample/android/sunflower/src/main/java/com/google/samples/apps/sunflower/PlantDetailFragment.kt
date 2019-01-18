@@ -64,13 +64,14 @@ class PlantDetailFragment : Fragment(),
   IReduxPropMapper<Redux.State, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
   by PlantDetailFragment {
   data class S(val plant: Plant?)
-  class A
+  class A(val addPlantToGarden: () -> Unit)
 
   companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
     override fun mapState(state: Redux.State, outProps: Unit) =
       S(state.selectedPlantId?.let { id -> state.plants?.find { it.plantId == id } })
 
-    override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) = A()
+    override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) =
+      A { state.selectedPlantId?.also { dispatch(Redux.Action.AddPlantToGarden(it)) } }
   }
 
   override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
@@ -137,7 +138,7 @@ class PlantDetailFragment : Fragment(),
 
   override fun beforePropInjectionStarts() {
     this.fab.setOnClickListener { view ->
-      //        plantDetailViewModel.addPlantToGarden()
+      this.reduxProps.variable?.actions?.addPlantToGarden?.invoke()
       Snackbar.make(view, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()
     }
   }

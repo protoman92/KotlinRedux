@@ -9,7 +9,6 @@ import android.app.Application
 import com.google.samples.apps.sunflower.dependency.Dependency
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.dependency.Router
-import com.google.samples.apps.sunflower.dependency.Saga
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.injectLifecycleProps
@@ -30,9 +29,10 @@ class GardenApplication : Application() {
 
     val store = applyReduxMiddlewares(
       createRouterMiddleware(Router(this)),
-      createSagaMiddleware<Redux.State>(
-        Saga.Plant.allSagas(InjectorUtils.getPlantRepository(this))
-      )
+      createSagaMiddleware<Redux.State>(arrayListOf(
+        Redux.Saga.GardenPlanting.allSagas(InjectorUtils.getGardenPlantingRepository(this)),
+        Redux.Saga.Plant.allSagas(InjectorUtils.getPlantRepository(this))
+      ).flatten())
     )(FinalReduxStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)
