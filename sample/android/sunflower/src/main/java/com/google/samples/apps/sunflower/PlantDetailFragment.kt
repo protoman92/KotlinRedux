@@ -31,28 +31,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ShareCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.text.HtmlCompat
 import androidx.core.text.bold
 import androidx.core.text.italic
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.samples.apps.sunflower.data.Plant
-import com.google.samples.apps.sunflower.databinding.FragmentPlantDetailBinding
 import com.google.samples.apps.sunflower.dependency.Redux
-import com.google.samples.apps.sunflower.utilities.InjectorUtils
-import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
-import kotlinx.android.synthetic.main.fragment_plant_detail.view.detail_image
-import kotlinx.android.synthetic.main.fragment_plant_detail.view.plant_detail
-import kotlinx.android.synthetic.main.fragment_plant_detail.view.plant_watering
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 
@@ -63,15 +51,16 @@ class PlantDetailFragment : Fragment(),
   IReduxPropContainer<Redux.State, PlantDetailFragment.S, PlantDetailFragment.A>,
   IReduxPropMapper<Redux.State, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
   by PlantDetailFragment {
-  data class S(val plant: Plant?)
+  data class S(val plant: Plant? = null, val isPlanted: Boolean? = null)
   class A(val addPlantToGarden: () -> Unit)
 
   companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
-    override fun mapState(state: Redux.State, outProps: Unit) =
-      S(state.selectedPlantId?.let { id -> state.plants?.find { it.plantId == id } })
+    override fun mapState(state: Redux.State, outProps: Unit) = state.selectedPlant?.let {
+      S(it.id.let { id -> state.plants?.find { it.plantId == id } }, it.isPlanted)
+    } ?: S()
 
     override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) =
-      A { state.selectedPlantId?.also { dispatch(Redux.Action.AddPlantToGarden(it)) } }
+      A { state.selectedPlant?.id?.also { dispatch(Redux.Action.AddPlantToGarden(it)) } }
   }
 
   override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
@@ -80,6 +69,8 @@ class PlantDetailFragment : Fragment(),
       this.plantWatering.text = this.context?.let { this.bindWateringText(it, p.wateringInterval) }
       this.plantDetail.text = HtmlCompat.fromHtml(p.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
     }
+
+    next?.state?.isPlanted?.also { this.fab.visibility = if (it) View.GONE else View.VISIBLE }
   }
 
   private var shareText: String = ""
