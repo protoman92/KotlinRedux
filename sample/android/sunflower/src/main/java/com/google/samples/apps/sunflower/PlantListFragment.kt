@@ -61,9 +61,12 @@ class PlantListFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? {
     val view: View = inflater.inflate(R.layout.fragment_plant_list, container, false)
-    this.plantList = view.findViewById(R.id.plant_list) as RecyclerView
     setHasOptionsMenu(true)
     return view
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    this.plantList = view.findViewById(R.id.plant_list)
   }
 
   override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

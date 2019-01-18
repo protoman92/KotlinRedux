@@ -16,25 +16,39 @@
 
 package com.google.samples.apps.sunflower
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.app.ShareCompat
+import androidx.core.text.HtmlCompat
+import androidx.core.text.bold
+import androidx.core.text.italic
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.databinding.FragmentPlantDetailBinding
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
+import kotlinx.android.synthetic.main.fragment_plant_detail.view.detail_image
+import kotlinx.android.synthetic.main.fragment_plant_detail.view.plant_detail
+import kotlinx.android.synthetic.main.fragment_plant_detail.view.plant_watering
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
@@ -47,53 +61,48 @@ import org.swiften.redux.ui.ObservableReduxProps
  */
 class PlantDetailFragment : Fragment(),
   IReduxPropContainer<Redux.State, PlantDetailFragment.S, PlantDetailFragment.A>,
-  IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
   IReduxPropMapper<Redux.State, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
   by PlantDetailFragment {
-  class S
+  data class S(val plant: Plant?)
   class A
 
   companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
-    override fun mapState(state: Redux.State, outProps: Unit) = S()
+    override fun mapState(state: Redux.State, outProps: Unit) =
+      S(state.selectedPlantId?.let { id -> state.plants?.find { it.plantId == id } })
+
     override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) = A()
   }
 
-  override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, _ -> }
+  override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
+    next?.state?.plant?.also { p ->
+      this.shareText = this.getString(R.string.share_text_plant, p.name)
+      this.plantWatering.text = this.context?.let { this.bindWateringText(it, p.wateringInterval) }
+      this.plantDetail.text = HtmlCompat.fromHtml(p.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
+    }
+  }
 
-  private lateinit var shareText: String
+  private var shareText: String = ""
+  private lateinit var detailImage: ImageView
+  private lateinit var plantWatering: TextView
+  private lateinit var plantDetail: TextView
+  private lateinit var fab: View
 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val plantId = PlantDetailFragmentArgs.fromBundle(arguments!!).plantId
-
-    val factory = InjectorUtils.providePlantDetailViewModelFactory(requireActivity(), plantId)
-    val plantDetailViewModel = ViewModelProviders.of(this, factory)
-      .get(PlantDetailViewModel::class.java)
-
-    val binding = DataBindingUtil.inflate<FragmentPlantDetailBinding>(
-      inflater, R.layout.fragment_plant_detail, container, false).apply {
-      viewModel = plantDetailViewModel
-      setLifecycleOwner(this@PlantDetailFragment)
-      fab.setOnClickListener { view ->
-        plantDetailViewModel.addPlantToGarden()
-        Snackbar.make(view, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()
-      }
-    }
-
-    plantDetailViewModel.plant.observe(this, Observer { plant ->
-      shareText = if (plant == null) {
-        ""
-      } else {
-        getString(R.string.share_text_plant, plant.name)
-      }
-    })
-
+    val view = inflater.inflate(R.layout.fragment_plant_detail, container, false)
     setHasOptionsMenu(true)
+    return view
+  }
 
-    return binding.root
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    this.detailImage = view.findViewById(R.id.detail_image)
+    this.plantWatering = view.findViewById(R.id.plant_watering)
+    this.plantDetail = view.findViewById(R.id.plant_detail)
+    this.fab = view.findViewById(R.id.fab)
+    this.plantDetail.movementMethod = LinkMovementMethod.getInstance()
   }
 
   override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -124,5 +133,28 @@ class PlantDetailFragment : Fragment(),
       }
       else -> super.onOptionsItemSelected(item)
     }
+  }
+
+  override fun beforePropInjectionStarts() {
+    this.fab.setOnClickListener { view ->
+      //        plantDetailViewModel.addPlantToGarden()
+      Snackbar.make(view, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()
+    }
+  }
+
+  override fun afterPropInjectionEnds() {
+    this.fab.setOnClickListener(null)
+  }
+
+  private fun bindWateringText(context: Context, wateringInterval: Int): SpannableStringBuilder {
+    val resources = context.resources
+
+    val quantityString = resources.getQuantityString(R.plurals.watering_needs_suffix,
+      wateringInterval, wateringInterval)
+
+    return SpannableStringBuilder()
+      .bold { append(resources.getString(R.string.watering_needs_prefix)) }
+      .append(" ")
+      .italic { append(quantityString) }
   }
 }
