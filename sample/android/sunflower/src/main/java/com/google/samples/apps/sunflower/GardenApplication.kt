@@ -30,8 +30,8 @@ class GardenApplication : Application() {
     val store = applyReduxMiddlewares(
       createRouterMiddleware(Router(this)),
       createSagaMiddleware<Redux.State>(arrayListOf(
-        Redux.Saga.GardenPlanting.allSagas(InjectorUtils.getGardenPlantingRepository(this)),
-        Redux.Saga.Plant.allSagas(InjectorUtils.getPlantRepository(this))
+        Redux.Saga.GardenPlantingSaga.allSagas(InjectorUtils.getGardenPlantingRepository(this)),
+        Redux.Saga.PlantSaga.allSagas(InjectorUtils.getPlantRepository(this))
       ).flatten())
     )(FinalReduxStore(Redux.State(), Redux.Reducer))
 

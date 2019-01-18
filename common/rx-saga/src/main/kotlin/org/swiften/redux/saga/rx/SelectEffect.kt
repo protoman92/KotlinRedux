@@ -37,5 +37,5 @@ inline fun <reified State, R, R2, R3> ReduxSagaEffect<R>.select(
 ) = this.then(ReduxSagaEffects.select(selector), combiner)
 
 /** Invoke a [SelectEffect] but ignore emissions from [this] */
-inline fun <reified State, R, R2> ReduxSagaEffect<R>.select(noinline selector: (State) -> R2) =
+inline fun <reified State, R2> ReduxSagaEffect<*>.select(noinline selector: (State) -> R2) =
   this.then(ReduxSagaEffects.select(selector))

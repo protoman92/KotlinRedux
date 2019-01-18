@@ -17,6 +17,7 @@ import org.swiften.redux.saga.mapSuspend
 import org.swiften.redux.saga.put
 import org.swiften.redux.saga.rx.ReduxSagaEffects.just
 import org.swiften.redux.saga.rx.ReduxSagaEffects.takeLatestAction
+import org.swiften.redux.saga.rx.select
 import java.io.Serializable
 
 /** Created by haipham on 2019/01/16 */
@@ -64,9 +65,8 @@ object Redux {
   }
 
   object Saga {
-    object GardenPlanting {
-      @Suppress("MemberVisibilityCanBePrivate")
-      fun addGardenPlanting(api: GardenPlantingRepository) =
+    object GardenPlantingSaga {
+      private fun addGardenPlanting(api: GardenPlantingRepository) =
         takeLatestAction<Action.AddPlantToGarden, String, Any>({ it.plantId }, { plantId ->
           just(plantId)
             .mapSuspend { api.createGardenPlanting(it) }
@@ -87,12 +87,23 @@ object Redux {
       )
     }
 
-    object Plant {
-      @Suppress("MemberVisibilityCanBePrivate")
-      fun syncPlants(api: PlantRepository) =
-        takeEveryData { api.getPlants() }.put { Redux.Action.UpdatePlants(it) }
+    object PlantSaga {
+      private fun syncPlants(api: PlantRepository) = takeEveryData { api.getPlants() }
+        .select<State, List<Plant>, Int, List<Plant>>({ it.selectedGrowZone }, { a, b ->
+          if (b == NO_GROW_ZONE) a else a.filter { it.growZoneNumber == b }
+        }).put { Action.UpdatePlants(it) }
 
-      fun allSagas(api: PlantRepository) = arrayListOf(this.syncPlants(api))
+      private fun syncPlantsOnGrowZone(api: PlantRepository) =
+        takeLatestAction<Action.SelectGrowZone, Int, Any>({ it.zone }, { growZone ->
+          if (growZone == NO_GROW_ZONE) { takeEveryData { api.getPlants() } }
+          else { takeEveryData { api.getPlantsWithGrowZoneNumber(growZone) } }
+            .put { Action.UpdatePlants(it) }
+        })
+
+      fun allSagas(api: PlantRepository) = arrayListOf(
+        this.syncPlants(api),
+        this.syncPlantsOnGrowZone(api)
+      )
     }
   }
 }
