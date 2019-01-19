@@ -57,5 +57,5 @@ internal class SingleActivityRouter<AT, Screen>(
 inline fun <reified AT, Screen> createSingleActivityRouter(
   application: Application,
   noinline navigate: (AT, Screen) -> Unit
-) : IReduxRouter<Screen> where AT : AppCompatActivity, Screen : IReduxRouterScreen =
+): IReduxRouter<Screen> where AT : AppCompatActivity, Screen : IReduxRouterScreen =
   SingleActivityRouter(application, AT::class.java, navigate)

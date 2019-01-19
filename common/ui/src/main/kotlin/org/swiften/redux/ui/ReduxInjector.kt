@@ -143,7 +143,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
 
     /** Wrap a [ReduxSubscription] to perform [IReduxPropLifecycleOwner.afterPropInjectionEnds] */
     val wrappedSub = ReduxSubscription {
-      subscription.unsubscribe();
+      subscription.unsubscribe()
       view.afterPropInjectionEnds()
     }
 

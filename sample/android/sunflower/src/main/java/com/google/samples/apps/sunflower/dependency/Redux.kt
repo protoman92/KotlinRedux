@@ -120,8 +120,7 @@ object Redux {
 
       private fun syncPlantsOnGrowZone(api: PlantRepository) =
         takeLatestAction<Action.SelectGrowZone, Int, Any>({ it.zone }, { growZone ->
-          if (growZone == NO_GROW_ZONE) { takeEveryData { api.getPlants() } }
-          else { takeEveryData { api.getPlantsWithGrowZoneNumber(growZone) } }
+          if (growZone == NO_GROW_ZONE) { takeEveryData { api.getPlants() } } else { takeEveryData { api.getPlantsWithGrowZoneNumber(growZone) } }
             .put { Action.UpdatePlants(it) }
         })
 
