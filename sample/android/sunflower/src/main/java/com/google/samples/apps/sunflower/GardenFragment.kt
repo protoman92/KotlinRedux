@@ -26,10 +26,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
-import com.google.samples.apps.sunflower.databinding.FragmentGardenBinding
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
-import com.google.samples.apps.sunflower.viewmodels.GardenPlantingListViewModel
 import kotlinx.android.synthetic.main.fragment_garden.view.empty_garden
 import kotlinx.android.synthetic.main.fragment_garden.view.garden_list
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps

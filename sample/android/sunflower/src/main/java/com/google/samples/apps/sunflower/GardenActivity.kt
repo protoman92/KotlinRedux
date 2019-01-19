@@ -18,8 +18,8 @@ package com.google.samples.apps.sunflower
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
-import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -27,7 +27,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.samples.apps.sunflower.databinding.ActivityGardenBinding
+import com.google.android.material.navigation.NavigationView
 import com.google.samples.apps.sunflower.dependency.Redux
 import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
@@ -45,20 +45,19 @@ class GardenActivity : AppCompatActivity(),
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
-    val binding: ActivityGardenBinding = DataBindingUtil.setContentView(this,
-      R.layout.activity_garden)
-    drawerLayout = binding.drawerLayout
-
-    navController = Navigation.findNavController(this, R.id.garden_nav_fragment)
-    appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
+    this.setContentView(R.layout.activity_garden)
+    this.drawerLayout = this.findViewById(R.id.drawer_layout)
+    this.navController = Navigation.findNavController(this, R.id.garden_nav_fragment)
+    this.appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
 
     // Set up ActionBar
-    setSupportActionBar(binding.toolbar)
+    val toolbar: Toolbar = this.findViewById(R.id.toolbar)
+    setSupportActionBar(toolbar)
     setupActionBarWithNavController(navController, appBarConfiguration)
 
     // Set up navigation menu
-    binding.navigationView.setupWithNavController(navController)
+    val navigationView: NavigationView = this.findViewById(R.id.navigation_view)
+    navigationView.setupWithNavController(navController)
   }
 
   override fun onSupportNavigateUp(): Boolean {

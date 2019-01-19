@@ -48,9 +48,7 @@ project.apply from: "${rootDir}/sample/android/sunflower/constants.gradle"
 
 android {
   compileSdkVersion project.ext.compileSdkVersion
-  dataBinding {
-    enabled = true
-  }
+
   defaultConfig {
     applicationId "com.google.samples.apps.sunflower"
     minSdkVersion project.ext.minSdkVersion
@@ -74,17 +72,15 @@ android {
 
 dependencies {
   kapt "androidx.room:room-compiler:$project.ext.roomVersion"
-  kapt "com.github.bumptech.glide:compiler:$project.ext.glideVersion"
   implementation "android.arch.navigation:navigation-fragment-ktx:$project.ext.navigationVersion"
   implementation "android.arch.navigation:navigation-ui-ktx:$project.ext.navigationVersion"
   implementation "android.arch.work:work-runtime-ktx:$project.ext.workVersion"
   implementation "androidx.appcompat:appcompat:$project.ext.supportLibraryVersion"
   implementation "androidx.constraintlayout:constraintlayout:$project.ext.constraintLayoutVersion"
   implementation "androidx.core:core-ktx:$project.ext.ktxVersion"
-  implementation "androidx.lifecycle:lifecycle-extensions:$project.ext.lifecycleVersion"
+  implementation "androidx.lifecycle:lifecycle-livedata:$project.ext.lifecycleVersion"
   implementation "androidx.recyclerview:recyclerview:$project.ext.recyclerViewVersion"
   implementation "androidx.room:room-runtime:$project.ext.roomVersion"
-  implementation "com.github.bumptech.glide:glide:$project.ext.glideVersion"
   implementation "com.google.android.material:material:$project.ext.materialVersion"
   implementation "com.google.code.gson:gson:$project.ext.gsonVersion"
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$project.ext.kotlinVersion"

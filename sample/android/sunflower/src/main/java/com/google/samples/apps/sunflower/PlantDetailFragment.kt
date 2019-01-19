@@ -36,6 +36,7 @@ import androidx.core.text.HtmlCompat
 import androidx.core.text.bold
 import androidx.core.text.italic
 import androidx.fragment.app.Fragment
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.dependency.Redux
@@ -68,6 +69,7 @@ class PlantDetailFragment : Fragment(),
       this.shareText = this.getString(R.string.share_text_plant, p.name)
       this.plantWatering.text = this.context?.let { this.bindWateringText(it, p.wateringInterval) }
       this.plantDetail.text = HtmlCompat.fromHtml(p.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
+      this.toolbarLayout.title = p.name
     }
 
     next?.state?.isPlanted?.also { this.fab.visibility = if (it) View.GONE else View.VISIBLE }
@@ -75,9 +77,10 @@ class PlantDetailFragment : Fragment(),
 
   private var shareText: String = ""
   private lateinit var detailImage: ImageView
+  private lateinit var fab: View
   private lateinit var plantWatering: TextView
   private lateinit var plantDetail: TextView
-  private lateinit var fab: View
+  private lateinit var toolbarLayout: CollapsingToolbarLayout
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -91,10 +94,11 @@ class PlantDetailFragment : Fragment(),
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     this.detailImage = view.findViewById(R.id.detail_image)
+    this.fab = view.findViewById(R.id.fab)
     this.plantWatering = view.findViewById(R.id.plant_watering)
     this.plantDetail = view.findViewById(R.id.plant_detail)
-    this.fab = view.findViewById(R.id.fab)
     this.plantDetail.movementMethod = LinkMovementMethod.getInstance()
+    this.toolbarLayout = view.findViewById(R.id.toolbar_layout)
   }
 
   override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
