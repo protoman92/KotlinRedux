@@ -11,15 +11,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropInjector
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.*
 
 /** Created by haipham on 2018/12/17 */
 /** Callbacks for lifecycle for use with [LifecycleObserver] */
-interface LifecycleCallback {
+interface ILifecycleCallback {
   /** Called on [Lifecycle.Event.ON_CREATE] */
   fun onCreate()
 
@@ -39,11 +35,21 @@ interface LifecycleCallback {
   fun onDestroy()
 }
 
+/** Empty implementation for [ILifecycleCallback] to use with delegates */
+object EmptyLifecycleCallback : ILifecycleCallback {
+  override fun onCreate() {}
+  override fun onStart() {}
+  override fun onResume() {}
+  override fun onPause() {}
+  override fun onStop() {}
+  override fun onDestroy() {}
+}
+
 /** Use this [LifecycleObserver] to unsubscribe from a [ReduxSubscription] */
 internal class ReduxLifecycleObserver(
   private val lifecycleOwner: LifecycleOwner,
-  private val callback: LifecycleCallback
-) : LifecycleObserver, LifecycleCallback by callback {
+  private val callback: ILifecycleCallback
+) : LifecycleObserver, ILifecycleCallback by callback {
   init { lifecycleOwner.lifecycle.addObserver(this) }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -81,20 +87,16 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
   val view: IReduxPropContainer<State, SP, AP> = lifecycleOwner
   var subscription: ReduxSubscription? = null
 
-  ReduxLifecycleObserver(lifecycleOwner, object : LifecycleCallback {
-    override fun onCreate() {
-      subscription = this@injectLifecycleProps.injectProps(view, outProps, mapper)
-    }
+  ReduxLifecycleObserver(lifecycleOwner,
+    object : ILifecycleCallback by EmptyLifecycleCallback {
+      override fun onCreate() {
+        subscription = this@injectLifecycleProps.injectProps(view, outProps, mapper)
+      }
 
-    override fun onDestroy() {
-      subscription?.unsubscribe()
-    }
-
-    override fun onStart() {}
-    override fun onStop() {}
-    override fun onResume() {}
-    override fun onPause() {}
-  })
+      override fun onDestroy() {
+        subscription?.unsubscribe()
+      }
+    })
 
   return lifecycleOwner
 }

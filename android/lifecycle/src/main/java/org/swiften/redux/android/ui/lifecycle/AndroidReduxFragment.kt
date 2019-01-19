@@ -19,8 +19,8 @@ import org.swiften.redux.ui.IReduxPropInjector
 /** Use this [LifecycleObserver] to unsubscribe from a [ReduxSubscription] */
 internal class FragmentInjectionLifecycleObserver(
   private val lifecycleOwner: LifecycleOwner,
-  private val callback: LifecycleCallback
-) : LifecycleObserver, LifecycleCallback by callback {
+  private val callback: ILifecycleCallback
+) : LifecycleObserver, ILifecycleCallback by callback {
   init { this.lifecycleOwner.lifecycle.addObserver(this) }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -37,7 +37,7 @@ internal class FragmentInjectionLifecycleObserver(
 
 /**
  * Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary. This injection
- * session automatically disposes of itself when [LifecycleCallback.onDestroy] is called.
+ * session automatically disposes of itself when [ILifecycleCallback.onDestroy] is called.
  */
 internal fun <State> IReduxPropInjector<State>.startFragmentInjection(
   activity: AppCompatActivity,
@@ -49,18 +49,14 @@ internal fun <State> IReduxPropInjector<State>.startFragmentInjection(
     }
   }
 
-  FragmentInjectionLifecycleObserver(activity, object : LifecycleCallback {
-    override fun onCreate() {
-      activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
-    }
+  FragmentInjectionLifecycleObserver(activity,
+    object : ILifecycleCallback by EmptyLifecycleCallback {
+      override fun onCreate() {
+        activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
+      }
 
-    override fun onDestroy() {
-      activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
-    }
-
-    override fun onStart() {}
-    override fun onResume() {}
-    override fun onPause() {}
-    override fun onStop() {}
-  })
+      override fun onDestroy() {
+        activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
+      }
+    })
 }
