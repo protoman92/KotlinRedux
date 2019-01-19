@@ -23,5 +23,5 @@ internal class CallEffect<P, R>(
 }
 
 /** Invoke a [CallEffect] on [this] */
-fun <State, P, R> ReduxSagaEffect<P>.call(transformer: (P) -> Single<R>) =
+fun <P, R> ReduxSagaEffect<P>.call(transformer: (P) -> Single<R>) =
   this.transform(ReduxSagaEffects.call(transformer))

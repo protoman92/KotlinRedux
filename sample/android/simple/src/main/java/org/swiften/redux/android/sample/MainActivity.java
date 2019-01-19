@@ -7,17 +7,11 @@ package org.swiften.redux.android.sample;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.redux.ui.IReduxPropContainer;
 import org.swiften.redux.ui.ReduxProps;
-import org.swiften.redux.ui.StaticProps;
-
-import static org.swiften.redux.android.ui.AndroidReduxFragmentKt.startFragmentInjection;
-import static org.swiften.redux.android.ui.AndroidReduxLifecycleKt.injectLifecycleProps;
 
 /** Created by haipham on 2018/12/19 */
 public final class MainActivity extends AppCompatActivity implements

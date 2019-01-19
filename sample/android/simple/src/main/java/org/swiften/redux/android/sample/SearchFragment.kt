@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.fragment_search.backgroundDim
 import kotlinx.android.synthetic.main.fragment_search.progressBar
 import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
+import kotlinx.android.synthetic.main.view_search_result.view.*
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.IReduxDispatcher

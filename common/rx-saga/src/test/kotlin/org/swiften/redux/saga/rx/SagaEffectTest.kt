@@ -58,7 +58,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       .invoke(this, State()) { }
 
     val sourceOutput2 = just(2)
-      .select<State, Int, Int> { 4 }
+      .select<State, Int> { 4 }
       .invoke(this, State()) { }
 
     // When && Then
@@ -84,7 +84,8 @@ class SagaEffectTest : CommonSagaEffectTest() {
         just(query)
           .map { "unavailable$it" }
           .mapAsync { this.searchMusicStore(it) }
-          .cast<Unit, String, Any>()
+          .
+            cast<Any>()
           .catchError {}
       },
       TakeEffectOptions(0)

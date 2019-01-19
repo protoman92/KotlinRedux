@@ -10,10 +10,10 @@ import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.Fragment
 import com.squareup.leakcanary.LeakCanary
-import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.router.createSingleActivityRouter
-import org.swiften.redux.android.ui.injectLifecycleProps
-import org.swiften.redux.android.ui.startLifecycleInjections
+import org.swiften.redux.android.ui.AndroidPropInjector
+import org.swiften.redux.android.ui.lifecycle.injectLifecycleProps
+import org.swiften.redux.android.ui.lifecycle.startLifecycleInjections
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.createSagaMiddleware

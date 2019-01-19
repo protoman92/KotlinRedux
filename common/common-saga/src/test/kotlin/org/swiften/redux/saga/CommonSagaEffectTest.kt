@@ -145,7 +145,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     fromEffect(0, 1, 2, 3)
       .filter { it % 2 == 0 }
       .delay(100)
-      .cast<State, Int, Int>()
+      .cast<Int>()
       .invoke(this, State()) { }
       .subscribe({ finalValues.add(it) })
 

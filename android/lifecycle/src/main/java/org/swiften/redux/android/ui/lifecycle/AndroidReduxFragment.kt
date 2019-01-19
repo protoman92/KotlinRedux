@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.ui
+package org.swiften.redux.android.ui.lifecycle
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment

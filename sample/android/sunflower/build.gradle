@@ -104,5 +104,6 @@ dependencies {
 // TODO Investigate why this fails locally.
 afterEvaluate { project ->
   project.tasks.connectedDebugAndroidTest { onlyIf { return false } }
+  project.tasks.compileDebugAndroidTestKotlin { onlyIf { return false }}
   project.tasks.lint { onlyIf { return false } }
 }

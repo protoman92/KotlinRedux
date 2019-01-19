@@ -11,8 +11,8 @@ import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.dependency.Router
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import org.swiften.redux.android.ui.AndroidPropInjector
-import org.swiften.redux.android.ui.injectLifecycleProps
-import org.swiften.redux.android.ui.startLifecycleInjections
+import org.swiften.redux.android.ui.lifecycle.injectLifecycleProps
+import org.swiften.redux.android.ui.lifecycle.startLifecycleInjections
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.createSagaMiddleware
