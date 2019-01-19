@@ -19,6 +19,8 @@ package com.google.samples.apps.sunflower.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -29,66 +31,74 @@ import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.databinding.ListItemGardenPlantingBinding
 import com.google.samples.apps.sunflower.viewmodels.PlantAndGardenPlantingsViewModel
 import com.google.samples.apps.sunflower.R
+import com.google.samples.apps.sunflower.dependency.Redux
+import kotlinx.android.synthetic.main.list_item_garden_planting.view.plant_date
+import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
+import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.ReduxProps
 
-class GardenPlantingAdapter :
-  ListAdapter<PlantAndGardenPlantings, GardenPlantingAdapter.ViewHolder>(GardenPlantDiffCallback()) {
+class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.ViewHolder>(),
+  IReduxStatePropMapper<Redux.State, Unit, Int> by GardenPlantingAdapter {
+  companion object : IReduxStatePropMapper<Redux.State, Unit, Int> {
+    override fun mapState(state: Redux.State, outProps: Unit) = 0
+  }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    return ViewHolder(
-      DataBindingUtil.inflate(
-        LayoutInflater.from(parent.context),
-        R.layout.list_item_garden_planting, parent, false
-      )
-    )
+    return ViewHolder(LayoutInflater.from(parent.context)
+      .inflate(R.layout.list_item_garden_planting, parent, false))
   }
 
-  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-    getItem(position).let { plantings ->
-      with(holder) {
-        itemView.tag = plantings
-        bind(createOnClickListener(plantings.plant.plantId), plantings)
-      }
+//  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+//    getItem(position).let { plantings ->
+//      with(holder) {
+//        itemView.tag = plantings
+//        bind(createOnClickListener(plantings.plant.plantId), plantings)
+//      }
+//    }
+//  }
+
+//  private fun createOnClickListener(plantId: String): View.OnClickListener {
+//    return View.OnClickListener {
+//      val direction =
+//        GardenFragmentDirections.ActionGardenFragmentToPlantDetailFragment(plantId)
+//      it.findNavController().navigate(direction)
+//    }
+//  }
+
+  class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    IReduxPropContainer<Redux.State, ViewHolder.S, ViewHolder.A>,
+    IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
+    IReduxPropMapper<Redux.State, Int, ViewHolder.S, ViewHolder.A> by ViewHolder
+  {
+    class S
+    class A
+
+    companion object : IReduxPropMapper<Redux.State, Int, S, A> {
+      override fun mapState(state: Redux.State, outProps: Int) = S()
+      override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Int) = A()
     }
-  }
 
-  private fun createOnClickListener(plantId: String): View.OnClickListener {
-    return View.OnClickListener {
-      val direction =
-        GardenFragmentDirections.ActionGardenFragmentToPlantDetailFragment(plantId)
-      it.findNavController().navigate(direction)
-    }
-  }
+    override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, _ -> }
 
-  class ViewHolder(
-    private val binding: ListItemGardenPlantingBinding
-  ) : RecyclerView.ViewHolder(binding.root) {
+    private val imageView: ImageView = this.itemView.findViewById(R.id.imageView)
+    private val plantDate: TextView = this.imageView.findViewById(R.id.plant_date)
+    private val waterDate: TextView = this.imageView.findViewById(R.id.water_date)
 
-    fun bind(listener: View.OnClickListener, plantings: PlantAndGardenPlantings) {
-      with(binding) {
-        clickListener = listener
-        viewModel = PlantAndGardenPlantingsViewModel(
-          itemView.context,
-          plantings
-        )
-        executePendingBindings()
-      }
-    }
-  }
-}
-
-private class GardenPlantDiffCallback : DiffUtil.ItemCallback<PlantAndGardenPlantings>() {
-
-  override fun areItemsTheSame(
-    oldItem: PlantAndGardenPlantings,
-    newItem: PlantAndGardenPlantings
-  ): Boolean {
-    return oldItem.plant.plantId == newItem.plant.plantId
-  }
-
-  override fun areContentsTheSame(
-    oldItem: PlantAndGardenPlantings,
-    newItem: PlantAndGardenPlantings
-  ): Boolean {
-    return oldItem.plant == newItem.plant
+//    fun bind(listener: View.OnClickListener, plantings: PlantAndGardenPlantings) {
+//      with(binding) {
+//        clickListener = listener
+//        viewModel = PlantAndGardenPlantingsViewModel(
+//          itemView.context,
+//          plantings
+//        )
+//        executePendingBindings()
+//      }
+//    }
   }
 }
