@@ -25,14 +25,13 @@ import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_garden.*
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxStatePropMapper
-import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.*
 
 class GardenFragment : Fragment(),
   IReduxPropContainer<Redux.State, GardenFragment.S, Unit>,
+  IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
   IReduxStatePropMapper<Redux.State, Unit, GardenFragment.S> by GardenFragment {
-  class S(val gardenPlantingCount: Int)
+  data class S(val gardenPlantingCount: Int)
 
   companion object : IReduxStatePropMapper<Redux.State, Unit, S> {
     override fun mapState(state: Redux.State, outProps: Unit) = S(state.gardenPlantings?.size ?: 0)
@@ -65,9 +64,5 @@ class GardenFragment : Fragment(),
       val vhMapper = GardenPlantingAdapter.ViewHolder
       this.reduxProps.static.injector.injectRecyclerViewProps(it, it, vhMapper)
     }
-  }
-
-  override fun afterPropInjectionEnds() {
-    this.garden_list.adapter = null
   }
 }

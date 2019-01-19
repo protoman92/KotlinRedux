@@ -84,19 +84,33 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
   LC : IReduxPropContainer<State, SP, AP>,
   LC : IReduxPropLifecycleOwner
 {
-  val view: IReduxPropContainer<State, SP, AP> = lifecycleOwner
   var subscription: ReduxSubscription? = null
 
-  ReduxLifecycleObserver(lifecycleOwner,
-    object : ILifecycleCallback by EmptyLifecycleCallback {
-      override fun onCreate() {
-        subscription = this@injectLifecycleProps.injectProps(view, outProps, mapper)
-      }
+  ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback by EmptyLifecycleCallback {
+    override fun onCreate() {
+      subscription = this@injectLifecycleProps.injectProps(
+        object : IReduxPropContainer<State, SP, AP> by lifecycleOwner {
+          override var reduxProps: ReduxProps<State, SP, AP>
+            get() = lifecycleOwner.reduxProps
 
-      override fun onDestroy() {
-        subscription?.unsubscribe()
-      }
-    })
+            /**
+             * If [Lifecycle.getCurrentState] is [Lifecycle.State.DESTROYED], do not set
+             * [IReduxPropContainer.reduxProps] since there's no point in doing so.
+             */
+            set(value) {
+              if (lifecycleOwner.lifecycle.currentState != Lifecycle.State.DESTROYED) {
+                lifecycleOwner.reduxProps = value
+              }
+            }
+        },
+        outProps, mapper
+      )
+    }
+
+    override fun onDestroy() {
+      subscription?.unsubscribe()
+    }
+  })
 
   return lifecycleOwner
 }

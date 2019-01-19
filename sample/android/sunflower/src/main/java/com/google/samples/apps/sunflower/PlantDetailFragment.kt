@@ -32,15 +32,14 @@ import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_plant_detail.*
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.*
 
 /**
  * A fragment representing a single Plant detail screen.
  */
 class PlantDetailFragment : Fragment(),
   IReduxPropContainer<Redux.State, PlantDetailFragment.S, PlantDetailFragment.A>,
+  IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
   IReduxPropMapper<Redux.State, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
   by PlantDetailFragment {
   data class S(val plant: Plant? = null, val isPlanted: Boolean? = null)
@@ -113,10 +112,6 @@ class PlantDetailFragment : Fragment(),
       this.reduxProps.variable?.actions?.addPlantToGarden?.invoke()
       Snackbar.make(it, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()
     }
-  }
-
-  override fun afterPropInjectionEnds() {
-    this.fab.setOnClickListener(null)
   }
 
   private fun bindWateringText(context: Context, wateringInterval: Int): SpannableStringBuilder {

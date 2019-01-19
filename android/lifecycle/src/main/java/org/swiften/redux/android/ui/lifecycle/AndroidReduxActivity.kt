@@ -16,7 +16,7 @@ import androidx.lifecycle.LifecycleOwner
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.ui.IReduxPropInjector
 import java.io.Serializable
-import java.util.Date
+import java.util.*
 
 /** Created by haipham on 2018/12/17 */
 /** Handle saving/restoring [State] instances. */
@@ -78,9 +78,7 @@ inline fun <reified State> IReduxPropInjector<State>.startLifecycleInjections(
 ): Application.ActivityLifecycleCallbacks where State : Serializable {
   val key = "REDUX_STATE_${Date().time}"
 
-  return this.startLifecycleInjections(
-    application,
-    inject,
+  return this.startLifecycleInjections(application, inject,
     object : IReduxInstanceStateSaver<State> {
       override fun saveState(bundle: Bundle, state: State) = bundle.putSerializable(key, state)
 
