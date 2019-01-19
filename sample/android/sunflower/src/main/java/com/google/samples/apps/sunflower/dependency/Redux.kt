@@ -5,11 +5,7 @@
 
 package com.google.samples.apps.sunflower.dependency
 
-import com.google.samples.apps.sunflower.data.GardenPlanting
-import com.google.samples.apps.sunflower.data.GardenPlantingRepository
-import com.google.samples.apps.sunflower.data.Plant
-import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
-import com.google.samples.apps.sunflower.data.PlantRepository
+import com.google.samples.apps.sunflower.data.*
 import org.swiften.redux.android.livedata.rx.LiveDataEffects.takeEveryData
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxReducer
@@ -26,7 +22,7 @@ import java.io.Serializable
 object Redux {
   const val NO_GROW_ZONE = -1
 
-  data class SelectedPlant(val id: String, val isPlanted: Boolean? = null)
+  data class SelectedPlant(val id: String, val isPlanted: Boolean? = null) : Serializable
 
   data class State(
     val plants: List<Plant>? = null,

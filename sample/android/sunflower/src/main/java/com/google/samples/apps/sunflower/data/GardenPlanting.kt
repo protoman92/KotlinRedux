@@ -16,12 +16,9 @@
 
 package com.google.samples.apps.sunflower.data
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import java.util.Calendar
+import androidx.room.*
+import java.io.Serializable
+import java.util.*
 
 /**
  * [GardenPlanting] represents when a user adds a [Plant] to their garden, with useful metadata.
@@ -51,7 +48,7 @@ data class GardenPlanting(
    */
   @ColumnInfo(name = "last_watering_date")
   val lastWateringDate: Calendar = Calendar.getInstance()
-) {
+) : Serializable {
         @PrimaryKey(autoGenerate = true)
         @ColumnInfo(name = "id")
         var gardenPlantingId: Long = 0

@@ -83,7 +83,7 @@ inline fun <reified State> IReduxPropInjector<State>.startLifecycleInjections(
       override fun saveState(bundle: Bundle, state: State) = bundle.putSerializable(key, state)
 
       override fun restoreState(bundle: Bundle) =
-        bundle.getSerializable(key)?.takeIf { it is State }?.run { this as State }
+        bundle.get(key)?.takeIf { it is State }?.run { this as State }
     }
   )
 }

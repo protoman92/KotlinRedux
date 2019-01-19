@@ -19,7 +19,8 @@ package com.google.samples.apps.sunflower.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.Calendar
+import java.io.Serializable
+import java.util.*
 import java.util.Calendar.DAY_OF_YEAR
 
 @Entity(tableName = "plants")
@@ -30,7 +31,7 @@ data class Plant(
   val growZoneNumber: Int,
   val wateringInterval: Int = 7, // how often the plant should be watered, in days
   val imageUrl: String = ""
-) {
+) : Serializable {
 
     /**
      * Determines if the plant should be watered.  Returns true if [since]'s date > date of last

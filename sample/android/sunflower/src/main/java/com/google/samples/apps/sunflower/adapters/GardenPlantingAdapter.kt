@@ -22,19 +22,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.R
+import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.dependency.Redux
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_plant_detail.*
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.IReduxStatePropMapper
-import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.*
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
 
 class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.ViewHolder>(),
   IReduxStatePropMapper<Redux.State, Unit, Int> by GardenPlantingAdapter {
@@ -84,6 +81,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
           val wateringStr = "$wateringPrefix - $wateringSuffix"
           this.plantDate.text = context.getString(R.string.planted_date, p.plant.name, plantDateStr)
           this.waterDate.text = wateringStr
+          Picasso.get().load(p.plant.imageUrl).into(this.imageView)
         }
       }
     }
@@ -97,10 +95,6 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
       this.itemView.setOnClickListener {
         this@ViewHolder.reduxProps.variable?.actions?.goToPlantDetail?.invoke()
       }
-    }
-
-    override fun afterPropInjectionEnds() {
-      this.itemView.setOnClickListener(null)
     }
   }
 }

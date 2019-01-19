@@ -1,4 +1,5 @@
 project.ext {
   minSdk = 15
-  leakCanary = '1.6.3'
+  picasso = "2.71828"
+  leakCanary = "1.6.3"
 }

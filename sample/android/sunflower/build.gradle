@@ -44,7 +44,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs'
 
-project.apply from: "${rootDir}/sample/android/sunflower/constants.gradle"
+project.apply from: "${rootDir}/sample/android/constants.gradle"
+project.apply from: "${project.projectDir}/constants.gradle"
 
 android {
   compileSdkVersion project.ext.compileSdkVersion
@@ -78,6 +79,7 @@ dependencies {
   implementation "androidx.constraintlayout:constraintlayout:$project.ext.constraintLayoutVersion"
   implementation "androidx.core:core-ktx:$project.ext.ktxVersion"
   implementation "androidx.room:room-runtime:$project.ext.roomVersion"
+  implementation "com.squareup.picasso:picasso:$picasso"
   implementation "com.google.android.material:material:$project.ext.materialVersion"
   implementation "com.google.code.gson:gson:$project.ext.gsonVersion"
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$project.ext.kotlinVersion"

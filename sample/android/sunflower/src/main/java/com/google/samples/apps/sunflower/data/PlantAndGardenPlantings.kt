@@ -18,12 +18,13 @@ package com.google.samples.apps.sunflower.data
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import java.io.Serializable
 
 /**
  * This class captures the relationship between a [Plant] and a user's [GardenPlanting], which is
  * used by Room to fetch the related entities.
  */
-class PlantAndGardenPlantings {
+class PlantAndGardenPlantings : Serializable {
 
     @Embedded
     lateinit var plant: Plant

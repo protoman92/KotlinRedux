@@ -23,15 +23,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.PlantListFragment
-import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
+import com.google.samples.apps.sunflower.dependency.Redux
+import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.IReduxStatePropMapper
-import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.*
 
 /**
  * Adapter for the [RecyclerView] in [PlantListFragment].
@@ -51,6 +49,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     IReduxPropContainer<Redux.State, ViewHolder.S, ViewHolder.A>,
+    IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
     IReduxPropMapper<Redux.State, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
     data class S(val plant: Plant?)
     class A(val goToPlantDetail: () -> Unit)
@@ -67,7 +66,10 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
     }
 
     override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
-      next?.state?.plant?.also { this.title.text = it.name }
+      next?.state?.plant?.also {
+        this.title.text = it.name
+        Picasso.get().load(it.imageUrl).into(this.image)
+      }
     }
 
     private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
@@ -77,10 +79,6 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
       this.itemView.setOnClickListener {
         this@ViewHolder.reduxProps.variable?.actions?.goToPlantDetail?.invoke()
       }
-    }
-
-    override fun afterPropInjectionEnds() {
-      this.itemView.setOnClickListener(null)
     }
   }
 }

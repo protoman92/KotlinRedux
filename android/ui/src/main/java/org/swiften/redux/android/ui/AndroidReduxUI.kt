@@ -8,12 +8,7 @@ package org.swiften.redux.android.ui
 import android.os.Handler
 import android.os.Looper
 import org.swiften.redux.core.IReduxStore
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropInjector
-import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.ReduxPropInjector
-import org.swiften.redux.ui.ReduxProps
-import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.*
 
 /** Created by haipham on 2018/12/17 */
 internal fun runOnUIThread(runnable: () -> Unit) {
