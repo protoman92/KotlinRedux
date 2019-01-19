@@ -46,7 +46,8 @@ object Redux {
   }
 
   sealed class Screen : IReduxRouterScreen {
-    class PlantDetail(val plantId: String) : Screen()
+    class GardenToPlantDetail(val plantId: String) : Screen()
+    class PlantListToPlantDetail(val plantId: String) : Screen()
   }
 
   object Reducer : IReduxReducer<State> {
@@ -64,7 +65,8 @@ object Redux {
       }
 
       is Screen -> when (p2) {
-        is Screen.PlantDetail -> p1.copy(selectedPlant = SelectedPlant(p2.plantId))
+        is Screen.GardenToPlantDetail -> p1.copy(selectedPlant = SelectedPlant(p2.plantId))
+        is Screen.PlantListToPlantDetail -> p1.copy(selectedPlant = SelectedPlant(p2.plantId))
         else -> p1
       }
 
@@ -83,7 +85,12 @@ object Redux {
 
       @Suppress("SENSELESS_COMPARISON")
       fun checkSelectedPlantStatus(api: GardenPlantingRepository) =
-        takeLatestAction<Screen.PlantDetail, String, Any>({ it.plantId }, { plantId ->
+        takeLatestAction<Screen, String, Any>({
+          when (it) {
+            is Screen.GardenToPlantDetail -> it.plantId
+            is Screen.PlantListToPlantDetail -> it.plantId
+          }
+        }, { plantId ->
           takeEveryData { api.getGardenPlantingForPlant(plantId) }
             .map { it != null }
             .put { Action.UpdateSelectedPlantStatus(it) }

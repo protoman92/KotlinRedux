@@ -48,27 +48,23 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
       .inflate(R.layout.list_item_garden_planting, parent, false))
   }
 
-//  private fun createOnClickListener(plantId: String): View.OnClickListener {
-//    return View.OnClickListener {
-//      val direction =
-//        GardenFragmentDirections.ActionGardenFragmentToPlantDetailFragment(plantId)
-//      it.findNavController().navigate(direction)
-//    }
-//  }
-
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     IReduxPropContainer<Redux.State, ViewHolder.S, ViewHolder.A>,
     IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
     IReduxPropMapper<Redux.State, Int, ViewHolder.S, ViewHolder.A> by ViewHolder
   {
     data class S(val plantings: PlantAndGardenPlantings?)
-    class A
+    class A(val goToPlantDetail: () -> Unit)
 
     companion object : IReduxPropMapper<Redux.State, Int, S, A> {
       override fun mapState(state: Redux.State, outProps: Int) =
         S(state.plantAndGardenPlantings?.elementAtOrNull(outProps))
 
-      override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Int) = A()
+      override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Int) = A {
+        this.mapState(state, outProps).plantings?.plant?.plantId?.let {
+          dispatch(Redux.Screen.GardenToPlantDetail(it))
+        }
+      }
     }
 
     override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
@@ -97,5 +93,15 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
     private val imageView: ImageView = this.itemView.findViewById(R.id.imageView)
     private val plantDate: TextView = this.itemView.findViewById(R.id.plant_date)
     private val waterDate: TextView = this.itemView.findViewById(R.id.water_date)
+
+    override fun beforePropInjectionStarts() {
+      this.itemView.setOnClickListener {
+        this@ViewHolder.reduxProps.variable?.actions?.goToPlantDetail?.invoke()
+      }
+    }
+
+    override fun afterPropInjectionEnds() {
+      this.itemView.setOnClickListener(null)
+    }
   }
 }

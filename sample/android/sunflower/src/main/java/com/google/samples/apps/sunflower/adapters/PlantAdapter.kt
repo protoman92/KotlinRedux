@@ -21,15 +21,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.PlantListFragment
-import com.google.samples.apps.sunflower.PlantListFragmentDirections
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
-import kotlinx.android.synthetic.main.list_item_plant.view.plant_item_image
-import kotlinx.android.synthetic.main.list_item_plant.view.plant_item_title
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.IReduxPropContainer
@@ -65,7 +61,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
 
       override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Int) = A {
         this.mapState(state, outProps).plant?.plantId?.also {
-          dispatch(Redux.Screen.PlantDetail(it))
+          dispatch(Redux.Screen.PlantListToPlantDetail(it))
         }
       }
     }

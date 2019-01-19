@@ -81,21 +81,6 @@ class GardenFragment : Fragment(),
     this.emptyGarden = view.findViewById(R.id.empty_garden)
   }
 
-//  private fun subscribeUi(adapter: GardenPlantingAdapter, binding: FragmentGardenBinding) {
-//    val factory = InjectorUtils.provideGardenPlantingListViewModelFactory(requireContext())
-//    val viewModel = ViewModelProviders.of(this, factory)
-//      .get(GardenPlantingListViewModel::class.java)
-//
-//    viewModel.gardenPlantings.observe(viewLifecycleOwner, Observer { plantings ->
-//      binding.hasPlantings = (plantings != null && plantings.isNotEmpty())
-//    })
-//
-//    viewModel.plantAndGardenPlantings.observe(viewLifecycleOwner, Observer { result ->
-////      if (result != null && result.isNotEmpty())
-////        adapter.submitList(result)
-//    })
-//  }
-
   override fun beforePropInjectionStarts() {
     this.gardenList.adapter = GardenPlantingAdapter().let {
       val vhMapper = GardenPlantingAdapter.ViewHolder
