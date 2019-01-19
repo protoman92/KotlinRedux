@@ -43,15 +43,29 @@ import org.swiften.redux.ui.ObservableReduxProps
 class GardenFragment : Fragment(),
   IReduxPropContainer<Redux.State, GardenFragment.S, GardenFragment.A>,
   IReduxPropMapper<Redux.State, Unit, GardenFragment.S, GardenFragment.A> by GardenFragment {
-  class S
+  class S(val gardenPlantingCount: Int)
   class A
 
   companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
-    override fun mapState(state: Redux.State, outProps: Unit) = S()
+    override fun mapState(state: Redux.State, outProps: Unit) = S(state.gardenPlantings?.size ?: 0)
     override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) = A()
   }
 
-  override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, _ -> }
+  override var reduxProps by ObservableReduxProps<Redux.State, S, A> { prev, next ->
+    next?.state?.also {
+      if (it.gardenPlantingCount == 0) {
+        this.gardenList.visibility = View.GONE
+        this.emptyGarden.visibility = View.VISIBLE
+      } else {
+        this.gardenList.visibility = View.VISIBLE
+        this.emptyGarden.visibility = View.GONE
+      }
+
+      if (it.gardenPlantingCount != prev?.state?.gardenPlantingCount) {
+        this.gardenList.adapter?.notifyDataSetChanged()
+      }
+    }
+  }
 
   private lateinit var gardenList: RecyclerView
   private lateinit var emptyGarden: TextView
@@ -77,8 +91,8 @@ class GardenFragment : Fragment(),
 //    })
 //
 //    viewModel.plantAndGardenPlantings.observe(viewLifecycleOwner, Observer { result ->
-//      if (result != null && result.isNotEmpty())
-//        adapter.submitList(result)
+////      if (result != null && result.isNotEmpty())
+////        adapter.submitList(result)
 //    })
 //  }
 

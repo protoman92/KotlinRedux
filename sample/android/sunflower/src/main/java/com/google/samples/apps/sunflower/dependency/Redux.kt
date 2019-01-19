@@ -5,8 +5,10 @@
 
 package com.google.samples.apps.sunflower.dependency
 
+import com.google.samples.apps.sunflower.data.GardenPlanting
 import com.google.samples.apps.sunflower.data.GardenPlantingRepository
 import com.google.samples.apps.sunflower.data.Plant
+import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.data.PlantRepository
 import org.swiften.redux.android.livedata.rx.LiveDataEffects.takeEveryData
 import org.swiften.redux.core.IReduxAction
@@ -28,6 +30,8 @@ object Redux {
 
   data class State(
     val plants: List<Plant>? = null,
+    val gardenPlantings: List<GardenPlanting>? = null,
+    val plantAndGardenPlantings: List<PlantAndGardenPlantings>? = null,
     val selectedPlant: SelectedPlant? = null,
     val selectedGrowZone: Int = NO_GROW_ZONE
   ) : Serializable
@@ -36,6 +40,8 @@ object Redux {
     class AddPlantToGarden(val plantId: String) : Action()
     class SelectGrowZone(val zone: Int) : Action()
     class UpdatePlants(val plants: List<Plant>?) : Action()
+    class UpdateGardenPlantings(val gardenPlantings: List<GardenPlanting>?) : Action()
+    class UpdatePlantAndGardenPlantings(val data: List<PlantAndGardenPlantings>?) : Action()
     class UpdateSelectedPlantStatus(val isPlanted: Boolean) : Action()
   }
 
@@ -48,6 +54,8 @@ object Redux {
       is Action -> when (p2) {
         is Action.SelectGrowZone -> p1.copy(selectedGrowZone = p2.zone)
         is Action.UpdatePlants -> p1.copy(plants = p2.plants)
+        is Action.UpdatePlantAndGardenPlantings -> p1.copy(plantAndGardenPlantings = p2.data)
+        is Action.UpdateGardenPlantings -> p1.copy(gardenPlantings = p2.gardenPlantings)
 
         is Action.UpdateSelectedPlantStatus ->
           p1.copy(selectedPlant = p1.selectedPlant?.copy(isPlanted = p2.isPlanted))
@@ -81,9 +89,19 @@ object Redux {
             .put { Action.UpdateSelectedPlantStatus(it) }
         })
 
+      private fun syncGardenPlantings(api: GardenPlantingRepository) =
+        takeEveryData { api.getGardenPlantings() }.put { Action.UpdateGardenPlantings(it) }
+
+      private fun syncPlantAndGardenPlantings(api: GardenPlantingRepository) =
+        takeEveryData { api.getPlantAndGardenPlantings() }
+          .map { p -> p.filter { it.gardenPlantings.isNotEmpty() } }
+          .put { Action.UpdatePlantAndGardenPlantings(it) }
+
       fun allSagas(api: GardenPlantingRepository) = arrayListOf(
         this.addGardenPlanting(api),
-        this.checkSelectedPlantStatus(api)
+        this.checkSelectedPlantStatus(api),
+        this.syncGardenPlantings(api),
+        this.syncPlantAndGardenPlantings(api)
       )
     }
 
