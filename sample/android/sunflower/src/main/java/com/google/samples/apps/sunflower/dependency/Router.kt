@@ -20,14 +20,12 @@ by createSingleActivityRouter<GardenActivity, Redux.Screen>(app, { a, s ->
 
   when (s) {
     is Redux.Screen.GardenToPlantDetail -> {
-      val id = s.plantId
-      val direction = GardenFragmentDirections.ActionGardenFragmentToPlantDetailFragment(id)
+      val direction = GardenFragmentDirections.ActionGardenFragmentToPlantDetailFragment()
       navController.navigate(direction)
     }
 
     is Redux.Screen.PlantListToPlantDetail -> {
-      val id = s.plantId
-      val direction = PlantListFragmentDirections.ActionPlantListFragmentToPlantDetailFragment(id)
+      val direction = PlantListFragmentDirections.ActionPlantListFragmentToPlantDetailFragment()
       navController.navigate(direction)
     }
   }
