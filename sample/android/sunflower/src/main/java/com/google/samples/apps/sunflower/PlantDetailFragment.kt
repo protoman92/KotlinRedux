@@ -21,25 +21,16 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.text.method.LinkMovementMethod
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.*
 import androidx.core.app.ShareCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.text.HtmlCompat
 import androidx.core.text.bold
 import androidx.core.text.italic
 import androidx.fragment.app.Fragment
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.dependency.Redux
+import kotlinx.android.synthetic.main.fragment_plant_detail.*
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropMapper
@@ -67,20 +58,15 @@ class PlantDetailFragment : Fragment(),
   override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
     next?.state?.plant?.also { p ->
       this.shareText = this.getString(R.string.share_text_plant, p.name)
-      this.plantWatering.text = this.context?.let { this.bindWateringText(it, p.wateringInterval) }
-      this.plantDetail.text = HtmlCompat.fromHtml(p.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
-      this.toolbarLayout.title = p.name
+      this.plant_watering.text = this.context?.let { this.bindWateringText(it, p.wateringInterval) }
+      this.plant_detail.text = HtmlCompat.fromHtml(p.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
+      this.toolbar_layout.title = p.name
     }
 
     next?.state?.isPlanted?.also { this.fab.visibility = if (it) View.GONE else View.VISIBLE }
   }
 
   private var shareText: String = ""
-  private lateinit var detailImage: ImageView
-  private lateinit var fab: View
-  private lateinit var plantWatering: TextView
-  private lateinit var plantDetail: TextView
-  private lateinit var toolbarLayout: CollapsingToolbarLayout
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -90,15 +76,6 @@ class PlantDetailFragment : Fragment(),
     val view = inflater.inflate(R.layout.fragment_plant_detail, container, false)
     setHasOptionsMenu(true)
     return view
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    this.detailImage = view.findViewById(R.id.detail_image)
-    this.fab = view.findViewById(R.id.fab)
-    this.plantWatering = view.findViewById(R.id.plant_watering)
-    this.plantDetail = view.findViewById(R.id.plant_detail)
-    this.plantDetail.movementMethod = LinkMovementMethod.getInstance()
-    this.toolbarLayout = view.findViewById(R.id.toolbar_layout)
   }
 
   override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -132,9 +109,9 @@ class PlantDetailFragment : Fragment(),
   }
 
   override fun beforePropInjectionStarts() {
-    this.fab.setOnClickListener { view ->
+    this.fab.setOnClickListener {
       this.reduxProps.variable?.actions?.addPlantToGarden?.invoke()
-      Snackbar.make(view, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()
+      Snackbar.make(it, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()
     }
   }
 

@@ -17,16 +17,11 @@
 package com.google.samples.apps.sunflower
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.dependency.Redux
+import kotlinx.android.synthetic.main.fragment_plant_list.*
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.IReduxPropContainer
@@ -55,11 +50,9 @@ class PlantListFragment : Fragment(),
 
   override var reduxProps by ObservableReduxProps<Redux.State, S, A> { prev, next ->
     if (next?.state?.plantCount != prev?.state?.plantCount) {
-      this.plantList.adapter?.notifyDataSetChanged()
+      this.plant_list.adapter?.notifyDataSetChanged()
     }
   }
-
-  private lateinit var plantList: RecyclerView
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -69,10 +62,6 @@ class PlantListFragment : Fragment(),
     val view: View = inflater.inflate(R.layout.fragment_plant_list, container, false)
     setHasOptionsMenu(true)
     return view
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    this.plantList = view.findViewById(R.id.plant_list)
   }
 
   override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -90,12 +79,12 @@ class PlantListFragment : Fragment(),
   }
 
   override fun beforePropInjectionStarts() {
-    this.plantList.adapter = PlantAdapter().let {
+    this.plant_list.adapter = PlantAdapter().let {
       this.reduxProps.static.injector.injectRecyclerViewProps(it, it, PlantAdapter.ViewHolder)
     }
   }
 
   override fun afterPropInjectionEnds() {
-    this.plantList.adapter = null
+    this.plant_list.adapter = null
   }
 }

@@ -73,12 +73,10 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
     private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
     private val title: TextView = itemView.findViewById(R.id.plant_item_title)
 
-    private val clickListener by lazy { View.OnClickListener {
-      this@ViewHolder.reduxProps.variable?.actions?.goToPlantDetail?.invoke()
-    } }
-
     override fun beforePropInjectionStarts() {
-      this.itemView.setOnClickListener(this.clickListener)
+      this.itemView.setOnClickListener {
+        this@ViewHolder.reduxProps.variable?.actions?.goToPlantDetail?.invoke()
+      }
     }
 
     override fun afterPropInjectionEnds() {
