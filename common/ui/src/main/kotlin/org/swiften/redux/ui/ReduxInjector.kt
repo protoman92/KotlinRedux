@@ -5,13 +5,8 @@
 
 package org.swiften.redux.ui
 
-import org.swiften.redux.core.IReduxDeinitializerProvider
-import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.core.IReduxDispatcherProvider
-import org.swiften.redux.core.IReduxStateGetterProvider
-import org.swiften.redux.core.IReduxStore
-import org.swiften.redux.core.ReduxSubscription
-import java.util.Date
+import org.swiften.redux.core.*
+import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -93,10 +88,10 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
   IReduxDispatcherProvider by store,
   IReduxStateGetterProvider<State> by store,
   IReduxDeinitializerProvider by store {
-  override fun <O, S, A> injectProps(
-    view: IReduxPropContainer<State, S, A>,
-    outProps: O,
-    mapper: IReduxPropMapper<State, O, S, A>
+  override fun <OutProps, StateProps, ActionProps> injectProps(
+    view: IReduxPropContainer<State, StateProps, ActionProps>,
+    outProps: OutProps,
+    mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
   ): ReduxSubscription {
     /** If [view] has received an injection before, unsubscribe from that */
     val previousProps = view.unsubscribeSafely()
@@ -116,9 +111,9 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's not need to keep
      * track of the [view]'s id.
      */
-    val id = "${view.javaClass.simpleName}${Date().time}"
+    val id = "${view.javaClass}${Date().time}"
     val lock = ReentrantReadWriteLock()
-    var previousState: S? = lock.read { view.reduxProps.variable?.state }
+    var previousState: StateProps? = null
 
     val onStateUpdate: (State) -> Unit = {
       val next = mapper.mapState(it, outProps)
@@ -144,6 +139,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     /** Wrap a [ReduxSubscription] to perform [IReduxPropLifecycleOwner.afterPropInjectionEnds] */
     val wrappedSub = ReduxSubscription {
       subscription.unsubscribe()
+      view.reduxProps = view.reduxProps.copy(variable = null)
       view.afterPropInjectionEnds()
     }
 

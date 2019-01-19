@@ -8,11 +8,7 @@ package org.swiften.redux.ui
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.core.IReduxStore
-import org.swiften.redux.core.IReduxSubscriber
-import org.swiften.redux.core.ReduxSubscription
+import org.swiften.redux.core.*
 import org.swiften.redux.store.SimpleReduxStore
 
 /** Created by haipham on 2018/12/20 */
@@ -43,10 +39,12 @@ class PropInjectorTest {
   }
 
   class View : IReduxPropContainer<S, S, A> {
-    override var reduxProps by ObservableReduxProps<S, S, A> { _, _ ->
+    override var reduxProps by ObservableReduxProps<S, S, A> { prev, next ->
+      this.propCallback(prev, next)
       this.reduxPropsInjectionCount += 1
     }
 
+    lateinit var propCallback: (VariableProps<S, A>?, VariableProps<S, A>?) -> Unit
     var reduxPropsInjectionCount = 0
     var beforeInjectionCount = 0
     var afterInjectionCount = 0
@@ -87,6 +85,8 @@ class PropInjectorTest {
   fun `Injecting same state props - should not trigger set event`() {
     // Setup
     val view = View()
+    val allProps = arrayListOf<Pair<S?, S?>>()
+    view.propCallback = { prev, next -> allProps.add(prev?.state to next?.state) }
 
     // When
     this.injector.injectProps(view, Unit, this.mapper)
@@ -100,8 +100,17 @@ class PropInjectorTest {
 
     // Then
     Assert.assertEquals(this.store.unsubscribeCount, 1)
-    Assert.assertEquals(view.reduxPropsInjectionCount, 4)
+    Assert.assertEquals(view.reduxPropsInjectionCount, 6)
     Assert.assertEquals(view.beforeInjectionCount, 2)
     Assert.assertEquals(view.afterInjectionCount, 1)
+
+    Assert.assertEquals(allProps, arrayListOf(
+      null to S(""),
+      S("") to S("1"),
+      S("1") to S("2"),
+      S("2") to S("3"),
+      S("3") to null,
+      null to S("3"))
+    )
   }
 }
