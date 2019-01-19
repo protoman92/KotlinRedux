@@ -35,22 +35,6 @@ public final class MainActivity extends AppCompatActivity implements
         .replace(R.id.fragment, new MainFragment())
         .commit();
     }
-
-    startFragmentInjection(this,
-      new Function2<StaticProps<State>, Fragment, Unit>() {
-        @Override
-        public Unit invoke(StaticProps<State> staticProps, Fragment fragment) {
-          if (fragment instanceof SearchFragment) {
-            SearchFragment f = (SearchFragment)fragment;
-            injectLifecycleProps(staticProps.getInjector(), f, Unit.INSTANCE, f);
-          } else if (fragment instanceof MusicDetailFragment) {
-            MusicDetailFragment f = (MusicDetailFragment)fragment;
-            injectLifecycleProps(staticProps.getInjector(), f, Unit.INSTANCE, f);
-          }
-
-          return Unit.INSTANCE;
-        }
-      });
   }
 
   @NotNull

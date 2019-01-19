@@ -11,8 +11,9 @@ import android.net.Uri
 import androidx.fragment.app.Fragment
 import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.ui.AndroidPropInjector
-import org.swiften.redux.android.ui.endActivityInjection
 import org.swiften.redux.android.router.createSingleActivityRouter
+import org.swiften.redux.android.ui.injectLifecycleProps
+import org.swiften.redux.android.ui.startLifecycleInjections
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.createSagaMiddleware
@@ -22,7 +23,6 @@ import org.swiften.redux.ui.injectStaticProps
 /** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
   private lateinit var dependency: MainDependency
-  private lateinit var activityCallback: ActivityLifecycleCallbacks
 
   override fun onCreate() {
     super.onCreate()
@@ -61,16 +61,17 @@ class MainApplication : Application() {
     val dependency = MainDependency(injector)
     this.dependency = dependency
 
-    this.activityCallback = startActivityInjection(this, injector) {
+    injector.startLifecycleInjections(this) {
       when (it) {
-        is MainActivity -> dependency.injector.injectStaticProps(it)
+        is MainActivity -> this.injectStaticProps(it)
+        is SearchFragment -> this.injectLifecycleProps(it, Unit, it)
+        is MusicDetailFragment -> this.injectLifecycleProps(it, Unit, it)
       }
     }
   }
 
   override fun onTerminate() {
     super.onTerminate()
-    endActivityInjection(this, this.activityCallback)
     this.dependency.injector.deinitialize()
   }
 }
