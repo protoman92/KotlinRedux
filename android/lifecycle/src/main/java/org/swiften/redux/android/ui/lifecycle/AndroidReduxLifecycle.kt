@@ -89,8 +89,14 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
 {
   var subscription: ReduxSubscription? = null
 
+  /**
+   * We perform [IReduxPropInjector.injectProps] in [ILifecycleCallback.onStart] because by then
+   * the views would have been initialized, and thus can be accessed in
+   * [IReduxPropLifecycleOwner.beforePropInjectionStarts]. To mirror this, unsubscription is done
+   * in [ILifecycleCallback.onStop] because said views are not destroyed yet.
+   */
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback by EmptyLifecycleCallback {
-    override fun onCreate() {
+    override fun onStart() {
       subscription = this@injectLifecycleProps.injectProps(
         object : IReduxPropContainer<State, SP, AP> by lifecycleOwner {
           override var reduxProps: ReduxProps<State, SP, AP>
@@ -110,9 +116,7 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
       )
     }
 
-    override fun onDestroy() {
-      subscription?.unsubscribe()
-    }
+    override fun onStop() { subscription?.unsubscribe() }
   })
 
   return lifecycleOwner

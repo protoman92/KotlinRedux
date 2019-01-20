@@ -36,8 +36,8 @@ interface IReduxInstanceStateSaver<State> {
  */
 fun <State> IReduxPropInjector<State>.startLifecycleInjections(
   application: Application,
-  inject: IReduxPropInjector<State>.(LifecycleOwner) -> Unit,
-  saver: IReduxInstanceStateSaver<State>
+  saver: IReduxInstanceStateSaver<State>,
+  inject: IReduxPropInjector<State>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks {
   val callback = object : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity?) {}
@@ -78,12 +78,10 @@ inline fun <reified State> IReduxPropInjector<State>.startLifecycleInjections(
 ): Application.ActivityLifecycleCallbacks where State : Serializable {
   val key = "REDUX_STATE_${Date().time}"
 
-  return this.startLifecycleInjections(application, inject,
-    object : IReduxInstanceStateSaver<State> {
-      override fun saveState(bundle: Bundle, state: State) = bundle.putSerializable(key, state)
+  return this.startLifecycleInjections(application, object : IReduxInstanceStateSaver<State> {
+    override fun saveState(bundle: Bundle, state: State) = bundle.putSerializable(key, state)
 
-      override fun restoreState(bundle: Bundle) =
-        bundle.get(key)?.takeIf { it is State }?.run { this as State }
-    }
-  )
+    override fun restoreState(bundle: Bundle) =
+      bundle.getSerializable(key)?.takeIf { it is State }?.run { this as State }
+  }, inject)
 }
