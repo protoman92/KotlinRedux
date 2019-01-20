@@ -32,28 +32,26 @@ interface IReduxPropContainer<GlobalState, StateProps, ActionProps> : IReduxProp
   var reduxProps: ReduxProps<GlobalState, StateProps, ActionProps>
 }
 
-/**
- * Maps [GlobalState] to [StateProps] for a [IReduxPropContainer]. [OutProps] is the view's
- * immutable property as dictated by its parent.
- */
+/** Maps [GlobalState] to [StateProps] for a [IReduxPropContainer] */
 interface IReduxStatePropMapper<GlobalState, OutProps, StateProps> {
   /** Map [GlobalState] to [StateProps] using [OutProps] */
   fun mapState(state: GlobalState, outProps: OutProps): StateProps
 }
 
 /**
- * Maps [IReduxDispatcher] to [ActionProps] for a [IReduxPropContainer]. [OutProps] is the view's
- * immutable property as dictated by its parent.
+ * Maps [GlobalState] to [StateProps] and [ActionProps] for a [IReduxPropContainer]. [OutProps] is
+ * the view's immutable property as dictated by its parent.
+ *
+ * For example, a parent view, which contains a list of child views, wants to call
+ * [IReduxPropInjector.injectProps] for said children. The [OutProps] generic for these children
+ * should therefore be an [Int] that corresponds to their respective indexes in the parent.
+ * Generally, though, [OutProps] tends to be [Unit].
  */
-interface IReduxActionPropMapper<GlobalState, OutProps, ActionProps> {
+interface IReduxPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
+  IReduxStatePropMapper<GlobalState, OutProps, StateProps> {
   /** Map [IReduxDispatcher] to [ActionProps] using [GlobalState] and [OutProps] */
   fun mapAction(dispatch: IReduxDispatcher, state: GlobalState, outProps: OutProps): ActionProps
 }
-
-/** Maps [GlobalState] to [StateProps] and [ActionProps] for a [IReduxPropContainer] */
-interface IReduxPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
-  IReduxStatePropMapper<GlobalState, OutProps, StateProps>,
-  IReduxActionPropMapper<GlobalState, OutProps, ActionProps>
 
 /** Inject state and actions into an [IReduxPropContainer] */
 interface IReduxPropInjector<State> :
@@ -82,7 +80,11 @@ fun <State> IReduxPropInjector<State>.injectStaticProps(view: IReduxPropContaine
   })
 }
 
-/** A [IReduxPropInjector] implementation */
+/**
+ * A [IReduxPropInjector] implementation that handles [injectProps] in a thread-safe manner. It
+ * also invokes [IReduxPropLifecycleOwner.beforePropInjectionStarts] and
+ * [IReduxPropLifecycleOwner.afterPropInjectionEnds] when appropriate.
+ */
 open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
   IReduxPropInjector<State>,
   IReduxDispatcherProvider by store,
@@ -94,24 +96,24 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
   ): ReduxSubscription {
     /** If [view] has received an injection before, unsubscribe from that */
-    val previousProps = view.unsubscribeSafely()
+    view.unsubscribeSafely()
 
     /**
      * Inject [StaticProps] with a placebo [StaticProps.subscription] because we want
-     * [IReduxPropContainer.reduxProps] to be available in
-     * [IReduxPropLifecycleOwner.beforePropInjectionStarts].
+     * [ReduxProps.static] to be available in [IReduxPropLifecycleOwner.beforePropInjectionStarts]
+     * in case [view] needs to perform [injectProps] on its children.
      */
-    view.reduxProps = ReduxProps(StaticProps(this, ReduxSubscription {}), previousProps?.variable)
+    view.reduxProps = ReduxProps(StaticProps(this, ReduxSubscription {}), null)
 
-    /** [StaticProps.injector] is available for child injections */
+    /** [StaticProps.injector] is now available for child injections */
     view.beforePropInjectionStarts()
 
     /**
      * It does not matter what the id is, as long as it is unique. This is because we will be
-     * passing along a [ReduxSubscription] to handle unsubscribe, so there's not need to keep
-     * track of the [view]'s id.
+     * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep
+     * track of this id.
      */
-    val id = "${view.javaClass}${Date().time}"
+    val subscriberId = "${view.javaClass}${Date().time}"
     val lock = ReentrantReadWriteLock()
     var previousState: StateProps? = null
 
@@ -134,12 +136,11 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
      * this [store] does not relay last [State] on subscription.
      */
     onStateUpdate(this.store.lastState())
-    val subscription = this.store.subscribe(id, onStateUpdate)
+    val subscription = this.store.subscribe(subscriberId, onStateUpdate)
 
     /** Wrap a [ReduxSubscription] to perform [IReduxPropLifecycleOwner.afterPropInjectionEnds] */
     val wrappedSub = ReduxSubscription {
       subscription.unsubscribe()
-      view.reduxProps = view.reduxProps.copy(variable = null)
       view.afterPropInjectionEnds()
     }
 
@@ -150,7 +151,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
 
 /**
  * Unsubscribe from [IReduxPropContainer.reduxProps] safely, i.e.
- * catch [UninitializedPropertyAccessException] because this is most probably declare as lateinit
+ * catch [UninitializedPropertyAccessException] because this is most probably declared as lateinit
  * in Kotlin code, and catch [NullPointerException] to satisfy Java code.
  */
 fun <State, S, A> IReduxPropContainer<State, S, A>.unsubscribeSafely(): ReduxProps<State, S, A>? {

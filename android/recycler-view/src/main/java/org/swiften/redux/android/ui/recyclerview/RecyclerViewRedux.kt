@@ -7,12 +7,7 @@ package org.swiften.redux.android.ui.recyclerview
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropInjector
-import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.IReduxStatePropMapper
-import org.swiften.redux.ui.unsubscribeSafely
+import org.swiften.redux.ui.*
 
 /** Created by haipham on 2019/01/08 */
 /**
@@ -38,8 +33,6 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
   VH : IReduxPropContainer<State, VHState, VHAction>,
   Adapter : RecyclerView.Adapter<VH>
 {
-  require(adapter.itemCount == 0) { "$adapter should not manually declare item count" }
-
   return object : RecyclerView.Adapter<VH>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
       adapter.onCreateViewHolder(parent, viewType)
@@ -99,18 +92,3 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
     }
   }
 }
-
-/** Similar to [IReduxPropInjector.injectRecyclerViewProps], but ignores action props */
-fun <State, Adapter, VH, VHState> IReduxPropInjector<State>.injectRecyclerViewProps(
-  adapter: Adapter,
-  adapterMapper: IReduxStatePropMapper<State, Unit, Int>,
-  vhMapper: IReduxStatePropMapper<State, Int, VHState>
-): RecyclerView.Adapter<VH> where
-  VH : RecyclerView.ViewHolder,
-  VH : IReduxPropContainer<State, VHState, Unit>,
-  Adapter : RecyclerView.Adapter<VH> =
-  this.injectRecyclerViewProps<State, Adapter, VH, VHState, Unit>(adapter, adapterMapper,
-    object : IReduxPropMapper<State, Int, VHState, Unit> {
-      override fun mapState(state: State, outProps: Int) = vhMapper.mapState(state, outProps)
-      override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: Int) = Unit
-    })

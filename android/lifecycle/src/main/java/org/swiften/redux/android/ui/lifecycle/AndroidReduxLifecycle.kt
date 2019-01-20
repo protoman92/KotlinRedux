@@ -9,7 +9,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.*
 
@@ -114,21 +113,3 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
 
   return lifecycleOwner
 }
-
-/**
- * Inject props into [lifecycleOwner], which is a view that only has a mutable [SP] but handles
- * no actions.
- */
-fun <State, LC, OP, SP> IReduxPropInjector<State>.injectLifecycleProps(
-  lifecycleOwner: LC,
-  outProps: OP,
-  mapper: IReduxStatePropMapper<State, OP, SP>
-): LC where
-  LC : LifecycleOwner,
-  LC : IReduxPropContainer<State, SP, Unit>,
-  LC : IReduxPropLifecycleOwner =
-  this.injectLifecycleProps<State, LC, OP, SP, Unit>(lifecycleOwner, outProps,
-    object : IReduxPropMapper<State, OP, SP, Unit> {
-      override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: OP) = Unit
-      override fun mapState(state: State, outProps: OP) = mapper.mapState(state, outProps)
-    })
