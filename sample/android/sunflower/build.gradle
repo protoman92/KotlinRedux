@@ -15,7 +15,9 @@
  */
 
 buildscript {
-  project.apply from: "${rootDir}/sample/android/sunflower/constants.gradle"
+  project.apply from: "${rootDir}/constants.gradle"
+  project.apply from: "${project.projectDir}/constants.gradle"
+  project.apply from: "${rootDir}/android/constants.gradle"
 
   repositories {
     google()
@@ -24,8 +26,8 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:$gradleVersion"
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    classpath "com.android.tools.build:gradle:$project.ext.gradle"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
   }
 }
 
@@ -42,6 +44,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+project.apply from: "${rootDir}/constants.gradle"
 project.apply from: "${rootDir}/sample/android/constants.gradle"
 project.apply from: "${project.projectDir}/constants.gradle"
 
@@ -74,15 +77,15 @@ dependencies {
   implementation "android.arch.navigation:navigation-fragment-ktx:$project.ext.navigationVersion"
   implementation "android.arch.navigation:navigation-ui-ktx:$project.ext.navigationVersion"
   implementation "android.arch.work:work-runtime-ktx:$project.ext.workVersion"
-  implementation "androidx.constraintlayout:constraintlayout:$project.ext.constraintLayoutVersion"
+  implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
   implementation "androidx.core:core-ktx:$project.ext.ktxVersion"
   implementation "androidx.room:room-runtime:$project.ext.roomVersion"
   implementation "com.squareup.picasso:picasso:$picasso"
   implementation "com.google.android.material:material:$project.ext.materialVersion"
   implementation "com.google.code.gson:gson:$project.ext.gsonVersion"
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$project.ext.kotlinVersion"
-  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$project.ext.coroutinesVersion"
-  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.coroutinesVersion"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
 
   api project(':common:middleware')
   api project(':common:final-store')
@@ -93,12 +96,12 @@ dependencies {
   api project(':android:ui')
 
   // Testing dependencies
-  androidTestImplementation "androidx.arch.core:core-testing:$project.ext.coreTestingVersion"
-  androidTestImplementation "androidx.test.espresso:espresso-contrib:$project.ext.espressoVersion"
-  androidTestImplementation "androidx.test.espresso:espresso-core:$project.ext.espressoVersion"
-  androidTestImplementation "androidx.test.espresso:espresso-intents:$project.ext.espressoVersion"
+  androidTestImplementation "androidx.arch.core:core-testing:$androidxCoreTest"
+  androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso"
+  androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
+  androidTestImplementation "androidx.test.espresso:espresso-intents:$espresso"
   androidTestImplementation "androidx.test.uiautomator:uiautomator:$project.ext.uiAutomatorVersion"
-  testImplementation "junit:junit:$project.ext.junitVersion"
+  testImplementation "junit:junit:$junit"
 }
 
 // TODO Investigate why this fails locally.

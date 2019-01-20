@@ -1,5 +1,6 @@
 project.ext {
   minSdk = 15
+  constraintlayout = "2.0.0-alpha3"
   picasso = "2.71828"
   leakCanary = "1.6.3"
 }
