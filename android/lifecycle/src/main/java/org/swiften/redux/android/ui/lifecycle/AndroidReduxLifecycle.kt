@@ -81,7 +81,7 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
 ): LC where
   LC : LifecycleOwner,
   LC : IReduxPropContainer<State, SP, AP>,
-  LC : IReduxPropLifecycleOwner
+  LC : IReduxPropLifecycleOwner<State>
 {
   var subscription: ReduxSubscription? = null
 

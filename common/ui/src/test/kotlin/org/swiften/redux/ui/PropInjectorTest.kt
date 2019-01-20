@@ -49,7 +49,7 @@ class PropInjectorTest {
     var beforeInjectionCount = 0
     var afterInjectionCount = 0
 
-    override fun beforePropInjectionStarts() {
+    override fun beforePropInjectionStarts(sp: StaticProps<S>) {
       Assert.assertNotNull(this.reduxProps)
       this.beforeInjectionCount += 1
     }

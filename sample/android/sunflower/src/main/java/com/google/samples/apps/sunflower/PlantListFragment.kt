@@ -28,7 +28,7 @@ import org.swiften.redux.ui.*
 
 class PlantListFragment : Fragment(),
   IReduxPropContainer<Redux.State, PlantListFragment.S, PlantListFragment.A>,
-  IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
+  IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner(),
   IReduxPropMapper<Redux.State, Unit, PlantListFragment.S, PlantListFragment.A>
   by PlantListFragment {
   data class S(val plantCount: Int)
@@ -77,9 +77,9 @@ class PlantListFragment : Fragment(),
     }
   }
 
-  override fun beforePropInjectionStarts() {
+  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
     this.plant_list.adapter = PlantAdapter().let {
-      this.reduxProps.static.injector.injectRecyclerViewProps(it, it, PlantAdapter.ViewHolder)
+      sp.injector.injectRecyclerViewProps(it, it, PlantAdapter.ViewHolder)
     }
   }
 }

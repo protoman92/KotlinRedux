@@ -26,7 +26,6 @@ import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_plant_detail.*
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.*
@@ -47,7 +46,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     IReduxPropContainer<Redux.State, ViewHolder.S, ViewHolder.A>,
-    IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
+    IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner(),
     IReduxPropMapper<Redux.State, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
     data class S(val plantings: PlantAndGardenPlantings?)
     class A(val goToPlantDetail: () -> Unit)
@@ -91,7 +90,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
     private val plantDate: TextView = this.itemView.findViewById(R.id.plant_date)
     private val waterDate: TextView = this.itemView.findViewById(R.id.water_date)
 
-    override fun beforePropInjectionStarts() {
+    override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
       this.itemView.setOnClickListener {
         this@ViewHolder.reduxProps.variable?.actions?.goToPlantDetail?.invoke()
       }

@@ -13,29 +13,29 @@ import kotlin.concurrent.write
 
 /** Created by haipham on 2018/12/16 */
 /** Handle lifecycles for a target of [IReduxPropInjector]  */
-interface IReduxPropLifecycleOwner {
-  /** This is called before [IReduxPropInjector.injectStaticProps] is called */
-  fun beforePropInjectionStarts()
+interface IReduxPropLifecycleOwner<State> {
+  /** This is called before [IReduxPropInjector.injectProps] is called */
+  fun beforePropInjectionStarts(sp: StaticProps<State>)
 
   /** This is called after [ReduxSubscription.unsubscribe] is called */
   fun afterPropInjectionEnds()
 }
 
 /** Treat this as a delegate for [IReduxPropLifecycleOwner] that does not hold any logic */
-object EmptyReduxPropLifecycleOwner : IReduxPropLifecycleOwner {
-  override fun beforePropInjectionStarts() {}
+class EmptyReduxPropLifecycleOwner<State> : IReduxPropLifecycleOwner<State> {
+  override fun beforePropInjectionStarts(sp: StaticProps<State>) {}
   override fun afterPropInjectionEnds() {}
 }
 
 /** Represents a container for [ReduxProps] */
-interface IReduxPropContainer<GlobalState, StateProps, ActionProps> : IReduxPropLifecycleOwner {
-  var reduxProps: ReduxProps<GlobalState, StateProps, ActionProps>
+interface IReduxPropContainer<State, StateProps, ActionProps> : IReduxPropLifecycleOwner<State> {
+  var reduxProps: ReduxProps<State, StateProps, ActionProps>
 }
 
-/** Maps [GlobalState] to [StateProps] for a [IReduxPropContainer] */
-interface IReduxStatePropMapper<GlobalState, OutProps, StateProps> {
-  /** Map [GlobalState] to [StateProps] using [OutProps] */
-  fun mapState(state: GlobalState, outProps: OutProps): StateProps
+/** Maps [State] to [StateProps] for a [IReduxPropContainer] */
+interface IReduxStatePropMapper<State, OutProps, StateProps> {
+  /** Map [State] to [StateProps] using [OutProps] */
+  fun mapState(state: State, outProps: OutProps): StateProps
 }
 
 /**
@@ -99,14 +99,21 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     view.unsubscribeSafely()
 
     /**
+     * Since [IReduxStore.subscribe] has not been called yet, we pass in a placebo
+     * [ReduxSubscription], but [StaticProps.injector] is still available for
+     * [IReduxPropLifecycleOwner.beforePropInjectionStarts]
+     */
+    val staticProps = StaticProps(this, ReduxSubscription {})
+
+    /**
      * Inject [StaticProps] with a placebo [StaticProps.subscription] because we want
      * [ReduxProps.static] to be available in [IReduxPropLifecycleOwner.beforePropInjectionStarts]
      * in case [view] needs to perform [injectProps] on its children.
      */
-    view.reduxProps = ReduxProps(StaticProps(this, ReduxSubscription {}), null)
+    view.reduxProps = ReduxProps(staticProps, null)
 
     /** [StaticProps.injector] is now available for child injections */
-    view.beforePropInjectionStarts()
+    view.beforePropInjectionStarts(staticProps)
 
     /**
      * It does not matter what the id is, as long as it is unique. This is because we will be

@@ -32,7 +32,10 @@ class AndroidPropInjector<State>(store: IReduxStore<State>) : ReduxPropInjector<
         get() = view.reduxProps
         set(value) { runOnUIThread { view.reduxProps = value } }
 
-      override fun beforePropInjectionStarts() = runOnUIThread { view.beforePropInjectionStarts() }
+      override fun beforePropInjectionStarts(sp: StaticProps<State>) = runOnUIThread {
+        view.beforePropInjectionStarts(sp)
+      }
+
       override fun afterPropInjectionEnds() = runOnUIThread { view.afterPropInjectionEnds() }
       override fun toString() = view.toString()
     },

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.redux.ui.IReduxPropContainer;
 import org.swiften.redux.ui.ReduxProps;
+import org.swiften.redux.ui.StaticProps;
 
 /** Created by haipham on 2018/12/19 */
 public final class MainActivity extends AppCompatActivity implements
@@ -43,7 +44,7 @@ public final class MainActivity extends AppCompatActivity implements
   }
 
   @Override
-  public void beforePropInjectionStarts() { }
+  public void beforePropInjectionStarts(@NotNull StaticProps<State> sp) { }
 
   @Override
   public void afterPropInjectionEnds() { }

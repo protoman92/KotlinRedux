@@ -25,8 +25,8 @@ import org.swiften.redux.ui.*
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
   IReduxPropContainer<State, SearchFragment.S, SearchFragment.A>,
-  IReduxPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment,
-  IReduxPropLifecycleOwner {
+  IReduxPropLifecycleOwner<State> by EmptyReduxPropLifecycleOwner(),
+  IReduxPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
   data class S(val query: String?, val resultCount: Int?, val loading: Boolean?)
   class A(val updateQuery: (String?) -> Unit)
 
@@ -50,6 +50,7 @@ class SearchFragment : Fragment(),
     private val artistName: TextView
   ) : RecyclerView.ViewHolder(parent),
     IReduxPropContainer<State, ViewHolder.S1, ViewHolder.A1>,
+    IReduxPropLifecycleOwner<State> by EmptyReduxPropLifecycleOwner(),
     IReduxPropMapper<State, Int, ViewHolder.S1, ViewHolder.A1> by ViewHolder {
     data class S1(val trackName: String? = null, val artistName: String? = null)
     data class A1(val goToMusicDetail: () -> Unit)
@@ -71,16 +72,10 @@ class SearchFragment : Fragment(),
       }
     }
 
-    private val clickListener = View.OnClickListener { _ ->
-      this.reduxProps.variable?.actions?.also { it.goToMusicDetail() }
-    }
-
-    override fun beforePropInjectionStarts() {
-      this.parent.setOnClickListener(this.clickListener)
-    }
-
-    override fun afterPropInjectionEnds() {
-      this.parent.setOnClickListener(null)
+    override fun beforePropInjectionStarts(sp: StaticProps<State>) {
+      this.parent.setOnClickListener { _ ->
+        this.reduxProps.variable?.actions?.also { it.goToMusicDetail() }
+      }
     }
   }
 
@@ -128,7 +123,7 @@ class SearchFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
-  override fun beforePropInjectionStarts() {
+  override fun beforePropInjectionStarts(sp: StaticProps<State>) {
     this.querySearch.also { it.addTextChangedListener(this.querySearchWatcher) }
 
     this.searchResult.also {
@@ -136,13 +131,8 @@ class SearchFragment : Fragment(),
       it.layoutManager = LinearLayoutManager(this.context)
 
       it.adapter = Adapter().let { a ->
-        this.reduxProps.static.injector.injectRecyclerViewProps(a, a, ViewHolder)
+        sp.injector.injectRecyclerViewProps(a, a, ViewHolder)
       }
     }
-  }
-
-  override fun afterPropInjectionEnds() {
-    this.querySearch.removeTextChangedListener(this.querySearchWatcher)
-    this.searchResult.adapter = null
   }
 }

@@ -40,7 +40,7 @@ import org.swiften.redux.ui.*
  */
 class PlantDetailFragment : Fragment(),
   IReduxPropContainer<Redux.State, PlantDetailFragment.S, PlantDetailFragment.A>,
-  IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
+  IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner(),
   IReduxPropMapper<Redux.State, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
   by PlantDetailFragment {
   data class S(val plant: Plant? = null, val isPlanted: Boolean? = null)
@@ -109,7 +109,7 @@ class PlantDetailFragment : Fragment(),
     }
   }
 
-  override fun beforePropInjectionStarts() {
+  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
     this.fab.setOnClickListener {
       this.reduxProps.variable?.actions?.addPlantToGarden?.invoke()
       Snackbar.make(it, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()

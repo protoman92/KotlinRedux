@@ -10,17 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_music_detail.artistName
-import kotlinx.android.synthetic.main.fragment_music_detail.trackName
-import kotlinx.android.synthetic.main.fragment_music_detail.trackOpen
+import kotlinx.android.synthetic.main.fragment_music_detail.*
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.*
 
 /** Created by haipham on 2019/01/12 */
 class MusicDetailFragment : Fragment(),
   IReduxPropContainer<State, MusicDetailFragment.S, MusicDetailFragment.A>,
+  IReduxPropLifecycleOwner<State> by EmptyReduxPropLifecycleOwner(),
   IReduxPropMapper<State, Unit, MusicDetailFragment.S, MusicDetailFragment.A> by MusicDetailFragment {
   class S(val track: MusicTrack?)
   class A(val goToTrackInformation: () -> Unit)
@@ -52,11 +49,7 @@ class MusicDetailFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_music_detail, container, false)
 
-  override fun beforePropInjectionStarts() {
+  override fun beforePropInjectionStarts(sp: StaticProps<State>) {
     this.trackOpen.setOnClickListener(this.trackOpenListener)
-  }
-
-  override fun afterPropInjectionEnds() {
-    this.trackOpen.setOnClickListener(null)
   }
 }

@@ -49,7 +49,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     IReduxPropContainer<Redux.State, ViewHolder.S, ViewHolder.A>,
-    IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
+    IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner(),
     IReduxPropMapper<Redux.State, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
     data class S(val plant: Plant?)
     class A(val goToPlantDetail: () -> Unit)
@@ -75,7 +75,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
     private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
     private val title: TextView = itemView.findViewById(R.id.plant_item_title)
 
-    override fun beforePropInjectionStarts() {
+    override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
       this.itemView.setOnClickListener {
         this@ViewHolder.reduxProps.variable?.actions?.goToPlantDetail?.invoke()
       }

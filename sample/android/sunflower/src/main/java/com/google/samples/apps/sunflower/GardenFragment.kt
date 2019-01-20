@@ -30,7 +30,7 @@ import org.swiften.redux.ui.*
 
 class GardenFragment : Fragment(),
   IReduxPropContainer<Redux.State, GardenFragment.S, Unit>,
-  IReduxPropLifecycleOwner by EmptyReduxPropLifecycleOwner,
+  IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner(),
   IReduxPropMapper<Redux.State, Unit, GardenFragment.S, Unit> by GardenFragment {
   data class S(val gardenPlantingCount: Int)
 
@@ -61,10 +61,9 @@ class GardenFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_garden, container, false)
 
-  override fun beforePropInjectionStarts() {
+  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
     this.garden_list.adapter = GardenPlantingAdapter().let {
-      val vhMapper = GardenPlantingAdapter.ViewHolder
-      this.reduxProps.static.injector.injectRecyclerViewProps(it, it, vhMapper)
+      sp.injector.injectRecyclerViewProps(it, it, GardenPlantingAdapter.ViewHolder)
     }
   }
 }
