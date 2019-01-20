@@ -49,8 +49,7 @@ class PlantDetailFragmentTest {
     fun jumpToPlantDetailFragment() {
         activityTestRule.activity.apply {
             runOnUiThread {
-                val bundle = PlantDetailFragmentArgs.Builder(testPlant.plantId).build().toBundle()
-                findNavController(R.id.garden_nav_fragment).navigate(R.id.plant_detail_fragment, bundle)
+                findNavController(R.id.garden_nav_fragment).navigate(R.id.plant_detail_fragment)
             }
         }
     }

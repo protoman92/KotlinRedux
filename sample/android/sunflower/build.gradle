@@ -26,7 +26,6 @@ buildscript {
   dependencies {
     classpath "com.android.tools.build:gradle:$gradleVersion"
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-    classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
   }
 }
 
@@ -42,7 +41,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'androidx.navigation.safeargs'
 
 project.apply from: "${rootDir}/sample/android/constants.gradle"
 project.apply from: "${project.projectDir}/constants.gradle"
