@@ -14,7 +14,11 @@ import org.swiften.redux.core.IReduxStateGetter
 import org.swiften.redux.core.IReduxStore
 
 /** Created by haipham on 2019/01/07 */
-/** Abstraction for Redux saga that handles [IReduxAction] in the pipeline */
+/**
+ * Abstraction for Redux saga that handles [IReduxAction] in the pipeline. Faithful to the original
+ * redux-saga for React.js, classes that implement [IReduxSagaEffect] should be able to intercept
+ * [IReduxAction] that are sent with [IReduxDispatcher], via [ReduxSagaMiddleware].
+ */
 typealias IReduxSagaEffect<R> = Function1<Input, IReduxSagaOutput<R>>
 
 /** Transform one [ReduxSagaEffect] to another */
@@ -28,8 +32,8 @@ class Input(
 )
 
 /**
- * Stream values for a [IReduxSagaEffect]. This stream has functional operators
- * that can transform emitted values.
+ * Stream values for a [IReduxSagaEffect]. This stream has functional operators that can transform
+ * emitted values.
  */
 interface IReduxSagaOutput<T> {
   /** Trigger every time an [IReduxAction] arrives */
@@ -97,7 +101,7 @@ interface IReduxSagaOutput<T> {
 
 /** Abstract class to allow better interfacing with Java */
 abstract class ReduxSagaEffect<R> : IReduxSagaEffect<R> {
-  /** Convenience method to call [IReduxSagaEffect] with convenience parameters for testing */
+  /** Call [IReduxSagaEffect] with convenience parameters for testing */
   fun invoke(scope: CoroutineScope, state: Any, dispatch: IReduxDispatcher) =
     this.invoke(Input(scope, { state }, dispatch))
 

@@ -72,6 +72,11 @@ object Redux {
 
   object Saga {
     object GardenPlantingSaga {
+      /**
+       * Every time [Action.AddPlantToGarden] is received, call
+       * [GardenPlantingRepository.createGardenPlanting] to signal that the user wants to add
+       * a [Plant] to the garden.
+       */
       private fun addGardenPlanting(api: GardenPlantingRepository) =
         takeLatestAction<Action.AddPlantToGarden, String, Any>({ it.plantId }, { plantId ->
           just(plantId)
@@ -79,6 +84,10 @@ object Redux {
             .put { Action.UpdateSelectedPlantStatus(true) }
         })
 
+      /**
+       * Every time the user navigates to plant detail screen, update planted status for
+       * [State.selectedPlant] so show/hide the FAB.
+       */
       @Suppress("SENSELESS_COMPARISON")
       fun checkSelectedPlantStatus(api: GardenPlantingRepository) =
         takeLatestAction<Screen, String, Any>({
@@ -92,9 +101,14 @@ object Redux {
             .put { Action.UpdateSelectedPlantStatus(it) }
         })
 
+      /** Bridge to sync [GardenPlanting] using [GardenPlantingRepository.getGardenPlantings] */
       private fun syncGardenPlantings(api: GardenPlantingRepository) =
         takeEveryData { api.getGardenPlantings() }.put { Action.UpdateGardenPlantings(it) }
 
+      /**
+       * Bridge to sync [PlantAndGardenPlantings] using
+       * [GardenPlantingRepository.getPlantAndGardenPlantings]
+       */
       private fun syncPlantAndGardenPlantings(api: GardenPlantingRepository) =
         takeEveryData { api.getPlantAndGardenPlantings() }
           .map { p -> p.filter { it.gardenPlantings.isNotEmpty() } }
@@ -109,15 +123,27 @@ object Redux {
     }
 
     object PlantSaga {
+      /**
+       * Bridge to sync all [Plant] using [PlantRepository.getPlants], but also pay attention to
+       * [State.selectedGrowZone] and filter out [Plant] whose [Plant.growZoneNumber] matches
+       * the selected grow zone.
+       */
       private fun syncPlants(api: PlantRepository) = takeEveryData { api.getPlants() }
         .select<State, List<Plant>, Int, List<Plant>>({ it.selectedGrowZone }, { a, b ->
           if (b == NO_GROW_ZONE) a else a.filter { it.growZoneNumber == b }
         }).put { Action.UpdatePlants(it) }
 
+      /**
+       * Every time [Action.SelectGrowZone] is received, sync [Plant] that matches
+       * [Action.SelectGrowZone.zone].
+       */
       private fun syncPlantsOnGrowZone(api: PlantRepository) =
         takeLatestAction<Action.SelectGrowZone, Int, Any>({ it.zone }, { growZone ->
-          if (growZone == NO_GROW_ZONE) { takeEveryData { api.getPlants() } } else { takeEveryData { api.getPlantsWithGrowZoneNumber(growZone) } }
-            .put { Action.UpdatePlants(it) }
+          if (growZone == NO_GROW_ZONE) {
+            takeEveryData { api.getPlants() }
+          } else {
+            takeEveryData { api.getPlantsWithGrowZoneNumber(growZone) }
+          }.put { Action.UpdatePlants(it) }
         })
 
       fun allSagas(api: PlantRepository) = arrayListOf(

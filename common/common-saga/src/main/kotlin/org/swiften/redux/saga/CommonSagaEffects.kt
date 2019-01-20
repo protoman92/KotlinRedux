@@ -14,10 +14,9 @@ import org.swiften.redux.core.IReduxAction
 object CommonSagaEffects {
   /** Create a [DelayEffect] */
   @JvmStatic
-  fun <R> delay(delayMillis: Long): IReduxSagaEffectTransformer<R, R> =
-    { DelayEffect(it, delayMillis) }
+  fun <R> delay(millis: Long): IReduxSagaEffectTransformer<R, R> = { DelayEffect(it, millis) }
 
-  /** Create a [CatchErrorEffect] instance. */
+  /** Create a [CatchErrorEffect]. */
   @JvmStatic
   fun <R> catchError(catcher: (Throwable) -> R): IReduxSagaEffectTransformer<R, R> =
     { CatchErrorEffect(it, catcher) }
@@ -62,7 +61,7 @@ object CommonSagaEffects {
   fun <P> put(actionCreator: (P) -> IReduxAction):
     IReduxSagaEffectTransformer<P, Any> = { PutEffect(it, actionCreator) }
 
-  /** Create a [RetryEffect] instance */
+  /** Create a [RetryEffect] */
   @JvmStatic
   fun <R> retry(times: Long): IReduxSagaEffectTransformer<R, R> = { RetryEffect(it, times) }
 
@@ -76,6 +75,5 @@ object CommonSagaEffects {
 
   /** Create a [TimeoutEffect] */
   @JvmStatic
-  fun <R> timeout(millis: Long): IReduxSagaEffectTransformer<R, R> =
-    { TimeoutEffect(it, millis) }
+  fun <R> timeout(millis: Long): IReduxSagaEffectTransformer<R, R> = { TimeoutEffect(it, millis) }
 }

@@ -6,14 +6,13 @@
 package org.swiften.redux.saga
 
 /** Created by haipham on 2019/01/07 */
-/** [IReduxSagaEffect] whose [IReduxSagaOutput] delays emissions by [delayMillis] */
+/** [IReduxSagaEffect] whose [IReduxSagaOutput] delays emissions by [millis] */
 internal class DelayEffect<R>(
   private val source: IReduxSagaEffect<R>,
-  private val delayMillis: Long
+  private val millis: Long
 ) : ReduxSagaEffect<R>() {
-  override fun invoke(p1: Input) = this.source.invoke(p1).delay(this.delayMillis)
+  override fun invoke(p1: Input) = this.source.invoke(p1).delay(this.millis)
 }
 
 /** Invoke a [DelayEffect] on [this] */
-fun <R> ReduxSagaEffect<R>.delay(delayMillis: Long) =
-  this.transform(CommonSagaEffects.delay(delayMillis))
+fun <R> ReduxSagaEffect<R>.delay(millis: Long) = this.transform(CommonSagaEffects.delay(millis))

@@ -44,8 +44,8 @@ internal class ReduxRouterMiddleware<State, Screen>(
       ReduxDispatchWrapper("$wrapper.id-router") { action ->
         wrapper.dispatch(action)
         /**
-         * If [action] is an [IReduxRouterScreen] instance, use the [router] to navigate to the
-         * associated screen.
+         * If [action] is an [Screen] instance, use the [router] to navigate to the associated
+         * screen.
          */
         if (this@ReduxRouterMiddleware.cls.isInstance(action)) {
           val screen = this@ReduxRouterMiddleware.cls.cast(action)

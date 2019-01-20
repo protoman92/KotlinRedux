@@ -10,13 +10,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import org.swiften.redux.core.DefaultReduxAction
+import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.middleware.IReduxMiddleware
 import org.swiften.redux.middleware.ReduxDispatchMapper
 import org.swiften.redux.middleware.ReduxDispatchWrapper
 import org.swiften.redux.middleware.ReduxMiddlewareInput
 
 /** Created by haipham on 2018/12/22 */
-/** [IReduxMiddleware] implementation for [IReduxSagaEffect] */
+/**
+ * [IReduxMiddleware] implementation for [IReduxSagaEffect]. Every time an [IReduxAction] is
+ * received, call [IReduxSagaOutput.onAction].
+ */
 internal class ReduxSagaMiddleware<State>(
   private val effects: Collection<IReduxSagaEffect<*>>
 ) : IReduxMiddleware<State> {
@@ -28,8 +32,8 @@ internal class ReduxSagaMiddleware<State>(
         override val coroutineContext = Dispatchers.Default + job
       }
 
-      val sgi = Input(scope, p1.stateGetter, wrapper.dispatch)
-      val outputs = this@ReduxSagaMiddleware.effects.map { it(sgi) }
+      val sagaInput = Input(scope, p1.stateGetter, wrapper.dispatch)
+      val outputs = this@ReduxSagaMiddleware.effects.map { it(sagaInput) }
       outputs.forEach { it.subscribe({}) }
 
       ReduxDispatchWrapper("${wrapper.id}-saga") { action ->

@@ -13,7 +13,7 @@ import org.swiften.redux.saga.IReduxSagaOutput
 /**
  * [TakeEffect] whose output switches to the latest [IReduxAction] every time one arrives. This is
  * best used for cases whereby we are only interested in the latest value, such as in an
- * autocomplete search implementation. Contrast this with [TakeEveryEffect]
+ * autocomplete search implementation. Contrast this with [TakeEveryEffect].
  */
 internal class TakeLatestEffect<P, R>(
   extractor: Function1<IReduxAction, P?>,
