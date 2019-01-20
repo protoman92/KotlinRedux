@@ -8,7 +8,11 @@ package org.swiften.redux.ui
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.swiften.redux.core.*
+import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.core.IReduxStore
+import org.swiften.redux.core.IReduxSubscriber
+import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.store.SimpleReduxStore
 
 /** Created by haipham on 2018/12/20 */

@@ -16,9 +16,13 @@
 
 package com.google.samples.apps.sunflower.data
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import java.io.Serializable
-import java.util.*
+import java.util.Calendar
 
 /**
  * [GardenPlanting] represents when a user adds a [Plant] to their garden, with useful metadata.

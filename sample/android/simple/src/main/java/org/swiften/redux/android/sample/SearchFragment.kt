@@ -15,12 +15,22 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.view_search_result.view.*
+import kotlinx.android.synthetic.main.fragment_music_detail.view.artistName
+import kotlinx.android.synthetic.main.fragment_search.backgroundDim
+import kotlinx.android.synthetic.main.fragment_search.progressBar
+import kotlinx.android.synthetic.main.fragment_search.querySearch
+import kotlinx.android.synthetic.main.fragment_search.searchResult
+import kotlinx.android.synthetic.main.view_search_result.view.trackName
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.*
+import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
@@ -73,7 +83,7 @@ class SearchFragment : Fragment(),
     }
 
     override fun beforePropInjectionStarts(sp: StaticProps<State>) {
-      this.parent.setOnClickListener { _ ->
+      this.parent.setOnClickListener {
         this.reduxProps.variable?.actions?.also { it.goToMusicDetail() }
       }
     }

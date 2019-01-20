@@ -17,14 +17,24 @@
 package com.google.samples.apps.sunflower
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.dependency.Redux
-import kotlinx.android.synthetic.main.fragment_plant_list.*
+import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.*
+import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.StaticProps
 
 class PlantListFragment : Fragment(),
   IReduxPropContainer<Redux.State, PlantListFragment.S, PlantListFragment.A>,

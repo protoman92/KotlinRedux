@@ -16,12 +16,18 @@
 
 package com.google.samples.apps.sunflower
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.app.ShareCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.text.bold
@@ -31,13 +37,23 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_plant_detail.*
+import kotlinx.android.synthetic.main.fragment_plant_detail.detail_image
+import kotlinx.android.synthetic.main.fragment_plant_detail.fab
+import kotlinx.android.synthetic.main.fragment_plant_detail.plant_detail
+import kotlinx.android.synthetic.main.fragment_plant_detail.plant_watering
+import kotlinx.android.synthetic.main.fragment_plant_detail.toolbar_layout
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.*
+import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.StaticProps
 
 /**
  * A fragment representing a single Plant detail screen.
  */
+@SuppressLint("RestrictedApi")
 class PlantDetailFragment : Fragment(),
   IReduxPropContainer<Redux.State, PlantDetailFragment.S, PlantDetailFragment.A>,
   IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner(),
@@ -48,7 +64,7 @@ class PlantDetailFragment : Fragment(),
 
   companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
     override fun mapState(state: Redux.State, outProps: Unit) = state.selectedPlant?.let {
-      S(it.id.let { id -> state.plants?.find { it.plantId == id } }, it.isPlanted)
+      S(it.id.let { id -> state.plants?.find { p -> p.plantId == id } }, it.isPlanted)
     } ?: S()
 
     override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) =

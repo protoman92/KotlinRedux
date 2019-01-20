@@ -10,9 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_music_detail.*
+import kotlinx.android.synthetic.main.fragment_music_detail.artistName
+import kotlinx.android.synthetic.main.fragment_music_detail.trackName
+import kotlinx.android.synthetic.main.fragment_music_detail.trackOpen
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.*
+import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2019/01/12 */
 class MusicDetailFragment : Fragment(),

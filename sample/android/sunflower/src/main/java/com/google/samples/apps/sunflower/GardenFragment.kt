@@ -23,10 +23,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
 import com.google.samples.apps.sunflower.dependency.Redux
-import kotlinx.android.synthetic.main.fragment_garden.*
+import kotlinx.android.synthetic.main.fragment_garden.empty_garden
+import kotlinx.android.synthetic.main.fragment_garden.garden_list
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.*
+import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.StaticProps
 
 class GardenFragment : Fragment(),
   IReduxPropContainer<Redux.State, GardenFragment.S, Unit>,

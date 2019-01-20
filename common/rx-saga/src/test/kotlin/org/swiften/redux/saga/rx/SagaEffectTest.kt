@@ -84,8 +84,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
         just(query)
           .map { "unavailable$it" }
           .mapAsync { this.searchMusicStore(it) }
-          .
-            cast<Any>()
+            .cast<Any>()
           .catchError {}
       },
       TakeEffectOptions(0)

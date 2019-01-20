@@ -10,7 +10,11 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.*
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropInjector
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.ReduxProps
 
 /** Created by haipham on 2018/12/17 */
 /** Callbacks for lifecycle for use with [LifecycleObserver] */

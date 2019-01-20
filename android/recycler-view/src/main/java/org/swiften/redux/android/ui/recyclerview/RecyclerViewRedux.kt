@@ -7,7 +7,11 @@ package org.swiften.redux.android.ui.recyclerview
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.swiften.redux.ui.*
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropInjector
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.unsubscribeSafely
 
 /** Created by haipham on 2019/01/08 */
 /**

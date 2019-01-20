@@ -8,7 +8,11 @@ package org.swiften.redux.android.ui
 import android.os.Handler
 import android.os.Looper
 import org.swiften.redux.core.IReduxStore
-import org.swiften.redux.ui.*
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.ReduxPropInjector
+import org.swiften.redux.ui.ReduxProps
+import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2018/12/17 */
 internal fun runOnUIThread(runnable: () -> Unit) {
@@ -18,7 +22,7 @@ internal fun runOnUIThread(runnable: () -> Unit) {
 }
 
 /**
- * [IReduxPropInjector] specifically for Android that calls [injectProps] on the main thread. We
+ * [ReduxPropInjector] specifically for Android that calls [injectProps] on the main thread. We
  * use inheritance here to ensure [StaticProps.injector] is set with this class instance.
  */
 class AndroidPropInjector<State>(store: IReduxStore<State>) : ReduxPropInjector<State>(store) {

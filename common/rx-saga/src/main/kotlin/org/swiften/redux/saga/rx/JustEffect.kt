@@ -11,7 +11,7 @@ import org.swiften.redux.saga.Input
 import org.swiften.redux.saga.ReduxSagaEffect
 
 /** Created by haipham on 2018/12/24 */
-/** [IReduxSagaEffect] whose [IReduxSagaOutput] simply emits [value] */
+/** [IReduxSagaEffect] whose [ReduxSagaOutput] simply emits [value] */
 internal class JustEffect<R>(private val value: R) : ReduxSagaEffect<R>() {
   override fun invoke(p1: Input) = ReduxSagaOutput(p1.scope, just(this.value)) {}
 }

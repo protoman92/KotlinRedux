@@ -16,7 +16,7 @@ import androidx.lifecycle.LifecycleOwner
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.ui.IReduxPropInjector
 import java.io.Serializable
-import java.util.*
+import java.util.Date
 
 /** Created by haipham on 2018/12/17 */
 /** Handle saving/restoring [State] instances. */

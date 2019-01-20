@@ -28,9 +28,15 @@ import com.google.samples.apps.sunflower.dependency.Redux
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.*
+import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropContainer
+import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.StaticProps
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.ViewHolder>(),
   IReduxStatePropMapper<Redux.State, Unit, Int> by GardenPlantingAdapter {
