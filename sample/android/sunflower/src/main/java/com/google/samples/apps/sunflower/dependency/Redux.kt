@@ -82,11 +82,11 @@ object Redux {
        * a [Plant] to the garden.
        */
       private fun addGardenPlanting(api: GardenPlantingRepository) =
-        takeLatestAction<Action.AddPlantToGarden, String, Any>({ it.plantId }, { plantId ->
+        takeLatestAction<Action.AddPlantToGarden, String, Any>({ it.plantId }) { plantId ->
           just(plantId)
             .mapSuspend { api.createGardenPlanting(it) }
             .put { Action.UpdateSelectedPlantStatus(true) }
-        })
+        }
 
       /**
        * Every time the user navigates to plant detail screen, update planted status for
@@ -99,11 +99,11 @@ object Redux {
             is Screen.GardenToPlantDetail -> it.plantId
             is Screen.PlantListToPlantDetail -> it.plantId
           }
-        }, { plantId ->
+        }) { plantId ->
           takeEveryData { api.getGardenPlantingForPlant(plantId) }
             .map { it != null }
             .put { Action.UpdateSelectedPlantStatus(it) }
-        })
+        }
 
       /** Bridge to sync [GardenPlanting] using [GardenPlantingRepository.getGardenPlantings] */
       private fun syncGardenPlantings(api: GardenPlantingRepository) =
@@ -142,13 +142,13 @@ object Redux {
        * [Action.SelectGrowZone.zone].
        */
       private fun syncPlantsOnGrowZone(api: PlantRepository) =
-        takeLatestAction<Action.SelectGrowZone, Int, Any>({ it.zone }, { growZone ->
+        takeLatestAction<Action.SelectGrowZone, Int, Any>({ it.zone }) { growZone ->
           if (growZone == NO_GROW_ZONE) {
             takeEveryData { api.getPlants() }
           } else {
             takeEveryData { api.getPlantsWithGrowZoneNumber(growZone) }
           }.put { Action.UpdatePlants(it) }
-        })
+        }
 
       fun allSagas(api: PlantRepository) = arrayListOf(
         this.syncPlants(api),

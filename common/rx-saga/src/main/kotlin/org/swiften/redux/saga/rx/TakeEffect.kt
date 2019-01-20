@@ -19,8 +19,8 @@ import org.swiften.redux.saga.ReduxSagaEffect
  */
 internal abstract class TakeEffect<P, R>(
   private val extractor: Function1<IReduxAction, P?>,
-  private val creator: Function1<P, IReduxSagaEffect<R>>,
-  private val options: TakeEffectOptions
+  private val options: TakeEffectOptions,
+  private val creator: Function1<P, IReduxSagaEffect<R>>
 ) : ReduxSagaEffect<R>() {
   /**
    * Flatten an [IReduxSagaOutput] that streams [IReduxSagaOutput] to access the values streamed by

@@ -40,14 +40,14 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @ObsoleteCoroutinesApi
   fun `Take every effect should take all actions`() {
     test_takeEffect_shouldTakeCorrectActions(
-      { a, b -> takeEveryAction(a, b) }, arrayListOf(0, 1, 2, 3))
+      { a, b -> takeEveryAction(a, creator = b) }, arrayListOf(0, 1, 2, 3))
   }
 
   @Test
   @ObsoleteCoroutinesApi
   fun `Take latest effect should take latest actions`() {
     test_takeEffect_shouldTakeCorrectActions(
-      { a, b -> takeLatestAction(a, b) }, arrayListOf(3))
+      { a, b -> takeLatestAction(a, creator = b) }, arrayListOf(3))
   }
 
   @Test
@@ -78,17 +78,13 @@ class SagaEffectTest : CommonSagaEffectTest() {
       "Input: $q, Result: $result"
     }
 
-    val sourceOutput = takeLatestAction<Action, String, Any>(
-      { it.query },
-      { query ->
-        just(query)
-          .map { "unavailable$it" }
-          .mapAsync { this.searchMusicStore(it) }
-            .cast<Any>()
-          .catchError {}
-      },
-      TakeEffectOptions(0)
-    ).invoke(this, Unit) {}
+    val sourceOutput = takeLatestAction<Action, String, Any>({ it.query }) { query ->
+      just(query)
+        .map { "unavailable$it" }
+        .mapAsync { this.searchMusicStore(it) }
+        .cast<Any>()
+        .catchError {}
+    }.invoke(this, Unit) {}
 
     sourceOutput.subscribe({ finalValues.add(it) })
 

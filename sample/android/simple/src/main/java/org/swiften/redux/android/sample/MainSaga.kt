@@ -18,14 +18,10 @@ import org.swiften.redux.saga.then
 /** Created by haipham on 2019/01/04 */
 object MainSaga {
   fun sagas(api: IMainRepository) = arrayListOf(
-    takeLatestAction<MainRedux.Action, String, Any>(
-      { when (it) {
-        is MainRedux.Action.UpdateAutocompleteQuery -> it.query
-        else -> null
-      } },
-      { autocompleteSaga(api, it) },
-      TakeEffectOptions(500)
-    )
+    takeLatestAction<MainRedux.Action, String, Any>({ when (it) {
+      is MainRedux.Action.UpdateAutocompleteQuery -> it.query
+      else -> null
+    } }, TakeEffectOptions(500)) { autocompleteSaga(api, it) }
   )
 
   private fun autocompleteSaga(api: IMainRepository, query: String) =

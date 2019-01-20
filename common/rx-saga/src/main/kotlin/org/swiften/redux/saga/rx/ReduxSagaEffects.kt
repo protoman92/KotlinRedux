@@ -50,36 +50,36 @@ object ReduxSagaEffects {
   @JvmStatic
   fun <P, R> takeEvery(
     extractor: Function1<IReduxAction, P?>,
-    creator: Function1<P, IReduxSagaEffect<R>>,
-    options: TakeEffectOptions = TakeEffectOptions()
-  ): ReduxSagaEffect<R> = TakeEveryEffect(extractor, creator, options)
+    options: TakeEffectOptions = TakeEffectOptions(),
+    creator: Function1<P, IReduxSagaEffect<R>>
+  ): ReduxSagaEffect<R> = TakeEveryEffect(extractor, options, creator)
 
   /** Convenience function to create [TakeEveryEffect] for a specific type of [IReduxAction] */
   @JvmStatic
   inline fun <reified Action, P, R> takeEveryAction(
     crossinline extractor: Function1<Action, P?>,
-    noinline creator: Function1<P, IReduxSagaEffect<R>>,
-    options: TakeEffectOptions = TakeEffectOptions()
+    options: TakeEffectOptions = TakeEffectOptions(),
+    noinline creator: Function1<P, IReduxSagaEffect<R>>
   ) where Action : IReduxAction = this.takeEvery(
     { when (it) { is Action -> extractor(it); else -> null } },
-    creator, options
+    options, creator
   )
 
   /** Create a [TakeLatestEffect] instance. */
   @JvmStatic
   fun <P, R> takeLatest(
     extractor: Function1<IReduxAction, P?>,
-    creator: Function1<P, IReduxSagaEffect<R>>,
-    options: TakeEffectOptions = TakeEffectOptions()
-  ): ReduxSagaEffect<R> = TakeLatestEffect(extractor, creator, options)
+    options: TakeEffectOptions = TakeEffectOptions(),
+    creator: Function1<P, IReduxSagaEffect<R>>
+  ): ReduxSagaEffect<R> = TakeLatestEffect(extractor, options, creator)
 
   /** Convenience function to create [TakeLatestEffect] for a specific type of [IReduxAction] */
   @JvmStatic
   inline fun <reified Action, P, R> takeLatestAction(
     crossinline extractor: Function1<Action, P?>,
-    noinline creator: Function1<P, IReduxSagaEffect<R>>,
-    options: TakeEffectOptions = TakeEffectOptions()
+    options: TakeEffectOptions = TakeEffectOptions(),
+    noinline creator: Function1<P, IReduxSagaEffect<R>>
   ) where Action : IReduxAction = this.takeLatest(
-    { when (it) { is Action -> extractor(it); else -> null } }, creator, options
+    { when (it) { is Action -> extractor(it); else -> null } }, options, creator
   )
 }
