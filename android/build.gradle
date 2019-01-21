@@ -101,6 +101,15 @@ project('recycler-view') {
   }
 }
 
+project('core-rx-saga') {
+  dependencies {
+    api project(':common:common-saga')
+    api project(':common:rx-saga')
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
+  }
+}
+
 project('livedata-rx-saga') {
   dependencies {
     api project(':common:common-saga')
