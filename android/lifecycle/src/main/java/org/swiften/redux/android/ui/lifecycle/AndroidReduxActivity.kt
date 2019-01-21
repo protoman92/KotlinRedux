@@ -10,6 +10,7 @@ import android.app.Application
 import android.net.http.SslCertificate.restoreState
 import android.net.http.SslCertificate.saveState
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -50,9 +51,11 @@ fun <State> IReduxPropInjector<State>.startLifecycleInjections(
     }
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-      savedInstanceState
-        ?.run { restoreState(this) }
-        ?.apply { this@startLifecycleInjections.dispatch(DefaultReduxAction.ReplaceState(this)) }
+      try {
+        savedInstanceState
+          ?.run { restoreState(this) }
+          ?.apply { this@startLifecycleInjections.dispatch(DefaultReduxAction.ReplaceState(this)) }
+      } catch (e: Exception) { }
 
       activity?.also {
         require(it is AppCompatActivity)
@@ -69,10 +72,10 @@ fun <State> IReduxPropInjector<State>.startLifecycleInjections(
 }
 
 /**
- * Similar to [startLifecycleInjections], but provides default persistence for when [State] is
+ * Similar to [startParcelableInjections], but provides default persistence for when [State] is
  * [Serializable]
  */
-inline fun <reified State> IReduxPropInjector<State>.startLifecycleInjections(
+inline fun <reified State> IReduxPropInjector<State>.startSerializableInjections(
   application: Application,
   noinline inject: IReduxPropInjector<State>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks where State : Serializable {
@@ -83,5 +86,21 @@ inline fun <reified State> IReduxPropInjector<State>.startLifecycleInjections(
 
     override fun restoreState(bundle: Bundle) =
       bundle.getSerializable(key)?.takeIf { it is State }?.run { this as State }
+  }, inject)
+}
+
+/**
+ * Similar to [startLifecycleInjections], but provides default persistence for when [State] is
+ * [Parcelable]
+ */
+inline fun <reified State> IReduxPropInjector<State>.startParcelableInjections(
+  application: Application,
+  noinline inject: IReduxPropInjector<State>.(LifecycleOwner) -> Unit
+): Application.ActivityLifecycleCallbacks where State : Parcelable {
+  val key = "REDUX_STATE_${Date().time}"
+
+  return this.startLifecycleInjections(application, object : IReduxInstanceStateSaver<State> {
+    override fun saveState(bundle: Bundle, state: State) = bundle.putParcelable(key, state)
+    override fun restoreState(bundle: Bundle) = bundle.getParcelable<State>(key)
   }, inject)
 }

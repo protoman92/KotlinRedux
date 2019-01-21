@@ -12,7 +12,7 @@ import com.google.samples.apps.sunflower.dependency.Router
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectLifecycleProps
-import org.swiften.redux.android.ui.lifecycle.startLifecycleInjections
+import org.swiften.redux.android.ui.lifecycle.startParcelableInjections
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.createSagaMiddleware
@@ -40,7 +40,7 @@ class GardenApplication : Application() {
     val dependency = Dependency(injector)
     this.dependency = dependency
 
-    this.activityCallbacks = injector.startLifecycleInjections(this) {
+    this.activityCallbacks = injector.startParcelableInjections(this) {
       when (it) {
         is GardenActivity -> this.injectStaticProps(it)
         is GardenFragment -> this.injectLifecycleProps(it, Unit, it)

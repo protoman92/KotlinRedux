@@ -13,7 +13,7 @@ import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.router.createSingleActivityRouter
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectLifecycleProps
-import org.swiften.redux.android.ui.lifecycle.startLifecycleInjections
+import org.swiften.redux.android.ui.lifecycle.startSerializableInjections
 import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.createSagaMiddleware
@@ -61,7 +61,7 @@ class MainApplication : Application() {
     val dependency = MainDependency(injector)
     this.dependency = dependency
 
-    injector.startLifecycleInjections(this) {
+    injector.startSerializableInjections(this) {
       when (it) {
         is MainActivity -> this.injectStaticProps(it)
         is SearchFragment -> this.injectLifecycleProps(it, Unit, it)

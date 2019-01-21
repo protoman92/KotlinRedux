@@ -72,6 +72,10 @@ android {
   }
 }
 
+androidExtensions {
+  experimental = true
+}
+
 dependencies {
   kapt "androidx.room:room-compiler:$project.ext.roomVersion"
   implementation "android.arch.navigation:navigation-fragment-ktx:$project.ext.navigationVersion"

@@ -5,13 +5,15 @@
 
 package com.google.samples.apps.sunflower.dependency
 
-import android.app.Application
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.samples.apps.sunflower.data.GardenPlanting
 import com.google.samples.apps.sunflower.data.GardenPlantingRepository
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.data.PlantRepository
+import kotlinx.android.parcel.Parcelize
 import org.swiften.redux.android.core.saga.rx.CoreAndroidEffects.watchConnectivity
 import org.swiften.redux.android.livedata.saga.rx.LiveDataEffects.takeEveryData
 import org.swiften.redux.core.IReduxAction
@@ -23,13 +25,13 @@ import org.swiften.redux.saga.put
 import org.swiften.redux.saga.rx.ReduxSagaEffects.just
 import org.swiften.redux.saga.rx.ReduxSagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.select
-import java.io.Serializable
 
 /** Created by haipham on 2019/01/16 */
 object Redux {
   const val NO_GROW_ZONE = -1
 
-  data class SelectedPlant(val id: String, val isPlanted: Boolean? = null) : Serializable
+  @Parcelize
+  data class SelectedPlant(val id: String, val isPlanted: Boolean? = null) : Parcelable
 
   data class State(
     val isConnected: Boolean = false,
@@ -38,7 +40,31 @@ object Redux {
     val plantAndGardenPlantings: List<PlantAndGardenPlantings>? = null,
     val selectedPlant: SelectedPlant? = null,
     val selectedGrowZone: Int = NO_GROW_ZONE
-  ) : Serializable
+  ) : Parcelable {
+    companion object CREATOR : Parcelable.Creator<State> {
+      override fun createFromParcel(parcel: Parcel) = State(parcel)
+      override fun newArray(size: Int) = arrayOfNulls<State?>(size)
+    }
+
+    constructor(parcel: Parcel) : this(
+      isConnected = parcel.readByte() != 0.toByte(),
+      plants = null,
+      gardenPlantings = null,
+      plantAndGardenPlantings = null,
+      selectedPlant = parcel.readParcelable<SelectedPlant>(SelectedPlant::class.java.classLoader),
+      selectedGrowZone = parcel.readInt()
+    )
+
+    override fun writeToParcel(dest: Parcel?, flags: Int) {
+      dest?.also {
+        it.writeByte(if (this.isConnected) 1 else 0)
+        it.writeParcelable(this.selectedPlant, 0)
+        it.writeInt(this.selectedGrowZone)
+      }
+    }
+
+    override fun describeContents() = 0
+  }
 
   sealed class Action : IReduxAction {
     class UpdateConnectivity(val isConnected: Boolean) : Action()

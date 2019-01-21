@@ -16,12 +16,14 @@
 
 package com.google.samples.apps.sunflower.data
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.io.Serializable
+import kotlinx.android.parcel.IgnoredOnParcel
+import kotlinx.android.parcel.Parcelize
 import java.util.Calendar
 
 /**
@@ -52,7 +54,7 @@ data class GardenPlanting(
    */
   @ColumnInfo(name = "last_watering_date")
   val lastWateringDate: Calendar = Calendar.getInstance()
-) : Serializable {
+) {
         @PrimaryKey(autoGenerate = true)
         @ColumnInfo(name = "id")
         var gardenPlantingId: Long = 0
