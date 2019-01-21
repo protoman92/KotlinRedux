@@ -5,11 +5,14 @@
 
 package com.google.samples.apps.sunflower.dependency
 
+import android.app.Application
+import android.content.Context
 import com.google.samples.apps.sunflower.data.GardenPlanting
 import com.google.samples.apps.sunflower.data.GardenPlantingRepository
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.data.PlantRepository
+import org.swiften.redux.android.core.saga.rx.CoreAndroidEffects.watchConnectivity
 import org.swiften.redux.android.livedata.saga.rx.LiveDataEffects.takeEveryData
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxReducer
@@ -29,6 +32,7 @@ object Redux {
   data class SelectedPlant(val id: String, val isPlanted: Boolean? = null) : Serializable
 
   data class State(
+    val isConnected: Boolean = false,
     val plants: List<Plant>? = null,
     val gardenPlantings: List<GardenPlanting>? = null,
     val plantAndGardenPlantings: List<PlantAndGardenPlantings>? = null,
@@ -37,6 +41,8 @@ object Redux {
   ) : Serializable
 
   sealed class Action : IReduxAction {
+    class UpdateConnectivity(val isConnected: Boolean) : Action()
+
     class AddPlantToGarden(val plantId: String) : Action()
     class SelectGrowZone(val zone: Int) : Action()
     class UpdatePlants(val plants: List<Plant>?) : Action()
@@ -53,6 +59,8 @@ object Redux {
   object Reducer : IReduxReducer<State> {
     override fun invoke(p1: State, p2: IReduxAction) = when (p2) {
       is Action -> when (p2) {
+        is Action.UpdateConnectivity -> p1.copy(isConnected = p2.isConnected)
+
         is Action.SelectGrowZone -> p1.copy(selectedGrowZone = p2.zone)
         is Action.UpdatePlants -> p1.copy(plants = p2.plants)
         is Action.UpdatePlantAndGardenPlantings -> p1.copy(plantAndGardenPlantings = p2.data)
@@ -75,6 +83,11 @@ object Redux {
   }
 
   object Saga {
+    object CoreSaga {
+      fun watchNetworkConnectivity(context: Context) =
+        watchConnectivity(context).put { Action.UpdateConnectivity(it) }
+    }
+
     object GardenPlantingSaga {
       /**
        * Every time [Action.AddPlantToGarden] is received, call
