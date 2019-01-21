@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.live.rx
+package org.swiften.redux.android.livedata.saga.rx
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +15,7 @@ import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import org.swiften.redux.android.livedata.rx.LiveDataEffects.takeEveryData
+import org.swiften.redux.android.livedata.saga.rx.LiveDataEffects.takeEveryData
 import org.swiften.redux.saga.filter
 import org.swiften.redux.saga.mapAsync
 import java.util.Collections

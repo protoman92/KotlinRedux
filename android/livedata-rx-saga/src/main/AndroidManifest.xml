@@ -1,1 +1,1 @@
-<manifest package="org.swiften.redux.android.livedata.rx"/>
+<manifest package="org.swiften.redux.android.livedata.saga.rx"/>

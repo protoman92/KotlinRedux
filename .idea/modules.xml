@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/ui/common-ui.iml" filepath="$PROJECT_DIR$/common/ui/common-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/core/core.iml" filepath="$PROJECT_DIR$/common/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/core-rx-saga/core-rx-saga.iml" filepath="$PROJECT_DIR$/android/core-rx-saga/core-rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/final-store/final-store.iml" filepath="$PROJECT_DIR$/common/final-store/final-store.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/lifecycle/lifecycle.iml" filepath="$PROJECT_DIR$/android/lifecycle/lifecycle.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/livedata-rx-saga/livedata-rx-saga.iml" filepath="$PROJECT_DIR$/android/livedata-rx-saga/livedata-rx-saga.iml" />

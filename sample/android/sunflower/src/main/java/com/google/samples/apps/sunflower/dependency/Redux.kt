@@ -10,7 +10,7 @@ import com.google.samples.apps.sunflower.data.GardenPlantingRepository
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.data.PlantRepository
-import org.swiften.redux.android.livedata.rx.LiveDataEffects.takeEveryData
+import org.swiften.redux.android.livedata.saga.rx.LiveDataEffects.takeEveryData
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxReducer
 import org.swiften.redux.router.IReduxRouterScreen
