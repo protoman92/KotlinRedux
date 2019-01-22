@@ -21,3 +21,5 @@ package com.google.samples.apps.sunflower.utilities
  */
 const val DATABASE_NAME = "sunflower-db"
 const val PLANT_DATA_FILENAME = "plants.json"
+const val LARGE_IMAGE_DIMEN = 500
+const val SMALL_IMAGE_DIMEN = 200

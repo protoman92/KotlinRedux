@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.dependency.Redux
+import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IReduxDispatcher
@@ -86,7 +87,12 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
           val wateringStr = "$wateringPrefix - $wateringSuffix"
           this.plantDate.text = context.getString(R.string.planted_date, p.plant.name, plantDateStr)
           this.waterDate.text = wateringStr
-          Picasso.get().load(p.plant.imageUrl).into(this.imageView)
+
+          Picasso.get()
+            .load(p.plant.imageUrl)
+            .centerCrop()
+            .resize(SMALL_IMAGE_DIMEN, SMALL_IMAGE_DIMEN)
+            .into(this.imageView)
         }
       }
     }

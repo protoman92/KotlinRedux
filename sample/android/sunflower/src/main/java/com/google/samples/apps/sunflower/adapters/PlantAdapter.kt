@@ -26,6 +26,7 @@ import com.google.samples.apps.sunflower.PlantListFragment
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.dependency.Redux
+import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IReduxDispatcher
@@ -74,7 +75,12 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
     override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
       next?.state?.plant?.also {
         this.title.text = it.name
-        Picasso.get().load(it.imageUrl).into(this.image)
+
+        Picasso.get()
+          .load(it.imageUrl)
+          .centerCrop()
+          .resize(SMALL_IMAGE_DIMEN, SMALL_IMAGE_DIMEN)
+          .into(this.image)
       }
     }
 

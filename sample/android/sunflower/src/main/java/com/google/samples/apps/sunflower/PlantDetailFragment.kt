@@ -36,6 +36,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.dependency.Redux
+import com.google.samples.apps.sunflower.utilities.LARGE_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_plant_detail.detail_image
 import kotlinx.android.synthetic.main.fragment_plant_detail.fab
@@ -77,7 +78,12 @@ class PlantDetailFragment : Fragment(),
       this.plant_watering.text = this.context?.let { this.bindWateringText(it, p.wateringInterval) }
       this.plant_detail.text = HtmlCompat.fromHtml(p.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
       this.toolbar_layout.title = p.name
-      Picasso.get().load(p.imageUrl).into(this.detail_image)
+
+      Picasso.get()
+        .load(p.imageUrl)
+        .centerCrop()
+        .resize(LARGE_IMAGE_DIMEN, LARGE_IMAGE_DIMEN)
+        .into(this.detail_image)
     }
 
     next?.state?.isPlanted?.also { this.fab.visibility = if (it) View.GONE else View.VISIBLE }
