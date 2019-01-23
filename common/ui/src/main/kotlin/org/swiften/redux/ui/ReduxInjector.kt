@@ -75,17 +75,6 @@ interface IReduxPropInjector<State> :
 }
 
 /**
- * Call [IReduxPropInjector.injectStaticProps] for a [IReduxPropInjector] that is not interested in
- * [ReduxProps.variable].
- */
-fun <State> IReduxPropInjector<State>.injectStaticProps(view: IReduxPropContainer<State, Unit, Unit>) {
-  this.injectProps(view, Unit, object : IReduxPropMapper<State, Unit, Unit, Unit> {
-    override fun mapState(state: State, outProps: Unit) = Unit
-    override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: Unit) = Unit
-  })
-}
-
-/**
  * A [IReduxPropInjector] implementation that handles [injectProps] in a thread-safe manner. It
  * also invokes [IReduxPropLifecycleOwner.beforePropInjectionStarts] and
  * [IReduxPropLifecycleOwner.afterPropInjectionEnds] when appropriate.

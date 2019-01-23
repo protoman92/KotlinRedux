@@ -63,7 +63,6 @@ class MainApplication : Application() {
 
     injector.startSerializableInjections(this) {
       when (it) {
-        is MainActivity -> this.injectStaticProps(it)
         is SearchFragment -> this.injectLifecycleProps(it, Unit, it)
         is MusicDetailFragment -> this.injectLifecycleProps(it, Unit, it)
       }

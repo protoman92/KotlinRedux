@@ -42,7 +42,6 @@ class GardenApplication : Application() {
 
     this.activityCallbacks = injector.startParcelableInjections(this) {
       when (it) {
-        is GardenActivity -> this.injectStaticProps(it)
         is GardenFragment -> this.injectLifecycleProps(it, Unit, it)
         is PlantDetailFragment -> this.injectLifecycleProps(it, Unit, it)
         is PlantListFragment -> this.injectLifecycleProps(it, Unit, it)
