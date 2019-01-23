@@ -51,6 +51,12 @@ interface IReduxStatePropMapper<State, OutProps, StateProps> {
   fun mapState(state: State, outProps: OutProps): StateProps
 }
 
+/** Maps [IReduxDispatcher] and [State] to [ActionProps] for a [IReduxPropContainer] */
+interface IReduxActionPropMapper<State, OutProps, ActionProps> {
+  /** Map [IReduxDispatcher] to [ActionProps] using [GlobalState] and [OutProps] */
+  fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: OutProps): ActionProps
+}
+
 /**
  * Maps [GlobalState] to [StateProps] and [ActionProps] for a [IReduxPropContainer]. [OutProps] is
  * the view's immutable property as dictated by its parent.
@@ -61,10 +67,8 @@ interface IReduxStatePropMapper<State, OutProps, StateProps> {
  * Generally, though, [OutProps] tends to be [Unit].
  */
 interface IReduxPropMapper<GlobalState, OutProps, StateProps, ActionProps> :
-  IReduxStatePropMapper<GlobalState, OutProps, StateProps> {
-  /** Map [IReduxDispatcher] to [ActionProps] using [GlobalState] and [OutProps] */
-  fun mapAction(dispatch: IReduxDispatcher, state: GlobalState, outProps: OutProps): ActionProps
-}
+  IReduxStatePropMapper<GlobalState, OutProps, StateProps>,
+  IReduxActionPropMapper<GlobalState, OutProps, ActionProps>
 
 /** Inject state and actions into an [IReduxPropContainer] */
 interface IReduxPropInjector<State> :

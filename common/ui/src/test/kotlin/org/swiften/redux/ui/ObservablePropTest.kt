@@ -39,7 +39,7 @@ class ObservablePropTest {
     prop = VariableProps(S("1"), A {})
     prop = VariableProps(S("2"), A {})
     prop = VariableProps(S("3"), A {})
-    
+
     // Then
     Assert.assertEquals(setCount, 3)
     Assert.assertEquals(prop!!.state, S("3"))
