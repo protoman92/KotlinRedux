@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_music_detail.view.artistName
@@ -22,14 +23,15 @@ import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapterProps
+import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapterProps
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.IVariableReduxPropContainer
 import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.ObservableVariableProps
 import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2018/12/20 */
@@ -41,9 +43,17 @@ class SearchFragment : Fragment(),
   class A(val updateQuery: (String?) -> Unit)
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IReduxStatePropMapper<State, Unit, Int> by Adapter {
-    companion object : IReduxStatePropMapper<State, Unit, Int> {
-      override fun mapState(state: State, outProps: Unit) = state.musicResult?.resultCount ?: 0
+    IReduxPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> by Adapter {
+    companion object : IReduxPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> {
+      override fun mapState(state: State, outProps: Unit) =
+        state.musicResult?.results?.map { ViewHolder.S1(it.trackName, it.artistName) } ?:
+        arrayListOf()
+
+      override fun mapAction(
+        dispatch: IReduxDispatcher,
+        state: State,
+        outProps: Unit
+      ) = ViewHolder.A1 { dispatch(MainRedux.Screen.MusicDetail(it)) }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -59,32 +69,21 @@ class SearchFragment : Fragment(),
     private val trackName: TextView,
     private val artistName: TextView
   ) : RecyclerView.ViewHolder(parent),
-    IReduxPropContainer<State, ViewHolder.S1, ViewHolder.A1>,
-    IReduxPropLifecycleOwner<State> by EmptyReduxPropLifecycleOwner(),
-    IReduxPropMapper<State, Int, ViewHolder.S1, ViewHolder.A1> by ViewHolder {
+    IVariableReduxPropContainer<ViewHolder.S1, ViewHolder.A1> {
     data class S1(val trackName: String? = null, val artistName: String? = null)
-    data class A1(val goToMusicDetail: () -> Unit)
+    data class A1(val goToMusicDetail: (Int) -> Unit)
 
-    companion object : IReduxPropMapper<State, Int, S1, A1> {
-      override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: Int) =
-        A1 { dispatch(MainRedux.Screen.MusicDetail(outProps)) }
-
-      override fun mapState(state: State, outProps: Int) =
-        state.musicResult?.results
-          ?.elementAtOrNull(outProps)?.let { S1(it.trackName, it.artistName) }
-          ?: S1()
-    }
-
-    override var reduxProps by ObservableReduxProps<State, S1, A1> { _, next ->
-      next?.state?.also {
-        this.trackName.text = it.trackName
-        this.artistName.text = it.artistName
+    init {
+      this.parent.setOnClickListener {
+        val index = this.layoutPosition
+        this.reduxProps?.actions?.also { it.goToMusicDetail(index) }
       }
     }
 
-    override fun beforePropInjectionStarts(sp: StaticProps<State>) {
-      this.parent.setOnClickListener {
-        this.reduxProps?.variable?.actions?.also { it.goToMusicDetail() }
+    override var reduxProps by ObservableVariableProps<S1, A1> { _, next ->
+      next?.state?.also {
+        this.trackName.text = it.trackName
+        this.artistName.text = it.artistName
       }
     }
   }
@@ -141,7 +140,13 @@ class SearchFragment : Fragment(),
       it.layoutManager = LinearLayoutManager(this.context)
 
       it.adapter = Adapter().let { a ->
-        sp.injector.injectRecyclerAdapterProps(a, a, ViewHolder)
+        sp.injector.injectDiffedAdapterProps(a, a, object : DiffUtil.ItemCallback<ViewHolder.S1>() {
+          override fun areItemsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
+            oldItem.trackName == newItem.trackName
+
+          override fun areContentsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
+            oldItem == newItem
+        })
       }
     }
   }
