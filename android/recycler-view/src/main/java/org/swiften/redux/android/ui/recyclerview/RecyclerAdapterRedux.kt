@@ -27,6 +27,62 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
   override fun onBindViewHolder(holder: VH, position: Int) {}
 }
 
+/** [RecyclerView.Adapter] that delegates method calls to another [RecyclerView.Adapter] */
+internal abstract class DelegateRecyclerAdapter<VH>(
+  private val adapter: RecyclerView.Adapter<VH>
+) : RecyclerView.Adapter<VH>() where VH : RecyclerView.ViewHolder {
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    adapter.onCreateViewHolder(parent, viewType)
+
+  override fun getItemViewType(position: Int) = adapter.getItemViewType(position)
+  override fun getItemId(position: Int) = adapter.getItemId(position)
+  override fun onFailedToRecycleView(holder: VH) = adapter.onFailedToRecycleView(holder)
+
+  override fun onBindViewHolder(holder: VH, position: Int) {
+    adapter.onBindViewHolder(holder, position)
+  }
+
+  override fun onViewRecycled(holder: VH) {
+    super.onViewRecycled(holder)
+    adapter.onViewRecycled(holder)
+  }
+
+  override fun onViewAttachedToWindow(holder: VH) {
+    super.onViewAttachedToWindow(holder)
+    adapter.onViewAttachedToWindow(holder)
+  }
+
+  override fun onViewDetachedFromWindow(holder: VH) {
+    super.onViewDetachedFromWindow(holder)
+    adapter.onViewDetachedFromWindow(holder)
+  }
+
+  override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+    super.onAttachedToRecyclerView(recyclerView)
+    adapter.onAttachedToRecyclerView(recyclerView)
+  }
+
+  override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+    super.onDetachedFromRecyclerView(recyclerView)
+    adapter.onDetachedFromRecyclerView(recyclerView)
+  }
+
+  override fun setHasStableIds(hasStableIds: Boolean) {
+    super.setHasStableIds(hasStableIds)
+    adapter.setHasStableIds(hasStableIds)
+  }
+
+  override fun registerAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
+    super.registerAdapterDataObserver(observer)
+    adapter.registerAdapterDataObserver(observer)
+  }
+
+  override fun unregisterAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
+    super.unregisterAdapterDataObserver(observer)
+    adapter.unregisterAdapterDataObserver(observer)
+  }
+}
+
 /** Inject props for a [RecyclerView.Adapter] with a compatible [VH] */
 fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecyclerAdapterProps(
   adapter: Adapter,
@@ -37,62 +93,19 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
   VH : IReduxPropContainer<State, VHState, VHAction>,
   Adapter : RecyclerView.Adapter<VH>
 {
-  return object : RecyclerView.Adapter<VH>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-      adapter.onCreateViewHolder(parent, viewType)
-
+  return object : DelegateRecyclerAdapter<VH>(adapter) {
     override fun getItemCount() =
       adapterMapper.mapState(this@injectRecyclerAdapterProps.lastState(), Unit)
 
-    override fun getItemViewType(position: Int) = adapter.getItemViewType(position)
-    override fun getItemId(position: Int) = adapter.getItemId(position)
-    override fun onFailedToRecycleView(holder: VH) = adapter.onFailedToRecycleView(holder)
-
     override fun onBindViewHolder(holder: VH, position: Int) {
-      adapter.onBindViewHolder(holder, position)
+      super.onBindViewHolder(holder, position)
       this@injectRecyclerAdapterProps.injectProps(holder, position, vhMapper)
     }
 
     /** Unsubscribe from [holder]'s subscription on recycling */
     override fun onViewRecycled(holder: VH) {
       super.onViewRecycled(holder)
-      adapter.onViewRecycled(holder)
       holder.unsubscribeSafely()
-    }
-
-    override fun onViewAttachedToWindow(holder: VH) {
-      super.onViewAttachedToWindow(holder)
-      adapter.onViewAttachedToWindow(holder)
-    }
-
-    override fun onViewDetachedFromWindow(holder: VH) {
-      super.onViewDetachedFromWindow(holder)
-      adapter.onViewDetachedFromWindow(holder)
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-      super.onAttachedToRecyclerView(recyclerView)
-      adapter.onAttachedToRecyclerView(recyclerView)
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-      super.onDetachedFromRecyclerView(recyclerView)
-      adapter.onDetachedFromRecyclerView(recyclerView)
-    }
-
-    override fun setHasStableIds(hasStableIds: Boolean) {
-      super.setHasStableIds(hasStableIds)
-      adapter.setHasStableIds(hasStableIds)
-    }
-
-    override fun registerAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
-      super.registerAdapterDataObserver(observer)
-      adapter.registerAdapterDataObserver(observer)
-    }
-
-    override fun unregisterAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
-      super.unregisterAdapterDataObserver(observer)
-      adapter.unregisterAdapterDataObserver(observer)
     }
   }
 }
