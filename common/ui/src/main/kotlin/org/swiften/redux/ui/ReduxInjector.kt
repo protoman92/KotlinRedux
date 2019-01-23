@@ -37,6 +37,14 @@ interface IReduxPropContainer<State, StateProps, ActionProps> : IReduxPropLifecy
   var reduxProps: ReduxProps<State, StateProps, ActionProps>?
 }
 
+/**
+ * Similar to [IReduxPropContainer], but only for views that are not interested in [StaticProps]
+ * because its parent will manually inject [reduxProps].
+ */
+interface IVariableReduxPropContainer<StateProps, ActionProps> {
+  var reduxProps: VariableProps<StateProps, ActionProps>?
+}
+
 /** Maps [State] to [StateProps] for a [IReduxPropContainer] */
 interface IReduxStatePropMapper<State, OutProps, StateProps> {
   /** Map [State] to [StateProps] using [OutProps] */

@@ -48,6 +48,13 @@ internal open class VetoableObservableProp<T>(
   }
 }
 
+/** Use this to avoid lateinit modifiers for [VariableProps] */
+class ObservableVariableProps<S, A>(
+  notifier: (VariableProps<S, A>?, VariableProps<S, A>?) -> Unit
+) : ReadWriteProperty<Any?, VariableProps<S, A>?> by VetoableObservableProp(
+  { a, b -> a?.state == b?.state }, notifier
+)
+
 /** Use this to avoid lateinit modifiers for [ReduxProps] */
 class ObservableReduxProps<State, S, A>(
   notifier: (VariableProps<S, A>?, VariableProps<S, A>?) -> Unit
