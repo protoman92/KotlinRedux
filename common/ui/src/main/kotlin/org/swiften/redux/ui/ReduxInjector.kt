@@ -34,7 +34,7 @@ class EmptyReduxPropLifecycleOwner<State> : IReduxPropLifecycleOwner<State> {
 
 /** Represents a container for [ReduxProps] */
 interface IReduxPropContainer<State, StateProps, ActionProps> : IReduxPropLifecycleOwner<State> {
-  var reduxProps: ReduxProps<State, StateProps, ActionProps>
+  var reduxProps: ReduxProps<State, StateProps, ActionProps>?
 }
 
 /** Maps [State] to [StateProps] for a [IReduxPropContainer] */
@@ -127,7 +127,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
 
         if (next != prev) {
           val actions = mapper.mapAction(this.store.dispatch, it, outProps)
-          view.reduxProps = view.reduxProps.copy(variable = VariableProps(next, actions))
+          view.reduxProps = view.reduxProps?.copy(variable = VariableProps(next, actions))
         }
       }
     }
@@ -143,9 +143,12 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     val wrappedSub = ReduxSubscription {
       subscription.unsubscribe()
       view.afterPropInjectionEnds()
+
+      /** Set [IReduxPropContainer.reduxProps] to null to GC [StaticProps.injector] */
+      view.reduxProps = null
     }
 
-    view.reduxProps = view.reduxProps.copy(StaticProps(this, wrappedSub))
+    view.reduxProps = view.reduxProps?.copy(StaticProps(this, wrappedSub))
     return wrappedSub
   }
 }
@@ -155,12 +158,9 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
  * catch [UninitializedPropertyAccessException] because this is most probably declared as lateinit
  * in Kotlin code, and catch [NullPointerException] to satisfy Java code.
  */
-fun <State, S, A> IReduxPropContainer<State, S, A>.unsubscribeSafely(): ReduxProps<State, S, A>? {
+fun <State, S, A> IReduxPropContainer<State, S, A>.unsubscribeSafely() {
   try {
-    this.reduxProps.static.subscription.unsubscribe()
-    return this.reduxProps
+    this.reduxProps?.static?.subscription?.unsubscribe()
   } catch (e: UninitializedPropertyAccessException) {
   } catch (e: NullPointerException) { }
-
-  return null
 }

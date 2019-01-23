@@ -37,7 +37,7 @@ import org.swiften.redux.ui.ReduxProps
 class GardenActivity : AppCompatActivity(),
   IReduxPropContainer<Redux.State, Unit, Unit>,
   IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner() {
-  override lateinit var reduxProps: ReduxProps<Redux.State, Unit, Unit>
+  override var reduxProps: ReduxProps<Redux.State, Unit, Unit>? = null
 
   private lateinit var drawerLayout: DrawerLayout
   private lateinit var appBarConfiguration: AppBarConfiguration

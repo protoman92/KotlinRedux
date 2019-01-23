@@ -99,7 +99,7 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
     override fun onStart() {
       subscription = this@injectLifecycleProps.injectProps(
         object : IReduxPropContainer<State, SP, AP> by lifecycleOwner {
-          override var reduxProps: ReduxProps<State, SP, AP>
+          override var reduxProps: ReduxProps<State, SP, AP>?
             get() = lifecycleOwner.reduxProps
 
             /**

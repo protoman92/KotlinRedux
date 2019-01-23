@@ -80,7 +80,7 @@ class PlantListFragment : Fragment(),
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
       R.id.filter_zone -> {
-        this.reduxProps.variable?.actions?.updateGrowZone?.invoke()
+        this.reduxProps?.variable?.actions?.updateGrowZone?.invoke()
         true
       }
       else -> super.onOptionsItemSelected(item)

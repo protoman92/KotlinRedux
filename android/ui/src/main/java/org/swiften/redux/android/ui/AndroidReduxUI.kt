@@ -32,7 +32,7 @@ class AndroidPropInjector<State>(store: IReduxStore<State>) : ReduxPropInjector<
     mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
   ) = super.injectProps(
     object : IReduxPropContainer<State, StateProps, ActionProps> {
-      override var reduxProps: ReduxProps<State, StateProps, ActionProps>
+      override var reduxProps: ReduxProps<State, StateProps, ActionProps>?
         get() = view.reduxProps
         set(value) { runOnUIThread { view.reduxProps = value } }
 

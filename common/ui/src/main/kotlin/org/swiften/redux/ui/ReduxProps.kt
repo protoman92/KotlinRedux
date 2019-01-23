@@ -31,23 +31,18 @@ data class ReduxProps<State, StateProps, ActionProps>(
   val variable: VariableProps<StateProps, ActionProps>?
 )
 
-/**
- * Using observable delegates requires us to provide an initial value and does not work with
- * lateinit modifier. We can use this [ReadWriteProperty] to implement change listener for lateinit
- * properties. Note that [notifier] passes along both the previous and upcoming [T] values.
- */
-internal open class LateinitObservableProp<T>(
-  private val equalChecker: (T?, T) -> Boolean = { a, b -> a == b },
-  private val notifier: (T?, T) -> Unit
-) : ReadWriteProperty<Any?, T> where T : Any {
-  private lateinit var value: T
+/** Note that [notifier] passes along both the previous and upcoming [T] values */
+internal open class VetoableObservableProp<T>(
+  private val equalChecker: (T?, T?) -> Boolean = { a, b -> a == b },
+  private val notifier: (T?, T?) -> Unit
+) : ReadWriteProperty<Any?, T?> {
+  private var value: T? = null
   private val lock by lazy { ReentrantReadWriteLock() }
 
-  @Throws(UninitializedPropertyAccessException::class)
   override fun getValue(thisRef: Any?, property: KProperty<*>) = this.lock.read { this.value }
 
-  override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-    val previous = this.lock.read { if (this::value.isInitialized) this.value else null }
+  override fun setValue(thisRef: Any?, property: KProperty<*>, value: T?) {
+    val previous = this.lock.read { this.value }
     this.lock.write { this.value = value }
     this.lock.read { if (!this.equalChecker(previous, value)) { this.notifier(previous, value) } }
   }
@@ -56,6 +51,6 @@ internal open class LateinitObservableProp<T>(
 /** Use this to avoid lateinit modifiers for [ReduxProps] */
 class ObservableReduxProps<State, S, A>(
   notifier: (VariableProps<S, A>?, VariableProps<S, A>?) -> Unit
-) : ReadWriteProperty<Any?, ReduxProps<State, S, A>> by LateinitObservableProp<ReduxProps<State, S, A>>({ a, b ->
-  a?.variable?.state == b.variable?.state
-}, { prev, next -> notifier(prev?.variable, next.variable) })
+) : ReadWriteProperty<Any?, ReduxProps<State, S, A>?> by VetoableObservableProp({ a, b ->
+  a?.variable?.state == b?.variable?.state
+}, { prev, next -> notifier(prev?.variable, next?.variable) })

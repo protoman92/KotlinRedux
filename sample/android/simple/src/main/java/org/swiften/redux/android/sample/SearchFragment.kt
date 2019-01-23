@@ -84,7 +84,7 @@ class SearchFragment : Fragment(),
 
     override fun beforePropInjectionStarts(sp: StaticProps<State>) {
       this.parent.setOnClickListener {
-        this.reduxProps.variable?.actions?.also { it.goToMusicDetail() }
+        this.reduxProps?.variable?.actions?.also { it.goToMusicDetail() }
       }
     }
   }
@@ -123,7 +123,7 @@ class SearchFragment : Fragment(),
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable?) {
-      this@SearchFragment.reduxProps.variable?.also { it.actions.updateQuery(s?.toString()) }
+      this@SearchFragment.reduxProps?.variable?.also { it.actions.updateQuery(s?.toString()) }
     }
   }
 

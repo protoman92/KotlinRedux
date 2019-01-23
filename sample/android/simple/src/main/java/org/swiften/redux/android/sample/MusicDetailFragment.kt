@@ -47,7 +47,7 @@ class MusicDetailFragment : Fragment(),
   }
 
   private val trackOpenListener = View.OnClickListener {
-    this.reduxProps.variable?.actions?.also { a -> a.goToTrackInformation() }
+    this.reduxProps?.variable?.actions?.also { a -> a.goToTrackInformation() }
   }
 
   override fun onCreateView(
