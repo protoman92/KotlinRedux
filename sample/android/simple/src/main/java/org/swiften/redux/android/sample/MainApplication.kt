@@ -18,12 +18,9 @@ import org.swiften.redux.middleware.applyReduxMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.createSagaMiddleware
 import org.swiften.redux.store.FinalReduxStore
-import org.swiften.redux.ui.injectStaticProps
 
 /** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
-  private lateinit var dependency: MainDependency
-
   override fun onCreate() {
     super.onCreate()
     if (LeakCanary.isInAnalyzerProcess(this)) { return }
@@ -35,7 +32,6 @@ class MainApplication : Application() {
       createRouterMiddleware(
         createSingleActivityRouter<MainActivity, MainRedux.Screen>(this) { activity, screen ->
           val f: Fragment? = when (screen) {
-            is MainRedux.Screen.MainScreen -> MainFragment()
             is MainRedux.Screen.MusicDetail -> MusicDetailFragment()
 
             is MainRedux.Screen.WebView -> {
@@ -43,12 +39,14 @@ class MainApplication : Application() {
               activity.startActivity(browserIntent)
               null
             }
+
+            else -> null
           }
 
           f?.also {
             activity.supportFragmentManager
               .beginTransaction()
-              .add(R.id.fragment, it, it.javaClass.canonicalName)
+              .replace(R.id.fragment, it, it.javaClass.canonicalName)
               .addToBackStack(null)
               .commitAllowingStateLoss()
           }
@@ -58,8 +56,6 @@ class MainApplication : Application() {
     )(FinalReduxStore(State(), MainRedux.Reducer))
 
     val injector = AndroidPropInjector(store)
-    val dependency = MainDependency(injector)
-    this.dependency = dependency
 
     injector.startSerializableInjections(this) {
       when (it) {
@@ -67,10 +63,5 @@ class MainApplication : Application() {
         is MusicDetailFragment -> this.injectLifecycleProps(it, Unit, it)
       }
     }
-  }
-
-  override fun onTerminate() {
-    super.onTerminate()
-    this.dependency.injector.deinitialize()
   }
 }

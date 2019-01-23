@@ -107,6 +107,10 @@ dependencies {
   androidTestImplementation "androidx.test.espresso:espresso-intents:$espresso"
   androidTestImplementation "androidx.test.uiautomator:uiautomator:$project.ext.uiAutomatorVersion"
   testImplementation "junit:junit:$junit"
+
+  debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanary"
+  releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
+  debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanary"
 }
 
 // TODO Investigate why this fails locally.
