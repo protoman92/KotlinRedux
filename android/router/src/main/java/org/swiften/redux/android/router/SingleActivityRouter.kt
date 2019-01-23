@@ -28,17 +28,21 @@ internal class SingleActivityRouter<AT, Screen>(
     object : Application.ActivityLifecycleCallbacks {
       override fun onActivityPaused(activity: Activity?) {}
       override fun onActivityResumed(activity: Activity?) {}
-      override fun onActivityStarted(activity: Activity?) {}
-      override fun onActivityDestroyed(activity: Activity?) {}
-      override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-      override fun onActivityStopped(activity: Activity?) {}
 
-      override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+      override fun onActivityStarted(activity: Activity?) {
         activity?.also {
           require(this@SingleActivityRouter.cls.isInstance(activity))
           this@SingleActivityRouter.activity = this@SingleActivityRouter.cls.cast(it)
         }
       }
+
+      override fun onActivityStopped(activity: Activity?) {
+        this@SingleActivityRouter.activity = null
+      }
+
+      override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
+      override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
+      override fun onActivityDestroyed(activity: Activity?) {}
     }
   }
 
