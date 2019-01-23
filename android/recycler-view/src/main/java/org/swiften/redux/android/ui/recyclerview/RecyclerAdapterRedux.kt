@@ -28,7 +28,7 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
 }
 
 /** Inject props for a [RecyclerView.Adapter] with a compatible [VH] */
-fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecyclerViewProps(
+fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecyclerAdapterProps(
   adapter: Adapter,
   adapterMapper: IReduxStatePropMapper<State, Unit, Int>,
   vhMapper: IReduxPropMapper<State, Int, VHState, VHAction>
@@ -42,7 +42,7 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
       adapter.onCreateViewHolder(parent, viewType)
 
     override fun getItemCount() =
-      adapterMapper.mapState(this@injectRecyclerViewProps.lastState(), Unit)
+      adapterMapper.mapState(this@injectRecyclerAdapterProps.lastState(), Unit)
 
     override fun getItemViewType(position: Int) = adapter.getItemViewType(position)
     override fun getItemId(position: Int) = adapter.getItemId(position)
@@ -50,7 +50,7 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
 
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
-      this@injectRecyclerViewProps.injectProps(holder, position, vhMapper)
+      this@injectRecyclerAdapterProps.injectProps(holder, position, vhMapper)
     }
 
     /** Unsubscribe from [holder]'s subscription on recycling */

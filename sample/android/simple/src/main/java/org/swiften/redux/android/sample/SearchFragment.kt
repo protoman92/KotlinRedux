@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.android.ui.recyclerview.injectRecyclerViewProps
+import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapterProps
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
@@ -141,7 +141,7 @@ class SearchFragment : Fragment(),
       it.layoutManager = LinearLayoutManager(this.context)
 
       it.adapter = Adapter().let { a ->
-        sp.injector.injectRecyclerViewProps(a, a, ViewHolder)
+        sp.injector.injectRecyclerAdapterProps(a, a, ViewHolder)
       }
     }
   }
