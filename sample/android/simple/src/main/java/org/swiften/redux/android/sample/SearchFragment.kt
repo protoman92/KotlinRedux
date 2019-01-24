@@ -22,8 +22,8 @@ import kotlinx.android.synthetic.main.fragment_search.progressBar
 import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
+import org.swiften.redux.android.ui.lifecycle.recyclerview.injectDiffedAdapterProps
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapterProps
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
@@ -39,7 +39,7 @@ class SearchFragment : Fragment(),
   IReduxPropContainer<State, SearchFragment.S, SearchFragment.A>,
   IReduxPropLifecycleOwner<State> by EmptyReduxPropLifecycleOwner(),
   IReduxPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
-  data class S(val query: String?, val resultCount: Int?, val loading: Boolean?)
+  data class S(val query: String?, val loading: Boolean?)
   class A(val updateQuery: (String?) -> Unit)
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
@@ -97,7 +97,6 @@ class SearchFragment : Fragment(),
 
     override fun mapState(state: State, outProps: Unit) = S(
       state.autocompleteQuery,
-      state.musicResult?.resultCount,
       state.loadingMusic
     )
   }
@@ -109,10 +108,6 @@ class SearchFragment : Fragment(),
     } else {
       this.backgroundDim.visibility = View.GONE
       this.progressBar.visibility = View.GONE
-    }
-
-    if (next?.state?.resultCount != prev?.state?.resultCount) {
-      this.searchResult.adapter?.notifyDataSetChanged()
     }
   }
 
@@ -140,13 +135,14 @@ class SearchFragment : Fragment(),
       it.layoutManager = LinearLayoutManager(this.context)
 
       it.adapter = Adapter().let { a ->
-        sp.injector.injectDiffedAdapterProps(a, a, object : DiffUtil.ItemCallback<ViewHolder.S1>() {
-          override fun areItemsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
-            oldItem.trackName == newItem.trackName
+        sp.injector.injectDiffedAdapterProps(this, a, a,
+          object : DiffUtil.ItemCallback<ViewHolder.S1>() {
+            override fun areItemsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
+              oldItem.trackName == newItem.trackName
 
-          override fun areContentsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
-            oldItem == newItem
-        })
+            override fun areContentsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
+              oldItem == newItem
+          })
       }
     }
   }

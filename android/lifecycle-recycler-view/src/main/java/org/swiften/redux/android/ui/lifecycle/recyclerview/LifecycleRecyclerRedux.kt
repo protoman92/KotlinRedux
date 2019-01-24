@@ -34,7 +34,6 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectDiff
 
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback by EmptyLifecycleCallback {
     override fun onStop() {
-      println("Redux $adapter")
       wrappedAdapter.unsubscribeSafely()
     }
   })
