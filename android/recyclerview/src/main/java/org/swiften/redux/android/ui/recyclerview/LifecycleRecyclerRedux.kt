@@ -9,8 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.swiften.redux.android.ui.lifecycle.EmptyLifecycleCallback
-import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
+import org.swiften.redux.android.ui.lifecycle.LifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropInjector
@@ -32,8 +31,12 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
   Adapter : RecyclerView.Adapter<VH> {
   val wrappedAdapter = this.injectRecyclerAdapterProps(adapter, adapterMapper, vhMapper)
 
-  ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback by EmptyLifecycleCallback {
-    override fun onStop() { wrappedAdapter.unsubscribeSafely() }
+  ReduxLifecycleObserver(lifecycleOwner, object : LifecycleCallback() {
+    override fun onSafeForStartingLifecycleAwareTasks() {}
+
+    override fun onSafeForEndingLifecycleAwareTasks() {
+      wrappedAdapter.unsubscribeSafely()
+    }
   })
 
   return wrappedAdapter
@@ -48,12 +51,15 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectDiff
 ): ListAdapter<VHState, VH> where
   VH : RecyclerView.ViewHolder,
   VH : IVariableReduxPropContainer<VHState, VHAction>,
-  Adapter : RecyclerView.Adapter<VH>
-{
+  Adapter : RecyclerView.Adapter<VH> {
   val wrappedAdapter = this.injectDiffedAdapterProps(adapter, adapterMapper, diffCallback)
 
-  ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback by EmptyLifecycleCallback {
-    override fun onStop() { wrappedAdapter.unsubscribeSafely() }
+  ReduxLifecycleObserver(lifecycleOwner, object : LifecycleCallback() {
+    override fun onSafeForStartingLifecycleAwareTasks() {}
+
+    override fun onSafeForEndingLifecycleAwareTasks() {
+      wrappedAdapter.unsubscribeSafely()
+    }
   })
 
   return wrappedAdapter

@@ -14,7 +14,7 @@ import org.swiften.redux.ui.IReduxPropInjector
 /** Created by haipham on 2018/12/17 */
 /**
  * Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary. This injection
- * session automatically disposes of itself when [ILifecycleCallback.onDestroy] is called.
+ * session automatically disposes of itself when [LifecycleCallback.onDestroy] is called.
  */
 internal fun <State> IReduxPropInjector<State>.startFragmentInjection(
   activity: AppCompatActivity,
@@ -26,14 +26,18 @@ internal fun <State> IReduxPropInjector<State>.startFragmentInjection(
     }
   }
 
-  ReduxLifecycleObserver(activity,
-    object : ILifecycleCallback by EmptyLifecycleCallback {
-      override fun onCreate() {
-        activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
-      }
+  ReduxLifecycleObserver(activity, object : LifecycleCallback() {
+    override fun onCreate() {
+      super.onCreate()
+      activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
+    }
 
-      override fun onDestroy() {
-        activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
-      }
-    })
+    override fun onDestroy() {
+      super.onDestroy()
+      activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
+    }
+
+    override fun onSafeForStartingLifecycleAwareTasks() {}
+    override fun onSafeForEndingLifecycleAwareTasks() {}
+  })
 }
