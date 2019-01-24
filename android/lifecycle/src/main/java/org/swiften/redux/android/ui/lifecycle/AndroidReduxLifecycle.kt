@@ -49,7 +49,7 @@ object EmptyLifecycleCallback : ILifecycleCallback {
 }
 
 /** Use this [LifecycleObserver] to unsubscribe from a [ReduxSubscription] */
-internal class ReduxLifecycleObserver(
+class ReduxLifecycleObserver(
   private val lifecycleOwner: LifecycleOwner,
   private val callback: ILifecycleCallback
 ) : LifecycleObserver, ILifecycleCallback by callback {

@@ -13,6 +13,7 @@
       <module fileurl="file://$PROJECT_DIR$/android/core-rx-saga/core-rx-saga.iml" filepath="$PROJECT_DIR$/android/core-rx-saga/core-rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/final-store/final-store.iml" filepath="$PROJECT_DIR$/common/final-store/final-store.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/lifecycle/lifecycle.iml" filepath="$PROJECT_DIR$/android/lifecycle/lifecycle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/lifecycle-recycler-view/lifecycle-recycler-view.iml" filepath="$PROJECT_DIR$/android/lifecycle-recycler-view/lifecycle-recycler-view.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/livedata-rx-saga/livedata-rx-saga.iml" filepath="$PROJECT_DIR$/android/livedata-rx-saga/livedata-rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/middleware/middleware.iml" filepath="$PROJECT_DIR$/common/middleware/middleware.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/recycler-view/recycler-view.iml" filepath="$PROJECT_DIR$/android/recycler-view/recycler-view.iml" />

@@ -25,7 +25,7 @@ import org.swiften.redux.ui.unsubscribeSafely
  * Custom Redux-compatible [ListAdapter] implementation. This [ListAdapter] can receive [ReduxProps]
  * in order to call [ListAdapter.submitList].
  */
-internal abstract class ReduxListAdapter<State, S, A, VH>(
+abstract class ReduxListAdapter<State, VH, S, A>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<S>
 ) : ListAdapter<S, VH>(diffCallback),
@@ -93,12 +93,12 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectDiff
   adapter: Adapter,
   adapterMapper: IReduxPropMapper<State, Unit, List<VHState>?, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
-): ListAdapter<VHState, VH> where
+): ReduxListAdapter<State, VH, VHState, VHAction> where
   VH : RecyclerView.ViewHolder,
   VH : IVariableReduxPropContainer<VHState, VHAction>,
   Adapter : RecyclerView.Adapter<VH>
 {
-  val listAdapter = object : ReduxListAdapter<State, VHState, VHAction, VH>(adapter, diffCallback) {
+  val listAdapter = object : ReduxListAdapter<State, VH, VHState, VHAction>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
 
