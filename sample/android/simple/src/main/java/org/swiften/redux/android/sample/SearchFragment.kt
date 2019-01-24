@@ -46,8 +46,8 @@ class SearchFragment : Fragment(),
     IReduxPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> by Adapter {
     companion object : IReduxPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> {
       override fun mapState(state: State, outProps: Unit) =
-        state.musicResult?.results?.map { ViewHolder.S1(it.trackName, it.artistName) } ?:
-        arrayListOf()
+        state.musicResult?.results?.map { ViewHolder.S1(it.trackName, it.artistName) }
+        ?: arrayListOf()
 
       override fun mapAction(
         dispatch: IReduxDispatcher,
@@ -76,7 +76,7 @@ class SearchFragment : Fragment(),
     init {
       this.parent.setOnClickListener {
         val index = this.layoutPosition
-        this.reduxProps?.actions?.also { it.goToMusicDetail(index) }
+        this.reduxProps?.actions?.also { a -> a.goToMusicDetail(index) }
       }
     }
 

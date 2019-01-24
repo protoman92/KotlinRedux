@@ -5,8 +5,6 @@
 
 package org.swiften.redux.core
 
-import java.util.concurrent.atomic.AtomicBoolean
-
 /** Created by haipham on 2018/03/31 */
 /** Represents an [IReduxAction] dispatcher */
 typealias IReduxDispatcher = Function1<IReduxAction, Unit>

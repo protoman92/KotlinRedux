@@ -24,7 +24,7 @@ class PropInjectorTest {
     data class SetQuery(val query: String) : Action()
   }
 
-  class StoreWrapper(val store: IReduxStore<S>) : IReduxStore<S> by store {
+  class StoreWrapper(private val store: IReduxStore<S>) : IReduxStore<S> by store {
     var unsubscribeCount: Int = 0
 
     override val subscribe: IReduxSubscriber<S> = { id, callback ->

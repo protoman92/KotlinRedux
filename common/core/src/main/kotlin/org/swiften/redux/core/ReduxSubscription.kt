@@ -26,7 +26,8 @@ interface IReduxSubscription {
  */
 class ReduxSubscription(
   override val id: String,
-  private val _unsubscribe: () -> Unit) : IReduxSubscription {
+  private val _unsubscribe: () -> Unit
+) : IReduxSubscription {
   private val isUnsubscribed = AtomicBoolean()
 
   override fun unsubscribe() { if (!this.isUnsubscribed.getAndSet(true)) this._unsubscribe() }
@@ -53,7 +54,7 @@ class CompositeReduxSubscription(override val id: String) : IReduxSubscription {
   }
 
   fun add(subscription: IReduxSubscription) {
-    this.lock.write { this.subscriptions.set(subscription.id, subscription) }
+    this.lock.write { this.subscriptions[subscription.id] = subscription }
   }
 
   fun remove(subscribeId: String) = this.lock.write { this.subscriptions.remove(subscribeId) }

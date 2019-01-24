@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger
 /** Created by haipham on 2019/01/15 */
 class ReduxSubscriptionTest {
   @Test
+  @Suppress("ForEachParameterNotUsed")
   fun `Unsubscribing from multiple threads should perform only once`() {
     // Setup
     val unsubCount = AtomicInteger()
@@ -33,6 +34,7 @@ class ReduxSubscriptionTest {
   }
 
   @Test
+  @Suppress("ForEachParameterNotUsed")
   fun `Unsubscribing from composite subscription should perform only once`() {
     // Setup
     var unsubCount = 0

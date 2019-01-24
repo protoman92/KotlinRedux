@@ -5,7 +5,6 @@
 
 package org.swiften.redux.android.core.saga.rx
 
-import android.app.Application
 import android.content.Context
 import org.swiften.redux.saga.IReduxSagaEffect
 import org.swiften.redux.saga.ReduxSagaEffect

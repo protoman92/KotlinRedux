@@ -53,7 +53,7 @@ interface IReduxStatePropMapper<State, OutProps, StateProps> {
 
 /** Maps [IReduxDispatcher] and [State] to [ActionProps] for a [IReduxPropContainer] */
 interface IReduxActionPropMapper<State, OutProps, ActionProps> {
-  /** Map [IReduxDispatcher] to [ActionProps] using [GlobalState] and [OutProps] */
+  /** Map [IReduxDispatcher] to [ActionProps] using [State] and [OutProps] */
   fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: OutProps): ActionProps
 }
 
@@ -171,7 +171,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
  * catch [UninitializedPropertyAccessException] because this is most probably declared as lateinit
  * in Kotlin code, and catch [NullPointerException] to satisfy Java code. Also return the
  * [ReduxSubscription.id] that can be used to track and remove the relevant [ReduxSubscription]
- * from other storages.
+ * from other containers.
  */
 fun <State, S, A> IReduxPropContainer<State, S, A>.unsubscribeSafely(): String? {
   try {

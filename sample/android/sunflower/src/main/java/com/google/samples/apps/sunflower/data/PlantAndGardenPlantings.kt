@@ -16,11 +16,9 @@
 
 package com.google.samples.apps.sunflower.data
 
-import android.os.Parcelable
 import androidx.room.Embedded
 import androidx.room.Relation
 import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
 
 /**
  * This class captures the relationship between a [Plant] and a user's [GardenPlanting], which is

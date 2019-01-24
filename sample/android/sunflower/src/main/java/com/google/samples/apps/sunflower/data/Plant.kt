@@ -16,11 +16,9 @@
 
 package com.google.samples.apps.sunflower.data
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
 import java.util.Calendar
 import java.util.Calendar.DAY_OF_YEAR
 
