@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.ui.lifecycle.recyclerview
+package org.swiften.redux.android.ui.recyclerview
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.android.ui.lifecycle.EmptyLifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
-import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapterProps
-import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapterProps
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropInjector
 import org.swiften.redux.ui.IReduxPropMapper

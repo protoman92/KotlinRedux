@@ -88,6 +88,9 @@ abstract class ReduxListAdapter<State, VH, S, A>(
  * [VariableProps.actions] from [ReduxListAdapter.reduxProps] into each [VH] instance. The
  * [VHAction] should contain actions that take at least one [Int] parameter, (e.g. (Int) -> Unit),
  * so that we can use [RecyclerView.ViewHolder.getLayoutPosition] to call them.
+ *
+ * Note that this does not support lifecycle handling, so we will need to manually set null via
+ * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].
  */
 fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectDiffedAdapterProps(
   adapter: Adapter,
@@ -96,8 +99,7 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectDiff
 ): ReduxListAdapter<State, VH, VHState, VHAction> where
   VH : RecyclerView.ViewHolder,
   VH : IVariableReduxPropContainer<VHState, VHAction>,
-  Adapter : RecyclerView.Adapter<VH>
-{
+  Adapter : RecyclerView.Adapter<VH> {
   val listAdapter = object : ReduxListAdapter<State, VH, VHState, VHAction>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)

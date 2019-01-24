@@ -92,10 +92,14 @@ abstract class DelegateRecyclerAdapter<VH>(
    * [RecyclerView.Adapter.onBindViewHolder] is called. As a result, calling this method will
    * ensure proper deinitialization.
    */
-  fun unsubscribeSafely() = this.composite.unsubscribe()
+  internal fun unsubscribeSafely() = this.composite.unsubscribe()
 }
 
-/** Inject props for a [RecyclerView.Adapter] with a compatible [VH] */
+/**
+ * Inject props for a [RecyclerView.Adapter] with a compatible [VH]. Note that this does not
+ * support lifecycle handling, so we will need to manually set null via [RecyclerView.setAdapter]
+ * in order to invoke [RecyclerView.Adapter.onViewRecycled], e.g. on orientation change.
+ */
 fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecyclerAdapterProps(
   adapter: Adapter,
   adapterMapper: IReduxStatePropMapper<State, Unit, Int>,
@@ -118,6 +122,11 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
     override fun onViewRecycled(holder: VH) {
       super.onViewRecycled(holder)
       holder.unsubscribeSafely()?.also { this.composite.remove(it) }
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+      super.onDetachedFromRecyclerView(recyclerView)
+      this.unsubscribeSafely()
     }
   }
 }
