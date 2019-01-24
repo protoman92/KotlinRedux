@@ -101,6 +101,13 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     outProps: OutProps,
     mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
   ): ReduxSubscription {
+    /**
+     * It does not matter what the id is, as long as it is unique. This is because we will be
+     * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep
+     * track of this id.
+     */
+    val subscriberId = "${view.javaClass}${Date().time}"
+
     /** If [view] has received an injection before, unsubscribe from that */
     view.unsubscribeSafely()
 
@@ -109,7 +116,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
      * [ReduxSubscription], but [StaticProps.injector] is still available for
      * [IReduxPropLifecycleOwner.beforePropInjectionStarts]
      */
-    val staticProps = StaticProps(this, ReduxSubscription {})
+    val staticProps = StaticProps(this, ReduxSubscription(subscriberId) {})
 
     /**
      * Inject [StaticProps] with a placebo [StaticProps.subscription] because we want
@@ -121,12 +128,6 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     /** [StaticProps.injector] is now available for child injections */
     view.beforePropInjectionStarts(staticProps)
 
-    /**
-     * It does not matter what the id is, as long as it is unique. This is because we will be
-     * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep
-     * track of this id.
-     */
-    val subscriberId = "${view.javaClass}${Date().time}"
     val lock = ReentrantReadWriteLock()
     var previousState: StateProps? = null
 
@@ -152,7 +153,7 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
     val subscription = this.store.subscribe(subscriberId, onStateUpdate)
 
     /** Wrap a [ReduxSubscription] to perform [IReduxPropLifecycleOwner.afterPropInjectionEnds] */
-    val wrappedSub = ReduxSubscription {
+    val wrappedSub = ReduxSubscription(subscription.id) {
       subscription.unsubscribe()
       view.afterPropInjectionEnds()
 

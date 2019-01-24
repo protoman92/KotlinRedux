@@ -5,7 +5,6 @@
 
 package org.swiften.redux.core
 
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -20,14 +19,10 @@ class ReduxSubscriptionTest {
   fun `Unsubscribing from multiple threads should perform only once`() {
     // Setup
     val unsubCount = AtomicInteger()
-    val subscription = ReduxSubscription { unsubCount.incrementAndGet() }
+    val subscription = ReduxSubscription("") { unsubCount.incrementAndGet() }
 
     // When
-    val coroutines = (0 until 100).map {
-      GlobalScope.launch(start = CoroutineStart.LAZY) { subscription.unsubscribe() }
-    }
-
-    coroutines.forEach { it.start() }
+    (0 until 100).forEach { GlobalScope.launch { subscription.unsubscribe() } }
 
     runBlocking {
       delay(1000)
@@ -35,5 +30,39 @@ class ReduxSubscriptionTest {
       // Then
       Assert.assertEquals(unsubCount.get(), 1)
     }
+  }
+
+  @Test
+  fun `Unsubscribing from composite subscription should perform only once`() {
+    // Setup
+    var unsubCount = 0
+    val subscriptions = (0 until 100).map { ReduxSubscription("$it") { unsubCount += 1 } }
+    val composite = CompositeReduxSubscription("")
+
+    runBlocking {
+      // When
+      subscriptions.forEach { GlobalScope.launch { composite.add(it) } }
+      delay(1000)
+      (0 until 100).forEach { GlobalScope.launch { composite.unsubscribe() } }
+      delay(1000)
+
+      // Then
+      Assert.assertEquals(unsubCount, subscriptions.size)
+    }
+  }
+
+  @Test
+  fun `Removing subscription from composite should work`() {
+    // Setup
+    var unsubCount = 0
+    val subscription = ReduxSubscription("123") { unsubCount += 1 }
+    val composite = CompositeReduxSubscription("")
+
+    // When
+    composite.remove(subscription)
+    composite.unsubscribe()
+
+    // Then
+    Assert.assertEquals(unsubCount, 0)
   }
 }

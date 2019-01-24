@@ -39,7 +39,7 @@ class SimpleReduxStore<State>(
 
     /** Relay the last [State] to this subscriber */
     this.lock.read { callback(this.state) }
-    ReduxSubscription { this.lock.write { this.subscribers.remove(id) } }
+    ReduxSubscription(id) { this.lock.write { this.subscribers.remove(id) } }
   }
 
   override val deinitialize: IReduxDeinitializer = {

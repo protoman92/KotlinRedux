@@ -32,16 +32,6 @@ typealias IReduxInitializer = Function0<Unit>
 /** Perform some deinitialization logic */
 typealias IReduxDeinitializer = Function0<Unit>
 
-/**
- * Use this class to perform some [unsubscribe] logic. For e.g.: terminate a [ReduxSubscription]
- * from [IReduxStore.subscribe].
- */
-class ReduxSubscription(private val _unsubscribe: () -> Unit) {
-  private val isUnsubscribed = AtomicBoolean()
-
-  fun unsubscribe() { if (!this.isUnsubscribed.getAndSet(true)) this._unsubscribe() }
-}
-
 /** Represents a Redux action */
 interface IReduxAction
 

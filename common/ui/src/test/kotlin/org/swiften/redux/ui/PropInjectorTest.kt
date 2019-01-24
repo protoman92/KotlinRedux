@@ -27,23 +27,18 @@ class PropInjectorTest {
   class StoreWrapper(val store: IReduxStore<S>) : IReduxStore<S> by store {
     var unsubscribeCount: Int = 0
 
-    override val subscribe = object : IReduxSubscriber<S> {
-      override operator fun invoke(
-        subscriberId: String,
-        callback: Function1<S, Unit>
-      ): ReduxSubscription {
-        val sub = this@StoreWrapper.store.subscribe(subscriberId, callback)
+    override val subscribe: IReduxSubscriber<S> = { id, callback ->
+      val sub = this@StoreWrapper.store.subscribe(id, callback)
 
-        return ReduxSubscription {
-          this@StoreWrapper.unsubscribeCount += 1
-          sub.unsubscribe()
-        }
+      ReduxSubscription(id) {
+        this@StoreWrapper.unsubscribeCount += 1
+        sub.unsubscribe()
       }
     }
   }
 
-  class View : IReduxPropContainer<S, S, A> {
-    override var reduxProps by ObservableReduxProps<S, S, A> { prev, next ->
+  class View : IReduxPropContainer<PropInjectorTest.S, PropInjectorTest.S, PropInjectorTest.A> {
+    override var reduxProps by ObservableReduxProps<PropInjectorTest.S, S, A> { prev, next ->
       this.propCallback(prev, next)
       this.reduxPropsInjectionCount += 1
     }
