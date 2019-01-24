@@ -30,21 +30,24 @@ import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.IReduxStatePropMapper
-import org.swiften.redux.ui.ObservableReduxProps
-import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.IVariableReduxPropContainer
+import org.swiften.redux.ui.ObservableVariableProps
 
 /**
  * Adapter for the [RecyclerView] in [PlantListFragment].
  */
 class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
-  IReduxStatePropMapper<Redux.State, Unit, Int> by PlantAdapter {
-  companion object : IReduxStatePropMapper<Redux.State, Unit, Int> {
-    override fun mapState(state: Redux.State, outProps: Unit) = state.plants?.size ?: 0
+  IReduxPropMapper<Redux.State, Unit, List<Plant>?, PlantAdapter.ViewHolder.A> by PlantAdapter {
+  companion object : IReduxPropMapper<Redux.State, Unit, List<Plant>?, ViewHolder.A> {
+    override fun mapState(state: Redux.State, outProps: Unit) = state.plants
+
+    override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) =
+      ViewHolder.A { index ->
+        state.plants?.elementAtOrNull(index)?.plantId?.also {
+          dispatch(Redux.Screen.PlantListToPlantDetail(it))
+        }
+      }
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -55,25 +58,20 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IReduxPropContainer<Redux.State, ViewHolder.S, ViewHolder.A>,
-    IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner(),
-    IReduxPropMapper<Redux.State, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
-    data class S(val plant: Plant?)
-    class A(val goToPlantDetail: () -> Unit)
+    IVariableReduxPropContainer<Plant, ViewHolder.A> {
+    class A(val goToPlantDetail: (Int) -> Unit)
 
-    companion object : IReduxPropMapper<Redux.State, Int, S, A> {
-      override fun mapState(state: Redux.State, outProps: Int) =
-        S(state.plants?.elementAtOrNull(outProps))
+    private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
+    private val title: TextView = itemView.findViewById(R.id.plant_item_title)
 
-      override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Int) = A {
-        this.mapState(state, outProps).plant?.plantId?.also {
-          dispatch(Redux.Screen.PlantListToPlantDetail(it))
-        }
+    init {
+      this.itemView.setOnClickListener {
+        this@ViewHolder.reduxProps?.actions?.goToPlantDetail?.invoke(this.layoutPosition)
       }
     }
 
-    override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
-      next?.state?.plant?.also {
+    override var reduxProps by ObservableVariableProps<Plant, A> { _, next ->
+      next?.state?.also {
         this.title.text = it.name
 
         Picasso.get()
@@ -81,15 +79,6 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
           .centerCrop()
           .resize(SMALL_IMAGE_DIMEN, SMALL_IMAGE_DIMEN)
           .into(this.image)
-      }
-    }
-
-    private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
-    private val title: TextView = itemView.findViewById(R.id.plant_item_title)
-
-    override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
-      this.itemView.setOnClickListener {
-        this@ViewHolder.reduxProps?.variable?.actions?.goToPlantDetail?.invoke()
       }
     }
   }

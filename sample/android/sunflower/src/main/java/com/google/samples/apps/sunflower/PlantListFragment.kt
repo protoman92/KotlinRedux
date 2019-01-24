@@ -24,10 +24,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
+import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
-import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapterProps
+import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapterProps
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
@@ -89,7 +91,13 @@ class PlantListFragment : Fragment(),
 
   override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
     this.plant_list.adapter = PlantAdapter().let {
-      sp.injector.injectRecyclerAdapterProps(this, it, it, PlantAdapter.ViewHolder)
+      sp.injector.injectDiffedAdapterProps(this, it, it,
+        object : DiffUtil.ItemCallback<Plant>() {
+          override fun areItemsTheSame(oldItem: Plant, newItem: Plant) =
+            oldItem.plantId == newItem.plantId
+
+          override fun areContentsTheSame(oldItem: Plant, newItem: Plant) = oldItem == newItem
+        })
     }
   }
 }

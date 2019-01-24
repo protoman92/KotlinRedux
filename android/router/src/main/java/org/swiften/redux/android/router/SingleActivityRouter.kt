@@ -53,7 +53,7 @@ internal class SingleActivityRouter<AT, Screen>(
   }
 
   override fun navigate(screen: Screen) {
-    this.activity?.also { this.navigate(it, screen) }
+    this.activity?.let { this.navigate(it, screen) }
   }
 }
 
