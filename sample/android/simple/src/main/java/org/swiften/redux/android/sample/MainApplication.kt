@@ -46,7 +46,7 @@ class MainApplication : Application() {
           f?.also {
             activity.supportFragmentManager
               .beginTransaction()
-              .replace(R.id.fragment, it, it.javaClass.canonicalName)
+              .add(R.id.fragment, it, it.javaClass.canonicalName)
               .addToBackStack(null)
               .commitAllowingStateLoss()
           }

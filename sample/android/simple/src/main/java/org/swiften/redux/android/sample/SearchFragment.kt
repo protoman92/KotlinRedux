@@ -101,7 +101,7 @@ class SearchFragment : Fragment(),
     )
   }
 
-  override var reduxProps by ObservableReduxProps<State, S, A> { prev, next ->
+  override var reduxProps by ObservableReduxProps<State, S, A> { _, next ->
     if (next?.state?.loading == true) {
       this.backgroundDim.visibility = View.VISIBLE
       this.progressBar.visibility = View.VISIBLE

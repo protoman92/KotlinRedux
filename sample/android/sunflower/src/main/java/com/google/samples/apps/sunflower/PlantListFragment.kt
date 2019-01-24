@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
+import org.swiften.redux.android.ui.lifecycle.recyclerview.injectRecyclerAdapterProps
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapterProps
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
@@ -89,7 +90,7 @@ class PlantListFragment : Fragment(),
 
   override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
     this.plant_list.adapter = PlantAdapter().let {
-      sp.injector.injectRecyclerAdapterProps(it, it, PlantAdapter.ViewHolder)
+      sp.injector.injectRecyclerAdapterProps(this, it, it, PlantAdapter.ViewHolder)
     }
   }
 }
