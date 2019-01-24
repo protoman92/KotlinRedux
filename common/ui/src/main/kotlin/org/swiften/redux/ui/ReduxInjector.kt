@@ -169,11 +169,17 @@ open class ReduxPropInjector<State>(private val store: IReduxStore<State>) :
 /**
  * Unsubscribe from [IReduxPropContainer.reduxProps] safely, i.e.
  * catch [UninitializedPropertyAccessException] because this is most probably declared as lateinit
- * in Kotlin code, and catch [NullPointerException] to satisfy Java code.
+ * in Kotlin code, and catch [NullPointerException] to satisfy Java code. Also return the
+ * [ReduxSubscription.id] that can be used to track and remove the relevant [ReduxSubscription]
+ * from other storages.
  */
-fun <State, S, A> IReduxPropContainer<State, S, A>.unsubscribeSafely() {
+fun <State, S, A> IReduxPropContainer<State, S, A>.unsubscribeSafely(): String? {
   try {
-    this.reduxProps?.static?.subscription?.unsubscribe()
+    val subscription = this.reduxProps?.static?.subscription
+    subscription?.unsubscribe()
+    return subscription?.id
   } catch (e: UninitializedPropertyAccessException) {
   } catch (e: NullPointerException) { }
+
+  return null
 }

@@ -7,11 +7,13 @@ package org.swiften.redux.android.ui.recyclerview
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropInjector
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.IReduxStatePropMapper
 import org.swiften.redux.ui.unsubscribeSafely
+import java.util.Date
 
 /** Created by haipham on 2019/01/08 */
 /**
@@ -28,9 +30,11 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
 }
 
 /** [RecyclerView.Adapter] that delegates method calls to another [RecyclerView.Adapter] */
-internal abstract class DelegateRecyclerAdapter<VH>(
+abstract class DelegateRecyclerAdapter<VH>(
   private val adapter: RecyclerView.Adapter<VH>
 ) : RecyclerView.Adapter<VH>() where VH : RecyclerView.ViewHolder {
+  protected val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
+
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
     adapter.onCreateViewHolder(parent, viewType)
 
@@ -81,6 +85,14 @@ internal abstract class DelegateRecyclerAdapter<VH>(
     super.unregisterAdapterDataObserver(observer)
     adapter.unregisterAdapterDataObserver(observer)
   }
+
+  /**
+   * Since we will be performing [IReduxPropInjector.injectProps] for [VH] instances, we will be
+   * be using [CompositeReduxSubscription.add] a lot every time
+   * [RecyclerView.Adapter.onBindViewHolder] is called. As a result, calling this method will
+   * ensure proper deinitialization.
+   */
+  fun unsubscribeSafely() = this.composite.unsubscribe()
 }
 
 /** Inject props for a [RecyclerView.Adapter] with a compatible [VH] */
@@ -88,24 +100,24 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
   adapter: Adapter,
   adapterMapper: IReduxStatePropMapper<State, Unit, Int>,
   vhMapper: IReduxPropMapper<State, Int, VHState, VHAction>
-): RecyclerView.Adapter<VH> where
+): DelegateRecyclerAdapter<VH> where
   VH : RecyclerView.ViewHolder,
   VH : IReduxPropContainer<State, VHState, VHAction>,
-  Adapter : RecyclerView.Adapter<VH>
-{
+  Adapter : RecyclerView.Adapter<VH> {
   return object : DelegateRecyclerAdapter<VH>(adapter) {
     override fun getItemCount() =
       adapterMapper.mapState(this@injectRecyclerAdapterProps.lastState(), Unit)
 
     override fun onBindViewHolder(holder: VH, position: Int) {
       super.onBindViewHolder(holder, position)
-      this@injectRecyclerAdapterProps.injectProps(holder, position, vhMapper)
+      val subscription = this@injectRecyclerAdapterProps.injectProps(holder, position, vhMapper)
+      this.composite.add(subscription)
     }
 
     /** Unsubscribe from [holder]'s subscription on recycling */
     override fun onViewRecycled(holder: VH) {
       super.onViewRecycled(holder)
-      holder.unsubscribeSafely()
+      holder.unsubscribeSafely()?.also { this.composite.remove(it) }
     }
   }
 }

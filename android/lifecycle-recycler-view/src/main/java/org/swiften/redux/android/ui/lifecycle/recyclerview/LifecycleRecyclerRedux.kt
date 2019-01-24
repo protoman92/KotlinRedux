@@ -13,12 +13,34 @@ import org.swiften.redux.android.ui.lifecycle.EmptyLifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapterProps
+import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapterProps
+import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropInjector
 import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.IReduxStatePropMapper
 import org.swiften.redux.ui.IVariableReduxPropContainer
 import org.swiften.redux.ui.unsubscribeSafely
 
 /** Created by haipham on 2019/01/24/1 */
+/** Perform [injectRecyclerAdapterProps], but also handle lifecycle with [lifecycleOwner] */
+fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecyclerAdapterProps(
+  lifecycleOwner: LifecycleOwner,
+  adapter: Adapter,
+  adapterMapper: IReduxStatePropMapper<State, Unit, Int>,
+  vhMapper: IReduxPropMapper<State, Int, VHState, VHAction>
+): RecyclerView.Adapter<VH> where
+  VH : RecyclerView.ViewHolder,
+  VH : IReduxPropContainer<State, VHState, VHAction>,
+  Adapter : RecyclerView.Adapter<VH> {
+  val wrappedAdapter = this.injectRecyclerAdapterProps(adapter, adapterMapper, vhMapper)
+
+  ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback by EmptyLifecycleCallback {
+    override fun onStop() { wrappedAdapter.unsubscribeSafely() }
+  })
+
+  return wrappedAdapter
+}
+
 /** Perform [injectDiffedAdapterProps], but also handle lifecycle with [lifecycleOwner] */
 fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectDiffedAdapterProps(
   lifecycleOwner: LifecycleOwner,
@@ -33,9 +55,7 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectDiff
   val wrappedAdapter = this.injectDiffedAdapterProps(adapter, adapterMapper, diffCallback)
 
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback by EmptyLifecycleCallback {
-    override fun onStop() {
-      wrappedAdapter.unsubscribeSafely()
-    }
+    override fun onStop() { wrappedAdapter.unsubscribeSafely() }
   })
 
   return wrappedAdapter
