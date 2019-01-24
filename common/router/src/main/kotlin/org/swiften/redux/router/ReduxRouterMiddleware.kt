@@ -33,13 +33,13 @@ interface IReduxRouter<Screen> : IReduxDeinitializerProvider where Screen : IRed
 
 /** [IReduxMiddleware] implementation for [IReduxRouter] middleware */
 @PublishedApi
-internal class ReduxRouterMiddleware<State, Screen>(
+internal class ReduxRouterMiddleware<GlobalState, Screen>(
   private val cls: Class<Screen>,
   private val router: IReduxRouter<Screen>
-) : IReduxMiddleware<State> where Screen : IReduxRouterScreen {
+) : IReduxMiddleware<GlobalState> where Screen : IReduxRouterScreen {
   constructor(cls: KClass<Screen>, router: IReduxRouter<Screen>) : this(cls.java, router)
 
-  override fun invoke(p1: ReduxMiddlewareInput<State>): ReduxDispatchMapper {
+  override fun invoke(p1: ReduxMiddlewareInput<GlobalState>): ReduxDispatchMapper {
     return { wrapper ->
       ReduxDispatchWrapper("$wrapper.id-router") { action ->
         wrapper.dispatch(action)
@@ -62,6 +62,6 @@ internal class ReduxRouterMiddleware<State, Screen>(
 }
 
 /** Create a [ReduxRouterMiddleware] with [router] */
-inline fun <State, reified Screen> createRouterMiddleware(router: IReduxRouter<Screen>):
-  IReduxMiddleware<State> where Screen : IReduxRouterScreen =
+inline fun <GlobalState, reified Screen> createRouterMiddleware(router: IReduxRouter<Screen>):
+  IReduxMiddleware<GlobalState> where Screen : IReduxRouterScreen =
   ReduxRouterMiddleware(Screen::class, router)

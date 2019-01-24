@@ -14,15 +14,15 @@ import kotlin.reflect.KProperty
 
 /** Created by haipham on 2019/01/16 */
 /** Container for an [IReduxPropContainer] static properties */
-data class StaticProps<State>(
-  val injector: IReduxPropInjector<State>,
+data class StaticProps<GlobalState>(
+  val injector: IReduxPropInjector<GlobalState>,
   internal val subscription: ReduxSubscription
 )
 
 /** Container for an [IReduxPropContainer] mutable properties */
-data class VariableProps<StateProps, ActionProps>(
-  val state: StateProps,
-  val actions: ActionProps
+data class VariableProps<State, Action>(
+  val state: State,
+  val action: Action
 )
 
 /** Container for [StaticProps] and [VariableProps] */
@@ -56,8 +56,8 @@ class ObservableVariableProps<S, A>(
 )
 
 /** Use this to avoid lateinit modifiers for [ReduxProps] */
-class ObservableReduxProps<State, S, A>(
+class ObservableReduxProps<GlobalState, S, A>(
   notifier: (VariableProps<S, A>?, VariableProps<S, A>?) -> Unit
-) : ReadWriteProperty<Any?, ReduxProps<State, S, A>?> by VetoableObservableProp({ a, b ->
+) : ReadWriteProperty<Any?, ReduxProps<GlobalState, S, A>?> by VetoableObservableProp({ a, b ->
   a?.variable?.state == b?.variable?.state
 }, { prev, next -> notifier(prev?.variable, next?.variable) })

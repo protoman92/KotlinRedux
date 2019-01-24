@@ -100,13 +100,13 @@ abstract class DelegateRecyclerAdapter<VH>(
  * support lifecycle handling, so we will need to manually set null via [RecyclerView.setAdapter]
  * in order to invoke [RecyclerView.Adapter.onViewRecycled], e.g. on orientation change.
  */
-fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecyclerAdapterProps(
+fun <GlobalState, Adapter, VH, VHState, VHAction> IReduxPropInjector<GlobalState>.injectRecyclerAdapterProps(
   adapter: Adapter,
-  adapterMapper: IReduxStatePropMapper<State, Unit, Int>,
-  vhMapper: IReduxPropMapper<State, Int, VHState, VHAction>
+  adapterMapper: IReduxStatePropMapper<GlobalState, Unit, Int>,
+  vhMapper: IReduxPropMapper<GlobalState, Int, VHState, VHAction>
 ): DelegateRecyclerAdapter<VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IReduxPropContainer<State, VHState, VHAction>,
+  VH : IReduxPropContainer<GlobalState, VHState, VHAction>,
   Adapter : RecyclerView.Adapter<VH> {
   return object : DelegateRecyclerAdapter<VH>(adapter) {
     override fun getItemCount() =

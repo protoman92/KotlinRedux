@@ -105,14 +105,14 @@ class ReduxLifecycleObserver(
 }
 
 /** Call [IReduxPropInjector.injectProps] for [lifecycleOwner] */
-fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
+fun <GlobalState, LC, OP, S, A> IReduxPropInjector<GlobalState>.injectLifecycleProps(
   lifecycleOwner: LC,
   outProps: OP,
-  mapper: IReduxPropMapper<State, OP, SP, AP>
+  mapper: IReduxPropMapper<GlobalState, OP, S, A>
 ): LC where
   LC : LifecycleOwner,
-  LC : IReduxPropContainer<State, SP, AP>,
-  LC : IReduxPropLifecycleOwner<State> {
+  LC : IReduxPropContainer<GlobalState, S, A>,
+  LC : IReduxPropLifecycleOwner<GlobalState> {
   var subscription: ReduxSubscription? = null
 
   /**
@@ -124,8 +124,8 @@ fun <State, LC, OP, SP, AP> IReduxPropInjector<State>.injectLifecycleProps(
   ReduxLifecycleObserver(lifecycleOwner, object : LifecycleCallback() {
     override fun onSafeForStartingLifecycleAwareTasks() {
       subscription = this@injectLifecycleProps.injectProps(
-        object : IReduxPropContainer<State, SP, AP> by lifecycleOwner {
-          override var reduxProps: ReduxProps<State, SP, AP>?
+        object : IReduxPropContainer<GlobalState, S, A> by lifecycleOwner {
+          override var reduxProps: ReduxProps<GlobalState, S, A>?
             get() = lifecycleOwner.reduxProps
 
             /**

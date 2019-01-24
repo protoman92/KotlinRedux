@@ -15,19 +15,19 @@ import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropInjector
 import org.swiften.redux.ui.IReduxPropMapper
 import org.swiften.redux.ui.IReduxStatePropMapper
-import org.swiften.redux.ui.IVariableReduxPropContainer
+import org.swiften.redux.ui.IVariablePropContainer
 import org.swiften.redux.ui.unsubscribeSafely
 
 /** Created by haipham on 2019/01/24/1 */
 /** Perform [injectRecyclerAdapterProps], but also handle lifecycle with [lifecycleOwner] */
-fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecyclerAdapterProps(
+fun <GlobalState, Adapter, VH, VHState, VHAction> IReduxPropInjector<GlobalState>.injectRecyclerAdapterProps(
   lifecycleOwner: LifecycleOwner,
   adapter: Adapter,
-  adapterMapper: IReduxStatePropMapper<State, Unit, Int>,
-  vhMapper: IReduxPropMapper<State, Int, VHState, VHAction>
+  adapterMapper: IReduxStatePropMapper<GlobalState, Unit, Int>,
+  vhMapper: IReduxPropMapper<GlobalState, Int, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IReduxPropContainer<State, VHState, VHAction>,
+  VH : IReduxPropContainer<GlobalState, VHState, VHAction>,
   Adapter : RecyclerView.Adapter<VH> {
   val wrappedAdapter = this.injectRecyclerAdapterProps(adapter, adapterMapper, vhMapper)
 
@@ -43,14 +43,14 @@ fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectRecy
 }
 
 /** Perform [injectDiffedAdapterProps], but also handle lifecycle with [lifecycleOwner] */
-fun <State, Adapter, VH, VHState, VHAction> IReduxPropInjector<State>.injectDiffedAdapterProps(
+fun <GlobalState, Adapter, VH, VHState, VHAction> IReduxPropInjector<GlobalState>.injectDiffedAdapterProps(
   lifecycleOwner: LifecycleOwner,
   adapter: Adapter,
-  adapterMapper: IReduxPropMapper<State, Unit, List<VHState>?, VHAction>,
+  adapterMapper: IReduxPropMapper<GlobalState, Unit, List<VHState>?, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IVariableReduxPropContainer<VHState, VHAction>,
+  VH : IVariablePropContainer<VHState, VHAction>,
   Adapter : RecyclerView.Adapter<VH> {
   val wrappedAdapter = this.injectDiffedAdapterProps(adapter, adapterMapper, diffCallback)
 

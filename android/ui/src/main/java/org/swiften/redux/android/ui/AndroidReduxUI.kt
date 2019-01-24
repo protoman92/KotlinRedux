@@ -25,18 +25,19 @@ internal fun runOnUIThread(runnable: () -> Unit) {
  * [ReduxPropInjector] specifically for Android that calls [injectProps] on the main thread. We
  * use inheritance here to ensure [StaticProps.injector] is set with this class instance.
  */
-class AndroidPropInjector<State>(store: IReduxStore<State>) : ReduxPropInjector<State>(store) {
-  override fun <OutProps, StateProps, ActionProps> injectProps(
-    view: IReduxPropContainer<State, StateProps, ActionProps>,
+class AndroidPropInjector<GlobalState>(store: IReduxStore<GlobalState>) :
+  ReduxPropInjector<GlobalState>(store) {
+  override fun <OutProps, State, Action> injectProps(
+    view: IReduxPropContainer<GlobalState, State, Action>,
     outProps: OutProps,
-    mapper: IReduxPropMapper<State, OutProps, StateProps, ActionProps>
+    mapper: IReduxPropMapper<GlobalState, OutProps, State, Action>
   ) = super.injectProps(
-    object : IReduxPropContainer<State, StateProps, ActionProps> {
-      override var reduxProps: ReduxProps<State, StateProps, ActionProps>?
+    object : IReduxPropContainer<GlobalState, State, Action> {
+      override var reduxProps: ReduxProps<GlobalState, State, Action>?
         get() = view.reduxProps
         set(value) { runOnUIThread { view.reduxProps = value } }
 
-      override fun beforePropInjectionStarts(sp: StaticProps<State>) = runOnUIThread {
+      override fun beforePropInjectionStarts(sp: StaticProps<GlobalState>) = runOnUIThread {
         view.beforePropInjectionStarts(sp)
       }
 

@@ -31,7 +31,7 @@ import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IReduxDispatcher
 import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.IVariableReduxPropContainer
+import org.swiften.redux.ui.IVariablePropContainer
 import org.swiften.redux.ui.ObservableVariableProps
 
 /**
@@ -58,7 +58,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IVariableReduxPropContainer<Plant, ViewHolder.A> {
+    IVariablePropContainer<Plant, ViewHolder.A> {
     class A(val goToPlantDetail: (Int) -> Unit)
 
     private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
@@ -66,7 +66,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
 
     init {
       this.itemView.setOnClickListener {
-        this@ViewHolder.reduxProps?.actions?.goToPlantDetail?.invoke(this.layoutPosition)
+        this@ViewHolder.reduxProps?.action?.goToPlantDetail?.invoke(this.layoutPosition)
       }
     }
 

@@ -21,10 +21,10 @@ import org.swiften.redux.middleware.ReduxMiddlewareInput
  * [IReduxMiddleware] implementation for [IReduxSagaEffect]. Every time an [IReduxAction] is
  * received, call [IReduxSagaOutput.onAction].
  */
-internal class ReduxSagaMiddleware<State>(
+internal class ReduxSagaMiddleware<GlobalState>(
   private val effects: Collection<IReduxSagaEffect<*>>
-) : IReduxMiddleware<State> {
-  override fun invoke(p1: ReduxMiddlewareInput<State>): ReduxDispatchMapper {
+) : IReduxMiddleware<GlobalState> {
+  override fun invoke(p1: ReduxMiddlewareInput<GlobalState>): ReduxDispatchMapper {
     return { wrapper ->
       val job = SupervisorJob()
 
@@ -51,5 +51,5 @@ internal class ReduxSagaMiddleware<State>(
 }
 
 /** Create a [ReduxSagaMiddleware] with [effects] */
-fun <State> createSagaMiddleware(effects: Collection<IReduxSagaEffect<*>>):
-  IReduxMiddleware<State> = ReduxSagaMiddleware(effects)
+fun <GlobalState> createSagaMiddleware(effects: Collection<IReduxSagaEffect<*>>):
+  IReduxMiddleware<GlobalState> = ReduxSagaMiddleware(effects)

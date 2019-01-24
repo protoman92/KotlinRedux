@@ -15,14 +15,14 @@ import kotlin.coroutines.EmptyCoroutineContext
  * [FinalReduxStore] is a [IReduxStore] that combines all crucial [IReduxStore] implementations to
  * provide a full suite of functionalities.
  */
-class FinalReduxStore<State> private constructor(
-  store: IReduxStore<State>
-) : IReduxStore<State> by store {
+class FinalReduxStore<GlobalState> private constructor(
+  store: IReduxStore<GlobalState>
+) : IReduxStore<GlobalState> by store {
   constructor(
-    state: State,
-    reducer: IReduxReducer<State>,
+    state: GlobalState,
+    reducer: IReduxReducer<GlobalState>,
     context: CoroutineContext = EmptyCoroutineContext
-  ) : this(fun (): IReduxStore<State> {
+  ) : this(fun (): IReduxStore<GlobalState> {
     val rootStore = SimpleReduxStore(state, reducer)
     val defaultActionStore = DefaultActionReduxStore(rootStore)
     return AsyncReduxStore(defaultActionStore, context)

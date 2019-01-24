@@ -29,7 +29,7 @@ import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropContainer
 import org.swiften.redux.ui.IReduxPropLifecycleOwner
 import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.IVariableReduxPropContainer
+import org.swiften.redux.ui.IVariablePropContainer
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ObservableVariableProps
 import org.swiften.redux.ui.StaticProps
@@ -69,14 +69,14 @@ class SearchFragment : Fragment(),
     private val trackName: TextView,
     private val artistName: TextView
   ) : RecyclerView.ViewHolder(parent),
-    IVariableReduxPropContainer<ViewHolder.S1, ViewHolder.A1> {
+    IVariablePropContainer<ViewHolder.S1, ViewHolder.A1> {
     data class S1(val trackName: String? = null, val artistName: String? = null)
     data class A1(val goToMusicDetail: (Int) -> Unit)
 
     init {
       this.parent.setOnClickListener {
         val index = this.layoutPosition
-        this.reduxProps?.actions?.also { a -> a.goToMusicDetail(index) }
+        this.reduxProps?.action?.also { a -> a.goToMusicDetail(index) }
       }
     }
 
@@ -117,7 +117,7 @@ class SearchFragment : Fragment(),
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable?) {
-      this@SearchFragment.reduxProps?.variable?.also { it.actions.updateQuery(s?.toString()) }
+      this@SearchFragment.reduxProps?.variable?.also { it.action.updateQuery(s?.toString()) }
     }
   }
 

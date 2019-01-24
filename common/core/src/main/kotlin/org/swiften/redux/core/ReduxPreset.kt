@@ -14,21 +14,21 @@ sealed class DefaultReduxAction : IReduxAction {
   /** Replace the current [State] with [state] */
   class ReplaceState<out State>(val state: State) : DefaultReduxAction()
 
-  /** Replace the current [State] with [fn] */
-  class MapState<State>(val fn: (State) -> State) : DefaultReduxAction()
+  /** Replace the current [GlobalState] with [fn] */
+  class MapState<GlobalState>(val fn: (GlobalState) -> GlobalState) : DefaultReduxAction()
 }
 
 /** Default wrapper to handle [DefaultReduxAction] */
-class ReduxReducerWrapper<State>(private val reducer: IReduxReducer<State>) :
-  IReduxReducer<State> by reducer {
+class ReduxReducerWrapper<GlobalState>(private val reducer: IReduxReducer<GlobalState>) :
+  IReduxReducer<GlobalState> by reducer {
   @Suppress("UNCHECKED_CAST")
   @Throws(ClassCastException::class)
-  override operator fun invoke(previous: State, action: IReduxAction): State {
+  override operator fun invoke(previous: GlobalState, action: IReduxAction): GlobalState {
     return when (action) {
       is DefaultReduxAction -> when (action) {
         is DefaultReduxAction.Dummy -> previous
-        is DefaultReduxAction.ReplaceState<*> -> action.state as State
-        is DefaultReduxAction.MapState<*> -> (action.fn as (State) -> State)(previous)
+        is DefaultReduxAction.ReplaceState<*> -> action.state as GlobalState
+        is DefaultReduxAction.MapState<*> -> (action.fn as (GlobalState) -> GlobalState)(previous)
         is DefaultReduxAction.Deinitialize -> this.reducer(previous, action)
       }
       else -> this.reducer(previous, action)
