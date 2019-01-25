@@ -28,6 +28,7 @@ import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
+import org.swiften.redux.android.ui.recyclerview.DiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropMapper
@@ -38,8 +39,11 @@ import org.swiften.redux.ui.ObservableVariableProps
  * Adapter for the [RecyclerView] in [PlantListFragment].
  */
 class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
-  IPropMapper<Redux.State, Unit, List<Plant>?, PlantAdapter.ViewHolder.A> by PlantAdapter {
-  companion object : IPropMapper<Redux.State, Unit, List<Plant>?, ViewHolder.A> {
+  IPropMapper<Redux.State, Unit, List<Plant>?, PlantAdapter.ViewHolder.A> by PlantAdapter,
+  DiffItemCallback<Plant> by PlantAdapter {
+  companion object :
+    IPropMapper<Redux.State, Unit, List<Plant>?, ViewHolder.A>,
+    DiffItemCallback<Plant> {
     override fun mapState(state: Redux.State, outProps: Unit) = state.plants
 
     override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit) =
@@ -48,6 +52,11 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
           dispatch(Redux.Screen.PlantListToPlantDetail(it))
         }
       }
+
+    override fun areItemsTheSame(oldItem: Plant, newItem: Plant) =
+      oldItem.plantId == newItem.plantId
+
+    override fun areContentsTheSame(oldItem: Plant, newItem: Plant) = oldItem == newItem
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

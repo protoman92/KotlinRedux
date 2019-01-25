@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_search.backgroundDim
@@ -22,8 +21,9 @@ import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.artistName
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
-import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapterProps
+import org.swiften.redux.android.ui.recyclerview.DiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
+import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapterProps
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IPropContainer
@@ -43,8 +43,11 @@ class SearchFragment : Fragment(),
   class A(val updateQuery: (String?) -> Unit)
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> by Adapter {
-    companion object : IPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> {
+    IPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> by Adapter,
+    DiffItemCallback<ViewHolder.S1> by Adapter {
+    companion object :
+      IPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1>,
+      DiffItemCallback<ViewHolder.S1> {
       override fun mapState(state: State, outProps: Unit) =
         state.musicResult?.results?.map { ViewHolder.S1(it.trackName, it.artistName) }
         ?: arrayListOf()
@@ -54,6 +57,12 @@ class SearchFragment : Fragment(),
         state: State,
         outProps: Unit
       ) = ViewHolder.A1 { dispatch(MainRedux.Screen.MusicDetail(it)) }
+
+      override fun areItemsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
+        oldItem.trackName == newItem.trackName
+
+      override fun areContentsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
+        oldItem == newItem
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -133,17 +142,7 @@ class SearchFragment : Fragment(),
     this.searchResult.also {
       it.setHasFixedSize(true)
       it.layoutManager = LinearLayoutManager(this.context)
-
-      it.adapter = Adapter().let { a ->
-        sp.injector.injectDiffedAdapterProps(this, a, a,
-          object : DiffUtil.ItemCallback<ViewHolder.S1>() {
-            override fun areItemsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
-              oldItem.trackName == newItem.trackName
-
-            override fun areContentsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
-              oldItem == newItem
-          })
-      }
+      it.adapter = sp.injector.injectDiffedAdapterProps(this, Adapter())
     }
   }
 }
