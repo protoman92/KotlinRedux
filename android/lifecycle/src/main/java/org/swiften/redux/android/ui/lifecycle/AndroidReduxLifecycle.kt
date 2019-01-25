@@ -9,7 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import org.swiften.redux.core.ReduxSubscription
+import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -45,12 +45,12 @@ abstract class LifecycleCallback {
 
   /**
    * This method will be called when it is safe to terminate lifecycle-aware tasks, such as
-   * [ReduxSubscription.unsubscribe].
+   * [IReduxSubscription.unsubscribe].
    */
   abstract fun onSafeForEndingLifecycleAwareTasks()
 }
 
-/** Use this [LifecycleObserver] to unsubscribe from a [ReduxSubscription] */
+/** Use this [LifecycleObserver] to unsubscribe from a [IReduxSubscription] */
 class LifecycleObserver(
   private val lifecycleOwner: LifecycleOwner,
   private val callback: LifecycleCallback
@@ -113,7 +113,7 @@ fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycleProps(
   LC : LifecycleOwner,
   LC : IPropContainer<GlobalState, S, A>,
   LC : IPropLifecycleOwner<GlobalState> {
-  var subscription: ReduxSubscription? = null
+  var subscription: IReduxSubscription? = null
 
   /**
    * We perform [IPropInjector.injectProps] in [LifecycleCallback.onStart] because by then
@@ -132,11 +132,9 @@ fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycleProps(
              * If [Lifecycle.getCurrentState] is [Lifecycle.State.DESTROYED], do not set
              * [IPropContainer.reduxProps] since there's no point in doing so.
              */
-            set(value) {
-              lifecycleOwner.lifecycle.currentState
-                .takeUnless { it == Lifecycle.State.DESTROYED }
-                .also { lifecycleOwner.reduxProps = value }
-            }
+            set(value) = lifecycleOwner.lifecycle.currentState
+              .takeUnless { it == Lifecycle.State.DESTROYED }
+              .let { lifecycleOwner.reduxProps = value }
         },
         outProps, mapper
       )

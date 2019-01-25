@@ -22,8 +22,8 @@ internal fun runOnUIThread(runnable: () -> Unit) {
 }
 
 /**
- * [PropInjector] specifically for Android that calls [injectProps] on the main thread. We
- * use inheritance here to ensure [StaticProps.injector] is set with this class instance.
+ * [PropInjector] specifically for Android that calls [injectProps] on the main thread. We use
+ * inheritance here to ensure [StaticProps.injector] is set with this class instance.
  */
 class AndroidPropInjector<GlobalState>(store: IReduxStore<GlobalState>) :
   PropInjector<GlobalState>(store) {

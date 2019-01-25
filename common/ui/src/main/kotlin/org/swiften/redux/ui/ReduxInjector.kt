@@ -9,6 +9,7 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDeinitializerProvider
 import org.swiften.redux.core.IDispatcherProvider
 import org.swiften.redux.core.IReduxStore
+import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IStateGetterProvider
 import org.swiften.redux.core.ReduxSubscription
 import java.util.Date
@@ -22,7 +23,7 @@ interface IPropLifecycleOwner<GlobalState> {
   /** This is called before [IPropInjector.injectProps] is called */
   fun beforePropInjectionStarts(sp: StaticProps<GlobalState>)
 
-  /** This is called after [ReduxSubscription.unsubscribe] is called */
+  /** This is called after [IReduxSubscription.unsubscribe] is called */
   fun afterPropInjectionEnds()
 }
 
@@ -83,7 +84,7 @@ interface IPropInjector<GlobalState> :
     view: IPropContainer<GlobalState, State, Action>,
     outProps: OutProps,
     mapper: IPropMapper<GlobalState, OutProps, State, Action>
-  ): ReduxSubscription
+  ): IReduxSubscription
 }
 
 /**
@@ -100,7 +101,7 @@ open class PropInjector<GlobalState>(private val store: IReduxStore<GlobalState>
     view: IPropContainer<GlobalState, State, Action>,
     outProps: OutProps,
     mapper: IPropMapper<GlobalState, OutProps, State, Action>
-  ): ReduxSubscription {
+  ): IReduxSubscription {
     /**
      * It does not matter what the id is, as long as it is unique. This is because we will be
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep

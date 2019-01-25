@@ -5,7 +5,7 @@
 
 package org.swiften.redux.ui
 
-import org.swiften.redux.core.ReduxSubscription
+import org.swiften.redux.core.IReduxSubscription
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -16,7 +16,7 @@ import kotlin.reflect.KProperty
 /** Container for an [IPropContainer] static properties */
 data class StaticProps<GlobalState>(
   val injector: IPropInjector<GlobalState>,
-  internal val subscription: ReduxSubscription
+  internal val subscription: IReduxSubscription
 )
 
 /** Container for an [IPropContainer] mutable properties */

@@ -21,7 +21,7 @@ interface IReduxSubscription {
 }
 
 /**
- * Use this class to perform some [unsubscribe] logic. For e.g.: terminate a [ReduxSubscription]
+ * Use this class to perform some [unsubscribe] logic. For e.g.: terminate a [IReduxSubscription]
  * from [IReduxStore.subscribe].
  */
 class ReduxSubscription(

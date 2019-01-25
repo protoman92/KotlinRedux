@@ -20,7 +20,7 @@ typealias IStateGetter<GlobalState> = () -> GlobalState
 
 /**
  * Subscribe to state updates with a callback. The subscriber id should be a unique id that
- * identifies that subscriber. The resulting [ReduxSubscription] can be used to unsubscribe.
+ * identifies that subscriber. The resulting [IReduxSubscription] can be used to unsubscribe.
  */
 typealias IReduxSubscriber<GlobalState> = (String, (GlobalState) -> Unit) -> IReduxSubscription
 
