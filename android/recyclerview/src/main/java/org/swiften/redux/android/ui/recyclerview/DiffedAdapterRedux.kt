@@ -21,6 +21,15 @@ import org.swiften.redux.ui.VariableProps
 import org.swiften.redux.ui.unsubscribeSafely
 
 /** Created by haipham on 2019/01/24 */
+/** Callback for [DiffUtil.ItemCallback] since [DiffUtil.ItemCallback] is an abstract class */
+interface DiffItemCallback<T> {
+  /** @see [DiffUtil.ItemCallback.areItemsTheSame] */
+  fun areItemsTheSame(oldItem: T, newItem: T): Boolean
+
+  /** @see [DiffUtil.ItemCallback.areContentsTheSame] */
+  fun areContentsTheSame(oldItem: T, newItem: T): Boolean
+}
+
 /**
  * Custom Redux-compatible [ListAdapter] implementation. This [ListAdapter] can receive [ReduxProps]
  * in order to call [ListAdapter.submitList].
@@ -86,21 +95,20 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
  * Since we do not call [IPropInjector.injectProps] directly into [VH], we cannot use
  * [IPropMapper.mapAction] on [VH] itself. As a result, we must pass down
  * [VariableProps.action] from [ReduxListAdapter.reduxProps] into each [VH] instance. The
- * [VHAction] should contain actions that take at least one [Int] parameter, (e.g. (Int) -> Unit),
+ * [VHA] should contain actions that take at least one [Int] parameter, (e.g. (Int) -> Unit),
  * so that we can use [RecyclerView.ViewHolder.getLayoutPosition] to call them.
  *
  * Note that this does not support lifecycle handling, so we will need to manually set null via
  * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].
  */
-fun <GlobalState, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState>.injectDiffedAdapterProps(
-  adapter: Adapter,
-  adapterMapper: IPropMapper<GlobalState, Unit, List<VHState>?, VHAction>,
-  diffCallback: DiffUtil.ItemCallback<VHState>
-): ReduxListAdapter<GlobalState, VH, VHState, VHAction> where
+fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapterProps(
+  adapter: RecyclerView.Adapter<VH>,
+  adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
+  diffCallback: DiffUtil.ItemCallback<VHS>
+): ReduxListAdapter<GlobalState, VH, VHS, VHA> where
   VH : RecyclerView.ViewHolder,
-  VH : IVariablePropContainer<VHState, VHAction>,
-  Adapter : RecyclerView.Adapter<VH> {
-  val listAdapter = object : ReduxListAdapter<GlobalState, VH, VHState, VHAction>(adapter, diffCallback) {
+  VH : IVariablePropContainer<VHS, VHA> {
+  val listAdapter = object : ReduxListAdapter<GlobalState, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
 

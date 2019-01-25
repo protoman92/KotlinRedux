@@ -20,15 +20,14 @@ import org.swiften.redux.ui.unsubscribeSafely
 
 /** Created by haipham on 2019/01/24/1 */
 /** Perform [injectRecyclerAdapterProps], but also handle lifecycle with [lifecycleOwner] */
-fun <GlobalState, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecyclerAdapterProps(
+fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecyclerAdapterProps(
   lifecycleOwner: LifecycleOwner,
-  adapter: Adapter,
+  adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IStateMapper<GlobalState, Unit, Int>,
   vhMapper: IPropMapper<GlobalState, Int, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GlobalState, VHState, VHAction>,
-  Adapter : RecyclerView.Adapter<VH> {
+  VH : IPropContainer<GlobalState, VHState, VHAction> {
   val wrappedAdapter = this.injectRecyclerAdapterProps(adapter, adapterMapper, vhMapper)
 
   LifecycleObserver(lifecycleOwner, object : LifecycleCallback() {
@@ -40,15 +39,14 @@ fun <GlobalState, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState>.inj
 }
 
 /** Perform [injectDiffedAdapterProps], but also handle lifecycle with [lifecycleOwner] */
-fun <GlobalState, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState>.injectDiffedAdapterProps(
+fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectDiffedAdapterProps(
   lifecycleOwner: LifecycleOwner,
-  adapter: Adapter,
+  adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IPropMapper<GlobalState, Unit, List<VHState>?, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IVariablePropContainer<VHState, VHAction>,
-  Adapter : RecyclerView.Adapter<VH> {
+  VH : IVariablePropContainer<VHState, VHAction> {
   val wrappedAdapter = this.injectDiffedAdapterProps(adapter, adapterMapper, diffCallback)
 
   LifecycleObserver(lifecycleOwner, object : LifecycleCallback() {
@@ -58,3 +56,48 @@ fun <GlobalState, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState>.inj
 
   return wrappedAdapter
 }
+
+/** Instead of [DiffUtil.ItemCallback], use [DiffItemCallback] to avoid abstract class */
+fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapterProps(
+  lifecycleOwner: LifecycleOwner,
+  adapter: RecyclerView.Adapter<VH>,
+  adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
+  diffCallback: DiffItemCallback<VHS>
+) where VH : RecyclerView.ViewHolder, VH : IVariablePropContainer<VHS, VHA> =
+  this.injectDiffedAdapterProps(lifecycleOwner, adapter, adapterMapper,
+    object : DiffUtil.ItemCallback<VHS>() {
+      override fun areItemsTheSame(oldItem: VHS, newItem: VHS) =
+        diffCallback.areItemsTheSame(oldItem, newItem)
+
+      override fun areContentsTheSame(oldItem: VHS, newItem: VHS) =
+        diffCallback.areContentsTheSame(oldItem, newItem)
+    })
+
+/**
+ * Convenience [injectDiffedAdapterProps] for when [mapper] implements both [IPropMapper] and
+ * [DiffUtil.ItemCallback].
+ */
+fun <GlobalState, Mapper, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapterProps(
+  lifecycleOwner: LifecycleOwner,
+  adapter: RecyclerView.Adapter<VH>,
+  mapper: Mapper
+) where
+  VH : RecyclerView.ViewHolder,
+  VH : IVariablePropContainer<VHS, VHA>,
+  Mapper : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
+  Mapper : DiffItemCallback<VHS> =
+  this.injectDiffedAdapterProps(lifecycleOwner, adapter, mapper, mapper)
+
+/**
+ * Convenience [injectDiffedAdapterProps] for when [adapter] implements both [RecyclerView.Adapter],
+ * [IPropMapper] and [DiffUtil.ItemCallback].
+ */
+fun <GlobalState, Adapter, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapterProps(
+  lifecycleOwner: LifecycleOwner, adapter: Adapter
+) where
+  VH : RecyclerView.ViewHolder,
+  VH : IVariablePropContainer<VHS, VHA>,
+  Adapter : RecyclerView.Adapter<VH>,
+  Adapter : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
+  Adapter : DiffItemCallback<VHS> =
+  this.injectDiffedAdapterProps(lifecycleOwner, adapter, adapter)
