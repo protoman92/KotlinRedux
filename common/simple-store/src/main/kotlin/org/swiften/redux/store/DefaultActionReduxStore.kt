@@ -6,7 +6,7 @@
 package org.swiften.redux.store
 
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.IReduxDeinitializer
+import org.swiften.redux.core.IDeinitializer
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.ReduxReducerWrapper
 
@@ -17,7 +17,7 @@ class DefaultActionReduxStore<State>(
 ) : IReduxStore<State> by store {
   override val reducer = ReduxReducerWrapper(this.store.reducer)
 
-  override val deinitialize: IReduxDeinitializer = {
+  override val deinitialize: IDeinitializer = {
     this.dispatch(DefaultReduxAction.Deinitialize)
     this.store.deinitialize()
   }

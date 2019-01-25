@@ -9,18 +9,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
-import org.swiften.redux.saga.IReduxSagaOutput
-import org.swiften.redux.saga.Input
-import org.swiften.redux.saga.ReduxSagaEffect
-import org.swiften.redux.saga.rx.ReduxSagaOutput
+import org.swiften.redux.saga.ISagaOutput
+import org.swiften.redux.saga.SagaEffect
+import org.swiften.redux.saga.SagaInput
+import org.swiften.redux.saga.rx.SagaOutput
 
 /** Created by haipham on 2019/01/17 */
 /**
- * [ReduxSagaEffect] whose [IReduxSagaOutput] streams all values emitted by the [LiveData] created
+ * [SagaEffect] whose [ISagaOutput] streams all values emitted by the [LiveData] created
  * by [creator].
  */
-internal class TakeEveryEffect<R>(private val creator: () -> LiveData<R>) : ReduxSagaEffect<R>() {
-  override fun invoke(p1: Input): IReduxSagaOutput<R> {
+internal class TakeEveryEffect<R>(private val creator: () -> LiveData<R>) : SagaEffect<R>() {
+  override fun invoke(p1: SagaInput): ISagaOutput<R> {
     val stream = Observable.create<R> { emitter ->
       val observer = Observer<R> { emitter.onNext(it) }
       val data = this@TakeEveryEffect.creator()
@@ -28,6 +28,6 @@ internal class TakeEveryEffect<R>(private val creator: () -> LiveData<R>) : Redu
       emitter.setCancellable { data.removeObserver(observer) }
     }
 
-    return ReduxSagaOutput(p1.scope, stream.toFlowable(BackpressureStrategy.BUFFER)) { }
+    return SagaOutput(p1.scope, stream.toFlowable(BackpressureStrategy.BUFFER)) { }
   }
 }

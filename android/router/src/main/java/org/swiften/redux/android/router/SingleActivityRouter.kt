@@ -10,18 +10,18 @@ import android.app.Application
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import org.swiften.redux.core.IReduxDeinitializer
-import org.swiften.redux.router.IReduxRouter
-import org.swiften.redux.router.IReduxRouterScreen
+import org.swiften.redux.core.IDeinitializer
+import org.swiften.redux.router.IRouter
+import org.swiften.redux.router.IRouterScreen
 
 /** Created by haipham on 2019/01/12 */
-/** [IReduxRouter] that works for a single [AppCompatActivity] and multiple [Fragment] */
+/** [IRouter] that works for a single [AppCompatActivity] and multiple [Fragment] */
 @PublishedApi
 internal class SingleActivityRouter<AT, Screen>(
   private val application: Application,
   private val cls: Class<AT>,
   private val navigate: (AT, Screen) -> Unit
-) : IReduxRouter<Screen> where AT : AppCompatActivity, Screen : IReduxRouterScreen {
+) : IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen {
   private var activity: AT? = null
 
   private val callbacks by lazy {
@@ -48,7 +48,7 @@ internal class SingleActivityRouter<AT, Screen>(
 
   init { this.application.registerActivityLifecycleCallbacks(this.callbacks) }
 
-  override val deinitialize: IReduxDeinitializer get() = {
+  override val deinitialize: IDeinitializer get() = {
     this.application.unregisterActivityLifecycleCallbacks(this.callbacks)
   }
 
@@ -61,5 +61,5 @@ internal class SingleActivityRouter<AT, Screen>(
 inline fun <reified AT, Screen> createSingleActivityRouter(
   application: Application,
   noinline navigate: (AT, Screen) -> Unit
-): IReduxRouter<Screen> where AT : AppCompatActivity, Screen : IReduxRouterScreen =
+): IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen =
   SingleActivityRouter(application, AT::class.java, navigate)

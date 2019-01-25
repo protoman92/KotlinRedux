@@ -28,20 +28,20 @@ import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
+import org.swiften.redux.ui.IPropMapper
+import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.ViewHolder>(),
-  IReduxStatePropMapper<Redux.State, Unit, Int> by GardenPlantingAdapter {
-  companion object : IReduxStatePropMapper<Redux.State, Unit, Int> {
+  IStateMapper<Redux.State, Unit, Int> by GardenPlantingAdapter {
+  companion object : IStateMapper<Redux.State, Unit, Int> {
     override fun mapState(state: Redux.State, outProps: Unit) =
       state.plantAndGardenPlantings?.size ?: 0
   }
@@ -52,17 +52,17 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IReduxPropContainer<Redux.State, ViewHolder.S, ViewHolder.A>,
-    IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner(),
-    IReduxPropMapper<Redux.State, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
+    IPropContainer<Redux.State, ViewHolder.S, ViewHolder.A>,
+    IPropLifecycleOwner<Redux.State> by EmptyPropLifecycleOwner(),
+    IPropMapper<Redux.State, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
     data class S(val plantings: PlantAndGardenPlantings?)
     class A(val goToPlantDetail: () -> Unit)
 
-    companion object : IReduxPropMapper<Redux.State, Int, S, A> {
+    companion object : IPropMapper<Redux.State, Int, S, A> {
       override fun mapState(state: Redux.State, outProps: Int) =
         S(state.plantAndGardenPlantings?.elementAtOrNull(outProps))
 
-      override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Int) = A {
+      override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Int) = A {
         this.mapState(state, outProps).plantings?.plant?.plantId?.let {
           dispatch(Redux.Screen.GardenToPlantDetail(it))
         }

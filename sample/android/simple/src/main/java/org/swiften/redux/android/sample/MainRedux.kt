@@ -6,8 +6,8 @@
 package org.swiften.redux.android.sample
 
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.IReduxReducer
-import org.swiften.redux.router.IReduxRouterScreen
+import org.swiften.redux.core.IReducer
+import org.swiften.redux.router.IRouterScreen
 
 /** Created by haipham on 2018/12/19 */
 object MainRedux {
@@ -17,13 +17,13 @@ object MainRedux {
     class UpdateLoadingResult(val loading: Boolean?) : Action()
   }
 
-  sealed class Screen : IReduxRouterScreen {
+  sealed class Screen : IRouterScreen {
     object MainScreen : Screen()
     class MusicDetail(val index: Int) : Screen()
     class WebView(val url: String) : Screen()
   }
 
-  object Reducer : IReduxReducer<State> {
+  object Reducer : IReducer<State> {
     override operator fun invoke(previous: State, action: IReduxAction): State {
       return when (action) {
         is Action -> when (action) {

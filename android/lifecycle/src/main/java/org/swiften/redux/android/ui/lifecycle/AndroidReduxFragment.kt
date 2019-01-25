@@ -9,16 +9,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
-import org.swiften.redux.ui.IReduxPropInjector
+import org.swiften.redux.ui.IPropInjector
 
 /** Created by haipham on 2018/12/17 */
 /**
  * Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary. This injection
  * session automatically disposes of itself when [LifecycleCallback.onDestroy] is called.
  */
-internal fun <GlobalState> IReduxPropInjector<GlobalState>.startFragmentInjection(
+internal fun <GlobalState> IPropInjector<GlobalState>.startFragmentInjection(
   activity: AppCompatActivity,
-  inject: IReduxPropInjector<GlobalState>.(LifecycleOwner) -> Unit
+  inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
 ) {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
@@ -26,7 +26,7 @@ internal fun <GlobalState> IReduxPropInjector<GlobalState>.startFragmentInjectio
     }
   }
 
-  ReduxLifecycleObserver(activity, object : LifecycleCallback() {
+  LifecycleObserver(activity, object : LifecycleCallback() {
     override fun onCreate() {
       super.onCreate()
       activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)

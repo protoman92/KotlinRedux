@@ -7,7 +7,7 @@ package org.swiften.redux.store
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxStore
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -22,7 +22,7 @@ class AsyncReduxStore<GlobalState>(
   private val store: IReduxStore<GlobalState>,
   private val context: CoroutineContext = EmptyCoroutineContext
 ) : IReduxStore<GlobalState> by store {
-  override val dispatch: IReduxDispatcher = { action ->
+  override val dispatch: IActionDispatcher = { action ->
     GlobalScope.launch(this.context) { this@AsyncReduxStore.store.dispatch(action) }
   }
 }

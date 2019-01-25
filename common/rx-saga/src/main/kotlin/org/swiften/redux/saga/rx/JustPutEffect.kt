@@ -6,15 +6,15 @@
 package org.swiften.redux.saga.rx
 
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.IReduxSagaEffect
-import org.swiften.redux.saga.Input
-import org.swiften.redux.saga.ReduxSagaEffect
+import org.swiften.redux.saga.ISagaEffect
+import org.swiften.redux.saga.SagaInput
+import org.swiften.redux.saga.SagaEffect
 import org.swiften.redux.saga.map
 
 /** Created by haipham on 2019/01/10 */
-/** [IReduxSagaEffect] whose [ReduxSagaOutput] simply dispatches [action] */
-internal class JustPutEffect(private val action: IReduxAction) : ReduxSagaEffect<Any>() {
-  override fun invoke(p1: Input) = ReduxSagaEffects.just(Unit)
+/** [ISagaEffect] whose [SagaOutput] simply dispatches [action] */
+internal class JustPutEffect(private val action: IReduxAction) : SagaEffect<Any>() {
+  override fun invoke(p1: SagaInput) = SagaEffects.just(Unit)
     .map { p1.dispatch(this@JustPutEffect.action) as Any }
     .invoke(p1)
 }

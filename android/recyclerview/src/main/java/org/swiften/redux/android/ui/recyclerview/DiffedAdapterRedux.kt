@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropInjector
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropLifecycleOwner
+import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IVariablePropContainer
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ReduxProps
@@ -29,8 +29,8 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<S>
 ) : ListAdapter<S, VH>(diffCallback),
-  IReduxPropLifecycleOwner<GlobalState> by EmptyReduxPropLifecycleOwner(),
-  IReduxPropContainer<GlobalState, List<S>?, A> where VH : RecyclerView.ViewHolder {
+  IPropLifecycleOwner<GlobalState> by EmptyPropLifecycleOwner(),
+  IPropContainer<GlobalState, List<S>?, A> where VH : RecyclerView.ViewHolder {
   override var reduxProps by ObservableReduxProps<GlobalState, List<S>?, A> { _, next ->
     next?.state?.also { this.submitList(it) }
   }
@@ -83,8 +83,8 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
  * that [adapter] does not have to be a [ListAdapter] - it can be any [RecyclerView.Adapter] as
  * long as it implements [RecyclerView.Adapter.onCreateViewHolder].
  *
- * Since we do not call [IReduxPropInjector.injectProps] directly into [VH], we cannot use
- * [IReduxPropMapper.mapAction] on [VH] itself. As a result, we must pass down
+ * Since we do not call [IPropInjector.injectProps] directly into [VH], we cannot use
+ * [IPropMapper.mapAction] on [VH] itself. As a result, we must pass down
  * [VariableProps.action] from [ReduxListAdapter.reduxProps] into each [VH] instance. The
  * [VHAction] should contain actions that take at least one [Int] parameter, (e.g. (Int) -> Unit),
  * so that we can use [RecyclerView.ViewHolder.getLayoutPosition] to call them.
@@ -92,9 +92,9 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
  * Note that this does not support lifecycle handling, so we will need to manually set null via
  * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].
  */
-fun <GlobalState, Adapter, VH, VHState, VHAction> IReduxPropInjector<GlobalState>.injectDiffedAdapterProps(
+fun <GlobalState, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState>.injectDiffedAdapterProps(
   adapter: Adapter,
-  adapterMapper: IReduxPropMapper<GlobalState, Unit, List<VHState>?, VHAction>,
+  adapterMapper: IPropMapper<GlobalState, Unit, List<VHState>?, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ): ReduxListAdapter<GlobalState, VH, VHState, VHAction> where
   VH : RecyclerView.ViewHolder,

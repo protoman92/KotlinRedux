@@ -17,13 +17,13 @@ import kotlinx.android.parcel.Parcelize
 import org.swiften.redux.android.core.saga.rx.CoreAndroidEffects.watchConnectivity
 import org.swiften.redux.android.livedata.saga.rx.LiveDataEffects.takeEveryData
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.IReduxReducer
-import org.swiften.redux.router.IReduxRouterScreen
+import org.swiften.redux.core.IReducer
+import org.swiften.redux.router.IRouterScreen
 import org.swiften.redux.saga.map
 import org.swiften.redux.saga.mapSuspend
 import org.swiften.redux.saga.put
-import org.swiften.redux.saga.rx.ReduxSagaEffects.just
-import org.swiften.redux.saga.rx.ReduxSagaEffects.takeLatestAction
+import org.swiften.redux.saga.rx.SagaEffects.just
+import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.select
 
 /** Created by haipham on 2019/01/16 */
@@ -77,12 +77,12 @@ object Redux {
     class UpdateSelectedPlantStatus(val isPlanted: Boolean) : Action()
   }
 
-  sealed class Screen : IReduxRouterScreen {
+  sealed class Screen : IRouterScreen {
     class GardenToPlantDetail(val plantId: String) : Screen()
     class PlantListToPlantDetail(val plantId: String) : Screen()
   }
 
-  object Reducer : IReduxReducer<State> {
+  object Reducer : IReducer<State> {
     override fun invoke(p1: State, p2: IReduxAction) = when (p2) {
       is Action -> when (p2) {
         is Action.UpdateConnectivity -> p1.copy(isConnected = p2.isConnected)

@@ -16,16 +16,16 @@ import android.net.NetworkRequest
 import android.os.Build
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
-import org.swiften.redux.saga.IReduxSagaEffect
-import org.swiften.redux.saga.IReduxSagaOutput
-import org.swiften.redux.saga.Input
-import org.swiften.redux.saga.ReduxSagaEffect
-import org.swiften.redux.saga.rx.ReduxSagaOutput
+import org.swiften.redux.saga.ISagaEffect
+import org.swiften.redux.saga.ISagaOutput
+import org.swiften.redux.saga.SagaEffect
+import org.swiften.redux.saga.SagaInput
+import org.swiften.redux.saga.rx.SagaOutput
 
 /** Created by haipham on 2019/01/21/1/ */
-/** [IReduxSagaEffect] whose [IReduxSagaOutput] watches for network connectivity changes */
-internal class WatchConnectivityEffect(private val context: Context) : ReduxSagaEffect<Boolean>() {
-  override fun invoke(p1: Input): IReduxSagaOutput<Boolean> {
+/** [ISagaEffect] whose [ISagaOutput] watches for network connectivity changes */
+internal class WatchConnectivityEffect(private val context: Context) : SagaEffect<Boolean>() {
+  override fun invoke(p1: SagaInput): ISagaOutput<Boolean> {
     val stream = Observable.create<Boolean> { emitter ->
       val application = this@WatchConnectivityEffect.context
       val cm = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -63,6 +63,6 @@ internal class WatchConnectivityEffect(private val context: Context) : ReduxSaga
       }
     }
 
-    return ReduxSagaOutput(p1.scope, stream.toFlowable(BackpressureStrategy.BUFFER)) { }
+    return SagaOutput(p1.scope, stream.toFlowable(BackpressureStrategy.BUFFER)) { }
   }
 }

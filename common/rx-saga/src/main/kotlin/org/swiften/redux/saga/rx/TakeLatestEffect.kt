@@ -6,8 +6,8 @@
 package org.swiften.redux.saga.rx
 
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.IReduxSagaEffect
-import org.swiften.redux.saga.IReduxSagaOutput
+import org.swiften.redux.saga.ISagaEffect
+import org.swiften.redux.saga.ISagaOutput
 
 /** Created by haipham on 2018/12/23 */
 /**
@@ -18,8 +18,8 @@ import org.swiften.redux.saga.IReduxSagaOutput
 internal class TakeLatestEffect<P, R>(
   extractor: Function1<IReduxAction, P?>,
   options: TakeEffectOptions,
-  creator: Function1<P, IReduxSagaEffect<R>>
+  creator: Function1<P, ISagaEffect<R>>
 ) : TakeEffect<P, R>(extractor, options, creator) {
-  override fun flatten(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>) =
+  override fun flatten(nestedOutput: ISagaOutput<ISagaOutput<R>>) =
     nestedOutput.switchMap { it }
 }

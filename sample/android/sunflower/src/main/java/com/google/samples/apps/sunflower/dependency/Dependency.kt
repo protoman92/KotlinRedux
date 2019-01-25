@@ -5,7 +5,7 @@
 
 package com.google.samples.apps.sunflower.dependency
 
-import org.swiften.redux.ui.IReduxPropInjector
+import org.swiften.redux.ui.IPropInjector
 
 /** Created by haipham on 2019/01/17 */
-class Dependency(val injector: IReduxPropInjector<Redux.State>)
+class Dependency(val injector: IPropInjector<Redux.State>)

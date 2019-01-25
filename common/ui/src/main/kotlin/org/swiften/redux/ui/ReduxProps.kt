@@ -13,13 +13,13 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 /** Created by haipham on 2019/01/16 */
-/** Container for an [IReduxPropContainer] static properties */
+/** Container for an [IPropContainer] static properties */
 data class StaticProps<GlobalState>(
-  val injector: IReduxPropInjector<GlobalState>,
+  val injector: IPropInjector<GlobalState>,
   internal val subscription: ReduxSubscription
 )
 
-/** Container for an [IReduxPropContainer] mutable properties */
+/** Container for an [IPropContainer] mutable properties */
 data class VariableProps<State, Action>(
   val state: State,
   val action: Action

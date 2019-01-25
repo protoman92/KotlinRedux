@@ -29,8 +29,8 @@ import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IVariablePropContainer
 import org.swiften.redux.ui.ObservableVariableProps
 
@@ -38,11 +38,11 @@ import org.swiften.redux.ui.ObservableVariableProps
  * Adapter for the [RecyclerView] in [PlantListFragment].
  */
 class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
-  IReduxPropMapper<Redux.State, Unit, List<Plant>?, PlantAdapter.ViewHolder.A> by PlantAdapter {
-  companion object : IReduxPropMapper<Redux.State, Unit, List<Plant>?, ViewHolder.A> {
+  IPropMapper<Redux.State, Unit, List<Plant>?, PlantAdapter.ViewHolder.A> by PlantAdapter {
+  companion object : IPropMapper<Redux.State, Unit, List<Plant>?, ViewHolder.A> {
     override fun mapState(state: Redux.State, outProps: Unit) = state.plants
 
-    override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) =
+    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit) =
       ViewHolder.A { index ->
         state.plants?.elementAtOrNull(index)?.plantId?.also {
           dispatch(Redux.Screen.PlantListToPlantDetail(it))

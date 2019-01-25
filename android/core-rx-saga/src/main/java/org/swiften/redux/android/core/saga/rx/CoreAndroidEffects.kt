@@ -6,13 +6,12 @@
 package org.swiften.redux.android.core.saga.rx
 
 import android.content.Context
-import org.swiften.redux.saga.IReduxSagaEffect
-import org.swiften.redux.saga.ReduxSagaEffect
+import org.swiften.redux.saga.ISagaEffect
+import org.swiften.redux.saga.SagaEffect
 
 /** Created by haipham on 2019/01/21 */
-/** Core [IReduxSagaEffect] for Android */
+/** Core [ISagaEffect] for Android */
 object CoreAndroidEffects {
   /** Create a [WatchConnectivityEffect] */
-  fun watchConnectivity(context: Context): ReduxSagaEffect<Boolean> =
-    WatchConnectivityEffect(context)
+  fun watchConnectivity(context: Context): SagaEffect<Boolean> = WatchConnectivityEffect(context)
 }

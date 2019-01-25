@@ -8,39 +8,39 @@ package org.swiften.redux.saga.rx
 import io.reactivex.Flowable
 import io.reactivex.Single
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.CommonSagaEffects
-import org.swiften.redux.saga.IReduxSagaEffect
-import org.swiften.redux.saga.IReduxSagaEffectTransformer
-import org.swiften.redux.saga.ReduxSagaEffect
+import org.swiften.redux.saga.CommonEffects
+import org.swiften.redux.saga.ISagaEffect
+import org.swiften.redux.saga.ISagaEffectTransformer
+import org.swiften.redux.saga.SagaEffect
 
 /** Created by haipham on 2019/01/13 */
-/** Top-level namespace for Rx-based [IReduxSagaEffect] */
-object ReduxSagaEffects {
+/** Top-level namespace for Rx-based [ISagaEffect] */
+object SagaEffects {
   /** Create a [CallEffect] */
   @JvmStatic
-  fun <P, R> call(transformer: (P) -> Single<R>): IReduxSagaEffectTransformer<P, R> =
+  fun <P, R> call(transformer: (P) -> Single<R>): ISagaEffectTransformer<P, R> =
     { CallEffect(it, transformer) }
 
   /** Create a [FromEffect] */
   @JvmStatic
-  fun <R> from(stream: Flowable<R>): ReduxSagaEffect<R> = FromEffect(stream)
+  fun <R> from(stream: Flowable<R>): SagaEffect<R> = FromEffect(stream)
 
   /** Create a [JustEffect] */
   @JvmStatic
-  fun <R> just(value: R): ReduxSagaEffect<R> = JustEffect(value)
+  fun <R> just(value: R): SagaEffect<R> = JustEffect(value)
 
-  /** Call [CommonSagaEffects.put] with [ReduxSagaEffects.just] */
+  /** Call [CommonEffects.put] with [SagaEffects.just] */
   @JvmStatic
-  fun <P> put(value: P, actionCreator: (P) -> IReduxAction): ReduxSagaEffect<Any> =
-    CommonSagaEffects.put(actionCreator)(this.just(value))
+  fun <P> put(value: P, actionCreator: (P) -> IReduxAction): SagaEffect<Any> =
+    CommonEffects.put(actionCreator)(this.just(value))
 
   /** Create a [JustPutEffect] */
   @JvmStatic
-  fun justPut(action: IReduxAction): ReduxSagaEffect<Any> = JustPutEffect(action)
+  fun justPut(action: IReduxAction): SagaEffect<Any> = JustPutEffect(action)
 
   /** Create a [SelectEffect] */
   @JvmStatic
-  fun <State, R> select(cls: Class<State>, selector: (State) -> R): ReduxSagaEffect<R> =
+  fun <State, R> select(cls: Class<State>, selector: (State) -> R): SagaEffect<R> =
     SelectEffect(cls, selector)
 
   inline fun <reified State, R> select(noinline selector: (State) -> R) =
@@ -51,15 +51,15 @@ object ReduxSagaEffects {
   fun <P, R> takeEvery(
     extractor: Function1<IReduxAction, P?>,
     options: TakeEffectOptions = TakeEffectOptions(),
-    creator: Function1<P, IReduxSagaEffect<R>>
-  ): ReduxSagaEffect<R> = TakeEveryEffect(extractor, options, creator)
+    creator: Function1<P, ISagaEffect<R>>
+  ): SagaEffect<R> = TakeEveryEffect(extractor, options, creator)
 
   /** Convenience function to create [TakeEveryEffect] for a specific type of [IReduxAction] */
   @JvmStatic
   inline fun <reified Action, P, R> takeEveryAction(
     crossinline extractor: Function1<Action, P?>,
     options: TakeEffectOptions = TakeEffectOptions(),
-    noinline creator: Function1<P, IReduxSagaEffect<R>>
+    noinline creator: Function1<P, ISagaEffect<R>>
   ) where Action : IReduxAction = this.takeEvery(
     { when (it) { is Action -> extractor(it); else -> null } },
     options, creator
@@ -70,15 +70,15 @@ object ReduxSagaEffects {
   fun <P, R> takeLatest(
     extractor: Function1<IReduxAction, P?>,
     options: TakeEffectOptions = TakeEffectOptions(),
-    creator: Function1<P, IReduxSagaEffect<R>>
-  ): ReduxSagaEffect<R> = TakeLatestEffect(extractor, options, creator)
+    creator: Function1<P, ISagaEffect<R>>
+  ): SagaEffect<R> = TakeLatestEffect(extractor, options, creator)
 
   /** Convenience function to create [TakeLatestEffect] for a specific type of [IReduxAction] */
   @JvmStatic
   inline fun <reified Action, P, R> takeLatestAction(
     crossinline extractor: Function1<Action, P?>,
     options: TakeEffectOptions = TakeEffectOptions(),
-    noinline creator: Function1<P, IReduxSagaEffect<R>>
+    noinline creator: Function1<P, ISagaEffect<R>>
   ) where Action : IReduxAction = this.takeLatest(
     { when (it) { is Action -> extractor(it); else -> null } }, options, creator
   )

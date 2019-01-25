@@ -9,11 +9,11 @@ import android.app.Application
 import com.google.samples.apps.sunflower.GardenActivity
 import com.google.samples.apps.sunflower.R
 import org.swiften.redux.android.router.createSingleActivityRouter
-import org.swiften.redux.router.IReduxRouter
+import org.swiften.redux.router.IRouter
 
 /** Created by haipham on 2019/01/18 */
 @Suppress("MoveLambdaOutsideParentheses")
-class Router(app: Application) : IReduxRouter<Redux.Screen>
+class Router(app: Application) : IRouter<Redux.Screen>
 by createSingleActivityRouter<GardenActivity, Redux.Screen>(app, { a, s ->
   val navController = a.navController
 

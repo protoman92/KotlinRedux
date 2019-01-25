@@ -6,14 +6,14 @@
 package org.swiften.redux.saga.rx
 
 import io.reactivex.Flowable
-import org.swiften.redux.saga.IReduxSagaEffect
-import org.swiften.redux.saga.Input
-import org.swiften.redux.saga.ReduxSagaEffect
+import org.swiften.redux.saga.ISagaEffect
+import org.swiften.redux.saga.SagaInput
+import org.swiften.redux.saga.SagaEffect
 
 /** Created by haipham on 2019/01/05 */
-/** [IReduxSagaEffect] whose [ReduxSagaOutput] is provided via [stream] */
+/** [ISagaEffect] whose [SagaOutput] is provided via [stream] */
 internal class FromEffect<R>(
   private val stream: Flowable<R>
-) : ReduxSagaEffect<R>() {
-  override fun invoke(p1: Input) = ReduxSagaOutput(p1.scope, this.stream) { }
+) : SagaEffect<R>() {
+  override fun invoke(p1: SagaInput) = SagaOutput(p1.scope, this.stream) { }
 }

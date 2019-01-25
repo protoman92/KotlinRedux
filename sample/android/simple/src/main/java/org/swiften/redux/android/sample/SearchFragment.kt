@@ -16,19 +16,19 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_music_detail.view.artistName
 import kotlinx.android.synthetic.main.fragment_search.backgroundDim
 import kotlinx.android.synthetic.main.fragment_search.progressBar
 import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
+import kotlinx.android.synthetic.main.view_search_result.view.artistName
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapterProps
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
+import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IVariablePropContainer
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ObservableVariableProps
@@ -36,21 +36,21 @@ import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
-  IReduxPropContainer<State, SearchFragment.S, SearchFragment.A>,
-  IReduxPropLifecycleOwner<State> by EmptyReduxPropLifecycleOwner(),
-  IReduxPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
+  IPropContainer<State, SearchFragment.S, SearchFragment.A>,
+  IPropLifecycleOwner<State> by EmptyPropLifecycleOwner(),
+  IPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
   data class S(val query: String?, val loading: Boolean?)
   class A(val updateQuery: (String?) -> Unit)
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IReduxPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> by Adapter {
-    companion object : IReduxPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> {
+    IPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> by Adapter {
+    companion object : IPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> {
       override fun mapState(state: State, outProps: Unit) =
         state.musicResult?.results?.map { ViewHolder.S1(it.trackName, it.artistName) }
         ?: arrayListOf()
 
       override fun mapAction(
-        dispatch: IReduxDispatcher,
+        dispatch: IActionDispatcher,
         state: State,
         outProps: Unit
       ) = ViewHolder.A1 { dispatch(MainRedux.Screen.MusicDetail(it)) }
@@ -88,9 +88,9 @@ class SearchFragment : Fragment(),
     }
   }
 
-  companion object : IReduxPropMapper<State, Unit, S, A> {
+  companion object : IPropMapper<State, Unit, S, A> {
     override fun mapAction(
-      dispatch: IReduxDispatcher,
+      dispatch: IActionDispatcher,
       state: State,
       outProps: Unit
     ) = A { dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }

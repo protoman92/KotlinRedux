@@ -19,19 +19,19 @@ class ReduxMiddlewareTest {
     val store = SimpleReduxStore(0) { a, _ -> a }
     val ordering = arrayListOf<Int>()
 
-    val wrappedStore = applyReduxMiddlewares<Int>(
+    val wrappedStore = applyMiddlewares<Int>(
       { { wrapper ->
-        ReduxDispatchWrapper("${wrapper.id}-$1") {
+        DispatchWrapper("${wrapper.id}-$1") {
           wrapper.dispatch(it); ordering.add(1)
         }
       } },
       { { wrapper ->
-        ReduxDispatchWrapper("${wrapper.id}-$2") {
+        DispatchWrapper("${wrapper.id}-$2") {
           wrapper.dispatch(it); ordering.add(2)
         }
       } },
       { { wrapper ->
-        ReduxDispatchWrapper("${wrapper.id}-$3") {
+        DispatchWrapper("${wrapper.id}-$3") {
           wrapper.dispatch(it); ordering.add(3)
         }
       } }
@@ -52,7 +52,7 @@ class ReduxMiddlewareTest {
     val store = SimpleReduxStore(0) { a, _ -> a }
 
     // When
-    val wrapper = combineReduxMiddlewares<Int>(arrayListOf())(store)
+    val wrapper = combineMiddlewares<Int>(arrayListOf())(store)
 
     // Then
     Assert.assertEquals(wrapper.id, "root")

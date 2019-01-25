@@ -5,7 +5,7 @@
 
 package org.swiften.redux.store
 
-import org.swiften.redux.core.IReduxReducer
+import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxStore
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -20,7 +20,7 @@ class FinalReduxStore<GlobalState> private constructor(
 ) : IReduxStore<GlobalState> by store {
   constructor(
     state: GlobalState,
-    reducer: IReduxReducer<GlobalState>,
+    reducer: IReducer<GlobalState>,
     context: CoroutineContext = EmptyCoroutineContext
   ) : this(fun (): IReduxStore<GlobalState> {
     val rootStore = SimpleReduxStore(state, reducer)

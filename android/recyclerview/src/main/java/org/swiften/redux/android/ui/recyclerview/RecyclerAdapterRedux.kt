@@ -8,17 +8,17 @@ package org.swiften.redux.android.ui.recyclerview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.core.CompositeReduxSubscription
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropInjector
-import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.IReduxStatePropMapper
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropMapper
+import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.unsubscribeSafely
 import java.util.Date
 
 /** Created by haipham on 2019/01/08 */
 /**
  * Convenience [RecyclerView.Adapter] that implements some default methods to make working with
- * [IReduxPropInjector] easier. Basically, [RecyclerView.Adapter.getItemCount] always returns 0
+ * [IPropInjector] easier. Basically, [RecyclerView.Adapter.getItemCount] always returns 0
  * (because it will be delegated to a different calculation.
  *
  * This class is not required because custom [RecyclerView.Adapter] only needs to do the same as
@@ -87,7 +87,7 @@ abstract class DelegateRecyclerAdapter<VH>(
   }
 
   /**
-   * Since we will be performing [IReduxPropInjector.injectProps] for [VH] instances, we will be
+   * Since we will be performing [IPropInjector.injectProps] for [VH] instances, we will be
    * be using [CompositeReduxSubscription.add] a lot every time
    * [RecyclerView.Adapter.onBindViewHolder] is called. As a result, calling this method will
    * ensure proper deinitialization.
@@ -100,13 +100,13 @@ abstract class DelegateRecyclerAdapter<VH>(
  * support lifecycle handling, so we will need to manually set null via [RecyclerView.setAdapter]
  * in order to invoke [RecyclerView.Adapter.onViewRecycled], e.g. on orientation change.
  */
-fun <GlobalState, Adapter, VH, VHState, VHAction> IReduxPropInjector<GlobalState>.injectRecyclerAdapterProps(
+fun <GlobalState, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecyclerAdapterProps(
   adapter: Adapter,
-  adapterMapper: IReduxStatePropMapper<GlobalState, Unit, Int>,
-  vhMapper: IReduxPropMapper<GlobalState, Int, VHState, VHAction>
+  adapterMapper: IStateMapper<GlobalState, Unit, Int>,
+  vhMapper: IPropMapper<GlobalState, Int, VHState, VHAction>
 ): DelegateRecyclerAdapter<VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IReduxPropContainer<GlobalState, VHState, VHAction>,
+  VH : IPropContainer<GlobalState, VHState, VHAction>,
   Adapter : RecyclerView.Adapter<VH> {
   return object : DelegateRecyclerAdapter<VH>(adapter) {
     override fun getItemCount() =

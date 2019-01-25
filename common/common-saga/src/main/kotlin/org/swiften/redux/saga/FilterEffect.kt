@@ -6,14 +6,14 @@
 package org.swiften.redux.saga
 
 /** Created by haipham on 2019/01/05 */
-/** [IReduxSagaEffect] whose [IReduxSagaOutput] filters emissions with [selector] */
+/** [ISagaEffect] whose [ISagaOutput] filters emissions with [selector] */
 internal class FilterEffect<R>(
-  private val source: IReduxSagaEffect<R>,
+  private val source: ISagaEffect<R>,
   private val selector: (R) -> Boolean
-) : ReduxSagaEffect<R>() {
-  override fun invoke(p1: Input) = this.source.invoke(p1).filter(this.selector)
+) : SagaEffect<R>() {
+  override fun invoke(p1: SagaInput) = this.source.invoke(p1).filter(this.selector)
 }
 
-/** Invoke a [FilterEffect] on the current [IReduxSagaEffect] */
-fun <R> ReduxSagaEffect<R>.filter(predicate: (R) -> Boolean) =
-  this.transform(CommonSagaEffects.filter(predicate))
+/** Invoke a [FilterEffect] on the current [ISagaEffect] */
+fun <R> SagaEffect<R>.filter(predicate: (R) -> Boolean) =
+  this.transform(CommonEffects.filter(predicate))

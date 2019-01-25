@@ -8,9 +8,9 @@ package org.swiften.redux.android.ui
 import android.os.Handler
 import android.os.Looper
 import org.swiften.redux.core.IReduxStore
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropMapper
-import org.swiften.redux.ui.ReduxPropInjector
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropMapper
+import org.swiften.redux.ui.PropInjector
 import org.swiften.redux.ui.ReduxProps
 import org.swiften.redux.ui.StaticProps
 
@@ -22,17 +22,17 @@ internal fun runOnUIThread(runnable: () -> Unit) {
 }
 
 /**
- * [ReduxPropInjector] specifically for Android that calls [injectProps] on the main thread. We
+ * [PropInjector] specifically for Android that calls [injectProps] on the main thread. We
  * use inheritance here to ensure [StaticProps.injector] is set with this class instance.
  */
 class AndroidPropInjector<GlobalState>(store: IReduxStore<GlobalState>) :
-  ReduxPropInjector<GlobalState>(store) {
+  PropInjector<GlobalState>(store) {
   override fun <OutProps, State, Action> injectProps(
-    view: IReduxPropContainer<GlobalState, State, Action>,
+    view: IPropContainer<GlobalState, State, Action>,
     outProps: OutProps,
-    mapper: IReduxPropMapper<GlobalState, OutProps, State, Action>
+    mapper: IPropMapper<GlobalState, OutProps, State, Action>
   ) = super.injectProps(
-    object : IReduxPropContainer<GlobalState, State, Action> {
+    object : IPropContainer<GlobalState, State, Action> {
       override var reduxProps: ReduxProps<GlobalState, State, Action>?
         get() = view.reduxProps
         set(value) { runOnUIThread { view.reduxProps = value } }

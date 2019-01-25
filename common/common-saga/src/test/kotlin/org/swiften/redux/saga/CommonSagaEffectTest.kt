@@ -25,7 +25,7 @@ import java.util.Collections
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/07 */
-/** Use this test class for common [IReduxSagaEffect] tests */
+/** Use this test class for common [ISagaEffect] tests */
 abstract class CommonSagaEffectTest : CoroutineScope {
   class State
 
@@ -47,15 +47,15 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     runBlocking { delay(1000) }
   }
 
-  abstract fun <T> justEffect(value: T): ReduxSagaEffect<T>
-  abstract fun <T : Any> fromEffect(vararg values: T): ReduxSagaEffect<T>
+  abstract fun <T> justEffect(value: T): SagaEffect<T>
+  abstract fun <T : Any> fromEffect(vararg values: T): SagaEffect<T>
 
   @ObsoleteCoroutinesApi
   fun test_takeEffect_shouldTakeCorrectActions(
     createTakeEffect: (
       extractor: Function1<TakeAction, Int?>,
-      creator: Function1<Int, IReduxSagaEffect<Any>>
-    ) -> ReduxSagaEffect<Any>,
+      creator: Function1<Int, ISagaEffect<Any>>
+    ) -> SagaEffect<Any>,
     actualValues: List<Int>
   ) {
     // Setup

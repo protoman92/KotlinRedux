@@ -30,27 +30,27 @@ import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapterProps
-import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
+import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 class PlantListFragment : Fragment(),
-  IReduxPropContainer<Redux.State, PlantListFragment.S, PlantListFragment.A>,
-  IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner(),
-  IReduxPropMapper<Redux.State, Unit, PlantListFragment.S, PlantListFragment.A>
+  IPropContainer<Redux.State, PlantListFragment.S, PlantListFragment.A>,
+  IPropLifecycleOwner<Redux.State> by EmptyPropLifecycleOwner(),
+  IPropMapper<Redux.State, Unit, PlantListFragment.S, PlantListFragment.A>
   by PlantListFragment {
   data class S(val plantCount: Int)
   class A(val updateGrowZone: () -> Unit)
 
-  companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
+  companion object : IPropMapper<Redux.State, Unit, S, A> {
     override fun mapState(state: Redux.State, outProps: Unit) =
       S(plantCount = state.plants?.size ?: 0)
 
-    override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) = A {
+    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit) = A {
       if (state.selectedGrowZone == Redux.NO_GROW_ZONE) {
         dispatch(Redux.Action.SelectGrowZone(9))
       } else {

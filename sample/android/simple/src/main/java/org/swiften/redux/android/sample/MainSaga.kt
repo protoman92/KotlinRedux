@@ -10,8 +10,8 @@ import org.swiften.redux.saga.catchErrorAsync
 import org.swiften.redux.saga.justThen
 import org.swiften.redux.saga.mapAsync
 import org.swiften.redux.saga.put
-import org.swiften.redux.saga.rx.ReduxSagaEffects.justPut
-import org.swiften.redux.saga.rx.ReduxSagaEffects.takeLatestAction
+import org.swiften.redux.saga.rx.SagaEffects.justPut
+import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.TakeEffectOptions
 import org.swiften.redux.saga.then
 

@@ -11,22 +11,22 @@ import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.middleware.ReduxDispatchWrapper
-import org.swiften.redux.middleware.ReduxMiddlewareInput
+import org.swiften.redux.middleware.DispatchWrapper
+import org.swiften.redux.middleware.MiddlewareInput
 
 /** Created by haipham on 2019/01/15 */
-class ReduxSagaMiddlewareTest {
+class SagaMiddlewareTest {
   @Test
   fun `Redux saga middleware should work correctly`() {
     // Setup
-    val outputs = (0 until 100).map { mock<IReduxSagaOutput<Any>> {
+    val outputs = (0 until 100).map { mock<ISagaOutput<Any>> {
       on { this.onAction } doReturn {}
     } }
 
-    val effects = outputs.map<IReduxSagaOutput<Any>, IReduxSagaEffect<Any>> { o -> { o } }
+    val effects = outputs.map<ISagaOutput<Any>, ISagaEffect<Any>> { o -> { o } }
 
     val wrappedDispatch = createSagaMiddleware<Unit>(effects)
-      .invoke(ReduxMiddlewareInput { })(ReduxDispatchWrapper("root") { })
+      .invoke(MiddlewareInput { })(DispatchWrapper("root") { })
       .dispatch
 
     // When

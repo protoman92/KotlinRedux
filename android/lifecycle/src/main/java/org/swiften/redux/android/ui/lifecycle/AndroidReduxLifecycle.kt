@@ -10,10 +10,10 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropInjector
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropLifecycleOwner
+import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ReduxProps
 
 /** Created by haipham on 2018/12/17 */
@@ -39,7 +39,7 @@ abstract class LifecycleCallback {
 
   /**
    * This method will be called when it is safe to perform lifecycle-aware tasks, such as
-   * [IReduxPropInjector.injectProps].
+   * [IPropInjector.injectProps].
    */
   abstract fun onSafeForStartingLifecycleAwareTasks()
 
@@ -51,7 +51,7 @@ abstract class LifecycleCallback {
 }
 
 /** Use this [LifecycleObserver] to unsubscribe from a [ReduxSubscription] */
-class ReduxLifecycleObserver(
+class LifecycleObserver(
   private val lifecycleOwner: LifecycleOwner,
   private val callback: LifecycleCallback
 ) : LifecycleObserver, LifecycleCallback() {
@@ -104,33 +104,33 @@ class ReduxLifecycleObserver(
   }
 }
 
-/** Call [IReduxPropInjector.injectProps] for [lifecycleOwner] */
-fun <GlobalState, LC, OP, S, A> IReduxPropInjector<GlobalState>.injectLifecycleProps(
+/** Call [IPropInjector.injectProps] for [lifecycleOwner] */
+fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycleProps(
   lifecycleOwner: LC,
   outProps: OP,
-  mapper: IReduxPropMapper<GlobalState, OP, S, A>
+  mapper: IPropMapper<GlobalState, OP, S, A>
 ): LC where
   LC : LifecycleOwner,
-  LC : IReduxPropContainer<GlobalState, S, A>,
-  LC : IReduxPropLifecycleOwner<GlobalState> {
+  LC : IPropContainer<GlobalState, S, A>,
+  LC : IPropLifecycleOwner<GlobalState> {
   var subscription: ReduxSubscription? = null
 
   /**
-   * We perform [IReduxPropInjector.injectProps] in [LifecycleCallback.onStart] because by then
+   * We perform [IPropInjector.injectProps] in [LifecycleCallback.onStart] because by then
    * the views would have been initialized, and thus can be accessed in
-   * [IReduxPropLifecycleOwner.beforePropInjectionStarts]. To mirror this, unsubscription is done
+   * [IPropLifecycleOwner.beforePropInjectionStarts]. To mirror this, unsubscription is done
    * in [LifecycleCallback.onStop] because said views are not destroyed yet.
    */
-  ReduxLifecycleObserver(lifecycleOwner, object : LifecycleCallback() {
+  LifecycleObserver(lifecycleOwner, object : LifecycleCallback() {
     override fun onSafeForStartingLifecycleAwareTasks() {
-      subscription = this@injectLifecycleProps.injectProps(
-        object : IReduxPropContainer<GlobalState, S, A> by lifecycleOwner {
+      subscription = injectProps(
+        object : IPropContainer<GlobalState, S, A> by lifecycleOwner {
           override var reduxProps: ReduxProps<GlobalState, S, A>?
             get() = lifecycleOwner.reduxProps
 
             /**
              * If [Lifecycle.getCurrentState] is [Lifecycle.State.DESTROYED], do not set
-             * [IReduxPropContainer.reduxProps] since there's no point in doing so.
+             * [IPropContainer.reduxProps] since there's no point in doing so.
              */
             set(value) {
               lifecycleOwner.lifecycle.currentState

@@ -9,7 +9,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.IReduxDispatcher
+import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ReduxSubscription
@@ -37,7 +37,7 @@ class PropInjectorTest {
     }
   }
 
-  class View : IReduxPropContainer<PropInjectorTest.S, PropInjectorTest.S, PropInjectorTest.A> {
+  class View : IPropContainer<PropInjectorTest.S, PropInjectorTest.S, PropInjectorTest.A> {
     override var reduxProps by ObservableReduxProps<PropInjectorTest.S, S, A> { prev, next ->
       this.propCallback(prev, next)
       this.reduxPropsInjectionCount += 1
@@ -57,8 +57,8 @@ class PropInjectorTest {
   }
 
   private lateinit var store: StoreWrapper
-  private lateinit var injector: IReduxPropInjector<S>
-  private lateinit var mapper: IReduxPropMapper<S, Unit, S, A>
+  private lateinit var injector: IPropInjector<S>
+  private lateinit var mapper: IPropMapper<S, Unit, S, A>
 
   @Before
   fun beforeMethod() {
@@ -72,11 +72,11 @@ class PropInjectorTest {
     }
 
     this.store = StoreWrapper(store)
-    this.injector = ReduxPropInjector(this.store)
+    this.injector = PropInjector(this.store)
 
-    this.mapper = object : IReduxPropMapper<S, Unit, S, A> {
+    this.mapper = object : IPropMapper<S, Unit, S, A> {
       override fun mapState(state: S, outProps: Unit) = state
-      override fun mapAction(dispatch: IReduxDispatcher, state: S, outProps: Unit) = A()
+      override fun mapAction(dispatch: IActionDispatcher, state: S, outProps: Unit) = A()
     }
   }
 

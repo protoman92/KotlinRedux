@@ -13,24 +13,24 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_music_detail.artistName
 import kotlinx.android.synthetic.main.fragment_music_detail.trackName
 import kotlinx.android.synthetic.main.fragment_music_detail.trackOpen
-import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
+import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2019/01/12 */
 class MusicDetailFragment : Fragment(),
-  IReduxPropContainer<State, MusicDetailFragment.S, MusicDetailFragment.A>,
-  IReduxPropLifecycleOwner<State> by EmptyReduxPropLifecycleOwner(),
-  IReduxPropMapper<State, Unit, MusicDetailFragment.S, MusicDetailFragment.A> by MusicDetailFragment {
+  IPropContainer<State, MusicDetailFragment.S, MusicDetailFragment.A>,
+  IPropLifecycleOwner<State> by EmptyPropLifecycleOwner(),
+  IPropMapper<State, Unit, MusicDetailFragment.S, MusicDetailFragment.A> by MusicDetailFragment {
   class S(val track: MusicTrack?)
   class A(val goToTrackInformation: () -> Unit)
 
-  companion object : IReduxPropMapper<State, Unit, S, A> {
-    override fun mapAction(dispatch: IReduxDispatcher, state: State, outProps: Unit) = A {
+  companion object : IPropMapper<State, Unit, S, A> {
+    override fun mapAction(dispatch: IActionDispatcher, state: State, outProps: Unit) = A {
       this.mapState(state, outProps).track?.also {
         dispatch(MainRedux.Screen.WebView(it.previewUrl))
       }

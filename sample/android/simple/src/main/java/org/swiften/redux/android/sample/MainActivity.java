@@ -10,13 +10,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.redux.ui.IReduxPropContainer;
+import org.swiften.redux.ui.IPropContainer;
 import org.swiften.redux.ui.ReduxProps;
 import org.swiften.redux.ui.StaticProps;
 
 /** Created by haipham on 2018/12/19 */
 public final class MainActivity extends AppCompatActivity implements
-  IReduxPropContainer<State, Unit, Unit> {
+  IPropContainer<State, Unit, Unit> {
   @Nullable private ReduxProps<State, Unit, Unit> reduxProps;
 
   @Override

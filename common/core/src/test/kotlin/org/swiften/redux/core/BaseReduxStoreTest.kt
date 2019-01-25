@@ -64,7 +64,7 @@ abstract class BaseReduxStoreTest : CoroutineScope {
 
   override val coroutineContext = Dispatchers.Default
 
-  fun reducer(): IReduxReducer<Int> = { s, a -> when (a) { is Action -> a(s); else -> s } }
+  fun reducer(): IReducer<Int> = { s, a -> when (a) { is Action -> a(s); else -> s } }
 
   abstract fun createStore(): IReduxStore<Int>
 

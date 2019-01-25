@@ -7,10 +7,10 @@ package org.swiften.redux.saga.rx
 
 import io.reactivex.processors.PublishProcessor
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.IReduxSagaEffect
-import org.swiften.redux.saga.IReduxSagaOutput
-import org.swiften.redux.saga.Input
-import org.swiften.redux.saga.ReduxSagaEffect
+import org.swiften.redux.saga.ISagaEffect
+import org.swiften.redux.saga.ISagaOutput
+import org.swiften.redux.saga.SagaInput
+import org.swiften.redux.saga.SagaEffect
 
 /** Created by haipham on 2018/12/23 */
 /**
@@ -20,19 +20,19 @@ import org.swiften.redux.saga.ReduxSagaEffect
 internal abstract class TakeEffect<P, R>(
   private val extractor: Function1<IReduxAction, P?>,
   private val options: TakeEffectOptions,
-  private val creator: Function1<P, IReduxSagaEffect<R>>
-) : ReduxSagaEffect<R>() {
+  private val creator: Function1<P, ISagaEffect<R>>
+) : SagaEffect<R>() {
   /**
-   * Flatten an [IReduxSagaOutput] that streams [IReduxSagaOutput] to access the values streamed by
-   * the inner [IReduxSagaOutput].
+   * Flatten an [ISagaOutput] that streams [ISagaOutput] to access the values streamed by
+   * the inner [ISagaOutput].
    */
-  abstract fun flatten(nestedOutput: IReduxSagaOutput<IReduxSagaOutput<R>>): IReduxSagaOutput<R>
+  abstract fun flatten(nestedOutput: ISagaOutput<ISagaOutput<R>>): ISagaOutput<R>
 
   @Suppress("MoveLambdaOutsideParentheses")
-  override operator fun invoke(p1: Input): IReduxSagaOutput<R> {
+  override operator fun invoke(p1: SagaInput): ISagaOutput<R> {
     val subject = PublishProcessor.create<P>()
 
-    val nested = ReduxSagaOutput(p1.scope, subject,
+    val nested = SagaOutput(p1.scope, subject,
       { p -> this@TakeEffect.extractor(p)?.also { subject.offer(it) } })
       .debounce(this@TakeEffect.options.debounceMillis)
       .map { this@TakeEffect.creator(it).invoke(p1) }

@@ -5,9 +5,9 @@
 
 package org.swiften.redux.store
 
-import org.swiften.redux.core.IReduxDeinitializer
-import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.core.IReduxReducer
+import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.core.IDeinitializer
+import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ReduxSubscription
@@ -22,14 +22,14 @@ import kotlin.concurrent.write
  */
 class SimpleReduxStore<State>(
   private var state: State,
-  override val reducer: IReduxReducer<State>
+  override val reducer: IReducer<State>
 ) : IReduxStore<State> {
   private val lock = ReentrantReadWriteLock()
   private val subscribers = HashMap<String, (State) -> Unit>()
 
   override val lastState = { this.lock.read { this.state } }
 
-  override val dispatch: IReduxDispatcher = { action ->
+  override val dispatch: IActionDispatcher = { action ->
     this.lock.write { this.state = this.reducer(this.state, action) }
     this.lock.read { this.subscribers.forEach { it.value(this.state) } }
   }
@@ -42,7 +42,7 @@ class SimpleReduxStore<State>(
     ReduxSubscription(id) { this.lock.write { this.subscribers.remove(id) } }
   }
 
-  override val deinitialize: IReduxDeinitializer = {
+  override val deinitialize: IDeinitializer = {
     this.lock.write { this.subscribers.clear() }
   }
 }

@@ -29,14 +29,14 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.samples.apps.sunflower.dependency.Redux
-import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
+import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.ReduxProps
 
 class GardenActivity : AppCompatActivity(),
-  IReduxPropContainer<Redux.State, Unit, Unit>,
-  IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner() {
+  IPropContainer<Redux.State, Unit, Unit>,
+  IPropLifecycleOwner<Redux.State> by EmptyPropLifecycleOwner() {
   override var reduxProps: ReduxProps<Redux.State, Unit, Unit>? = null
 
   private lateinit var drawerLayout: DrawerLayout

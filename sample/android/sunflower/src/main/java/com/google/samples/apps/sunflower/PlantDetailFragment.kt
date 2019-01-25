@@ -43,11 +43,11 @@ import kotlinx.android.synthetic.main.fragment_plant_detail.fab
 import kotlinx.android.synthetic.main.fragment_plant_detail.plant_detail
 import kotlinx.android.synthetic.main.fragment_plant_detail.plant_watering
 import kotlinx.android.synthetic.main.fragment_plant_detail.toolbar_layout
-import org.swiften.redux.core.IReduxDispatcher
-import org.swiften.redux.ui.EmptyReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropContainer
-import org.swiften.redux.ui.IReduxPropLifecycleOwner
-import org.swiften.redux.ui.IReduxPropMapper
+import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
+import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
@@ -56,19 +56,19 @@ import org.swiften.redux.ui.StaticProps
  */
 @SuppressLint("RestrictedApi")
 class PlantDetailFragment : Fragment(),
-  IReduxPropContainer<Redux.State, PlantDetailFragment.S, PlantDetailFragment.A>,
-  IReduxPropLifecycleOwner<Redux.State> by EmptyReduxPropLifecycleOwner(),
-  IReduxPropMapper<Redux.State, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
+  IPropContainer<Redux.State, PlantDetailFragment.S, PlantDetailFragment.A>,
+  IPropLifecycleOwner<Redux.State> by EmptyPropLifecycleOwner(),
+  IPropMapper<Redux.State, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
   by PlantDetailFragment {
   data class S(val plant: Plant? = null, val isPlanted: Boolean? = null)
   class A(val addPlantToGarden: () -> Unit)
 
-  companion object : IReduxPropMapper<Redux.State, Unit, S, A> {
+  companion object : IPropMapper<Redux.State, Unit, S, A> {
     override fun mapState(state: Redux.State, outProps: Unit) = state.selectedPlant?.let {
       S(it.id.let { id -> state.plants?.find { p -> p.plantId == id } }, it.isPlanted)
     } ?: S()
 
-    override fun mapAction(dispatch: IReduxDispatcher, state: Redux.State, outProps: Unit) =
+    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit) =
       A { state.selectedPlant?.id?.also { dispatch(Redux.Action.AddPlantToGarden(it)) } }
   }
 

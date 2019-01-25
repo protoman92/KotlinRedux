@@ -11,10 +11,10 @@ import kotlinx.coroutines.GlobalScope;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.swiften.redux.saga.CommonSagaEffects.map;
-import static org.swiften.redux.saga.CommonSagaEffects.retry;
-import static org.swiften.redux.saga.rx.ReduxSagaEffects.call;
-import static org.swiften.redux.saga.rx.ReduxSagaEffects.just;
+import static org.swiften.redux.saga.CommonEffects.map;
+import static org.swiften.redux.saga.CommonEffects.retry;
+import static org.swiften.redux.saga.rx.SagaEffects.call;
+import static org.swiften.redux.saga.rx.SagaEffects.just;
 
 /**
  * Created by haipham on 2019/01/14

@@ -14,7 +14,7 @@ import org.swiften.redux.android.router.createSingleActivityRouter
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectLifecycleProps
 import org.swiften.redux.android.ui.lifecycle.startSerializableInjections
-import org.swiften.redux.middleware.applyReduxMiddlewares
+import org.swiften.redux.middleware.applyMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.createSagaMiddleware
 import org.swiften.redux.store.FinalReduxStore
@@ -28,7 +28,7 @@ class MainApplication : Application() {
     val api = MainApi()
     val repository = MainRepository(api, JSONDecoder())
 
-    val store = applyReduxMiddlewares(
+    val store = applyMiddlewares(
       createRouterMiddleware(
         createSingleActivityRouter<MainActivity, MainRedux.Screen>(this) { activity, screen ->
           val f: Fragment? = when (screen) {

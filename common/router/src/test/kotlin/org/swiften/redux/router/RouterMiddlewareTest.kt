@@ -8,14 +8,14 @@ package org.swiften.redux.router
 import org.junit.Assert
 import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.IReduxDeinitializer
-import org.swiften.redux.middleware.applyReduxMiddlewares
+import org.swiften.redux.core.IDeinitializer
+import org.swiften.redux.middleware.applyMiddlewares
 import org.swiften.redux.store.DefaultActionReduxStore
 import org.swiften.redux.store.SimpleReduxStore
 
 /** Created by haipham on 2018/12/16 */
-class ReduxRouterMiddlewareTest {
-  sealed class Screen : IReduxRouterScreen {
+class RouterMiddlewareTest {
+  sealed class Screen : IRouterScreen {
     object Screen1 : Screen()
     object Screen2 : Screen()
     object Screen3 : Screen()
@@ -25,15 +25,15 @@ class ReduxRouterMiddlewareTest {
     }
   }
 
-  class Router : IReduxRouter<Screen> {
-    val screens = arrayListOf<IReduxRouterScreen>()
+  class Router : IRouter<Screen> {
+    val screens = arrayListOf<IRouterScreen>()
     var deinitialized = false
 
     override fun navigate(screen: Screen) {
       this.screens.add(screen)
     }
 
-    override val deinitialize: IReduxDeinitializer get() = { this.deinitialized = true }
+    override val deinitialize: IDeinitializer get() = { this.deinitialized = true }
   }
 
   @Test
@@ -41,7 +41,7 @@ class ReduxRouterMiddlewareTest {
     // Setup
     val store = SimpleReduxStore(0) { a, _ -> a }
     val router = Router()
-    val wrappedStore = applyReduxMiddlewares(createRouterMiddleware<Int, Screen>(router))(store)
+    val wrappedStore = applyMiddlewares(createRouterMiddleware<Int, Screen>(router))(store)
 
     // When
     wrappedStore.dispatch(DefaultReduxAction.Dummy)
@@ -62,7 +62,7 @@ class ReduxRouterMiddlewareTest {
     // Setup
     val router = Router()
 
-    val wrappedStore = applyReduxMiddlewares(
+    val wrappedStore = applyMiddlewares(
       createRouterMiddleware<Int, Screen>(router)
     )(DefaultActionReduxStore(SimpleReduxStore(0) { a, _ -> a }))
 
