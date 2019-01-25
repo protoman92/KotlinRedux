@@ -22,16 +22,16 @@ internal fun runOnUIThread(runnable: () -> Unit) {
 }
 
 /**
- * [PropInjector] specifically for Android that calls [injectProps] on the main thread. We use
+ * [PropInjector] specifically for Android that calls [inject] on the main thread. We use
  * inheritance here to ensure [StaticProps.injector] is set with this class instance.
  */
 class AndroidPropInjector<GlobalState>(store: IReduxStore<GlobalState>) :
   PropInjector<GlobalState>(store) {
-  override fun <OutProps, State, Action> injectProps(
+  override fun <OutProps, State, Action> inject(
     view: IPropContainer<GlobalState, State, Action>,
     outProps: OutProps,
     mapper: IPropMapper<GlobalState, OutProps, State, Action>
-  ) = super.injectProps(
+  ) = super.inject(
     object : IPropContainer<GlobalState, State, Action> {
       override var reduxProps: ReduxProps<GlobalState, State, Action>?
         get() = view.reduxProps
@@ -44,6 +44,5 @@ class AndroidPropInjector<GlobalState>(store: IReduxStore<GlobalState>) :
       override fun afterPropInjectionEnds() = runOnUIThread { view.afterPropInjectionEnds() }
       override fun toString() = view.toString()
     },
-    outProps, mapper
-  )
+    outProps, mapper)
 }

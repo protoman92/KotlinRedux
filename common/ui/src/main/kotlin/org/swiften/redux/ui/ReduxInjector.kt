@@ -20,7 +20,7 @@ import kotlin.concurrent.write
 /** Created by haipham on 2018/12/16 */
 /** Handle lifecycles for a target of [IPropInjector]  */
 interface IPropLifecycleOwner<GlobalState> {
-  /** This is called before [IPropInjector.injectProps] is called */
+  /** This is called before [IPropInjector.inject] is called */
   fun beforePropInjectionStarts(sp: StaticProps<GlobalState>)
 
   /** This is called after [IReduxSubscription.unsubscribe] is called */
@@ -63,7 +63,7 @@ interface IActionMapper<GlobalState, OutProps, Action> {
  * immutable property as dictated by its parent.
  *
  * For example, a parent view, which contains a list of child views, wants to call
- * [IPropInjector.injectProps] for said children. The [OutProps] generic for these children
+ * [IPropInjector.inject] for said children. The [OutProps] generic for these children
  * should therefore be an [Int] that corresponds to their respective indexes in the parent.
  * Generally, though, [OutProps] tends to be [Unit].
  */
@@ -80,7 +80,7 @@ interface IPropInjector<GlobalState> :
    * Inject [State] and [Action] into [view]. This method does not handle lifecycles, so
    * platform-specific methods can be defined for this purpose.
    */
-  fun <OutProps, State, Action> injectProps(
+  fun <OutProps, State, Action> inject(
     view: IPropContainer<GlobalState, State, Action>,
     outProps: OutProps,
     mapper: IPropMapper<GlobalState, OutProps, State, Action>
@@ -88,7 +88,7 @@ interface IPropInjector<GlobalState> :
 }
 
 /**
- * A [IPropInjector] implementation that handles [injectProps] in a thread-safe manner. It
+ * A [IPropInjector] implementation that handles [inject] in a thread-safe manner. It
  * also invokes [IPropLifecycleOwner.beforePropInjectionStarts] and
  * [IPropLifecycleOwner.afterPropInjectionEnds] when appropriate.
  */
@@ -97,7 +97,7 @@ open class PropInjector<GlobalState>(private val store: IReduxStore<GlobalState>
   IDispatcherProvider by store,
   IStateGetterProvider<GlobalState> by store,
   IDeinitializerProvider by store {
-  override fun <OutProps, State, Action> injectProps(
+  override fun <OutProps, State, Action> inject(
     view: IPropContainer<GlobalState, State, Action>,
     outProps: OutProps,
     mapper: IPropMapper<GlobalState, OutProps, State, Action>
@@ -122,7 +122,7 @@ open class PropInjector<GlobalState>(private val store: IReduxStore<GlobalState>
     /**
      * Inject [StaticProps] with a placebo [StaticProps.subscription] because we want
      * [ReduxProps.static] to be available in [IPropLifecycleOwner.beforePropInjectionStarts]
-     * in case [view] needs to perform [injectProps] on its children.
+     * in case [view] needs to perform [inject] on its children.
      */
     view.reduxProps = ReduxProps(staticProps, null)
 

@@ -92,7 +92,7 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
  * that [adapter] does not have to be a [ListAdapter] - it can be any [RecyclerView.Adapter] as
  * long as it implements [RecyclerView.Adapter.onCreateViewHolder].
  *
- * Since we do not call [IPropInjector.injectProps] directly into [VH], we cannot use
+ * Since we do not call [IPropInjector.inject] directly into [VH], we cannot use
  * [IPropMapper.mapAction] on [VH] itself. As a result, we must pass down
  * [VariableProps.action] from [ReduxListAdapter.reduxProps] into each [VH] instance. The
  * [VHA] should contain actions that take at least one [Int] parameter, (e.g. (Int) -> Unit),
@@ -101,7 +101,7 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
  * Note that this does not support lifecycle handling, so we will need to manually set null via
  * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].
  */
-fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapterProps(
+fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
   diffCallback: DiffUtil.ItemCallback<VHS>
@@ -123,6 +123,6 @@ fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapterPr
     }
   }
 
-  this.injectProps(listAdapter, Unit, adapterMapper)
+  this.inject(listAdapter, Unit, adapterMapper)
   return listAdapter
 }

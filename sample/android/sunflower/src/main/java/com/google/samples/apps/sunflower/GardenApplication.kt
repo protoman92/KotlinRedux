@@ -11,7 +11,7 @@ import com.google.samples.apps.sunflower.dependency.Router
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.ui.AndroidPropInjector
-import org.swiften.redux.android.ui.lifecycle.injectLifecycleProps
+import org.swiften.redux.android.ui.lifecycle.injectLifecycleOwner
 import org.swiften.redux.android.ui.lifecycle.startParcelableInjections
 import org.swiften.redux.middleware.applyMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
@@ -38,9 +38,9 @@ class GardenApplication : Application() {
 
     injector.startParcelableInjections(this) {
       when (it) {
-        is GardenFragment -> this.injectLifecycleProps(it, Unit, it)
-        is PlantDetailFragment -> this.injectLifecycleProps(it, Unit, it)
-        is PlantListFragment -> this.injectLifecycleProps(it, Unit, it)
+        is GardenFragment -> this.injectLifecycleOwner(it, Unit, it)
+        is PlantDetailFragment -> this.injectLifecycleOwner(it, Unit, it)
+        is PlantListFragment -> this.injectLifecycleOwner(it, Unit, it)
       }
     }
   }

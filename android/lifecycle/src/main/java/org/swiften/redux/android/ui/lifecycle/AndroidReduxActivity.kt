@@ -35,7 +35,7 @@ interface IBundleStateSaver<GlobalState> {
  * [inject] accepts [LifecycleOwner] as its only parameter so that it can handle both
  * [AppCompatActivity] and [Fragment].
  */
-fun <GlobalState> IPropInjector<GlobalState>.startLifecycleInjections(
+fun <GlobalState> IPropInjector<GlobalState>.injectApplication(
   application: Application,
   saver: IBundleStateSaver<GlobalState>,
   inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
@@ -47,20 +47,20 @@ fun <GlobalState> IPropInjector<GlobalState>.startLifecycleInjections(
     override fun onActivityDestroyed(activity: Activity?) {}
 
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
-      outState?.also { saver.saveState(it, this@startLifecycleInjections.lastState()) }
+      outState?.also { saver.saveState(it, this@injectApplication.lastState()) }
     }
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
       try {
         savedInstanceState
           ?.run { restoreState(this) }
-          ?.apply { this@startLifecycleInjections.dispatch(DefaultReduxAction.ReplaceState(this)) }
+          ?.apply { this@injectApplication.dispatch(DefaultReduxAction.ReplaceState(this)) }
       } catch (e: Exception) { }
 
       activity?.also {
         require(it is AppCompatActivity)
-        inject(this@startLifecycleInjections, it)
-        this@startLifecycleInjections.startFragmentInjection(it, inject)
+        inject(this@injectApplication, it)
+        this@injectApplication.startFragmentInjection(it, inject)
       }
     }
 
@@ -75,13 +75,13 @@ fun <GlobalState> IPropInjector<GlobalState>.startLifecycleInjections(
  * Similar to [startParcelableInjections], but provides default persistence for when [GlobalState]
  * is [Serializable]
  */
-inline fun <reified GlobalState> IPropInjector<GlobalState>.startSerializableInjections(
+inline fun <reified GlobalState> IPropInjector<GlobalState>.startApplicationSerializable(
   application: Application,
   noinline inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks where GlobalState : Serializable {
   val key = "REDUX_STATE_${Date().time}"
 
-  return this.startLifecycleInjections(application, object : IBundleStateSaver<GlobalState> {
+  return this.injectApplication(application, object : IBundleStateSaver<GlobalState> {
     override fun saveState(bundle: Bundle, state: GlobalState) = bundle.putSerializable(key, state)
 
     override fun restoreState(bundle: Bundle) =
@@ -90,7 +90,7 @@ inline fun <reified GlobalState> IPropInjector<GlobalState>.startSerializableInj
 }
 
 /**
- * Similar to [startLifecycleInjections], but provides default persistence for when [GlobalState] is
+ * Similar to [injectApplication], but provides default persistence for when [GlobalState] is
  * [Parcelable]
  */
 inline fun <reified GlobalState> IPropInjector<GlobalState>.startParcelableInjections(
@@ -99,7 +99,7 @@ inline fun <reified GlobalState> IPropInjector<GlobalState>.startParcelableInjec
 ): Application.ActivityLifecycleCallbacks where GlobalState : Parcelable {
   val key = "REDUX_STATE_${Date().time}"
 
-  return this.startLifecycleInjections(application, object : IBundleStateSaver<GlobalState> {
+  return this.injectApplication(application, object : IBundleStateSaver<GlobalState> {
     override fun saveState(bundle: Bundle, state: GlobalState) = bundle.putParcelable(key, state)
     override fun restoreState(bundle: Bundle) = bundle.getParcelable<GlobalState>(key)
   }, inject)

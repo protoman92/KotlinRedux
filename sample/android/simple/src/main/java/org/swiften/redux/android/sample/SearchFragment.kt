@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.view_search_result.view.artistName
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
 import org.swiften.redux.android.ui.recyclerview.DiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapterProps
+import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IPropContainer
@@ -142,7 +142,7 @@ class SearchFragment : Fragment(),
     this.searchResult.also {
       it.setHasFixedSize(true)
       it.layoutManager = LinearLayoutManager(this.context)
-      it.adapter = sp.injector.injectDiffedAdapterProps(this, Adapter())
+      it.adapter = sp.injector.injectDiffedAdapter(this, Adapter())
     }
   }
 }

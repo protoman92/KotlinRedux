@@ -87,7 +87,7 @@ abstract class DelegateRecyclerAdapter<VH>(
   }
 
   /**
-   * Since we will be performing [IPropInjector.injectProps] for [VH] instances, we will be
+   * Since we will be performing [IPropInjector.inject] for [VH] instances, we will be
    * be using [CompositeReduxSubscription.add] a lot every time
    * [RecyclerView.Adapter.onBindViewHolder] is called. As a result, calling this method will
    * ensure proper deinitialization.
@@ -100,7 +100,7 @@ abstract class DelegateRecyclerAdapter<VH>(
  * support lifecycle handling, so we will need to manually set null via [RecyclerView.setAdapter]
  * in order to invoke [RecyclerView.Adapter.onViewRecycled], e.g. on orientation change.
  */
-fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecyclerAdapterProps(
+fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecyclerAdapter(
   adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IStateMapper<GlobalState, Unit, Int>,
   vhMapper: IPropMapper<GlobalState, Int, VHState, VHAction>
@@ -109,11 +109,11 @@ fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecycl
   VH : IPropContainer<GlobalState, VHState, VHAction> {
   return object : DelegateRecyclerAdapter<VH>(adapter) {
     override fun getItemCount() =
-      adapterMapper.mapState(this@injectRecyclerAdapterProps.lastState(), Unit)
+      adapterMapper.mapState(this@injectRecyclerAdapter.lastState(), Unit)
 
     override fun onBindViewHolder(holder: VH, position: Int) {
       super.onBindViewHolder(holder, position)
-      val subscription = this@injectRecyclerAdapterProps.injectProps(holder, position, vhMapper)
+      val subscription = this@injectRecyclerAdapter.inject(holder, position, vhMapper)
       this.composite.add(subscription)
     }
 

@@ -88,14 +88,14 @@ class PropInjectorTest {
     view.propCallback = { prev, next -> allProps.add(prev?.state to next?.state) }
 
     // When
-    this.injector.injectProps(view, Unit, this.mapper)
+    this.injector.inject(view, Unit, this.mapper)
     this.store.dispatch(Action.SetQuery("1"))
     this.store.dispatch(Action.SetQuery("1"))
     this.store.dispatch(Action.SetQuery("2"))
     this.store.dispatch(Action.SetQuery("2"))
     this.store.dispatch(Action.SetQuery("3"))
     this.store.dispatch(Action.SetQuery("3"))
-    this.injector.injectProps(view, Unit, this.mapper)
+    this.injector.inject(view, Unit, this.mapper)
 
     // Then
     Assert.assertEquals(this.store.unsubscribeCount, 1)

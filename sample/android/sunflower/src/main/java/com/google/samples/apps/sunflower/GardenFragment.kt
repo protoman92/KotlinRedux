@@ -25,7 +25,7 @@ import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_garden.empty_garden
 import kotlinx.android.synthetic.main.fragment_garden.garden_list
-import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapterProps
+import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IPropContainer
@@ -69,7 +69,7 @@ class GardenFragment : Fragment(),
 
   override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
     this.garden_list.adapter = GardenPlantingAdapter().let {
-      sp.injector.injectRecyclerAdapterProps(this, it, it, GardenPlantingAdapter.ViewHolder)
+      sp.injector.injectRecyclerAdapter(this, it, it, GardenPlantingAdapter.ViewHolder)
     }
   }
 }
