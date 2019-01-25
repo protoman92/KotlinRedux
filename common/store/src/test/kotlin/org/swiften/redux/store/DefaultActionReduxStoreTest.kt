@@ -15,7 +15,7 @@ import org.swiften.redux.core.IReduxAction
 class DefaultActionReduxStoreTest : BaseReduxStoreTest() {
   private var lastAction: IReduxAction? = null
 
-  override fun createStore() = DefaultActionReduxStore(SimpleReduxStore(0) { p, a ->
+  override fun createStore() = DefaultActionReduxStore(ThreadSafeReduxStore(0) { p, a ->
     this.lastAction = a; this.reducer()(p, a)
   })
 

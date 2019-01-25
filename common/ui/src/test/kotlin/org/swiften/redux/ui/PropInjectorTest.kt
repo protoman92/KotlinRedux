@@ -13,7 +13,7 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.store.SimpleReduxStore
+import org.swiften.redux.store.ThreadSafeReduxStore
 
 /** Created by haipham on 2018/12/20 */
 class PropInjectorTest {
@@ -62,7 +62,7 @@ class PropInjectorTest {
 
   @Before
   fun beforeMethod() {
-    val store = SimpleReduxStore(S()) { s, a ->
+    val store = ThreadSafeReduxStore(S()) { s, a ->
       when (a) {
         is Action -> when (a) {
           is Action.SetQuery -> s.copy(query = a.query)

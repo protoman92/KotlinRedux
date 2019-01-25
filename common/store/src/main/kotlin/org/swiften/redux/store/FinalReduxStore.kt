@@ -23,7 +23,7 @@ class FinalReduxStore<GlobalState> private constructor(
     reducer: IReducer<GlobalState>,
     context: CoroutineContext = EmptyCoroutineContext
   ) : this(fun (): IReduxStore<GlobalState> {
-    val rootStore = SimpleReduxStore(state, reducer)
+    val rootStore = ThreadSafeReduxStore(state, reducer)
     val defaultActionStore = DefaultActionReduxStore(rootStore)
     return AsyncReduxStore(defaultActionStore, context)
   }())

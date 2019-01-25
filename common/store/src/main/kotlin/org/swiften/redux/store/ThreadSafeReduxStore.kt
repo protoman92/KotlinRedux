@@ -17,10 +17,10 @@ import kotlin.concurrent.write
 
 /** Created by haipham on 2018/12/16 */
 /**
- * [SimpleReduxStore] is a [IReduxStore] implementation that supports thread-safe accesses and
+ * [ThreadSafeReduxStore] is a [IReduxStore] implementation that supports thread-safe accesses and
  * modifications. Pass in the initial [state] and the store's [reducer] in the constructor.
  */
-class SimpleReduxStore<State>(
+class ThreadSafeReduxStore<State>(
   private var state: State,
   override val reducer: IReducer<State>
 ) : IReduxStore<State> {

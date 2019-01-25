@@ -92,7 +92,7 @@ dependencies {
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
 
   api project(':common:middleware')
-  api project(':common:final-store')
+  api project(':common:store')
   api project(':android:core-rx-saga')
   api project(':android:lifecycle')
   api project(':android:livedata-rx-saga')
