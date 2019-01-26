@@ -90,6 +90,16 @@ project(':common:common-middleware') {
   }
 }
 
+project(':common:common-async') {
+  dependencies {
+    api project(':common:common-core')
+    api project(':common:common-middleware')
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    testApi project(':common:common-store')
+    testApi project (path: ":common:common-core", configuration: 'testArtifacts')
+  }
+}
+
 project(':common:common-router') {
   dependencies {
     api project(':common:common-core')
