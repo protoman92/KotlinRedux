@@ -5,11 +5,10 @@
 
 package org.swiften.redux.saga.rx
 
-import org.swiften.redux.saga.ISagaEffect
-import org.swiften.redux.saga.ISagaOutput
-import org.swiften.redux.saga.SagaInput
-import org.swiften.redux.saga.SagaEffect
-import org.swiften.redux.saga.then
+import org.swiften.redux.saga.common.ISagaEffect
+import org.swiften.redux.saga.common.ISagaOutput
+import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.common.SagaInput
 
 /** Created by haipham on 2019/01/01 */
 /**
@@ -26,16 +25,3 @@ internal class SelectEffect<State, R>(
     return SagaEffects.just(this.selector(this.cls.cast(lastState))).invoke(p1)
   }
 }
-
-/**
- * Invoke a [SelectEffect] on the current [ISagaEffect] and combine the emitted values with
- * [selector].
- */
-inline fun <reified State, R, R2, R3> SagaEffect<R>.select(
-  noinline selector: (State) -> R2,
-  noinline combiner: (R, R2) -> R3
-) = this.then(SagaEffects.select(selector), combiner)
-
-/** Invoke a [SelectEffect] but ignore emissions from [this] */
-inline fun <reified State, R2> SagaEffect<*>.select(noinline selector: (State) -> R2) =
-  this.then(SagaEffects.select(selector))

@@ -22,12 +22,14 @@ plugins {
 repositories {
   google()
   jcenter()
+  maven { url = "https://jitpack.io" }
 }
 
 subprojects {
   repositories {
     google()
     jcenter()
+    maven { url = "https://jitpack.io" }
   }
   
   apply plugin: 'com.android.library'

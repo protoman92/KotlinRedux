@@ -8,10 +8,10 @@ package org.swiften.redux.saga.rx
 import io.reactivex.Flowable
 import io.reactivex.Single
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.CommonEffects
-import org.swiften.redux.saga.ISagaEffect
-import org.swiften.redux.saga.ISagaEffectTransformer
-import org.swiften.redux.saga.SagaEffect
+import org.swiften.redux.saga.common.CommonEffects
+import org.swiften.redux.saga.common.ISagaEffect
+import org.swiften.redux.saga.common.ISagaEffectTransformer
+import org.swiften.redux.saga.common.SagaEffect
 
 /** Created by haipham on 2019/01/13 */
 /** Top-level namespace for Rx-based [ISagaEffect] */

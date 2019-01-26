@@ -16,7 +16,7 @@ import org.swiften.redux.android.ui.lifecycle.injectLifecycleOwner
 import org.swiften.redux.android.ui.lifecycle.startApplicationSerializable
 import org.swiften.redux.middleware.applyMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
-import org.swiften.redux.saga.createSagaMiddleware
+import org.swiften.redux.saga.common.createSagaMiddleware
 import org.swiften.redux.store.FinalStore
 
 /** Created by haipham on 2018/12/19 */

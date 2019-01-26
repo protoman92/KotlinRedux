@@ -11,8 +11,8 @@ import kotlinx.coroutines.GlobalScope;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.swiften.redux.saga.CommonEffects.map;
-import static org.swiften.redux.saga.CommonEffects.retry;
+import static org.swiften.redux.saga.common.CommonEffects.map;
+import static org.swiften.redux.saga.common.CommonEffects.retry;
 import static org.swiften.redux.saga.rx.SagaEffects.call;
 import static org.swiften.redux.saga.rx.SagaEffects.just;
 

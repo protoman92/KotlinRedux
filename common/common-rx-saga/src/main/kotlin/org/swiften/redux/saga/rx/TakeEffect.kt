@@ -7,10 +7,10 @@ package org.swiften.redux.saga.rx
 
 import io.reactivex.processors.PublishProcessor
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.ISagaEffect
-import org.swiften.redux.saga.ISagaOutput
-import org.swiften.redux.saga.SagaInput
-import org.swiften.redux.saga.SagaEffect
+import org.swiften.redux.saga.common.ISagaEffect
+import org.swiften.redux.saga.common.ISagaOutput
+import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.common.SagaInput
 
 /** Created by haipham on 2018/12/23 */
 /**
@@ -28,15 +28,15 @@ internal abstract class TakeEffect<P, R>(
    */
   abstract fun flatten(nestedOutput: ISagaOutput<ISagaOutput<R>>): ISagaOutput<R>
 
-  @Suppress("MoveLambdaOutsideParentheses")
   override operator fun invoke(p1: SagaInput): ISagaOutput<R> {
     val subject = PublishProcessor.create<P>()
 
-    val nested = SagaOutput(p1.scope, subject,
-      { p -> this@TakeEffect.extractor(p)?.also { subject.offer(it) } })
-      .debounce(this@TakeEffect.options.debounceMillis)
-      .map { this@TakeEffect.creator(it).invoke(p1) }
+    val nested = SagaOutput(p1.scope, subject) { p ->
+      this@TakeEffect.extractor(p)?.also { subject.offer(it) }
+    }
 
-    return this.flatten(nested)
+    return this.flatten(nested
+      .debounce(this@TakeEffect.options.debounceMillis)
+      .map { this@TakeEffect.creator(it).invoke(p1) })
   }
 }

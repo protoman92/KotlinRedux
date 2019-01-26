@@ -6,14 +6,14 @@
 package org.swiften.redux.android.sample
 
 import kotlinx.coroutines.async
-import org.swiften.redux.saga.catchErrorAsync
-import org.swiften.redux.saga.justThen
-import org.swiften.redux.saga.mapAsync
-import org.swiften.redux.saga.put
+import org.swiften.redux.saga.common.catchErrorAsync
+import org.swiften.redux.saga.common.justThen
+import org.swiften.redux.saga.common.mapAsync
+import org.swiften.redux.saga.common.put
 import org.swiften.redux.saga.rx.SagaEffects.justPut
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.TakeEffectOptions
-import org.swiften.redux.saga.then
+import org.swiften.redux.saga.common.then
 
 /** Created by haipham on 2019/01/04 */
 object MainSaga {

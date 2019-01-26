@@ -6,10 +6,10 @@
 package org.swiften.redux.saga.rx
 
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.ISagaEffect
-import org.swiften.redux.saga.SagaInput
-import org.swiften.redux.saga.SagaEffect
-import org.swiften.redux.saga.map
+import org.swiften.redux.saga.common.ISagaEffect
+import org.swiften.redux.saga.common.SagaInput
+import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.common.map
 
 /** Created by haipham on 2019/01/10 */
 /** [ISagaEffect] whose [SagaOutput] simply dispatches [action] */

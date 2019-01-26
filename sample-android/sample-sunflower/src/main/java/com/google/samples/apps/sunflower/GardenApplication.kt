@@ -15,7 +15,7 @@ import org.swiften.redux.android.ui.lifecycle.injectLifecycleOwner
 import org.swiften.redux.android.ui.lifecycle.startParcelableInjections
 import org.swiften.redux.middleware.applyMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
-import org.swiften.redux.saga.createSagaMiddleware
+import org.swiften.redux.saga.common.createSagaMiddleware
 import org.swiften.redux.store.FinalStore
 
 /** Created by haipham on 2019/01/17 */
@@ -27,11 +27,13 @@ class GardenApplication : Application() {
 
     val store = applyMiddlewares(
       createRouterMiddleware(Router(this)),
-      createSagaMiddleware<Redux.State>(arrayListOf(
-        arrayListOf(Redux.Saga.CoreSaga.watchNetworkConnectivity(this)),
-        Redux.Saga.GardenPlantingSaga.allSagas(InjectorUtils.getGardenPlantingRepository(this)),
-        Redux.Saga.PlantSaga.allSagas(InjectorUtils.getPlantRepository(this))
-      ).flatten())
+      createSagaMiddleware<Redux.State>(
+        arrayListOf(
+          arrayListOf(Redux.Saga.CoreSaga.watchNetworkConnectivity(this)),
+          Redux.Saga.GardenPlantingSaga.allSagas(InjectorUtils.getGardenPlantingRepository(this)),
+          Redux.Saga.PlantSaga.allSagas(InjectorUtils.getPlantRepository(this))
+        ).flatten()
+      )
     )(FinalStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)

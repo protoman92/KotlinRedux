@@ -16,11 +16,11 @@ import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert
 import org.junit.Test
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.CommonSagaEffectTest
-import org.swiften.redux.saga.cast
-import org.swiften.redux.saga.catchError
-import org.swiften.redux.saga.map
-import org.swiften.redux.saga.mapAsync
+import org.swiften.redux.saga.common.CommonSagaEffectTest
+import org.swiften.redux.saga.common.cast
+import org.swiften.redux.saga.common.catchError
+import org.swiften.redux.saga.common.map
+import org.swiften.redux.saga.common.mapAsync
 import org.swiften.redux.saga.rx.SagaEffects.from
 import org.swiften.redux.saga.rx.SagaEffects.just
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction

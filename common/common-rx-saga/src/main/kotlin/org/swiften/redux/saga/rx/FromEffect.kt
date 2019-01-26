@@ -6,9 +6,9 @@
 package org.swiften.redux.saga.rx
 
 import io.reactivex.Flowable
-import org.swiften.redux.saga.ISagaEffect
-import org.swiften.redux.saga.SagaInput
-import org.swiften.redux.saga.SagaEffect
+import org.swiften.redux.saga.common.ISagaEffect
+import org.swiften.redux.saga.common.SagaInput
+import org.swiften.redux.saga.common.SagaEffect
 
 /** Created by haipham on 2019/01/05 */
 /** [ISagaEffect] whose [SagaOutput] is provided via [stream] */

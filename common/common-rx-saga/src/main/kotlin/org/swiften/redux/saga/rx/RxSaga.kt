@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.rx2.rxSingle
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.saga.ISagaOutput
+import org.swiften.redux.saga.common.ISagaOutput
 import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/22 */
