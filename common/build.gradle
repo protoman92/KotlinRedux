@@ -22,14 +22,16 @@ repositories {
   jcenter()
 }
 
-apply plugin: "com.palantir.jacoco-full-report"
+allprojects {
+  apply plugin: "maven"
+  apply plugin: "com.palantir.jacoco-full-report"
+}
 
 subprojects {
   repositories {
     jcenter()
   }
 
-  apply plugin: "maven"
   apply plugin: "kotlin"
   apply plugin: "jacoco"
   group = 'com.github.protoman92'

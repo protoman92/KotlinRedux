@@ -72,10 +72,10 @@ fun <GlobalState> IPropInjector<GlobalState>.injectApplication(
 }
 
 /**
- * Similar to [startParcelableInjections], but provides default persistence for when [GlobalState]
+ * Similar to [injectParcelableInjections], but provides default persistence for when [GlobalState]
  * is [Serializable]
  */
-inline fun <reified GlobalState> IPropInjector<GlobalState>.startApplicationSerializable(
+inline fun <reified GlobalState> IPropInjector<GlobalState>.injectApplicationSerializable(
   application: Application,
   noinline inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks where GlobalState : Serializable {
@@ -93,7 +93,7 @@ inline fun <reified GlobalState> IPropInjector<GlobalState>.startApplicationSeri
  * Similar to [injectApplication], but provides default persistence for when [GlobalState] is
  * [Parcelable]
  */
-inline fun <reified GlobalState> IPropInjector<GlobalState>.startParcelableInjections(
+inline fun <reified GlobalState> IPropInjector<GlobalState>.injectParcelableInjections(
   application: Application,
   noinline inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks where GlobalState : Parcelable {

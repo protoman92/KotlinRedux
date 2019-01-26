@@ -25,6 +25,10 @@ repositories {
   maven { url = "https://jitpack.io" }
 }
 
+allprojects {
+  apply plugin: 'com.github.dcendents.android-maven'
+}
+
 subprojects {
   repositories {
     google()
@@ -34,7 +38,6 @@ subprojects {
   
   apply plugin: 'com.android.library'
   apply plugin: 'kotlin-android'
-  apply plugin: 'com.github.dcendents.android-maven'
 
   project.apply from: "${rootDir}/constants.gradle"
   project.apply from: "${rootDir}/android/constants.gradle"

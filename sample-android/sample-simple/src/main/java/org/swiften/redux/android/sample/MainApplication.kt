@@ -13,7 +13,7 @@ import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.router.createSingleActivityRouter
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectLifecycleOwner
-import org.swiften.redux.android.ui.lifecycle.startApplicationSerializable
+import org.swiften.redux.android.ui.lifecycle.injectApplicationSerializable
 import org.swiften.redux.middleware.applyMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
@@ -57,7 +57,7 @@ class MainApplication : Application() {
 
     val injector = AndroidPropInjector(store)
 
-    injector.startApplicationSerializable(this) {
+    injector.injectApplicationSerializable(this) {
       when (it) {
         is SearchFragment -> this.injectLifecycleOwner(it, Unit, it)
         is MusicDetailFragment -> this.injectLifecycleOwner(it, Unit, it)

@@ -91,7 +91,6 @@ dependencies {
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
 
-  implementation project(':common:common-all')
   implementation project(':android:android-all')
 
   // Testing dependencies
