@@ -26,10 +26,10 @@ class GardenApplication : Application() {
     if (LeakCanary.isInAnalyzerProcess(this)) { return }
     LeakCanary.install(this)
 
-    val store = applyMiddlewares(
+    val store = applyMiddlewares<Redux.State>(
       createAsyncMiddleware(),
       createRouterMiddleware(Router(this)),
-      createSagaMiddleware<Redux.State>(
+      createSagaMiddleware(
         arrayListOf(
           arrayListOf(Redux.Saga.CoreSaga.watchNetworkConnectivity(this)),
           Redux.Saga.GardenPlantingSaga.allSagas(InjectorUtils.getGardenPlantingRepository(this)),

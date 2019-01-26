@@ -18,9 +18,8 @@ import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2019/01/26 */
 /** [IMiddleware] implementation that calls [DispatchWrapper.dispatch] on another thread */
-internal class AsyncMiddleware<GlobalState>(private val context: CoroutineContext) :
-  IMiddleware<GlobalState> {
-  override fun invoke(p1: MiddlewareInput<GlobalState>): DispatchMapper {
+internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddleware<Any> {
+  override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       DispatchWrapper("${wrapper.id}-async") { action ->
         when (action) {
@@ -33,5 +32,5 @@ internal class AsyncMiddleware<GlobalState>(private val context: CoroutineContex
 }
 
 /** Create a [AsyncMiddleware] with [context] */
-fun <GlobalState> createAsyncMiddleware(context: CoroutineContext = SupervisorJob()):
-  IMiddleware<GlobalState> = AsyncMiddleware(context)
+fun createAsyncMiddleware(context: CoroutineContext = SupervisorJob()): IMiddleware<Any> =
+  AsyncMiddleware(context)

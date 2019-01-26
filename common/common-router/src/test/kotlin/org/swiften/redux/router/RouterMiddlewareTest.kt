@@ -7,11 +7,11 @@ package org.swiften.redux.router
 
 import org.junit.Assert
 import org.junit.Test
+import org.swiften.redux.core.DefaultActionStore
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IDeinitializer
-import org.swiften.redux.middleware.applyMiddlewares
-import org.swiften.redux.core.DefaultActionStore
 import org.swiften.redux.core.ThreadSafeStore
+import org.swiften.redux.middleware.applyMiddlewares
 
 /** Created by haipham on 2018/12/16 */
 class RouterMiddlewareTest {
@@ -41,7 +41,7 @@ class RouterMiddlewareTest {
     // Setup
     val store = ThreadSafeStore(0) { a, _ -> a }
     val router = Router()
-    val wrappedStore = applyMiddlewares(createRouterMiddleware<Int, Screen>(router))(store)
+    val wrappedStore = applyMiddlewares<Int>(createRouterMiddleware<Screen>(router))(store)
 
     // When
     wrappedStore.dispatch(DefaultReduxAction.Dummy)
@@ -62,8 +62,8 @@ class RouterMiddlewareTest {
     // Setup
     val router = Router()
 
-    val wrappedStore = applyMiddlewares(
-      createRouterMiddleware<Int, Screen>(router)
+    val wrappedStore = applyMiddlewares<Int>(
+      createRouterMiddleware(router)
     )(DefaultActionStore(ThreadSafeStore(0) { a, _ -> a }))
 
     // When

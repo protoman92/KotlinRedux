@@ -32,13 +32,13 @@ interface IRouter<Screen> : IDeinitializerProvider where Screen : IRouterScreen 
 
 /** [IMiddleware] implementation for [IRouter] middleware */
 @PublishedApi
-internal class RouterMiddleware<GlobalState, Screen>(
+internal class RouterMiddleware<Screen>(
   private val cls: Class<Screen>,
   private val router: IRouter<Screen>
-) : IMiddleware<GlobalState> where Screen : IRouterScreen {
+) : IMiddleware<Any> where Screen : IRouterScreen {
   constructor(cls: KClass<Screen>, router: IRouter<Screen>) : this(cls.java, router)
 
-  override fun invoke(p1: MiddlewareInput<GlobalState>): DispatchMapper {
+  override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       DispatchWrapper("${wrapper.id}-router") { action ->
         wrapper.dispatch(action)
@@ -62,6 +62,5 @@ internal class RouterMiddleware<GlobalState, Screen>(
 }
 
 /** Create a [RouterMiddleware] with [router] */
-inline fun <GlobalState, reified Screen> createRouterMiddleware(router: IRouter<Screen>):
-  IMiddleware<GlobalState> where Screen : IRouterScreen =
-  RouterMiddleware(Screen::class, router)
+inline fun <reified Screen> createRouterMiddleware(router: IRouter<Screen>):
+  IMiddleware<Any> where Screen : IRouterScreen = RouterMiddleware(Screen::class, router)

@@ -25,7 +25,7 @@ class SagaMiddlewareTest {
 
     val effects = outputs.map<ISagaOutput<Any>, ISagaEffect<Any>> { o -> { o } }
 
-    val wrappedDispatch = createSagaMiddleware<Unit>(effects)
+    val wrappedDispatch = createSagaMiddleware(effects)
       .invoke(MiddlewareInput { })(DispatchWrapper("root") { })
       .dispatch
 
