@@ -22,7 +22,7 @@ import org.swiften.redux.ui.unsubscribeSafely
 
 /** Created by haipham on 2019/01/24 */
 /** Callback for [DiffUtil.ItemCallback] since [DiffUtil.ItemCallback] is an abstract class */
-interface DiffItemCallback<T> {
+interface IDiffItemCallback<T> {
   /** @see [DiffUtil.ItemCallback.areItemsTheSame] */
   fun areItemsTheSame(oldItem: T, newItem: T): Boolean
 

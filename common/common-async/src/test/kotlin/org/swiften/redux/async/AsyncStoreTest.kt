@@ -6,7 +6,7 @@
 package org.swiften.redux.async
 
 import org.swiften.redux.core.BaseStoreTest
-import org.swiften.redux.middleware.applyMiddlewares
+import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.core.ThreadSafeStore
 
 /** Created by haipham on 2018/01/14 */

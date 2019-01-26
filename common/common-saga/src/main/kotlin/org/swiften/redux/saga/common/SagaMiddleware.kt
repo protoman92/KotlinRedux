@@ -11,17 +11,18 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.middleware.DispatchMapper
-import org.swiften.redux.middleware.DispatchWrapper
-import org.swiften.redux.middleware.IMiddleware
-import org.swiften.redux.middleware.MiddlewareInput
+import org.swiften.redux.core.DispatchMapper
+import org.swiften.redux.core.DispatchWrapper
+import org.swiften.redux.core.IMiddleware
+import org.swiften.redux.core.MiddlewareInput
 
 /** Created by haipham on 2018/12/22 */
 /**
  * [IMiddleware] implementation for [ISagaEffect]. Every time an [IReduxAction] is received, call
  * [ISagaOutput.onAction].
  */
-internal class SagaMiddleware(private val effects: Collection<ISagaEffect<*>>) : IMiddleware<Any> {
+internal class SagaMiddleware(private val effects: Collection<ISagaEffect<*>>) :
+  IMiddleware<Any> {
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       val job = SupervisorJob()

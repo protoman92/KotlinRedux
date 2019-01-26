@@ -12,8 +12,8 @@ import org.junit.Assert
 import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.middleware.DispatchWrapper
-import org.swiften.redux.middleware.MiddlewareInput
+import org.swiften.redux.core.DispatchWrapper
+import org.swiften.redux.core.MiddlewareInput
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/26 */

@@ -3,12 +3,15 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.middleware
+package org.swiften.redux.core
 
 import org.junit.Assert
 import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
+import org.swiften.redux.core.DispatchWrapper
 import org.swiften.redux.core.ThreadSafeStore
+import org.swiften.redux.core.applyMiddlewares
+import org.swiften.redux.core.combineMiddlewares
 
 /** Created by haipham on 2018/12/16 */
 class MiddlewareTest {
@@ -20,21 +23,27 @@ class MiddlewareTest {
     val ordering = arrayListOf<Int>()
 
     val wrappedStore = applyMiddlewares<Int>(
-      { { wrapper ->
-        DispatchWrapper("${wrapper.id}-$1") {
-          wrapper.dispatch(it); ordering.add(1)
+      {
+        { wrapper ->
+          DispatchWrapper("${wrapper.id}-$1") {
+            wrapper.dispatch(it); ordering.add(1)
+          }
         }
-      } },
-      { { wrapper ->
-        DispatchWrapper("${wrapper.id}-$2") {
-          wrapper.dispatch(it); ordering.add(2)
+      },
+      {
+        { wrapper ->
+          DispatchWrapper("${wrapper.id}-$2") {
+            wrapper.dispatch(it); ordering.add(2)
+          }
         }
-      } },
-      { { wrapper ->
-        DispatchWrapper("${wrapper.id}-$3") {
-          wrapper.dispatch(it); ordering.add(3)
+      },
+      {
+        { wrapper ->
+          DispatchWrapper("${wrapper.id}-$3") {
+            wrapper.dispatch(it); ordering.add(3)
+          }
         }
-      } }
+      }
     )(store)
 
     // When

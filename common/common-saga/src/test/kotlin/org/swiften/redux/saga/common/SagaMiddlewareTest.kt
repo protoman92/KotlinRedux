@@ -11,8 +11,8 @@ import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.middleware.DispatchWrapper
-import org.swiften.redux.middleware.MiddlewareInput
+import org.swiften.redux.core.DispatchWrapper
+import org.swiften.redux.core.MiddlewareInput
 
 /** Created by haipham on 2019/01/15 */
 class SagaMiddlewareTest {

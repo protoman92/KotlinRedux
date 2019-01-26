@@ -10,15 +10,16 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.middleware.DispatchMapper
-import org.swiften.redux.middleware.DispatchWrapper
-import org.swiften.redux.middleware.IMiddleware
-import org.swiften.redux.middleware.MiddlewareInput
+import org.swiften.redux.core.DispatchMapper
+import org.swiften.redux.core.DispatchWrapper
+import org.swiften.redux.core.IMiddleware
+import org.swiften.redux.core.MiddlewareInput
 import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2019/01/26 */
 /** [IMiddleware] implementation that calls [DispatchWrapper.dispatch] on another thread */
-internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddleware<Any> {
+internal class AsyncMiddleware(private val context: CoroutineContext) :
+  IMiddleware<Any> {
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       DispatchWrapper("${wrapper.id}-async") { action ->

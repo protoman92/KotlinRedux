@@ -8,10 +8,10 @@ package org.swiften.redux.router
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IDeinitializerProvider
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.middleware.DispatchMapper
-import org.swiften.redux.middleware.DispatchWrapper
-import org.swiften.redux.middleware.IMiddleware
-import org.swiften.redux.middleware.MiddlewareInput
+import org.swiften.redux.core.DispatchMapper
+import org.swiften.redux.core.DispatchWrapper
+import org.swiften.redux.core.IMiddleware
+import org.swiften.redux.core.MiddlewareInput
 import kotlin.reflect.KClass
 
 /** Created by haipham on 2018/12/16 */

@@ -83,16 +83,9 @@ project(':common:common-core') {
   }
 }
 
-project(':common:common-middleware') {
-  dependencies {
-    api project(':common:common-core')
-  }
-}
-
 project(':common:common-async') {
   dependencies {
     api project(':common:common-core')
-    api project(':common:common-middleware')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     testApi project (path: ":common:common-core", configuration: 'testArtifacts')
   }
@@ -101,7 +94,6 @@ project(':common:common-async') {
 project(':common:common-router') {
   dependencies {
     api project(':common:common-core')
-    api project(':common:common-middleware')
   }
 }
 
@@ -119,7 +111,6 @@ project(':common:common-saga') {
 
   dependencies {
     api project(':common:common-core')
-    api project(':common:common-middleware')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito"
   }
@@ -128,7 +119,6 @@ project(':common:common-saga') {
 project(':common:common-rx-saga') {
   dependencies {
     api project(':common:common-core')
-    api project(':common:common-middleware')
     api project(':common:common-saga')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
@@ -145,7 +135,6 @@ project(':common:common-ui') {
 project(':common:common-all') {
   dependencies {
     api project(':common:common-core')
-    api project(':common:common-middleware')
     api project(':common:common-async')
     api project(':common:common-router')
     api project(':common:common-saga')

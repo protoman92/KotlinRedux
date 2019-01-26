@@ -1,14 +1,9 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.middleware
-
-import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.IReduxStore
-import org.swiften.redux.core.IStateGetter
+package org.swiften.redux.core
 
 /** Created by haipham on 2018/12/16 */
 /** Map one [DispatchWrapper] to another */

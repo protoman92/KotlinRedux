@@ -1,7 +1,6 @@
 rootProject.name = 'redux-jvm'
 include ':common'
 include ':common:common-core'
-include ':common:common-middleware'
 include ':common:common-async'
 include ':common:common-router'
 include ':common:common-saga'

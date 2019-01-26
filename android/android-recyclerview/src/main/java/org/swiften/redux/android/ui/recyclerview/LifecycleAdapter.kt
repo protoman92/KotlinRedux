@@ -57,12 +57,12 @@ fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectDiffed
   return wrappedAdapter
 }
 
-/** Instead of [DiffUtil.ItemCallback], use [DiffItemCallback] to avoid abstract class */
+/** Instead of [DiffUtil.ItemCallback], use [IDiffItemCallback] to avoid abstract class */
 fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
-  diffCallback: DiffItemCallback<VHS>
+  diffCallback: IDiffItemCallback<VHS>
 ) where VH : RecyclerView.ViewHolder, VH : IVariablePropContainer<VHS, VHA> =
   this.injectDiffedAdapter(lifecycleOwner, adapter, adapterMapper,
     object : DiffUtil.ItemCallback<VHS>() {
@@ -85,7 +85,7 @@ fun <GlobalState, Mapper, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedA
   VH : RecyclerView.ViewHolder,
   VH : IVariablePropContainer<VHS, VHA>,
   Mapper : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
-  Mapper : DiffItemCallback<VHS> =
+  Mapper : IDiffItemCallback<VHS> =
   this.injectDiffedAdapter(lifecycleOwner, adapter, mapper, mapper)
 
 /**
@@ -100,5 +100,5 @@ fun <GlobalState, Adapter, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffed
   VH : IVariablePropContainer<VHS, VHA>,
   Adapter : RecyclerView.Adapter<VH>,
   Adapter : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
-  Adapter : DiffItemCallback<VHS> =
+  Adapter : IDiffItemCallback<VHS> =
   this.injectDiffedAdapter(lifecycleOwner, adapter, adapter)

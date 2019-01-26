@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_search.querySearch
 import kotlinx.android.synthetic.main.fragment_search.searchResult
 import kotlinx.android.synthetic.main.view_search_result.view.artistName
 import kotlinx.android.synthetic.main.view_search_result.view.trackName
-import org.swiften.redux.android.ui.recyclerview.DiffItemCallback
+import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
 import org.swiften.redux.core.IActionDispatcher
@@ -44,10 +44,10 @@ class SearchFragment : Fragment(),
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
     IPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> by Adapter,
-    DiffItemCallback<ViewHolder.S1> by Adapter {
+    IDiffItemCallback<ViewHolder.S1> by Adapter {
     companion object :
       IPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1>,
-      DiffItemCallback<ViewHolder.S1> {
+      IDiffItemCallback<ViewHolder.S1> {
       override fun mapState(state: State, outProps: Unit) =
         state.musicResult?.results?.map { ViewHolder.S1(it.trackName, it.artistName) }
         ?: arrayListOf()
