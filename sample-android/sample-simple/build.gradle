@@ -1,7 +1,7 @@
 buildscript {
   project.apply from: "${rootDir}/constants.gradle"
   project.apply from: "${rootDir}/android/constants.gradle"
-  project.apply from: "${rootDir}/sample/android/constants.gradle"
+  project.apply from: "${rootDir}/sample-android/constants.gradle"
 
   repositories {
     google()
@@ -10,7 +10,7 @@ buildscript {
 
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
-    classpath "com.android.tools.build:gradle:$project.ext.gradle"
+    classpath "com.android.tools.build:gradle:3.3.0"
     classpath "com.github.dcendents:android-maven-gradle-plugin:$androidMavenGradle"
   }
 }
@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android-extensions'
 
 project.apply from: "${rootDir}/constants.gradle"
 project.apply from: "${rootDir}/android/constants.gradle"
-project.apply from: "${rootDir}/sample/android/constants.gradle"
+project.apply from: "${rootDir}/sample-android/constants.gradle"
 
 configurations.all {
   // Make sure the latest JitPack releases are used.
@@ -56,8 +56,8 @@ android {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation project(':common:all')
-  implementation project(':android:all')
+  implementation project(':common:common-all')
+  implementation project(':android:android-all')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin"
   implementation "androidx.appcompat:appcompat:$appCompat"
   implementation "androidx.recyclerview:recyclerview:$recyclerView"

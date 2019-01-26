@@ -61,7 +61,7 @@ subprojects {
   }
 }
 
-project(':common:core') {
+project(':common:common-core') {
   configurations { testArtifacts.extendsFrom testRuntime }
 
   task testJar (type: Jar) {
@@ -78,18 +78,18 @@ project(':common:core') {
   }
 }
 
-project(':common:middleware') {
+project(':common:common-middleware') {
   dependencies {
-    api project(':common:core')
-    testApi project(':common:store')
+    api project(':common:common-core')
+    testApi project(':common:common-store')
   }
 }
 
-project(':common:router') {
+project(':common:common-router') {
   dependencies {
-    api project(':common:core')
-    api project(':common:middleware')
-    testApi project(':common:store')
+    api project(':common:common-core')
+    api project(':common:common-middleware')
+    testApi project(':common:common-store')
   }
 }
 
@@ -106,17 +106,17 @@ project(':common:common-saga') {
   }
 
   dependencies {
-    api project(':common:core')
-    api project(':common:middleware')
+    api project(':common:common-core')
+    api project(':common:common-middleware')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito"
   }
 }
 
-project(':common:rx-saga') {
+project(':common:common-rx-saga') {
   dependencies {
-    api project(':common:core')
-    api project(':common:middleware')
+    api project(':common:common-core')
+    api project(':common:common-middleware')
     api project(':common:common-saga')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
@@ -124,29 +124,29 @@ project(':common:rx-saga') {
   }
 }
 
-project(':common:store') {
+project(':common:common-store') {
   dependencies {
-    api project(':common:core')
+    api project(':common:common-core')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
-    testApi project (path: ":common:core", configuration: 'testArtifacts')
+    testApi project (path: ":common:common-core", configuration: 'testArtifacts')
   }
 }
 
-project(':common:ui') {
+project(':common:common-ui') {
   dependencies {
-    api project(':common:core')
-    testApi project(':common:store')
+    api project(':common:common-core')
+    testApi project(':common:common-store')
   }
 }
 
-project(':common:all') {
+project(':common:common-all') {
   dependencies {
-    api project(':common:core')
-    api project(':common:store')
-    api project(':common:middleware')
-    api project(':common:router')
+    api project(':common:common-core')
+    api project(':common:common-store')
+    api project(':common:common-middleware')
+    api project(':common:common-router')
     api project(':common:common-saga')
-    api project(':common:rx-saga')
-    api project(':common:ui')
+    api project(':common:common-rx-saga')
+    api project(':common:common-ui')
   }
 }

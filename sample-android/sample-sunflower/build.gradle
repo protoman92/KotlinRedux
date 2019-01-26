@@ -26,7 +26,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:$project.ext.gradle"
+    classpath "com.android.tools.build:gradle:3.3.0"
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
   }
 }
@@ -45,7 +45,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 project.apply from: "${rootDir}/constants.gradle"
-project.apply from: "${rootDir}/sample/android/constants.gradle"
+project.apply from: "${rootDir}/sample-android/constants.gradle"
 project.apply from: "${project.projectDir}/constants.gradle"
 
 android {
@@ -91,8 +91,8 @@ dependencies {
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
 
-  implementation project(':common:all')
-  implementation project(':android:all')
+  implementation project(':common:common-all')
+  implementation project(':android:android-all')
 
   // Testing dependencies
   androidTestImplementation "androidx.arch.core:core-testing:$androidxCoreTest"
