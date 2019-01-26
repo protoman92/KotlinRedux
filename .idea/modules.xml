@@ -2,24 +2,40 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/common/all/all.iml" filepath="$PROJECT_DIR$/common/all/all.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/router/android-router.iml" filepath="$PROJECT_DIR$/android/router/android-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/ui/android-ui.iml" filepath="$PROJECT_DIR$/android/ui/android-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/router/common-router.iml" filepath="$PROJECT_DIR$/common/router/common-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/router/common-router.iml" filepath="$PROJECT_DIR$/common/router/common-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/ui/common-ui.iml" filepath="$PROJECT_DIR$/common/ui/common-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/ui/common-ui.iml" filepath="$PROJECT_DIR$/common/ui/common-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/core/core.iml" filepath="$PROJECT_DIR$/common/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/core/core.iml" filepath="$PROJECT_DIR$/common/core/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/core-rx-saga/core-rx-saga.iml" filepath="$PROJECT_DIR$/android/core-rx-saga/core-rx-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/core-rx-saga/core-rx-saga.iml" filepath="$PROJECT_DIR$/android/core-rx-saga/core-rx-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/injector/injector.iml" filepath="$PROJECT_DIR$/android/injector/injector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/lifecycle/lifecycle.iml" filepath="$PROJECT_DIR$/android/lifecycle/lifecycle.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/lifecycle/lifecycle.iml" filepath="$PROJECT_DIR$/android/lifecycle/lifecycle.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/livedata-rx-saga/livedata-rx-saga.iml" filepath="$PROJECT_DIR$/android/livedata-rx-saga/livedata-rx-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/livedata-rx-saga/livedata-rx-saga.iml" filepath="$PROJECT_DIR$/android/livedata-rx-saga/livedata-rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/middleware/middleware.iml" filepath="$PROJECT_DIR$/common/middleware/middleware.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/middleware/middleware.iml" filepath="$PROJECT_DIR$/common/middleware/middleware.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/navigator/navigator.iml" filepath="$PROJECT_DIR$/android/navigator/navigator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/recyclerview/recyclerview.iml" filepath="$PROJECT_DIR$/android/recyclerview/recyclerview.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/recyclerview/recyclerview.iml" filepath="$PROJECT_DIR$/android/recyclerview/recyclerview.iml" />
       <module fileurl="file://$PROJECT_DIR$/redux-jvm.iml" filepath="$PROJECT_DIR$/redux-jvm.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/redux-jvm-android.iml" filepath="$PROJECT_DIR$/android/redux-jvm-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/redux-jvm-android.iml" filepath="$PROJECT_DIR$/android/redux-jvm-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/rx-saga/rx-saga.iml" filepath="$PROJECT_DIR$/common/rx-saga/rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/rx-saga/rx-saga.iml" filepath="$PROJECT_DIR$/common/rx-saga/rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/android/sample-android.iml" filepath="$PROJECT_DIR$/sample/android/sample-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/android/simple/simple.iml" filepath="$PROJECT_DIR$/sample/android/simple/simple.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/store/store.iml" filepath="$PROJECT_DIR$/common/store/store.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/store/store.iml" filepath="$PROJECT_DIR$/common/store/store.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/android/sunflower/sunflower.iml" filepath="$PROJECT_DIR$/sample/android/sunflower/sunflower.iml" />
     </modules>

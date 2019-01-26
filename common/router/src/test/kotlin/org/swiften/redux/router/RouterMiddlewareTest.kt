@@ -10,8 +10,8 @@ import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IDeinitializer
 import org.swiften.redux.middleware.applyMiddlewares
-import org.swiften.redux.store.DefaultActionReduxStore
-import org.swiften.redux.store.ThreadSafeReduxStore
+import org.swiften.redux.store.DefaultActionStore
+import org.swiften.redux.store.ThreadSafeStore
 
 /** Created by haipham on 2018/12/16 */
 class RouterMiddlewareTest {
@@ -39,7 +39,7 @@ class RouterMiddlewareTest {
   @Test
   fun `Dispatching screen actions should navigate to the assoc screen`() {
     // Setup
-    val store = ThreadSafeReduxStore(0) { a, _ -> a }
+    val store = ThreadSafeStore(0) { a, _ -> a }
     val router = Router()
     val wrappedStore = applyMiddlewares(createRouterMiddleware<Int, Screen>(router))(store)
 
@@ -64,7 +64,7 @@ class RouterMiddlewareTest {
 
     val wrappedStore = applyMiddlewares(
       createRouterMiddleware<Int, Screen>(router)
-    )(DefaultActionReduxStore(ThreadSafeReduxStore(0) { a, _ -> a }))
+    )(DefaultActionStore(ThreadSafeStore(0) { a, _ -> a }))
 
     // When
     wrappedStore.dispatch(DefaultReduxAction.Deinitialize)

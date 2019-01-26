@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger
 /** Created by haipham on 2018/12/16 */
 /** Use this test class to test [IReduxStore] implementations */
 @Suppress("FunctionName")
-abstract class BaseReduxStoreTest : CoroutineScope {
+abstract class BaseStoreTest : CoroutineScope {
   sealed class Action : IReduxAction {
     object AddOne : Action()
     object AddTwo : Action()

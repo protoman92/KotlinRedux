@@ -5,13 +5,13 @@
 
 package org.swiften.redux.store
 
-import org.swiften.redux.core.BaseReduxStoreTest
+import org.swiften.redux.core.BaseStoreTest
 
 /** Created by haipham on 2018/01/14 */
-class AsyncReduxStoreTest : BaseReduxStoreTest() {
+class AsyncStoreTest : BaseStoreTest() {
   override fun createStore() =
-    AsyncReduxStore(
-      ThreadSafeReduxStore(
+    AsyncStore(
+      ThreadSafeStore(
         0,
         this.reducer()
       )

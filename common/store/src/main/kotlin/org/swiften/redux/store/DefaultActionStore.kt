@@ -12,7 +12,7 @@ import org.swiften.redux.core.ReduxReducerWrapper
 
 /** Created by haipham on 2019/01/15 */
 /** A [IReduxStore] that handles [DefaultReduxAction] */
-class DefaultActionReduxStore<State>(
+class DefaultActionStore<State>(
   private val store: IReduxStore<State>
 ) : IReduxStore<State> by store {
   override val reducer = ReduxReducerWrapper(this.store.reducer)

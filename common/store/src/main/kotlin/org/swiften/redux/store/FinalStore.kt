@@ -12,10 +12,10 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 /** Created by haipham on 2019/01/15 */
 /**
- * [FinalReduxStore] is a [IReduxStore] that combines all crucial [IReduxStore] implementations to
+ * [FinalStore] is a [IReduxStore] that combines all crucial [IReduxStore] implementations to
  * provide a full suite of functionalities.
  */
-class FinalReduxStore<GlobalState> private constructor(
+class FinalStore<GlobalState> private constructor(
   store: IReduxStore<GlobalState>
 ) : IReduxStore<GlobalState> by store {
   constructor(
@@ -23,8 +23,8 @@ class FinalReduxStore<GlobalState> private constructor(
     reducer: IReducer<GlobalState>,
     context: CoroutineContext = EmptyCoroutineContext
   ) : this(fun (): IReduxStore<GlobalState> {
-    val rootStore = ThreadSafeReduxStore(state, reducer)
-    val defaultActionStore = DefaultActionReduxStore(rootStore)
-    return AsyncReduxStore(defaultActionStore, context)
+    val rootStore = ThreadSafeStore(state, reducer)
+    val defaultActionStore = DefaultActionStore(rootStore)
+    return AsyncStore(defaultActionStore, context)
   }())
 }

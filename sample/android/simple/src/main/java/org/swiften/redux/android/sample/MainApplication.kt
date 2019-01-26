@@ -17,7 +17,7 @@ import org.swiften.redux.android.ui.lifecycle.startApplicationSerializable
 import org.swiften.redux.middleware.applyMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.createSagaMiddleware
-import org.swiften.redux.store.FinalReduxStore
+import org.swiften.redux.store.FinalStore
 
 /** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
@@ -53,7 +53,7 @@ class MainApplication : Application() {
         }
       ),
       createSagaMiddleware<State>(MainSaga.sagas(repository))
-    )(FinalReduxStore(State(), MainRedux.Reducer))
+    )(FinalStore(State(), MainRedux.Reducer))
 
     val injector = AndroidPropInjector(store)
 

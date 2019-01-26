@@ -16,7 +16,7 @@ import org.swiften.redux.android.ui.lifecycle.startParcelableInjections
 import org.swiften.redux.middleware.applyMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.createSagaMiddleware
-import org.swiften.redux.store.FinalReduxStore
+import org.swiften.redux.store.FinalStore
 
 /** Created by haipham on 2019/01/17 */
 class GardenApplication : Application() {
@@ -32,7 +32,7 @@ class GardenApplication : Application() {
         Redux.Saga.GardenPlantingSaga.allSagas(InjectorUtils.getGardenPlantingRepository(this)),
         Redux.Saga.PlantSaga.allSagas(InjectorUtils.getPlantRepository(this))
       ).flatten())
-    )(FinalReduxStore(Redux.State(), Redux.Reducer))
+    )(FinalStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)
 

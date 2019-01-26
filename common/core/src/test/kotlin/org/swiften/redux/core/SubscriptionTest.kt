@@ -14,7 +14,7 @@ import org.junit.Test
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/15 */
-class ReduxSubscriptionTest {
+class SubscriptionTest {
   @Test
   @Suppress("ForEachParameterNotUsed")
   fun `Unsubscribing from multiple threads should perform only once`() {

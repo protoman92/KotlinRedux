@@ -7,15 +7,15 @@ package org.swiften.redux.store
 
 import org.junit.Assert
 import org.junit.Test
-import org.swiften.redux.core.BaseReduxStoreTest
+import org.swiften.redux.core.BaseStoreTest
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxAction
 
 /** Created by haipham on 2019/01/15 */
-class DefaultActionReduxStoreTest : BaseReduxStoreTest() {
+class DefaultActionStoreTest : BaseStoreTest() {
   private var lastAction: IReduxAction? = null
 
-  override fun createStore() = DefaultActionReduxStore(ThreadSafeReduxStore(0) { p, a ->
+  override fun createStore() = DefaultActionStore(ThreadSafeStore(0) { p, a ->
     this.lastAction = a; this.reducer()(p, a)
   })
 
