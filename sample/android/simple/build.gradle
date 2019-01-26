@@ -56,13 +56,8 @@ android {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-  api project(':common:middleware')
-  api project(':common:store')
-  api project(':common:common-saga')
-  api project(':common:rx-saga')
-  api project(':android:lifecycle')
-  api project(':android:recyclerview')
-  api project(':android:navigator')
+  implementation project(':common:all')
+  implementation project(':android:all')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin"
   implementation "androidx.appcompat:appcompat:$appCompat"
   implementation "androidx.recyclerview:recyclerview:$recyclerView"

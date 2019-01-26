@@ -61,7 +61,7 @@ subprojects {
   }
 }
 
-project('core') {
+project(':common:core') {
   configurations { testArtifacts.extendsFrom testRuntime }
 
   task testJar (type: Jar) {
@@ -78,14 +78,14 @@ project('core') {
   }
 }
 
-project('middleware') {
+project(':common:middleware') {
   dependencies {
     api project(':common:core')
     testApi project(':common:store')
   }
 }
 
-project('router') {
+project(':common:router') {
   dependencies {
     api project(':common:core')
     api project(':common:middleware')
@@ -93,7 +93,7 @@ project('router') {
   }
 }
 
-project('common-saga') {
+project(':common:common-saga') {
   configurations { testArtifacts.extendsFrom testRuntime }
 
   task testJar (type: Jar) {
@@ -113,7 +113,7 @@ project('common-saga') {
   }
 }
 
-project('rx-saga') {
+project(':common:rx-saga') {
   dependencies {
     api project(':common:core')
     api project(':common:middleware')
@@ -124,7 +124,7 @@ project('rx-saga') {
   }
 }
 
-project('store') {
+project(':common:store') {
   dependencies {
     api project(':common:core')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
@@ -132,9 +132,21 @@ project('store') {
   }
 }
 
-project('ui') {
+project(':common:ui') {
   dependencies {
     api project(':common:core')
     testApi project(':common:store')
+  }
+}
+
+project(':common:all') {
+  dependencies {
+    api project(':common:core')
+    api project(':common:store')
+    api project(':common:middleware')
+    api project(':common:router')
+    api project(':common:common-saga')
+    api project(':common:rx-saga')
+    api project(':common:ui')
   }
 }

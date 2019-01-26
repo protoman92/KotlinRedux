@@ -2,11 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/common/all/all.iml" filepath="$PROJECT_DIR$/common/all/all.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/all/android-all.iml" filepath="$PROJECT_DIR$/android/all/android-all.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/router/android-router.iml" filepath="$PROJECT_DIR$/android/router/android-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/ui/android-ui.iml" filepath="$PROJECT_DIR$/android/ui/android-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/all/common-all.iml" filepath="$PROJECT_DIR$/common/all/common-all.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/router/common-router.iml" filepath="$PROJECT_DIR$/common/router/common-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/router/common-router.iml" filepath="$PROJECT_DIR$/common/router/common-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
