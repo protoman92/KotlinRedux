@@ -105,7 +105,7 @@ class LifecycleObserver(
 }
 
 /** Call [IPropInjector.inject] for [lifecycleOwner] */
-fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycleOwner(
+fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycle(
   lifecycleOwner: LC,
   outProps: OP,
   mapper: IPropMapper<GlobalState, OP, S, A>
@@ -145,3 +145,25 @@ fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycleOwner(
 
   return lifecycleOwner
 }
+
+/** Call [IPropInjector.inject] for [lifecycleOwner] but it also implements [IPropMapper] */
+fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycle(
+  lifecycleOwner: LC,
+  outProps: OP
+): LC where
+  LC : LifecycleOwner,
+  LC : IPropContainer<GlobalState, S, A>,
+  LC : IPropLifecycleOwner<GlobalState>,
+  LC : IPropMapper<GlobalState, OP, S, A> =
+  this.injectLifecycle(lifecycleOwner, outProps, lifecycleOwner)
+
+/**
+ * Call [IPropInjector.inject] for [lifecycleOwner] but it also implements [IPropMapper] and
+ * out props is [Unit].
+ */
+fun <GlobalState, LC, S, A> IPropInjector<GlobalState>.injectLifecycle(lifecycleOwner: LC): LC where
+  LC : LifecycleOwner,
+  LC : IPropContainer<GlobalState, S, A>,
+  LC : IPropLifecycleOwner<GlobalState>,
+  LC : IPropMapper<GlobalState, Unit, S, A> =
+  this.injectLifecycle(lifecycleOwner, Unit)
