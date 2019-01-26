@@ -77,16 +77,16 @@ androidExtensions {
 }
 
 dependencies {
-  kapt "androidx.room:room-compiler:$project.ext.roomVersion"
-  implementation "android.arch.navigation:navigation-fragment-ktx:$project.ext.navigationVersion"
-  implementation "android.arch.navigation:navigation-ui-ktx:$project.ext.navigationVersion"
-  implementation "android.arch.work:work-runtime-ktx:$project.ext.workVersion"
+  kapt "androidx.room:room-compiler:$roomVersion"
+  implementation "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
+  implementation "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
+  implementation "android.arch.work:work-runtime-ktx:$workVersion"
   implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
-  implementation "androidx.core:core-ktx:$project.ext.ktxVersion"
-  implementation "androidx.room:room-runtime:$project.ext.roomVersion"
+  implementation "androidx.core:core-ktx:$ktxVersion"
+  implementation "androidx.room:room-runtime:$roomVersion"
   implementation "com.squareup.picasso:picasso:$picasso"
-  implementation "com.google.android.material:material:$project.ext.materialVersion"
-  implementation "com.google.code.gson:gson:$project.ext.gsonVersion"
+  implementation "com.google.android.material:material:$materialVersion"
+  implementation "com.google.code.gson:gson:$gsonVersion"
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
@@ -98,7 +98,7 @@ dependencies {
   androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso"
   androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
   androidTestImplementation "androidx.test.espresso:espresso-intents:$espresso"
-  androidTestImplementation "androidx.test.uiautomator:uiautomator:$project.ext.uiAutomatorVersion"
+  androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion"
   testImplementation "junit:junit:$junit"
 
   debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanary"

@@ -5,9 +5,6 @@
 
 package org.swiften.redux.core
 
-import org.swiften.redux.core.BaseStoreTest
-import org.swiften.redux.core.FinalStore
-
 /** Created by haipham on 2018/01/15 */
 class FinalStoreTest : BaseStoreTest() {
   override fun createStore() = FinalStore(0, this.reducer())

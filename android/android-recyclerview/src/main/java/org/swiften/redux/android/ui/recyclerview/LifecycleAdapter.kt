@@ -93,7 +93,8 @@ fun <GlobalState, Mapper, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedA
  * [IPropMapper] and [DiffUtil.ItemCallback].
  */
 fun <GlobalState, Adapter, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
-  lifecycleOwner: LifecycleOwner, adapter: Adapter
+  lifecycleOwner: LifecycleOwner,
+  adapter: Adapter
 ) where
   VH : RecyclerView.ViewHolder,
   VH : IVariablePropContainer<VHS, VHA>,

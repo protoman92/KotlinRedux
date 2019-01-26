@@ -41,7 +41,7 @@ class RouterMiddlewareTest {
     // Setup
     val store = ThreadSafeStore(0) { a, _ -> a }
     val router = Router()
-    val wrappedStore = applyMiddlewares<Int>(createRouterMiddleware<Screen>(router))(store)
+    val wrappedStore = applyMiddlewares<Int>(createRouterMiddleware(router))(store)
 
     // When
     wrappedStore.dispatch(DefaultReduxAction.Dummy)

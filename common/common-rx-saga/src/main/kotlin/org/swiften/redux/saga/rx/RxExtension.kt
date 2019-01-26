@@ -14,10 +14,7 @@ import org.swiften.redux.saga.common.then
 fun <P, R> SagaEffect<P>.call(transformer: (P) -> Single<R>) =
   this.transform(SagaEffects.call(transformer))
 
-/**
- * Invoke a [SelectEffect] on the current [ISagaEffect] and combine the emitted values with
- * [selector].
- */
+/** Invoke a [SelectEffect] on [this] and combine the emitted values with [combiner] */
 inline fun <reified State, R, R2, R3> SagaEffect<R>.select(
   noinline selector: (State) -> R2,
   noinline combiner: (R, R2) -> R3

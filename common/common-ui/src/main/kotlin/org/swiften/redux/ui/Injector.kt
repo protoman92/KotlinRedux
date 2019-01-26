@@ -168,9 +168,9 @@ open class PropInjector<GlobalState>(private val store: IReduxStore<GlobalState>
 }
 
 /**
- * Unsubscribe from [IPropContainer.reduxProps] safely, i.e.
- * catch [UninitializedPropertyAccessException] because this is most probably declared as lateinit
- * in Kotlin code, and catch [NullPointerException] to satisfy Java code. Also return the
+ * Unsubscribe from [IPropContainer.reduxProps] safely, i.e. catch
+ * [UninitializedPropertyAccessException] because this is most probably declared as lateinit in
+ * Kotlin code, and catch [NullPointerException] to satisfy Java code. Also return the
  * [ReduxSubscription.id] that can be used to track and remove the relevant [ReduxSubscription]
  * from other containers.
  */

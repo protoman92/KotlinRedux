@@ -88,9 +88,9 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
 }
 
 /**
- * Inject props for a [Adapter] with a compatible [VH] by wrapping it in a [ListAdapter]. Note
- * that [adapter] does not have to be a [ListAdapter] - it can be any [RecyclerView.Adapter] as
- * long as it implements [RecyclerView.Adapter.onCreateViewHolder].
+ * Inject props for [adapter] with a compatible [VH] by wrapping it in a [ListAdapter]. Note that
+ * [adapter] does not have to be a [ListAdapter] - it can be any [RecyclerView.Adapter] as long as
+ * it implements [RecyclerView.Adapter.onCreateViewHolder].
  *
  * Since we do not call [IPropInjector.inject] directly into [VH], we cannot use
  * [IPropMapper.mapAction] on [VH] itself. As a result, we must pass down

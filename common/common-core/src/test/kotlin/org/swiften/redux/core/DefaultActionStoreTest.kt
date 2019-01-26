@@ -7,11 +7,6 @@ package org.swiften.redux.core
 
 import org.junit.Assert
 import org.junit.Test
-import org.swiften.redux.core.BaseStoreTest
-import org.swiften.redux.core.DefaultActionStore
-import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.ThreadSafeStore
 
 /** Created by haipham on 2019/01/15 */
 class DefaultActionStoreTest : BaseStoreTest() {
