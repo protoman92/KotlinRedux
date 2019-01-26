@@ -15,7 +15,6 @@ import org.swiften.redux.middleware.MiddlewareInput
 import kotlin.reflect.KClass
 
 /** Created by haipham on 2018/12/16 */
-/** Top-level namespace for Redux Router middleware */
 /**
  * Represents a screen that also implements [IReduxAction], so that views can simply dispatch an
  * [IRouterScreen] to navigate to the associated screen.
@@ -26,7 +25,7 @@ interface IRouterScreen : IReduxAction
 interface IRouter<Screen> : IDeinitializerProvider where Screen : IRouterScreen {
   /**
    * Navigate to an [IRouterScreen]. How this is done is left to the app's specific
-   * implementation
+   * implementation.
    */
   fun navigate(screen: Screen)
 }
@@ -41,8 +40,9 @@ internal class RouterMiddleware<GlobalState, Screen>(
 
   override fun invoke(p1: MiddlewareInput<GlobalState>): DispatchMapper {
     return { wrapper ->
-      DispatchWrapper("$wrapper.id-router") { action ->
+      DispatchWrapper("${wrapper.id}-router") { action ->
         wrapper.dispatch(action)
+
         /**
          * If [action] is an [Screen] instance, use the [router] to navigate to the associated
          * screen.

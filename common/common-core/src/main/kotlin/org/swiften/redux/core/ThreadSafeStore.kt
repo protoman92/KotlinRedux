@@ -3,14 +3,8 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.store
+package org.swiften.redux.core
 
-import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.IDeinitializer
-import org.swiften.redux.core.IReducer
-import org.swiften.redux.core.IReduxStore
-import org.swiften.redux.core.IReduxSubscriber
-import org.swiften.redux.core.ReduxSubscription
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -20,12 +14,12 @@ import kotlin.concurrent.write
  * [ThreadSafeStore] is a [IReduxStore] implementation that supports thread-safe accesses and
  * modifications. Pass in the initial [state] and the store's [reducer] in the constructor.
  */
-class ThreadSafeStore<State>(
-  private var state: State,
-  override val reducer: IReducer<State>
-) : IReduxStore<State> {
+class ThreadSafeStore<GlobalState>(
+  private var state: GlobalState,
+  override val reducer: IReducer<GlobalState>
+) : IReduxStore<GlobalState> {
   private val lock = ReentrantReadWriteLock()
-  private val subscribers = HashMap<String, (State) -> Unit>()
+  private val subscribers = HashMap<String, (GlobalState) -> Unit>()
 
   override val lastState = { this.lock.read { this.state } }
 
@@ -34,10 +28,10 @@ class ThreadSafeStore<State>(
     this.lock.read { this.subscribers.forEach { it.value(this.state) } }
   }
 
-  override val subscribe: IReduxSubscriber<State> = { id, callback ->
+  override val subscribe: IReduxSubscriber<GlobalState> = { id, callback ->
     this.lock.write { this.subscribers[id] = callback }
 
-    /** Relay the last [State] to this subscriber */
+    /** Relay the last [GlobalState] to this subscriber */
     this.lock.read { callback(this.state) }
     ReduxSubscription(id) { this.lock.write { this.subscribers.remove(id) } }
   }

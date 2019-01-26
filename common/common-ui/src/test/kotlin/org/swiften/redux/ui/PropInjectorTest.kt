@@ -13,7 +13,7 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.store.ThreadSafeStore
+import org.swiften.redux.core.ThreadSafeStore
 
 /** Created by haipham on 2018/12/20 */
 class PropInjectorTest {

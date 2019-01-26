@@ -3,18 +3,12 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.store
-
-import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.IDeinitializer
-import org.swiften.redux.core.IReduxStore
-import org.swiften.redux.core.ReduxReducerWrapper
+package org.swiften.redux.core
 
 /** Created by haipham on 2019/01/15 */
 /** A [IReduxStore] that handles [DefaultReduxAction] */
-class DefaultActionStore<State>(
-  private val store: IReduxStore<State>
-) : IReduxStore<State> by store {
+class DefaultActionStore<GlobalState>(private val store: IReduxStore<GlobalState>) :
+  IReduxStore<GlobalState> by store {
   override val reducer = ReduxReducerWrapper(this.store.reducer)
 
   override val deinitialize: IDeinitializer = {

@@ -7,10 +7,15 @@ package org.swiften.redux.async
 
 import org.swiften.redux.core.BaseStoreTest
 import org.swiften.redux.middleware.applyMiddlewares
-import org.swiften.redux.store.ThreadSafeStore
+import org.swiften.redux.core.ThreadSafeStore
 
 /** Created by haipham on 2018/01/14 */
 class AsyncStoreTest : BaseStoreTest() {
   override fun createStore() =
-    applyMiddlewares<Int>(createAsyncMiddleware())(ThreadSafeStore(0, this.reducer()))
+    applyMiddlewares<Int>(createAsyncMiddleware())(
+      ThreadSafeStore(
+        0,
+        this.reducer()
+      )
+    )
 }

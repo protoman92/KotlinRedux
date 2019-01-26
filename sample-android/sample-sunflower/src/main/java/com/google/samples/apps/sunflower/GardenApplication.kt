@@ -13,10 +13,11 @@ import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectLifecycleOwner
 import org.swiften.redux.android.ui.lifecycle.injectParcelableInjections
+import org.swiften.redux.async.createAsyncMiddleware
+import org.swiften.redux.core.FinalStore
 import org.swiften.redux.middleware.applyMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
-import org.swiften.redux.store.FinalStore
 
 /** Created by haipham on 2019/01/17 */
 class GardenApplication : Application() {
@@ -26,6 +27,7 @@ class GardenApplication : Application() {
     LeakCanary.install(this)
 
     val store = applyMiddlewares(
+      createAsyncMiddleware(),
       createRouterMiddleware(Router(this)),
       createSagaMiddleware<Redux.State>(
         arrayListOf(

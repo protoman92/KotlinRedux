@@ -20,7 +20,6 @@
       <module fileurl="file://$PROJECT_DIR$/common/common-router/common-router.iml" filepath="$PROJECT_DIR$/common/common-router/common-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-rx-saga/common-rx-saga.iml" filepath="$PROJECT_DIR$/common/common-rx-saga/common-rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/common-store/common-store.iml" filepath="$PROJECT_DIR$/common/common-store/common-store.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-ui/common-ui.iml" filepath="$PROJECT_DIR$/common/common-ui/common-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/core-rx-saga/core-rx-saga.iml" filepath="$PROJECT_DIR$/android/core-rx-saga/core-rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/lifecycle/lifecycle.iml" filepath="$PROJECT_DIR$/android/lifecycle/lifecycle.iml" />

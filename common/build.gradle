@@ -86,7 +86,6 @@ project(':common:common-core') {
 project(':common:common-middleware') {
   dependencies {
     api project(':common:common-core')
-    testApi project(':common:common-store')
   }
 }
 
@@ -95,7 +94,6 @@ project(':common:common-async') {
     api project(':common:common-core')
     api project(':common:common-middleware')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
-    testApi project(':common:common-store')
     testApi project (path: ":common:common-core", configuration: 'testArtifacts')
   }
 }
@@ -104,7 +102,6 @@ project(':common:common-router') {
   dependencies {
     api project(':common:common-core')
     api project(':common:common-middleware')
-    testApi project(':common:common-store')
   }
 }
 
@@ -139,26 +136,17 @@ project(':common:common-rx-saga') {
   }
 }
 
-project(':common:common-store') {
-  dependencies {
-    api project(':common:common-core')
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
-    testApi project (path: ":common:common-core", configuration: 'testArtifacts')
-  }
-}
-
 project(':common:common-ui') {
   dependencies {
     api project(':common:common-core')
-    testApi project(':common:common-store')
   }
 }
 
 project(':common:common-all') {
   dependencies {
     api project(':common:common-core')
-    api project(':common:common-store')
     api project(':common:common-middleware')
+    api project(':common:common-async')
     api project(':common:common-router')
     api project(':common:common-saga')
     api project(':common:common-rx-saga')

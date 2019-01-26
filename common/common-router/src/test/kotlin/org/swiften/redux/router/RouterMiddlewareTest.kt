@@ -10,8 +10,8 @@ import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IDeinitializer
 import org.swiften.redux.middleware.applyMiddlewares
-import org.swiften.redux.store.DefaultActionStore
-import org.swiften.redux.store.ThreadSafeStore
+import org.swiften.redux.core.DefaultActionStore
+import org.swiften.redux.core.ThreadSafeStore
 
 /** Created by haipham on 2018/12/16 */
 class RouterMiddlewareTest {

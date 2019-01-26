@@ -3,9 +3,10 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.store
+package org.swiften.redux.core
 
 import org.swiften.redux.core.BaseStoreTest
+import org.swiften.redux.core.FinalStore
 
 /** Created by haipham on 2018/01/15 */
 class FinalStoreTest : BaseStoreTest() {

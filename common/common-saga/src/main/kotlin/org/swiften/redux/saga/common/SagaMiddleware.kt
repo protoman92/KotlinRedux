@@ -32,8 +32,7 @@ internal class SagaMiddleware<GlobalState>(
         override val coroutineContext = Dispatchers.Default + job
       }
 
-      val sagaInput =
-        SagaInput(scope, p1.stateGetter, wrapper.dispatch)
+      val sagaInput = SagaInput(scope, p1.stateGetter, wrapper.dispatch)
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
       outputs.forEach { it.subscribe({}) }
 

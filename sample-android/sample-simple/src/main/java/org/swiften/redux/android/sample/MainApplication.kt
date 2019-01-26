@@ -12,12 +12,13 @@ import androidx.fragment.app.Fragment
 import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.router.createSingleActivityRouter
 import org.swiften.redux.android.ui.AndroidPropInjector
-import org.swiften.redux.android.ui.lifecycle.injectLifecycleOwner
 import org.swiften.redux.android.ui.lifecycle.injectApplicationSerializable
+import org.swiften.redux.android.ui.lifecycle.injectLifecycleOwner
+import org.swiften.redux.async.createAsyncMiddleware
+import org.swiften.redux.core.FinalStore
 import org.swiften.redux.middleware.applyMiddlewares
 import org.swiften.redux.router.createRouterMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
-import org.swiften.redux.store.FinalStore
 
 /** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
@@ -29,6 +30,7 @@ class MainApplication : Application() {
     val repository = MainRepository(api, JSONDecoder())
 
     val store = applyMiddlewares(
+      createAsyncMiddleware(),
       createRouterMiddleware(
         createSingleActivityRouter<MainActivity, MainRedux.Screen>(this) { activity, screen ->
           val f: Fragment? = when (screen) {
