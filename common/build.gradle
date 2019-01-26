@@ -29,8 +29,11 @@ subprojects {
     jcenter()
   }
 
+  apply plugin: "maven"
   apply plugin: "kotlin"
   apply plugin: "jacoco"
+  group = 'com.github.protoman92'
+  version '1.0-SNAPSHOT'
 
   project.apply from: "${rootDir}/constants.gradle"
 
