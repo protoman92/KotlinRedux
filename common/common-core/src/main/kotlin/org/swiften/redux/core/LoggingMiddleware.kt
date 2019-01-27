@@ -26,12 +26,12 @@ internal class LoggingMiddleware<GlobalState>(
       }
 
       DispatchWrapper("${wrapper.id}-logging") {
+        if (it == DefaultReduxAction.Deinitialize) {
+          lock.write { subscription.unsubscribe() }
+        }
+
         lock.write { lastAction = it }
         wrapper.dispatch(it)
-
-        if (it == DefaultReduxAction.Deinitialize) {
-          subscription.unsubscribe()
-        }
       }
     }
   }

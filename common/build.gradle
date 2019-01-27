@@ -34,7 +34,6 @@ subprojects {
 
   apply plugin: "kotlin"
   apply plugin: "jacoco"
-  apply plugin: "com.palantir.jacoco-full-report"
   group = 'com.github.protoman92'
   version '1.0-SNAPSHOT'
 
