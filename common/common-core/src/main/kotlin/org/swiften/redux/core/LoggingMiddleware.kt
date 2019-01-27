@@ -6,16 +6,27 @@
 package org.swiften.redux.core
 
 import java.util.UUID
+import java.util.concurrent.locks.ReentrantLock
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 /** Created by haipham on 2019/01/27 */
-internal class LoggingMiddleware<GlobalState>(private val logger: (GlobalState) -> Unit) :
-  IMiddleware<GlobalState> {
+internal class LoggingMiddleware<GlobalState>(
+  private val logger: (GlobalState, IReduxAction?) -> Unit
+) : IMiddleware<GlobalState> {
   override fun invoke(p1: MiddlewareInput<GlobalState>): DispatchMapper {
     return { wrapper ->
+      val lock = ReentrantReadWriteLock()
       val subscriberId = "${this@LoggingMiddleware}${UUID.randomUUID()}"
-      val subscription = p1.subscriber(subscriberId) { this@LoggingMiddleware.logger(it) }
+      var lastAction: IReduxAction? = null
+
+      val subscription = p1.subscriber(subscriberId) {
+        lock.read { this@LoggingMiddleware.logger(it, lastAction) }
+      }
 
       DispatchWrapper("${wrapper.id}-logging") {
+        lock.write { lastAction = it }
         wrapper.dispatch(it)
 
         if (it == DefaultReduxAction.Deinitialize) {
@@ -27,5 +38,6 @@ internal class LoggingMiddleware<GlobalState>(private val logger: (GlobalState) 
 }
 
 /** Create a [LoggingMiddleware] with [logger] */
-fun <GlobalState> createLoggingMiddleware(logger: (GlobalState) -> Unit): IMiddleware<GlobalState>
-  = LoggingMiddleware(logger)
+fun <GlobalState> createLoggingMiddleware(logger: (GlobalState, IReduxAction?) -> Unit = { s, a ->
+  println("Redux: Last action $a, Last state $s")
+}): IMiddleware<GlobalState> = LoggingMiddleware(logger)

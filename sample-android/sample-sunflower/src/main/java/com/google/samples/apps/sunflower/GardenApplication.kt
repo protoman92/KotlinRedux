@@ -16,6 +16,7 @@ import org.swiften.redux.android.ui.lifecycle.injectParcelableInjections
 import org.swiften.redux.async.createAsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
+import org.swiften.redux.core.createLoggingMiddleware
 import org.swiften.redux.core.createRouterMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
 
@@ -27,6 +28,7 @@ class GardenApplication : Application() {
     LeakCanary.install(this)
 
     val store = applyMiddlewares<Redux.State>(
+      createLoggingMiddleware(),
       createRouterMiddleware(Router(this)),
       createSagaMiddleware(
         arrayListOf(
