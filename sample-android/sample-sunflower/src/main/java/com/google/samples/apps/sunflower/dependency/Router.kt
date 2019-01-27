@@ -14,7 +14,7 @@ import org.swiften.redux.router.IRouter
 /** Created by haipham on 2019/01/18 */
 @Suppress("MoveLambdaOutsideParentheses")
 class Router(app: Application) : IRouter<Redux.Screen>
-by createSingleActivityRouter<GardenActivity, Redux.Screen>(app, { a, s ->
+by createSingleActivityRouter<GardenActivity, Redux.Screen>(app, navigate = { a, s ->
   val navController = a.navController
 
   when (s) {

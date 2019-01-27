@@ -10,6 +10,7 @@ import android.app.Application
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import org.swiften.redux.android.util.AndroidUtil
 import org.swiften.redux.core.IDeinitializer
 import org.swiften.redux.router.IRouter
 import org.swiften.redux.router.IRouterScreen
@@ -18,8 +19,9 @@ import org.swiften.redux.router.IRouterScreen
 /** [IRouter] that works for a single [AppCompatActivity] and multiple [Fragment] */
 @PublishedApi
 internal class SingleActivityRouter<AT, Screen>(
-  private val application: Application,
   private val cls: Class<AT>,
+  private val application: Application,
+  private val runner: AndroidUtil.IMainThreadRunner,
   private val navigate: (AT, Screen) -> Unit
 ) : IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen {
   private var activity: AT? = null
@@ -53,13 +55,14 @@ internal class SingleActivityRouter<AT, Screen>(
   }
 
   override fun navigate(screen: Screen) {
-    this.activity?.let { this.navigate(it, screen) }
+    this.runner.invoke { this.activity?.let { this.navigate(it, screen) } }
   }
 }
 
 /** Create a [SingleActivityRouter] */
 inline fun <reified AT, Screen> createSingleActivityRouter(
   application: Application,
+  runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner,
   noinline navigate: (AT, Screen) -> Unit
 ): IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen =
-  SingleActivityRouter(application, AT::class.java, navigate)
+  SingleActivityRouter(AT::class.java, application, runner, navigate)

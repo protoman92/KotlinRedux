@@ -7,7 +7,7 @@ package org.swiften.redux.android.ui
 
 import android.os.Handler
 import android.os.Looper
-import org.swiften.redux.android.util.AndroidUtil.runOnUIThread
+import org.swiften.redux.android.util.AndroidUtil
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
@@ -20,8 +20,10 @@ import org.swiften.redux.ui.StaticProps
  * [PropInjector] specifically for Android that calls [inject] on the main thread. We use
  * inheritance here to ensure [StaticProps.injector] is set with this class instance.
  */
-class AndroidPropInjector<GlobalState>(store: IReduxStore<GlobalState>) :
-  PropInjector<GlobalState>(store) {
+class AndroidPropInjector<GlobalState>(
+  store: IReduxStore<GlobalState>,
+  private val runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner
+) : PropInjector<GlobalState>(store) {
   override fun <OutProps, State, Action> inject(
     view: IPropContainer<GlobalState, State, Action>,
     outProps: OutProps,
@@ -30,13 +32,14 @@ class AndroidPropInjector<GlobalState>(store: IReduxStore<GlobalState>) :
     object : IPropContainer<GlobalState, State, Action> {
       override var reduxProps: ReduxProps<GlobalState, State, Action>?
         get() = view.reduxProps
-        set(value) { runOnUIThread { view.reduxProps = value } }
+        set(value) { this@AndroidPropInjector.runner { view.reduxProps = value } }
 
-      override fun beforePropInjectionStarts(sp: StaticProps<GlobalState>) = runOnUIThread {
-        view.beforePropInjectionStarts(sp)
-      }
+      override fun beforePropInjectionStarts(sp: StaticProps<GlobalState>) =
+        this@AndroidPropInjector.runner { view.beforePropInjectionStarts(sp) }
 
-      override fun afterPropInjectionEnds() = runOnUIThread { view.afterPropInjectionEnds() }
+      override fun afterPropInjectionEnds() =
+        this@AndroidPropInjector.runner { view.afterPropInjectionEnds() }
+
       override fun toString() = view.toString()
     },
     outProps, mapper)
