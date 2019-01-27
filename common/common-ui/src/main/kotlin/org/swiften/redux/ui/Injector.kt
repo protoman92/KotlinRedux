@@ -13,6 +13,7 @@ import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IStateGetterProvider
 import org.swiften.redux.core.ReduxSubscription
 import java.util.Date
+import java.util.UUID
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -107,7 +108,7 @@ open class PropInjector<GlobalState>(private val store: IReduxStore<GlobalState>
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep
      * track of this id.
      */
-    val subscriberId = "${view.javaClass}${Date().time}"
+    val subscriberId = "${view}${UUID.randomUUID()}"
 
     /** If [view] has received an injection before, unsubscribe from that */
     view.unsubscribeSafely()

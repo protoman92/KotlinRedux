@@ -91,6 +91,8 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
     super.unregisterAdapterDataObserver(observer)
     this.adapter.unregisterAdapterDataObserver(observer)
   }
+
+  override fun toString() = this.adapter.toString()
 }
 
 /**
