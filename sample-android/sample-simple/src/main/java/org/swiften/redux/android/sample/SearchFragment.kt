@@ -84,7 +84,7 @@ class SearchFragment : Fragment(),
     init {
       this.parent.setOnClickListener {
         val index = this.layoutPosition
-        this.reduxProps?.action?.also { a -> a.goToMusicDetail(index) }
+        this.reduxProps.action?.also { a -> a.goToMusicDetail(index) }
       }
     }
 

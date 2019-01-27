@@ -96,7 +96,7 @@ fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycle(
     override fun onSafeForStartingLifecycleAwareTasks() {
       subscription = inject(
         object : IPropContainer<GlobalState, S, A> by lifecycleOwner {
-          override var reduxProps: ReduxProps<GlobalState, S, A>?
+          override var reduxProps: ReduxProps<GlobalState, S, A>
             get() = lifecycleOwner.reduxProps
 
             /**

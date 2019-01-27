@@ -34,11 +34,7 @@ import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.ReduxProps
 
-class GardenActivity : AppCompatActivity(),
-  IPropContainer<Redux.State, Unit, Unit>,
-  IPropLifecycleOwner<Redux.State> by EmptyPropLifecycleOwner() {
-  override var reduxProps: ReduxProps<Redux.State, Unit, Unit>? = null
-
+class GardenActivity : AppCompatActivity() {
   private lateinit var drawerLayout: DrawerLayout
   private lateinit var appBarConfiguration: AppBarConfiguration
   lateinit var navController: NavController

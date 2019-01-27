@@ -28,7 +28,7 @@ class AndroidPropInjector<GlobalState>(
     mapper: IPropMapper<GlobalState, OutProps, State, Action>
   ) = super.inject(
     object : IPropContainer<GlobalState, State, Action> {
-      override var reduxProps: ReduxProps<GlobalState, State, Action>?
+      override var reduxProps: ReduxProps<GlobalState, State, Action>
         get() = view.reduxProps
         set(value) { this@AndroidPropInjector.runner { view.reduxProps = value } }
 

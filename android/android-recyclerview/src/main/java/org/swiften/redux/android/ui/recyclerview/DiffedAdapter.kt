@@ -119,7 +119,7 @@ fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   val listAdapter = object : ReduxListAdapter<GlobalState, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
-      holder.reduxProps = VariableProps(this.getItem(position), this.reduxProps?.variable?.action)
+      holder.reduxProps = VariableProps(this.getItem(position), this.reduxProps.variable?.action)
     }
   }
 

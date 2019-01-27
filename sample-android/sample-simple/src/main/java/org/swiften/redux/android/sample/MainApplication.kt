@@ -30,7 +30,6 @@ class MainApplication : Application() {
     val repository = MainRepository(api, JSONDecoder())
 
     val store = applyMiddlewares<State>(
-      createAsyncMiddleware(),
       createRouterMiddleware(
         createSingleActivityRouter<MainActivity, MainRedux.Screen>(this) { activity, screen ->
           val f: Fragment? = when (screen) {
@@ -54,7 +53,8 @@ class MainApplication : Application() {
           }
         }
       ),
-      createSagaMiddleware(MainSaga.sagas(repository))
+      createSagaMiddleware(MainSaga.sagas(repository)),
+      createAsyncMiddleware()
     )(FinalStore(State(), MainRedux.Reducer))
 
     val injector = AndroidPropInjector(store)

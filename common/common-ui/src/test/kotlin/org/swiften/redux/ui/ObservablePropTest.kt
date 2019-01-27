@@ -42,6 +42,6 @@ class ObservablePropTest {
 
     // Then
     Assert.assertEquals(setCount, 3)
-    Assert.assertEquals(prop!!.state, S("3"))
+    Assert.assertEquals(prop.state, S("3"))
   }
 }
