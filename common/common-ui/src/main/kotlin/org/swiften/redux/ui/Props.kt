@@ -14,21 +14,31 @@ import kotlin.reflect.KProperty
 
 /** Created by haipham on 2019/01/16 */
 /** Container for an [IPropContainer] static properties */
-data class StaticProps<GlobalState>(
-  val injector: IPropInjector<GlobalState>,
-  internal val subscription: IReduxSubscription
-)
+interface IStaticProps<GlobalState> {
+  val injector: IPropInjector<GlobalState>
+  val subscription: IReduxSubscription
+}
 
 /** Container for an [IPropContainer] mutable properties */
-data class VariableProps<State, Action>(
-  val state: State,
+interface IVariableProps<State, Action> {
+  val state: State
   val action: Action
-)
+}
+
+/** [IStaticProps] implementation */
+data class StaticProps<GlobalState>(
+  override val injector: IPropInjector<GlobalState>,
+  override val subscription: IReduxSubscription
+) : IStaticProps<GlobalState>
+
+/** [IVariableProps] implementation */
+data class VariableProps<State, Action>(override val state: State, override val action: Action) :
+  IVariableProps<State, Action>
 
 /** Container for [StaticProps] and [VariableProps] */
-data class ReduxProps<State, StateProps, ActionProps>(
-  val static: StaticProps<State>,
-  val variable: VariableProps<StateProps, ActionProps>?
+data class ReduxProps<GlobalState, State, Action>(
+  val static: IStaticProps<GlobalState>,
+  val variable: IVariableProps<State, Action>?
 )
 
 /** Note that [notifier] passes along both the previous and upcoming [T] values */
@@ -51,14 +61,14 @@ internal open class VetoableObservableProp<T : Any>(
 
 /** Use this to avoid lateinit modifiers for [VariableProps] */
 class ObservableVariableProps<S, A>(
-  notifier: (VariableProps<S, A>?, VariableProps<S, A>?) -> Unit
-) : ReadWriteProperty<Any?, VariableProps<S, A>> by VetoableObservableProp(
+  notifier: (IVariableProps<S, A>?, IVariableProps<S, A>?) -> Unit
+) : ReadWriteProperty<Any?, IVariableProps<S, A>> by VetoableObservableProp(
   { a, b -> a?.state == b.state }, notifier
 )
 
 /** Use this to avoid lateinit modifiers for [ReduxProps] */
 class ObservableReduxProps<GlobalState, S, A>(
-  notifier: (VariableProps<S, A>?, VariableProps<S, A>?) -> Unit
+  notifier: (IVariableProps<S, A>?, IVariableProps<S, A>?) -> Unit
 ) : ReadWriteProperty<Any?, ReduxProps<GlobalState, S, A>> by VetoableObservableProp({ a, b ->
   a?.variable?.state == b.variable?.state
 }, { prev, next -> notifier(prev?.variable, next.variable) })

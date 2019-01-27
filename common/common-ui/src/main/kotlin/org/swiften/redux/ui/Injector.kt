@@ -44,7 +44,7 @@ interface IPropContainer<GlobalState, State, Action> : IPropLifecycleOwner<Globa
  * because its parent will manually inject [reduxProps].
  */
 interface IVariablePropContainer<State, Action> {
-  var reduxProps: VariableProps<State, Action>
+  var reduxProps: IVariableProps<State, Action>
 }
 
 /** Maps [GlobalState] to [State] for a [IPropContainer] */

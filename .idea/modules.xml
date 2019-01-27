@@ -11,6 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/android/android-router/android-router.iml" filepath="$PROJECT_DIR$/android/android-router/android-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-ui/android-ui.iml" filepath="$PROJECT_DIR$/android/android-ui/android-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-util/android-util.iml" filepath="$PROJECT_DIR$/android/android-util/android-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android-util/android-util.iml" filepath="$PROJECT_DIR$/android/android-util/android-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-all/common-all.iml" filepath="$PROJECT_DIR$/common/common-all/common-all.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-async/common-async.iml" filepath="$PROJECT_DIR$/common/common-async/common-async.iml" />

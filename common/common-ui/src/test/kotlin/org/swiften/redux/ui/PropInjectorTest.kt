@@ -8,8 +8,8 @@ package org.swiften.redux.ui
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ReduxSubscription
@@ -43,7 +43,7 @@ class PropInjectorTest {
       this.reduxPropsInjectionCount += 1
     }
 
-    lateinit var propCallback: (VariableProps<S, A>?, VariableProps<S, A>?) -> Unit
+    lateinit var propCallback: (IVariableProps<S, A>?, IVariableProps<S, A>?) -> Unit
     var reduxPropsInjectionCount = 0
     var beforeInjectionCount = 0
     var afterInjectionCount = 0
