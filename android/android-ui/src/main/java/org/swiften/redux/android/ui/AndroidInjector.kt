@@ -7,6 +7,7 @@ package org.swiften.redux.android.ui
 
 import android.os.Handler
 import android.os.Looper
+import org.swiften.redux.android.util.AndroidUtil.runOnUIThread
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
@@ -15,12 +16,6 @@ import org.swiften.redux.ui.ReduxProps
 import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2018/12/17 */
-internal fun runOnUIThread(runnable: () -> Unit) {
-  if (Looper.myLooper() == Looper.getMainLooper()) { runnable() } else {
-    Handler(Looper.getMainLooper()).post { runnable() }
-  }
-}
-
 /**
  * [PropInjector] specifically for Android that calls [inject] on the main thread. We use
  * inheritance here to ensure [StaticProps.injector] is set with this class instance.

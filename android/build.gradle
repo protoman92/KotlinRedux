@@ -84,10 +84,13 @@ subprojects {
   }
 }
 
+project(':android:android-util') {}
+
 project(':android:android-ui') {
   dependencies {
     api project(':common:common-core')
     api project(':common:common-ui')
+    api project(':android:android-util')
   }
 }
 
