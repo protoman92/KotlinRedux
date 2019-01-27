@@ -18,7 +18,7 @@ import org.swiften.redux.android.saga.rx.core.CoreAndroidEffects.watchConnectivi
 import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeEveryData
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReducer
-import org.swiften.redux.router.IRouterScreen
+import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapSuspend
 import org.swiften.redux.saga.common.put

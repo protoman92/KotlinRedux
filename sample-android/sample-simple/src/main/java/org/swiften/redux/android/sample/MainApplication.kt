@@ -17,7 +17,7 @@ import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.async.createAsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
-import org.swiften.redux.router.createRouterMiddleware
+import org.swiften.redux.core.createRouterMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
 
 /** Created by haipham on 2018/12/19 */

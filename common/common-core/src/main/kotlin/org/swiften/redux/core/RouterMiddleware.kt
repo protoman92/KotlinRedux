@@ -1,17 +1,10 @@
 /*
- * Copyright (c) haipham 2018. All rights reserved.
+ * Copyright (c) haipham 2019. All rights reserved.
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.router
+package org.swiften.redux.core
 
-import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.IDeinitializerProvider
-import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.DispatchMapper
-import org.swiften.redux.core.DispatchWrapper
-import org.swiften.redux.core.IMiddleware
-import org.swiften.redux.core.MiddlewareInput
 import kotlin.reflect.KClass
 
 /** Created by haipham on 2018/12/16 */
@@ -63,4 +56,5 @@ internal class RouterMiddleware<Screen>(
 
 /** Create a [RouterMiddleware] with [router] */
 inline fun <reified Screen> createRouterMiddleware(router: IRouter<Screen>):
-  IMiddleware<Any> where Screen : IRouterScreen = RouterMiddleware(Screen::class, router)
+  IMiddleware<Any> where Screen : IRouterScreen =
+  RouterMiddleware(Screen::class, router)

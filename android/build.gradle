@@ -25,7 +25,8 @@ repositories {
   maven { url = "https://jitpack.io" }
 }
 
-allprojects {
+/** Jitpack support */
+subprojects {
   apply plugin: 'com.github.dcendents.android-maven'
 }
 
@@ -133,7 +134,6 @@ project(':android:android-livedata-rx-saga') {
 project(':android:android-router') {
   dependencies {
     api project(':common:common-core')
-    api project(':common:common-router')
     api project(':android:android-util')
     implementation "androidx.appcompat:appcompat:$appCompat"
   }

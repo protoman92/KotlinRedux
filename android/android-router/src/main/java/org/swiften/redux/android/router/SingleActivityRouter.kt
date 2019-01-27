@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.swiften.redux.android.util.AndroidUtil
 import org.swiften.redux.core.IDeinitializer
-import org.swiften.redux.router.IRouter
-import org.swiften.redux.router.IRouterScreen
+import org.swiften.redux.core.IRouter
+import org.swiften.redux.core.IRouterScreen
 
 /** Created by haipham on 2019/01/12 */
 /** [IRouter] that works for a single [AppCompatActivity] and multiple [Fragment] */
@@ -23,7 +23,8 @@ internal class SingleActivityRouter<AT, Screen>(
   private val application: Application,
   private val runner: AndroidUtil.IMainThreadRunner,
   private val navigate: (AT, Screen) -> Unit
-) : IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen {
+) :
+  IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen {
   private var activity: AT? = null
 
   private val callbacks by lazy {

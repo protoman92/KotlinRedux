@@ -16,7 +16,10 @@ typealias DispatchMapper = (DispatchWrapper) -> DispatchWrapper
 typealias IMiddleware<GlobalState> = (MiddlewareInput<GlobalState>) -> DispatchMapper
 
 /** Input for middlewares that includes some functionalities from [IReduxStore] */
-class MiddlewareInput<out GlobalState>(val stateGetter: IStateGetter<GlobalState>)
+class MiddlewareInput<out GlobalState>(
+  val stateGetter: IStateGetter<GlobalState>,
+  val subscriber: IReduxSubscriber<GlobalState>
+)
 
 /** Use this [DispatchWrapper] to track the ordering of [dispatch] wrapping using [id] */
 class DispatchWrapper(val id: String, val dispatch: IActionDispatcher) {
@@ -39,7 +42,7 @@ internal fun <GlobalState> combineMiddlewares(
   middlewares: Collection<IMiddleware<GlobalState>>
 ): (IReduxStore<GlobalState>) -> DispatchWrapper {
   return fun(store): DispatchWrapper {
-    val input = MiddlewareInput(store.lastState)
+    val input = MiddlewareInput(store.lastState, store.subscribe)
     val rootWrapper = DispatchWrapper(DispatchWrapper.ROOT_WRAPPER, store.dispatch)
     if (middlewares.isEmpty()) return rootWrapper
 

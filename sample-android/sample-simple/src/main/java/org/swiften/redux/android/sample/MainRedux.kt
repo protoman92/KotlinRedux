@@ -7,7 +7,7 @@ package org.swiften.redux.android.sample
 
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReducer
-import org.swiften.redux.router.IRouterScreen
+import org.swiften.redux.core.IRouterScreen
 
 /** Created by haipham on 2018/12/19 */
 object MainRedux {

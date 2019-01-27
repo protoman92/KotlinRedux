@@ -9,7 +9,7 @@ import android.app.Application
 import com.google.samples.apps.sunflower.GardenActivity
 import com.google.samples.apps.sunflower.R
 import org.swiften.redux.android.router.createSingleActivityRouter
-import org.swiften.redux.router.IRouter
+import org.swiften.redux.core.IRouter
 
 /** Created by haipham on 2019/01/18 */
 @Suppress("MoveLambdaOutsideParentheses")

@@ -22,9 +22,9 @@ repositories {
   jcenter()
 }
 
-allprojects {
+/** Jitpack support */
+subprojects {
   apply plugin: "maven"
-  apply plugin: "com.palantir.jacoco-full-report"
 }
 
 subprojects {
@@ -34,6 +34,7 @@ subprojects {
 
   apply plugin: "kotlin"
   apply plugin: "jacoco"
+  apply plugin: "com.palantir.jacoco-full-report"
   group = 'com.github.protoman92'
   version '1.0-SNAPSHOT'
 
@@ -91,12 +92,6 @@ project(':common:common-async') {
   }
 }
 
-project(':common:common-router') {
-  dependencies {
-    api project(':common:common-core')
-  }
-}
-
 project(':common:common-saga') {
   configurations { testArtifacts.extendsFrom testRuntime }
 
@@ -136,7 +131,6 @@ project(':common:common-all') {
   dependencies {
     api project(':common:common-core')
     api project(':common:common-async')
-    api project(':common:common-router')
     api project(':common:common-saga')
     api project(':common:common-rx-saga')
     api project(':common:common-ui')
