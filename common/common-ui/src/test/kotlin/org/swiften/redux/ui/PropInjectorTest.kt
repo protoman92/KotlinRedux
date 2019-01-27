@@ -14,9 +14,10 @@ import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.core.ThreadSafeStore
+import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2018/12/20 */
-class PropInjectorTest {
+open class PropInjectorTest {
   data class S(val query: String = "")
   class A
 
@@ -25,43 +26,42 @@ class PropInjectorTest {
   }
 
   class StoreWrapper(private val store: IReduxStore<S>) : IReduxStore<S> by store {
-    var unsubscribeCount: Int = 0
+    val unsubscribeCount = AtomicInteger()
 
     override val subscribe: IReduxSubscriber<S> = { id, callback ->
       val sub = this@StoreWrapper.store.subscribe(id, callback)
 
       ReduxSubscription(id) {
-        this@StoreWrapper.unsubscribeCount += 1
+        this@StoreWrapper.unsubscribeCount.incrementAndGet()
         sub.unsubscribe()
       }
     }
   }
 
-  class View : IPropContainer<PropInjectorTest.S, PropInjectorTest.S, PropInjectorTest.A> {
-    override var reduxProps by ObservableReduxProps<PropInjectorTest.S, S, A> { prev, next ->
-      this.propCallback(prev, next)
-      this.reduxPropsInjectionCount += 1
+  internal class View : IPropContainer<PropInjectorTest.S, PropInjectorTest.S, PropInjectorTest.A> {
+    override var reduxProps by ObservableReduxProps<S, S, A> { prev, next ->
+      this.propCallback?.invoke(prev, next)
+      this.propsInjectionCount.incrementAndGet()
     }
 
-    lateinit var propCallback: (IVariableProps<S, A>?, IVariableProps<S, A>?) -> Unit
-    var reduxPropsInjectionCount = 0
-    var beforeInjectionCount = 0
-    var afterInjectionCount = 0
+    var propCallback: ((IVariableProps<S, A>?, IVariableProps<S, A>?) -> Unit)? = null
+    val propsInjectionCount = AtomicInteger()
+    val beforeInjectionCount = AtomicInteger()
+    val afterInjectionCount = AtomicInteger()
 
     override fun beforePropInjectionStarts(sp: StaticProps<S>) {
       Assert.assertNotNull(this.reduxProps)
-      this.beforeInjectionCount += 1
+      this.beforeInjectionCount.incrementAndGet()
     }
 
-    override fun afterPropInjectionEnds() { this.afterInjectionCount += 1 }
+    override fun afterPropInjectionEnds() { this.afterInjectionCount.incrementAndGet() }
   }
 
-  private lateinit var store: StoreWrapper
-  private lateinit var injector: IPropInjector<S>
-  private lateinit var mapper: IPropMapper<S, Unit, S, A>
+  protected lateinit var store: StoreWrapper
+  protected lateinit var mapper: IPropMapper<S, Unit, S, A>
 
   @Before
-  fun beforeMethod() {
+  open fun beforeMethod() {
     val store = ThreadSafeStore(S()) { s, a ->
       when (a) {
         is Action -> when (a) {
@@ -72,7 +72,6 @@ class PropInjectorTest {
     }
 
     this.store = StoreWrapper(store)
-    this.injector = PropInjector(this.store)
 
     this.mapper = object : IPropMapper<S, Unit, S, A> {
       override fun mapState(state: S, outProps: Unit) = state
@@ -80,28 +79,31 @@ class PropInjectorTest {
     }
   }
 
+  open fun createInjector(store: IReduxStore<S>): IPropInjector<S> = PropInjector(store)
+
   @Test
   fun `Injecting same state props - should not trigger set event`() {
     // Setup
+    val injector = this.createInjector(this.store)
     val view = View()
     val allProps = arrayListOf<Pair<S?, S?>>()
     view.propCallback = { prev, next -> allProps.add(prev?.state to next?.state) }
 
     // When
-    this.injector.inject(view, Unit, this.mapper)
+    injector.inject(view, Unit, this.mapper)
     this.store.dispatch(Action.SetQuery("1"))
     this.store.dispatch(Action.SetQuery("1"))
     this.store.dispatch(Action.SetQuery("2"))
     this.store.dispatch(Action.SetQuery("2"))
     this.store.dispatch(Action.SetQuery("3"))
     this.store.dispatch(Action.SetQuery("3"))
-    this.injector.inject(view, Unit, this.mapper)
+    injector.inject(view, Unit, this.mapper)
 
     // Then
-    Assert.assertEquals(this.store.unsubscribeCount, 1)
-    Assert.assertEquals(view.reduxPropsInjectionCount, 6)
-    Assert.assertEquals(view.beforeInjectionCount, 2)
-    Assert.assertEquals(view.afterInjectionCount, 1)
+    Assert.assertEquals(this.store.unsubscribeCount.get(), 1)
+    Assert.assertEquals(view.propsInjectionCount.get(), 6)
+    Assert.assertEquals(view.beforeInjectionCount.get(), 2)
+    Assert.assertEquals(view.afterInjectionCount.get(), 1)
 
     Assert.assertEquals(allProps, arrayListOf(
       null to S(""),

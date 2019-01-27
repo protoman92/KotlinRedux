@@ -92,6 +92,8 @@ project(':android:android-ui') {
     api project(':common:common-core')
     api project(':common:common-ui')
     api project(':android:android-util')
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    testApi project (path: ":common:common-ui", configuration: 'testArtifacts')
   }
 }
 
