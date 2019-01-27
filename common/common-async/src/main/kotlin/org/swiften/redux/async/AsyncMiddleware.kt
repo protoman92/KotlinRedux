@@ -5,6 +5,7 @@
 
 package org.swiften.redux.async
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
@@ -19,6 +20,7 @@ import kotlin.coroutines.CoroutineContext
 /** Created by haipham on 2019/01/26 */
 /** [IMiddleware] implementation that calls [DispatchWrapper.dispatch] on another thread */
 internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddleware<Any> {
+  @ExperimentalCoroutinesApi
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       require(wrapper.id == DispatchWrapper.ROOT_WRAPPER) {
@@ -28,12 +30,9 @@ internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddlew
       }
 
       DispatchWrapper("${wrapper.id}-async") { action ->
-        GlobalScope.launch(this@AsyncMiddleware.context) {
-          wrapper.dispatch(action)
-
-          if (action == DefaultReduxAction.Deinitialize) {
-            this@AsyncMiddleware.context.cancel()
-          }
+        when (action) {
+          is DefaultReduxAction.Deinitialize -> this@AsyncMiddleware.context.cancel()
+          else -> GlobalScope.launch(this@AsyncMiddleware.context) { wrapper.dispatch(action) }
         }
       }
     }

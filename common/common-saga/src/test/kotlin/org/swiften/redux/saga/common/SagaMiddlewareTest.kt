@@ -10,13 +10,12 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
+import org.swiften.redux.core.BaseMiddlewareTest
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.DispatchWrapper
-import org.swiften.redux.core.MiddlewareInput
-import org.swiften.redux.core.ReduxSubscription
 
 /** Created by haipham on 2019/01/15 */
-class SagaMiddlewareTest {
+class SagaMiddlewareTest: BaseMiddlewareTest() {
   @Test
   fun `Redux saga middleware should work correctly`() {
     // Setup
@@ -25,10 +24,10 @@ class SagaMiddlewareTest {
     } }
 
     val effects = outputs.map<ISagaOutput<Any>, ISagaEffect<Any>> { o -> { o } }
-    val input = MiddlewareInput({ 0 }, { _, _ -> ReduxSubscription("") {} })
+    val input = this.mockMiddlewareInput(0)
 
     val wrappedDispatch = createSagaMiddleware(effects)
-      .invoke(input)(DispatchWrapper("root") { })
+      .invoke(input)(this.mockDispatchWrapper())
       .dispatch
 
     // When

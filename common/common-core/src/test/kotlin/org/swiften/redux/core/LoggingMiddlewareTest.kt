@@ -9,7 +9,7 @@ import org.junit.Assert
 import org.junit.Test
 
 /** Created by haipham on 2019/01/27 */
-class LoggingMiddlewareTest {
+class LoggingMiddlewareTest: BaseMiddlewareTest() {
   @Test
   fun `Dispatching actions should call logger`() {
     // Setup

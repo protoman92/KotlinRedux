@@ -9,7 +9,7 @@ import org.junit.Assert
 import org.junit.Test
 
 /** Created by haipham on 2018/12/16 */
-class RouterMiddlewareTest {
+class RouterMiddlewareTest: BaseMiddlewareTest() {
   sealed class Screen : IRouterScreen {
     object Screen1 : Screen()
     object Screen2 : Screen()

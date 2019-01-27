@@ -14,7 +14,7 @@ import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.core.combineMiddlewares
 
 /** Created by haipham on 2018/12/16 */
-class MiddlewareTest {
+class MiddlewareTest: BaseMiddlewareTest() {
   @Test
   @Suppress("NestedLambdaShadowedImplicitParameter")
   fun `Applying middlewares to a store should produce correct order`() {
@@ -64,6 +64,6 @@ class MiddlewareTest {
     val wrapper = combineMiddlewares<Int>(arrayListOf())(store)
 
     // Then
-    Assert.assertEquals(wrapper.id, "root")
+    Assert.assertEquals(wrapper.id, DispatchWrapper.ROOT_WRAPPER)
   }
 }

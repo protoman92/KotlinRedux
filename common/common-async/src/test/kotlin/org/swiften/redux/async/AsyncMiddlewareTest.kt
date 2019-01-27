@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
+import org.swiften.redux.core.BaseMiddlewareTest
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.DispatchWrapper
@@ -18,7 +19,7 @@ import org.swiften.redux.core.ReduxSubscription
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/26 */
-class AsyncMiddlewareTest {
+class AsyncMiddlewareTest : BaseMiddlewareTest() {
   @Test
   fun `Sending deinitialize action should deinitialize context`() {
     // Setup
@@ -26,8 +27,8 @@ class AsyncMiddlewareTest {
     val job = Job()
     val middleware = createAsyncMiddleware(job)
     val dispatch: IActionDispatcher = { dispatched.incrementAndGet() }
-    val dispatchWrapper = DispatchWrapper("", dispatch)
-    val input = MiddlewareInput({ 0 }, { _, _ -> ReduxSubscription("") {} })
+    val dispatchWrapper = this.mockDispatchWrapper(dispatch)
+    val input = mockMiddlewareInput(0)
     val wrappedDispatch = middleware(input)(dispatchWrapper).dispatch
 
     runBlocking {
