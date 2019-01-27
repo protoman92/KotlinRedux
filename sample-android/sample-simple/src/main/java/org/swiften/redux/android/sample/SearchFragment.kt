@@ -50,7 +50,6 @@ class SearchFragment : Fragment(),
       IDiffItemCallback<ViewHolder.S1> {
       override fun mapState(state: State, outProps: Unit) =
         state.musicResult?.results?.map { ViewHolder.S1(it.trackName, it.artistName) }
-        ?: arrayListOf()
 
       override fun mapAction(
         dispatch: IActionDispatcher,

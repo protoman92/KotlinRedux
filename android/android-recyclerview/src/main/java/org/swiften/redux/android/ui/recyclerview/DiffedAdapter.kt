@@ -41,7 +41,7 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
   IPropLifecycleOwner<GlobalState> by EmptyPropLifecycleOwner(),
   IPropContainer<GlobalState, List<S>?, A> where VH : RecyclerView.ViewHolder {
   override var reduxProps by ObservableReduxProps<GlobalState, List<S>?, A> { _, next ->
-    next?.state?.also { this.submitList(it) }
+    this.submitList(next?.state ?: arrayListOf())
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

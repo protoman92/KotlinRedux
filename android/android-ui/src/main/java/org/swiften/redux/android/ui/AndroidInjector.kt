@@ -5,8 +5,6 @@
 
 package org.swiften.redux.android.ui
 
-import android.os.Handler
-import android.os.Looper
 import org.swiften.redux.android.util.AndroidUtil
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.ui.IPropContainer
