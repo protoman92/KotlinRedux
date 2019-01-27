@@ -9,7 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.swiften.redux.android.ui.lifecycle.LifecycleCallback
+import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.LifecycleObserver
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
@@ -30,7 +30,7 @@ fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecycl
   VH : IPropContainer<GlobalState, VHState, VHAction> {
   val wrappedAdapter = this.injectRecyclerAdapter(adapter, adapterMapper, vhMapper)
 
-  LifecycleObserver(lifecycleOwner, object : LifecycleCallback() {
+  LifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {}
     override fun onSafeForEndingLifecycleAwareTasks() { wrappedAdapter.unsubscribeSafely() }
   })
@@ -39,17 +39,17 @@ fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecycl
 }
 
 /** Perform [injectDiffedAdapter], but also handle lifecycle with [lifecycleOwner] */
-fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectDiffedAdapter(
+fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GlobalState, Unit, List<VHState>?, VHAction>,
-  diffCallback: DiffUtil.ItemCallback<VHState>
-): ListAdapter<VHState, VH> where
+  adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
+  diffCallback: DiffUtil.ItemCallback<VHS>
+): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IVariablePropContainer<VHState, VHAction> {
+  VH : IVariablePropContainer<VHS, VHA?> {
   val wrappedAdapter = this.injectDiffedAdapter(adapter, adapterMapper, diffCallback)
 
-  LifecycleObserver(lifecycleOwner, object : LifecycleCallback() {
+  LifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {}
     override fun onSafeForEndingLifecycleAwareTasks() { wrappedAdapter.unsubscribeSafely() }
   })
@@ -63,7 +63,7 @@ fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
   diffCallback: IDiffItemCallback<VHS>
-) where VH : RecyclerView.ViewHolder, VH : IVariablePropContainer<VHS, VHA> =
+) where VH : RecyclerView.ViewHolder, VH : IVariablePropContainer<VHS, VHA?> =
   this.injectDiffedAdapter(lifecycleOwner, adapter, adapterMapper,
     object : DiffUtil.ItemCallback<VHS>() {
       override fun areItemsTheSame(oldItem: VHS, newItem: VHS) =
@@ -83,7 +83,7 @@ fun <GlobalState, Mapper, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedA
   mapper: Mapper
 ) where
   VH : RecyclerView.ViewHolder,
-  VH : IVariablePropContainer<VHS, VHA>,
+  VH : IVariablePropContainer<VHS, VHA?>,
   Mapper : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
   Mapper : IDiffItemCallback<VHS> =
   this.injectDiffedAdapter(lifecycleOwner, adapter, mapper, mapper)
@@ -97,7 +97,7 @@ fun <GlobalState, Adapter, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffed
   adapter: Adapter
 ) where
   VH : RecyclerView.ViewHolder,
-  VH : IVariablePropContainer<VHS, VHA>,
+  VH : IVariablePropContainer<VHS, VHA?>,
   Adapter : RecyclerView.Adapter<VH>,
   Adapter : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
   Adapter : IDiffItemCallback<VHS> =

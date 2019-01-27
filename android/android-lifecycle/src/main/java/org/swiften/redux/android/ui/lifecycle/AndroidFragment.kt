@@ -26,7 +26,10 @@ internal fun <GlobalState> IPropInjector<GlobalState>.startFragmentInjection(
     }
   }
 
-  LifecycleObserver(activity, object : LifecycleCallback() {
+  object : LifecycleObserver(activity, object : ILifecycleCallback {
+    override fun onSafeForStartingLifecycleAwareTasks() {}
+    override fun onSafeForEndingLifecycleAwareTasks() {}
+  }) {
     override fun onCreate() {
       super.onCreate()
       activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
@@ -36,8 +39,5 @@ internal fun <GlobalState> IPropInjector<GlobalState>.startFragmentInjection(
       super.onDestroy()
       activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
     }
-
-    override fun onSafeForStartingLifecycleAwareTasks() {}
-    override fun onSafeForEndingLifecycleAwareTasks() {}
-  })
+  }
 }

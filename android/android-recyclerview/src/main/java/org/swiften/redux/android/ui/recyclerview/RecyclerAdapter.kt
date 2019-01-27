@@ -30,60 +30,59 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
 }
 
 /** [RecyclerView.Adapter] that delegates method calls to another [RecyclerView.Adapter] */
-abstract class DelegateRecyclerAdapter<VH>(
+abstract class DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>
-) : RecyclerView.Adapter<VH>() where VH : RecyclerView.ViewHolder {
+) : RecyclerView.Adapter<VH>()
+  where VH : RecyclerView.ViewHolder,
+        VH : IPropContainer<GlobalState, VHState, VHAction> {
   protected val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-    adapter.onCreateViewHolder(parent, viewType)
+    this.adapter.onCreateViewHolder(parent, viewType)
 
-  override fun getItemViewType(position: Int) = adapter.getItemViewType(position)
-  override fun getItemId(position: Int) = adapter.getItemId(position)
-  override fun onFailedToRecycleView(holder: VH) = adapter.onFailedToRecycleView(holder)
-
-  override fun onBindViewHolder(holder: VH, position: Int) {
-    adapter.onBindViewHolder(holder, position)
-  }
+  override fun getItemViewType(position: Int) = this.adapter.getItemViewType(position)
+  override fun getItemId(position: Int) = this.adapter.getItemId(position)
+  override fun onFailedToRecycleView(holder: VH) = this.adapter.onFailedToRecycleView(holder)
 
   override fun onViewRecycled(holder: VH) {
     super.onViewRecycled(holder)
-    adapter.onViewRecycled(holder)
+    holder.unsubscribeSafely()?.also { this.composite.remove(it) }
   }
 
   override fun onViewAttachedToWindow(holder: VH) {
     super.onViewAttachedToWindow(holder)
-    adapter.onViewAttachedToWindow(holder)
+    this.adapter.onViewAttachedToWindow(holder)
   }
 
   override fun onViewDetachedFromWindow(holder: VH) {
     super.onViewDetachedFromWindow(holder)
-    adapter.onViewDetachedFromWindow(holder)
+    this.adapter.onViewDetachedFromWindow(holder)
   }
 
   override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
     super.onAttachedToRecyclerView(recyclerView)
-    adapter.onAttachedToRecyclerView(recyclerView)
+    this.adapter.onAttachedToRecyclerView(recyclerView)
   }
 
   override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
     super.onDetachedFromRecyclerView(recyclerView)
-    adapter.onDetachedFromRecyclerView(recyclerView)
+    this.adapter.onDetachedFromRecyclerView(recyclerView)
+    this.composite.unsubscribe()
   }
 
   override fun setHasStableIds(hasStableIds: Boolean) {
     super.setHasStableIds(hasStableIds)
-    adapter.setHasStableIds(hasStableIds)
+    this.adapter.setHasStableIds(hasStableIds)
   }
 
   override fun registerAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
     super.registerAdapterDataObserver(observer)
-    adapter.registerAdapterDataObserver(observer)
+    this.adapter.registerAdapterDataObserver(observer)
   }
 
   override fun unregisterAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
     super.unregisterAdapterDataObserver(observer)
-    adapter.unregisterAdapterDataObserver(observer)
+    this.adapter.unregisterAdapterDataObserver(observer)
   }
 
   /**
@@ -104,28 +103,16 @@ fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecycl
   adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IStateMapper<GlobalState, Unit, Int>,
   vhMapper: IPropMapper<GlobalState, Int, VHState, VHAction>
-): DelegateRecyclerAdapter<VH> where
+): DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<GlobalState, VHState, VHAction> {
-  return object : DelegateRecyclerAdapter<VH>(adapter) {
+  return object : DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction>(adapter) {
     override fun getItemCount() =
       adapterMapper.mapState(this@injectRecyclerAdapter.lastState(), Unit)
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-      super.onBindViewHolder(holder, position)
       val subscription = this@injectRecyclerAdapter.inject(holder, position, vhMapper)
       this.composite.add(subscription)
-    }
-
-    /** Unsubscribe from [holder]'s subscription on recycling */
-    override fun onViewRecycled(holder: VH) {
-      super.onViewRecycled(holder)
-      holder.unsubscribeSafely()?.also { this.composite.remove(it) }
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-      super.onDetachedFromRecyclerView(recyclerView)
-      this.unsubscribeSafely()
     }
   }
 }

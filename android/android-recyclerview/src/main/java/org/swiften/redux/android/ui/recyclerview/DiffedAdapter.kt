@@ -45,11 +45,17 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-    adapter.onCreateViewHolder(parent, viewType)
+    this.adapter.onCreateViewHolder(parent, viewType)
 
-  override fun getItemViewType(position: Int) = adapter.getItemViewType(position)
-  override fun getItemId(position: Int) = adapter.getItemId(position)
-  override fun onFailedToRecycleView(holder: VH) = adapter.onFailedToRecycleView(holder)
+  override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+    super.onDetachedFromRecyclerView(recyclerView)
+    this.adapter.onDetachedFromRecyclerView(recyclerView)
+    this.unsubscribeSafely()
+  }
+
+  override fun getItemViewType(position: Int) = this.adapter.getItemViewType(position)
+  override fun getItemId(position: Int) = this.adapter.getItemId(position)
+  override fun onFailedToRecycleView(holder: VH) = this.adapter.onFailedToRecycleView(holder)
 
   override fun onViewRecycled(holder: VH) {
     super.onViewRecycled(holder)
@@ -107,19 +113,11 @@ fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ReduxListAdapter<GlobalState, VH, VHS, VHA> where
   VH : RecyclerView.ViewHolder,
-  VH : IVariablePropContainer<VHS, VHA> {
+  VH : IVariablePropContainer<VHS, VHA?> {
   val listAdapter = object : ReduxListAdapter<GlobalState, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
-
-      this.reduxProps?.variable?.action?.also {
-        holder.reduxProps = VariableProps(this.getItem(position), it)
-      }
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-      super.onDetachedFromRecyclerView(recyclerView)
-      this.unsubscribeSafely()
+      holder.reduxProps = VariableProps(this.getItem(position), this.reduxProps?.variable?.action)
     }
   }
 

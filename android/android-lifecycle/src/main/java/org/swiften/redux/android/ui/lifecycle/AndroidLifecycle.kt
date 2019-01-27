@@ -17,81 +17,50 @@ import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ReduxProps
 
 /** Created by haipham on 2018/12/17 */
-/** Callbacks for lifecycle for use with [LifecycleObserver] */
-abstract class LifecycleCallback {
-  /** Called on [Lifecycle.Event.ON_CREATE] */
-  open fun onCreate() {}
-
-  /** Called on [Lifecycle.Event.ON_START] */
-  open fun onStart() { this.onSafeForStartingLifecycleAwareTasks() }
-
-  /** Called on [Lifecycle.Event.ON_RESUME] */
-  open fun onResume() {}
-
-  /** Called on [Lifecycle.Event.ON_PAUSE] */
-  open fun onPause() {}
-
-  /** Called on [Lifecycle.Event.ON_STOP] */
-  open fun onStop() { this.onSafeForEndingLifecycleAwareTasks() }
-
-  /** Called on [Lifecycle.Event.ON_DESTROY] */
-  open fun onDestroy() {}
-
+/** Callback for use with [LifecycleObserver] */
+interface ILifecycleCallback {
   /**
    * This method will be called when it is safe to perform lifecycle-aware tasks, such as
    * [IPropInjector.inject].
    */
-  abstract fun onSafeForStartingLifecycleAwareTasks()
+  fun onSafeForStartingLifecycleAwareTasks()
 
   /**
    * This method will be called when it is safe to terminate lifecycle-aware tasks, such as
    * [IReduxSubscription.unsubscribe].
    */
-  abstract fun onSafeForEndingLifecycleAwareTasks()
+  fun onSafeForEndingLifecycleAwareTasks()
 }
 
 /** Use this [LifecycleObserver] to unsubscribe from a [IReduxSubscription] */
-class LifecycleObserver(
+@Suppress("unused")
+open class LifecycleObserver(
   private val lifecycleOwner: LifecycleOwner,
-  private val callback: LifecycleCallback
-) : LifecycleObserver, LifecycleCallback() {
+  private val callback: ILifecycleCallback
+) : LifecycleObserver, ILifecycleCallback {
   init { this.lifecycleOwner.lifecycle.addObserver(this) }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-  override fun onCreate() {
-    super.onCreate()
-    this.callback.onCreate()
-  }
+  open fun onCreate() {}
 
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
-  override fun onStart() {
-    super.onStart()
-    this.callback.onStart()
+  fun onStart() {
+    this.onSafeForStartingLifecycleAwareTasks()
   }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-  override fun onResume() {
-    super.onResume()
-    this.callback.onResume()
-  }
+  open fun onResume() {}
 
   @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-  override fun onPause() {
-    super.onPause()
-    this.callback.onPause()
-  }
+  open fun onPause() {}
 
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-  override fun onStop() {
-    super.onStop()
-    this.callback.onStop()
+  fun onStop() {
+    this.onSafeForEndingLifecycleAwareTasks()
   }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-  override fun onDestroy() {
-    super.onDestroy()
-    this.callback.onDestroy()
-  }
+  open fun onDestroy() {}
 
   override fun onSafeForStartingLifecycleAwareTasks() {
     this.callback.onSafeForStartingLifecycleAwareTasks()
@@ -102,6 +71,8 @@ class LifecycleObserver(
     this.callback.onSafeForEndingLifecycleAwareTasks()
     this.lifecycleOwner.lifecycle.removeObserver(this)
   }
+
+  override fun toString() = this.callback.toString()
 }
 
 /** Call [IPropInjector.inject] for [lifecycleOwner] */
@@ -121,7 +92,7 @@ fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycle(
    * [IPropLifecycleOwner.beforePropInjectionStarts]. To mirror this, unsubscription is done
    * in [LifecycleCallback.onStop] because said views are not destroyed yet.
    */
-  LifecycleObserver(lifecycleOwner, object : LifecycleCallback() {
+  LifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
       subscription = inject(
         object : IPropContainer<GlobalState, S, A> by lifecycleOwner {
@@ -135,6 +106,8 @@ fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycle(
             set(value) = lifecycleOwner.lifecycle.currentState
               .takeUnless { it == Lifecycle.State.DESTROYED }
               .let { lifecycleOwner.reduxProps = value }
+
+          override fun toString() = lifecycleOwner.toString()
         },
         outProps, mapper
       )
