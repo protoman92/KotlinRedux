@@ -18,10 +18,15 @@ import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2019/01/26 */
 /** [IMiddleware] implementation that calls [DispatchWrapper.dispatch] on another thread */
-internal class AsyncMiddleware(private val context: CoroutineContext) :
-  IMiddleware<Any> {
+internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddleware<Any> {
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
+      require(wrapper.id == DispatchWrapper.ROOT_WRAPPER) {
+        "This middleware must be applied at the end of the middleware chain (right before the " +
+          "actual store dispatch) so that there are no unintended side effects on the previous " +
+          "middlewares."
+      }
+
       DispatchWrapper("${wrapper.id}-async") { action ->
         when (action) {
           is DefaultReduxAction.Deinitialize -> this@AsyncMiddleware.context.cancel()

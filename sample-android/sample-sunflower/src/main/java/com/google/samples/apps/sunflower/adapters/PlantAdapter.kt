@@ -67,7 +67,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IVariablePropContainer<Plant, ViewHolder.A> {
+    IVariablePropContainer<Plant, ViewHolder.A?> {
     class A(val goToPlantDetail: (Int) -> Unit)
 
     private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
@@ -79,7 +79,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
       }
     }
 
-    override var reduxProps by ObservableVariableProps<Plant, A> { _, next ->
+    override var reduxProps by ObservableVariableProps<Plant, A?> { _, next ->
       next?.state?.also {
         this.title.text = it.name
 

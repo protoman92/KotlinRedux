@@ -77,7 +77,7 @@ class SearchFragment : Fragment(),
     private val trackName: TextView,
     private val artistName: TextView
   ) : RecyclerView.ViewHolder(parent),
-    IVariablePropContainer<ViewHolder.S1, ViewHolder.A1> {
+    IVariablePropContainer<ViewHolder.S1, ViewHolder.A1?> {
     data class S1(val trackName: String? = null, val artistName: String? = null)
     data class A1(val goToMusicDetail: (Int) -> Unit)
 
@@ -88,7 +88,7 @@ class SearchFragment : Fragment(),
       }
     }
 
-    override var reduxProps by ObservableVariableProps<S1, A1> { _, next ->
+    override var reduxProps by ObservableVariableProps<S1, A1?> { _, next ->
       next?.state?.also {
         this.trackName.text = it.trackName
         this.artistName.text = it.artistName

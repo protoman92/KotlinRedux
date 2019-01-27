@@ -67,14 +67,14 @@ object Redux {
   }
 
   sealed class Action : IReduxAction {
-    class UpdateConnectivity(val isConnected: Boolean) : Action()
+    data class UpdateConnectivity(val isConnected: Boolean) : Action()
 
-    class AddPlantToGarden(val plantId: String) : Action()
-    class SelectGrowZone(val zone: Int) : Action()
-    class UpdatePlants(val plants: List<Plant>?) : Action()
-    class UpdateGardenPlantings(val gardenPlantings: List<GardenPlanting>?) : Action()
-    class UpdatePlantAndGardenPlantings(val data: List<PlantAndGardenPlantings>?) : Action()
-    class UpdateSelectedPlantStatus(val isPlanted: Boolean) : Action()
+    data class AddPlantToGarden(val plantId: String) : Action()
+    data class SelectGrowZone(val zone: Int) : Action()
+    data class UpdatePlants(val plants: List<Plant>?) : Action()
+    data class UpdateGardenPlantings(val gardenPlantings: List<GardenPlanting>?) : Action()
+    data class UpdatePlantAndGardenPlantings(val data: List<PlantAndGardenPlantings>?) : Action()
+    data class UpdateSelectedPlantStatus(val isPlanted: Boolean) : Action()
   }
 
   sealed class Screen : IRouterScreen {
@@ -83,28 +83,30 @@ object Redux {
   }
 
   object Reducer : IReducer<State> {
-    override fun invoke(p1: State, p2: IReduxAction) = when (p2) {
-      is Action -> when (p2) {
-        is Action.UpdateConnectivity -> p1.copy(isConnected = p2.isConnected)
+    override fun invoke(p1: State, p2: IReduxAction): State {
+      return when (p2) {
+        is Action -> when (p2) {
+          is Action.UpdateConnectivity -> p1.copy(isConnected = p2.isConnected)
 
-        is Action.SelectGrowZone -> p1.copy(selectedGrowZone = p2.zone)
-        is Action.UpdatePlants -> p1.copy(plants = p2.plants)
-        is Action.UpdatePlantAndGardenPlantings -> p1.copy(plantAndGardenPlantings = p2.data)
-        is Action.UpdateGardenPlantings -> p1.copy(gardenPlantings = p2.gardenPlantings)
+          is Action.SelectGrowZone -> p1.copy(selectedGrowZone = p2.zone)
+          is Action.UpdatePlants -> p1.copy(plants = p2.plants)
+          is Action.UpdatePlantAndGardenPlantings -> p1.copy(plantAndGardenPlantings = p2.data)
+          is Action.UpdateGardenPlantings -> p1.copy(gardenPlantings = p2.gardenPlantings)
 
-        is Action.UpdateSelectedPlantStatus ->
-          p1.copy(selectedPlant = p1.selectedPlant?.copy(isPlanted = p2.isPlanted))
+          is Action.UpdateSelectedPlantStatus ->
+            p1.copy(selectedPlant = p1.selectedPlant?.copy(isPlanted = p2.isPlanted))
+
+          else -> p1
+        }
+
+        is Screen -> when (p2) {
+          is Screen.GardenToPlantDetail -> p1.copy(selectedPlant = SelectedPlant(p2.plantId))
+          is Screen.PlantListToPlantDetail -> p1.copy(selectedPlant = SelectedPlant(p2.plantId))
+          else -> p1
+        }
 
         else -> p1
       }
-
-      is Screen -> when (p2) {
-        is Screen.GardenToPlantDetail -> p1.copy(selectedPlant = SelectedPlant(p2.plantId))
-        is Screen.PlantListToPlantDetail -> p1.copy(selectedPlant = SelectedPlant(p2.plantId))
-        else -> p1
-      }
-
-      else -> p1
     }
   }
 

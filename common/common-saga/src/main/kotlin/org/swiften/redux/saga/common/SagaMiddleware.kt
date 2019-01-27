@@ -15,6 +15,7 @@ import org.swiften.redux.core.DispatchMapper
 import org.swiften.redux.core.DispatchWrapper
 import org.swiften.redux.core.IMiddleware
 import org.swiften.redux.core.MiddlewareInput
+import java.util.concurrent.locks.ReentrantReadWriteLock
 
 /** Created by haipham on 2018/12/22 */
 /**

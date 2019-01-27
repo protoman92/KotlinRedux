@@ -27,7 +27,6 @@ class GardenApplication : Application() {
     LeakCanary.install(this)
 
     val store = applyMiddlewares<Redux.State>(
-      createAsyncMiddleware(),
       createRouterMiddleware(Router(this)),
       createSagaMiddleware(
         arrayListOf(
@@ -35,7 +34,8 @@ class GardenApplication : Application() {
           Redux.Saga.GardenPlantingSaga.allSagas(InjectorUtils.getGardenPlantingRepository(this)),
           Redux.Saga.PlantSaga.allSagas(InjectorUtils.getPlantRepository(this))
         ).flatten()
-      )
+      ),
+      createAsyncMiddleware()
     )(FinalStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)

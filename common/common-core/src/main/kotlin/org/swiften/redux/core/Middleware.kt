@@ -19,7 +19,11 @@ typealias IMiddleware<GlobalState> = (MiddlewareInput<GlobalState>) -> DispatchM
 class MiddlewareInput<out GlobalState>(val stateGetter: IStateGetter<GlobalState>)
 
 /** Use this [DispatchWrapper] to track the ordering of [dispatch] wrapping using [id] */
-class DispatchWrapper(val id: String, val dispatch: IActionDispatcher)
+class DispatchWrapper(val id: String, val dispatch: IActionDispatcher) {
+  companion object {
+    const val ROOT_WRAPPER = "root"
+  }
+}
 
 /** Enhance a [store] by overriding its [IReduxStore.dispatch] with [dispatch] */
 private class EnhancedReduxStore<GlobalState>(
@@ -36,7 +40,7 @@ internal fun <GlobalState> combineMiddlewares(
 ): (IReduxStore<GlobalState>) -> DispatchWrapper {
   return fun(store): DispatchWrapper {
     val input = MiddlewareInput(store.lastState)
-    val rootWrapper = DispatchWrapper("root", store.dispatch)
+    val rootWrapper = DispatchWrapper(DispatchWrapper.ROOT_WRAPPER, store.dispatch)
     if (middlewares.isEmpty()) return rootWrapper
 
     return middlewares.reduce { acc, middleware ->
