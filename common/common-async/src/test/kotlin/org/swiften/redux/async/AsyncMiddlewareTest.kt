@@ -14,6 +14,7 @@ import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.DispatchWrapper
 import org.swiften.redux.core.MiddlewareInput
+import org.swiften.redux.core.ReduxSubscription
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/26 */
@@ -26,7 +27,8 @@ class AsyncMiddlewareTest {
     val middleware = createAsyncMiddleware(job)
     val dispatch: IActionDispatcher = { dispatched.incrementAndGet() }
     val dispatchWrapper = DispatchWrapper("", dispatch)
-    val wrappedDispatch = middleware(MiddlewareInput { 0 })(dispatchWrapper).dispatch
+    val input = MiddlewareInput({ 0 }, { _, _ -> ReduxSubscription("") {} })
+    val wrappedDispatch = middleware(input)(dispatchWrapper).dispatch
 
     runBlocking {
       // When

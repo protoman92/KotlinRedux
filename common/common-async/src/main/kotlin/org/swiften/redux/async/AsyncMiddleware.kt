@@ -28,9 +28,12 @@ internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddlew
       }
 
       DispatchWrapper("${wrapper.id}-async") { action ->
-        when (action) {
-          is DefaultReduxAction.Deinitialize -> this@AsyncMiddleware.context.cancel()
-          else -> GlobalScope.launch(this@AsyncMiddleware.context) { wrapper.dispatch(action) }
+        GlobalScope.launch(this@AsyncMiddleware.context) {
+          wrapper.dispatch(action)
+
+          if (action == DefaultReduxAction.Deinitialize) {
+            this@AsyncMiddleware.context.cancel()
+          }
         }
       }
     }

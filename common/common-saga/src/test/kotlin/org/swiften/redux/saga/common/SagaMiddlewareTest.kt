@@ -13,6 +13,7 @@ import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.DispatchWrapper
 import org.swiften.redux.core.MiddlewareInput
+import org.swiften.redux.core.ReduxSubscription
 
 /** Created by haipham on 2019/01/15 */
 class SagaMiddlewareTest {
@@ -24,9 +25,10 @@ class SagaMiddlewareTest {
     } }
 
     val effects = outputs.map<ISagaOutput<Any>, ISagaEffect<Any>> { o -> { o } }
+    val input = MiddlewareInput({ 0 }, { _, _ -> ReduxSubscription("") {} })
 
     val wrappedDispatch = createSagaMiddleware(effects)
-      .invoke(MiddlewareInput { })(DispatchWrapper("root") { })
+      .invoke(input)(DispatchWrapper("root") { })
       .dispatch
 
     // When
