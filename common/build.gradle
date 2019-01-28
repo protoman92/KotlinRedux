@@ -7,15 +7,11 @@ buildscript {
 
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
-
-    // https://github.com/palantir/gradle-jacoco-coverage
-    classpath 'com.palantir:jacoco-coverage:0.4.0'
   }
 }
 
 plugins {
   id 'org.jetbrains.kotlin.jvm' version '1.3.20'
-  id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 repositories {
@@ -33,7 +29,6 @@ subprojects {
   }
 
   apply plugin: "kotlin"
-  apply plugin: "jacoco"
   group = 'com.github.protoman92'
   version '1.0-SNAPSHOT'
 
