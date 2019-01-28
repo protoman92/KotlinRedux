@@ -125,7 +125,7 @@ class SearchFragment : Fragment(),
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable?) {
-      this@SearchFragment.reduxProps?.variable?.also { it.action.updateQuery(s?.toString()) }
+      this@SearchFragment.reduxProps.variable?.also { it.action.updateQuery(s?.toString()) }
     }
   }
 
