@@ -6,7 +6,6 @@
 package org.swiften.redux.android.ui.lifecycle
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -109,22 +108,11 @@ open class BaseLifecycleTest {
     }
   }
 
-  class TestActivity : AppCompatActivity(),
-    IPropContainer<Int, Int, Unit>,
-    IPropLifecycleOwner<Int> by EmptyPropLifecycleOwner(),
-    IPropMapper<Int, Unit, Int, Unit> by TestActivity {
-    companion object : IPropMapper<Int, Unit, Int, Unit> {
-      override fun mapState(state: Int, outProps: Unit) = state
-      override fun mapAction(dispatch: IActionDispatcher, state: Int, outProps: Unit) = Unit
-    }
-
-    override var reduxProps by ObservableReduxProps<Int, Int, Unit> { _, _ -> }
-
+  class TestActivity : IAppCompatActivity, LifecycleOwner {
     val registry = TestLifecycleRegistry(this)
     val fm = TestFragmentManager()
-
     override fun getLifecycle(): Lifecycle = this@TestActivity.registry
-    override fun getSupportFragmentManager() = fm
+    override val supportFragmentManager get() = fm
   }
 
   class TestInjector : IPropInjector<Int> {
@@ -218,6 +206,27 @@ open class BaseLifecycleTest {
     Assert.assertFalse(injector.subscription.get().isUnsubscribed())
     owner.registry.markState(Lifecycle.State.DESTROYED)
     Assert.assertTrue(injector.subscription.get().isUnsubscribed())
+  }
+
+  @Test
+  fun `Injecting fragment props should manage fragment callbacks correctly`() {
+    // Setup
+    val injector = TestInjector()
+    val activity = TestActivity()
+    val injectionCount = AtomicInteger()
+
+    // When
+    injector.injectFragment(activity) { injectionCount.incrementAndGet() }
+
+    // When && Then
+    activity.registry.markState(Lifecycle.State.CREATED)
+    Assert.assertNotNull(activity.fm.callbacks.get())
+    activity.fm.callbacks.get().onFragmentStarted(activity.fm, Fragment())
+    activity.fm.callbacks.get().onFragmentStarted(activity.fm, Fragment())
+    activity.fm.callbacks.get().onFragmentStarted(activity.fm, Fragment())
+    Assert.assertEquals(injectionCount.get(), 3)
+    activity.registry.markState(Lifecycle.State.DESTROYED)
+    Assert.assertNull(activity.fm.callbacks.get())
   }
 }
 
