@@ -17,6 +17,7 @@ import kotlin.concurrent.write
  */
 interface IReduxSubscription {
   val id: String
+  fun isUnsubscribed(): Boolean
   fun unsubscribe()
 }
 
@@ -28,9 +29,9 @@ class ReduxSubscription(
   override val id: String,
   private val _unsubscribe: () -> Unit
 ) : IReduxSubscription {
-  private val isUnsubscribed = AtomicBoolean()
-
-  override fun unsubscribe() { if (!this.isUnsubscribed.getAndSet(true)) this._unsubscribe() }
+  private val _isUnsubscribed = AtomicBoolean()
+  override fun isUnsubscribed() = this._isUnsubscribed.get()
+  override fun unsubscribe() { if (!this._isUnsubscribed.getAndSet(true)) this._unsubscribe() }
 }
 
 /**
@@ -41,14 +42,16 @@ class ReduxSubscription(
 class CompositeReduxSubscription(override val id: String) : IReduxSubscription {
   private val subscriptions = mutableMapOf<String, IReduxSubscription>()
   private val lock = ReentrantReadWriteLock()
-  private var isUnsubscribed = false
+  private var _isUnsubscribed = false
+
+  override fun isUnsubscribed() = this._isUnsubscribed
 
   override fun unsubscribe() {
-    if (!this.lock.read { this.isUnsubscribed }) {
+    if (!this.lock.read { this._isUnsubscribed }) {
       this.lock.write {
         this.subscriptions.forEach { it.value.unsubscribe() }
         this.subscriptions.clear()
-        this.isUnsubscribed = true
+        this._isUnsubscribed = true
       }
     }
   }

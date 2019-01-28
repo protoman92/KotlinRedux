@@ -16,13 +16,13 @@ import org.swiften.redux.ui.IPropInjector
  * Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary. This injection
  * session automatically disposes of itself when [LifecycleCallback.onDestroy] is called.
  */
-internal fun <GlobalState> IPropInjector<GlobalState>.startFragmentInjection(
+internal fun <GlobalState> IPropInjector<GlobalState>.injectFragment(
   activity: AppCompatActivity,
   inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
 ) {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
-      inject(this@startFragmentInjection, f)
+      inject(this@injectFragment, f)
     }
   }
 
