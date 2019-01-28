@@ -55,7 +55,7 @@ fun <GlobalState> IPropInjector<GlobalState>.injectActivity(
         savedInstanceState
           ?.run { restoreState(this) }
           ?.apply { this@injectActivity.dispatch(DefaultReduxAction.ReplaceState(this)) }
-      } catch (e: Exception) { }
+      } catch (e: Throwable) { }
 
       activity?.also {
         require(it is AppCompatActivity)
@@ -72,10 +72,10 @@ fun <GlobalState> IPropInjector<GlobalState>.injectActivity(
 }
 
 /**
- * Similar to [injectParcelableInjections], but provides default persistence for when [GlobalState]
- * is [Serializable]
+ * Similar to [injectActivity], but provides default persistence for when [GlobalState] is
+ * [Serializable]
  */
-inline fun <reified GlobalState> IPropInjector<GlobalState>.injectApplicationSerializable(
+inline fun <reified GlobalState> IPropInjector<GlobalState>.injectActivitySerializable(
   application: Application,
   noinline inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks where GlobalState : Serializable {
@@ -93,7 +93,7 @@ inline fun <reified GlobalState> IPropInjector<GlobalState>.injectApplicationSer
  * Similar to [injectActivity], but provides default persistence for when [GlobalState] is
  * [Parcelable]
  */
-inline fun <reified GlobalState> IPropInjector<GlobalState>.injectParcelableInjections(
+inline fun <reified GlobalState> IPropInjector<GlobalState>.injectActivityParcelable(
   application: Application,
   noinline inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks where GlobalState : Parcelable {

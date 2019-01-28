@@ -12,7 +12,7 @@ import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
-import org.swiften.redux.android.ui.lifecycle.injectParcelableInjections
+import org.swiften.redux.android.ui.lifecycle.injectActivityParcelable
 import org.swiften.redux.async.createAsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
@@ -42,7 +42,7 @@ class GardenApplication : Application() {
 
     val injector = AndroidPropInjector(store)
 
-    injector.injectParcelableInjections(this) {
+    injector.injectActivityParcelable(this) {
       when (it) {
         is GardenFragment -> this.injectLifecycle(it)
         is PlantDetailFragment -> this.injectLifecycle(it)

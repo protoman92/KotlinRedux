@@ -21,6 +21,7 @@ internal interface IAppCompatActivity : LifecycleOwner {
 class AppCompatActivityWrapper(private val activity: AppCompatActivity) : IAppCompatActivity {
   override val supportFragmentManager = this.activity.supportFragmentManager
   override fun getLifecycle() = this.activity.lifecycle
+  override fun toString() = this.activity.toString()
 }
 
 /**
@@ -53,7 +54,7 @@ internal fun <GlobalState> IPropInjector<GlobalState>.injectFragment(
   }
 }
 
-/** Call [injectFragment] with an [AppCompatActivity] wrapped in [AppCompatActivityWrapper] */
+/** Call [injectFragment] with an [AppCompatActivity] wrapped in [App] */
 internal fun <GlobalState> IPropInjector<GlobalState>.injectFragment(
   activity: AppCompatActivity,
   inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
