@@ -46,15 +46,17 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
     IDiffItemCallback<Plant> {
     override fun mapState(state: Redux.State, outProps: Unit) = state.plants
 
-    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit) =
-      ViewHolder.A { index ->
+    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit): ViewHolder.A {
+      return ViewHolder.A { index ->
         state.plants?.elementAtOrNull(index)?.plantId?.also {
           dispatch(Redux.Screen.PlantListToPlantDetail(it))
         }
       }
+    }
 
-    override fun areItemsTheSame(oldItem: Plant, newItem: Plant) =
-      oldItem.plantId == newItem.plantId
+    override fun areItemsTheSame(oldItem: Plant, newItem: Plant): Boolean {
+      return oldItem.plantId == newItem.plantId
+    }
 
     override fun areContentsTheSame(oldItem: Plant, newItem: Plant) = oldItem == newItem
   }
@@ -75,7 +77,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
 
     init {
       this.itemView.setOnClickListener {
-        this@ViewHolder.reduxProps?.action?.goToPlantDetail?.invoke(this.layoutPosition)
+        this@ViewHolder.reduxProps.action?.goToPlantDetail?.invoke(this.layoutPosition)
       }
     }
 

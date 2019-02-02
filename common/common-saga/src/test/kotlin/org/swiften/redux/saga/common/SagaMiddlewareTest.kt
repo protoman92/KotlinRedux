@@ -12,10 +12,9 @@ import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
 import org.swiften.redux.core.BaseMiddlewareTest
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.DispatchWrapper
 
 /** Created by haipham on 2019/01/15 */
-class SagaMiddlewareTest: BaseMiddlewareTest() {
+class SagaMiddlewareTest : BaseMiddlewareTest() {
   @Test
   fun `Redux saga middleware should work correctly`() {
     // Setup

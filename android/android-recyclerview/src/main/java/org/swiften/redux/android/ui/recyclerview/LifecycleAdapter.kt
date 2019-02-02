@@ -42,12 +42,13 @@ fun <GlobalState, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState>.inj
   lifecycleOwner: LifecycleOwner,
   adapter: Adapter,
   vhMapper: IPropMapper<GlobalState, Int, VHState, VHAction>
-) where
+): RecyclerView.Adapter<VH> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<GlobalState, VHState, VHAction>,
   Adapter : RecyclerView.Adapter<VH>,
-  Adapter : IStateMapper<GlobalState, Unit, Int> =
-  this.injectRecyclerAdapter(lifecycleOwner, adapter, adapter, vhMapper)
+  Adapter : IStateMapper<GlobalState, Unit, Int> {
+  return this.injectRecyclerAdapter(lifecycleOwner, adapter, adapter, vhMapper)
+}
 
 /** Perform [injectDiffedAdapter], but also handle lifecycle with [lifecycleOwner] */
 fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
@@ -74,15 +75,20 @@ fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
   diffCallback: IDiffItemCallback<VHS>
-) where VH : RecyclerView.ViewHolder, VH : IVariablePropContainer<VHS, VHA?> =
-  this.injectDiffedAdapter(lifecycleOwner, adapter, adapterMapper,
+): ListAdapter<VHS, VH> where
+  VH : RecyclerView.ViewHolder,
+  VH : IVariablePropContainer<VHS, VHA?> {
+  return this.injectDiffedAdapter(lifecycleOwner, adapter, adapterMapper,
     object : DiffUtil.ItemCallback<VHS>() {
-      override fun areItemsTheSame(oldItem: VHS, newItem: VHS) =
-        diffCallback.areItemsTheSame(oldItem, newItem)
+      override fun areItemsTheSame(oldItem: VHS, newItem: VHS): Boolean {
+        return diffCallback.areItemsTheSame(oldItem, newItem)
+      }
 
-      override fun areContentsTheSame(oldItem: VHS, newItem: VHS) =
-        diffCallback.areContentsTheSame(oldItem, newItem)
+      override fun areContentsTheSame(oldItem: VHS, newItem: VHS): Boolean {
+        return diffCallback.areContentsTheSame(oldItem, newItem)
+      }
     })
+}
 
 /**
  * Convenience [injectDiffedAdapter] for when [mapper] implements both [IPropMapper] and
@@ -92,12 +98,13 @@ fun <GlobalState, Mapper, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedA
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
   mapper: Mapper
-) where
+): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
   VH : IVariablePropContainer<VHS, VHA?>,
   Mapper : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
-  Mapper : IDiffItemCallback<VHS> =
-  this.injectDiffedAdapter(lifecycleOwner, adapter, mapper, mapper)
+  Mapper : IDiffItemCallback<VHS> {
+  return this.injectDiffedAdapter(lifecycleOwner, adapter, mapper, mapper)
+}
 
 /**
  * Convenience [injectDiffedAdapter] for when [adapter] implements both [RecyclerView.Adapter],
@@ -106,10 +113,11 @@ fun <GlobalState, Mapper, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedA
 fun <GlobalState, Adapter, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: Adapter
-) where
+): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
   VH : IVariablePropContainer<VHS, VHA?>,
   Adapter : RecyclerView.Adapter<VH>,
   Adapter : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
-  Adapter : IDiffItemCallback<VHS> =
-  this.injectDiffedAdapter(lifecycleOwner, adapter, adapter)
+  Adapter : IDiffItemCallback<VHS> {
+  return this.injectDiffedAdapter(lifecycleOwner, adapter, adapter)
+}

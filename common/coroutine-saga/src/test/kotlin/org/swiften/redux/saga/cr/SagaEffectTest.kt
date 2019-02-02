@@ -23,7 +23,6 @@ import org.swiften.redux.saga.map
 import org.swiften.redux.saga.mapAsync
 import org.swiften.redux.saga.mapSuspend
 import org.swiften.redux.saga.then
-import org.testng.Assert
 import org.testng.annotations.Test
 
 /** Created by haipham on 2018/12/23 */

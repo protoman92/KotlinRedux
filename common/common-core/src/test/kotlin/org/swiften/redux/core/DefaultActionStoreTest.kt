@@ -12,10 +12,11 @@ import org.junit.Test
 class DefaultActionStoreTest : BaseStoreTest() {
   private var lastAction: IReduxAction? = null
 
-  override fun createStore() =
-    DefaultActionStore(ThreadSafeStore(0) { p, a ->
+  override fun createStore(): IReduxStore<Int> {
+    return DefaultActionStore(ThreadSafeStore(0) { p, a ->
       this.lastAction = a; this.reducer()(p, a)
     })
+  }
 
   @Test
   fun test_deinitializingStore_shouldSendDeinitializeAction() {

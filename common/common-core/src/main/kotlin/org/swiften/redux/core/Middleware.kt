@@ -64,5 +64,6 @@ fun <GlobalState> applyMiddlewares(
  * Apply [middlewares] to a [IReduxStore] instance. This is a convenience method that uses
  * varargs.
  */
-fun <GlobalState> applyMiddlewares(vararg middlewares: IMiddleware<GlobalState>) =
-  applyMiddlewares(middlewares.asList())
+fun <GlobalState> applyMiddlewares(vararg middlewares: IMiddleware<GlobalState>): (IReduxStore<GlobalState>) -> IReduxStore<GlobalState> {
+  return applyMiddlewares(middlewares.asList())
+}

@@ -29,7 +29,7 @@ import org.swiften.redux.ui.ObservableReduxProps
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/02/02 */
-@Config(manifest=Config.NONE)
+@Config(manifest = Config.NONE)
 @RunWith(RobolectricTestRunner::class)
 class RecycleAdapterTest : BaseLifecycleTest() {
   class ViewHolder1(itemView: View) : RecyclerView.ViewHolder(itemView),
@@ -40,7 +40,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
       override fun mapAction(dispatch: IActionDispatcher, state: Int, outProps: Int) = Unit
     }
 
-    val injectionCount = AtomicInteger();
+    val injectionCount = AtomicInteger()
 
     override var reduxProps by ObservableReduxProps<Int, Int, Unit> { _, _ ->
       this.injectionCount.incrementAndGet()
@@ -54,7 +54,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
 
       override fun mapState(state: Int, outProps: Unit): Int {
         this.mapCount.incrementAndGet()
-        return state;
+        return state
       }
     }
 
@@ -74,9 +74,9 @@ class RecycleAdapterTest : BaseLifecycleTest() {
     val wrappedAdapter = injector.injectRecyclerAdapter(lifecycleOwner, adapter, ViewHolder1)
 
     // When - adapter mapper
-    wrappedAdapter.itemCount;
-    wrappedAdapter.itemCount;
-    wrappedAdapter.itemCount;
+    wrappedAdapter.itemCount
+    wrappedAdapter.itemCount
+    wrappedAdapter.itemCount
 
     // Then - adapter mapper
     assertEquals(RecyclerAdapter.mapCount.get(), 3)

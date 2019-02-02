@@ -15,9 +15,9 @@ internal class ThenEffect<R, R2, R3>(
   private val source2: ISagaEffect<R2>,
   private val combiner: Function2<R, R2, R3>
 ) : SagaEffect<R3>() {
-  @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-  override fun invoke(input: SagaInput) =
-    this.source1.invoke(input).flatMap { value1 ->
+  override fun invoke(input: SagaInput): ISagaOutput<R3> {
+    return this.source1.invoke(input).flatMap { value1 ->
       this@ThenEffect.source2.invoke(input).map { this@ThenEffect.combiner(value1, it) }
     }
+  }
 }

@@ -24,9 +24,10 @@ class PlantRepository private constructor(private val plantDao: PlantDao) : Plan
     // For Singleton instantiation
     @Volatile private var instance: PlantRepository? = null
 
-    fun getInstance(plantDao: PlantDao) =
-      instance ?: synchronized(this) {
-        instance ?: PlantRepository(plantDao).also { instance = it }
+    fun getInstance(plantDao: PlantDao): PlantRepository {
+      return this.instance ?: synchronized(this) {
+        this.instance ?: PlantRepository(plantDao).also { this.instance = it }
       }
+    }
   }
 }

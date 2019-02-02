@@ -9,7 +9,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /** Created by haipham on 2018/12/16 */
-class MiddlewareTest: BaseMiddlewareTest() {
+class MiddlewareTest : BaseMiddlewareTest() {
   @Test
   @Suppress("NestedLambdaShadowedImplicitParameter")
   fun `Applying middlewares to a store should produce correct order`() {

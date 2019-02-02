@@ -28,11 +28,6 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import com.google.samples.apps.sunflower.dependency.Redux
-import org.swiften.redux.ui.EmptyPropLifecycleOwner
-import org.swiften.redux.ui.IPropContainer
-import org.swiften.redux.ui.IPropLifecycleOwner
-import org.swiften.redux.ui.ReduxProps
 
 class GardenActivity : AppCompatActivity() {
   private lateinit var drawerLayout: DrawerLayout

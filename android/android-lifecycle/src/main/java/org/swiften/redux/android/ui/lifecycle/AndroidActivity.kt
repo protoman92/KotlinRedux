@@ -84,8 +84,9 @@ inline fun <reified GlobalState> IPropInjector<GlobalState>.injectActivitySerial
   return this.injectActivity(application, object : IBundleStateSaver<GlobalState> {
     override fun saveState(bundle: Bundle, state: GlobalState) = bundle.putSerializable(key, state)
 
-    override fun restoreState(bundle: Bundle) =
-      bundle.getSerializable(key)?.takeIf { it is GlobalState }?.run { this as GlobalState }
+    override fun restoreState(bundle: Bundle): GlobalState? {
+      return bundle.getSerializable(key)?.takeIf { it is GlobalState }?.run { this as GlobalState }
+    }
   }, inject)
 }
 

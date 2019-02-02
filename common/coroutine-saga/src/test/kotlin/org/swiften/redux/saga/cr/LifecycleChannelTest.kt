@@ -7,7 +7,6 @@ package org.swiften.redux.saga.cr
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import org.testng.Assert
 import org.testng.annotations.Test
 
 /** Created by haipham on 2018/12/26 */

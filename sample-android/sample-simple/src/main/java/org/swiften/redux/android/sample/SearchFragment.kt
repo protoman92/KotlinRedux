@@ -48,20 +48,25 @@ class SearchFragment : Fragment(),
     companion object :
       IPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1>,
       IDiffItemCallback<ViewHolder.S1> {
-      override fun mapState(state: State, outProps: Unit) =
-        state.musicResult?.results?.map { ViewHolder.S1(it.trackName, it.artistName) }
+      override fun mapState(state: State, outProps: Unit): List<ViewHolder.S1>? {
+        return state.musicResult?.results?.map { ViewHolder.S1(it.trackName, it.artistName) }
+      }
 
       override fun mapAction(
         dispatch: IActionDispatcher,
         state: State,
         outProps: Unit
-      ) = ViewHolder.A1 { dispatch(MainRedux.Screen.MusicDetail(it)) }
+      ): ViewHolder.A1 {
+        return ViewHolder.A1 { dispatch(MainRedux.Screen.MusicDetail(it)) }
+      }
 
-      override fun areItemsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
-        oldItem.trackName == newItem.trackName
+      override fun areItemsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1): Boolean {
+        return oldItem.trackName == newItem.trackName
+      }
 
-      override fun areContentsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1) =
-        oldItem == newItem
+      override fun areContentsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1): Boolean {
+        return oldItem == newItem
+      }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -101,12 +106,13 @@ class SearchFragment : Fragment(),
       dispatch: IActionDispatcher,
       state: State,
       outProps: Unit
-    ) = A { dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
+    ): A {
+      return A { dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
+    }
 
-    override fun mapState(state: State, outProps: Unit) = S(
-      state.autocompleteQuery,
-      state.loadingMusic
-    )
+    override fun mapState(state: State, outProps: Unit): S {
+      return S(state.autocompleteQuery, state.loadingMusic)
+    }
   }
 
   override var reduxProps by ObservableReduxProps<State, S, A> { _, next ->

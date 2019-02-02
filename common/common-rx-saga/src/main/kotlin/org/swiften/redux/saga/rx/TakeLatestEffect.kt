@@ -20,5 +20,5 @@ internal class TakeLatestEffect<P, R>(
   options: TakeEffectOptions,
   creator: Function1<P, ISagaEffect<R>>
 ) : TakeEffect<P, R>(extractor, options, creator) {
-  override fun flatten(nestedOutput: ISagaOutput<ISagaOutput<R>>) = nestedOutput.switchMap { it }
+  override fun flatten(nested: ISagaOutput<ISagaOutput<R>>) = nested.switchMap { it }
 }

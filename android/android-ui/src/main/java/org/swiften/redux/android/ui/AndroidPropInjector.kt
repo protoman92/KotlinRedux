@@ -32,11 +32,13 @@ class AndroidPropInjector<GlobalState>(
         get() = view.reduxProps
         set(value) { this@AndroidPropInjector.runner { view.reduxProps = value } }
 
-      override fun beforePropInjectionStarts(sp: StaticProps<GlobalState>) =
+      override fun beforePropInjectionStarts(sp: StaticProps<GlobalState>) {
         this@AndroidPropInjector.runner { view.beforePropInjectionStarts(sp) }
+      }
 
-      override fun afterPropInjectionEnds() =
+      override fun afterPropInjectionEnds() {
         this@AndroidPropInjector.runner { view.afterPropInjectionEnds() }
+      }
 
       override fun toString() = view.toString()
     },

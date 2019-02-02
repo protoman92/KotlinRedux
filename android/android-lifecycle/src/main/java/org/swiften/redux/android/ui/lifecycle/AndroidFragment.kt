@@ -58,4 +58,6 @@ internal fun <GlobalState> IPropInjector<GlobalState>.injectFragment(
 internal fun <GlobalState> IPropInjector<GlobalState>.injectFragment(
   activity: AppCompatActivity,
   inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
-) = this.injectFragment(AppCompatActivityWrapper(activity), inject)
+) {
+  return this.injectFragment(AppCompatActivityWrapper(activity), inject)
+}

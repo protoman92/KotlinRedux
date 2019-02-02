@@ -44,8 +44,9 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
     this.submitList(next?.state ?: arrayListOf())
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-    this.adapter.onCreateViewHolder(parent, viewType)
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+    return this.adapter.onCreateViewHolder(parent, viewType)
+  }
 
   override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
     super.onDetachedFromRecyclerView(recyclerView)

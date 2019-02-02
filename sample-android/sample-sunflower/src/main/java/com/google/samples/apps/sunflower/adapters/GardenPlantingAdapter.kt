@@ -42,8 +42,9 @@ import java.util.Locale
 class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.ViewHolder>(),
   IStateMapper<Redux.State, Unit, Int> by GardenPlantingAdapter {
   companion object : IStateMapper<Redux.State, Unit, Int> {
-    override fun mapState(state: Redux.State, outProps: Unit) =
-      state.plantAndGardenPlantings?.size ?: 0
+    override fun mapState(state: Redux.State, outProps: Unit): Int {
+      return state.plantAndGardenPlantings?.size ?: 0
+    }
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -59,12 +60,15 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
     class A(val goToPlantDetail: () -> Unit)
 
     companion object : IPropMapper<Redux.State, Int, S, A> {
-      override fun mapState(state: Redux.State, outProps: Int) =
-        S(state.plantAndGardenPlantings?.elementAtOrNull(outProps))
+      override fun mapState(state: Redux.State, outProps: Int): S {
+        return S(state.plantAndGardenPlantings?.elementAtOrNull(outProps))
+      }
 
-      override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Int) = A {
-        this.mapState(state, outProps).plantings?.plant?.plantId?.let {
-          dispatch(Redux.Screen.GardenToPlantDetail(it))
+      override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Int): A {
+        return A {
+          this.mapState(state, outProps).plantings?.plant?.plantId?.let {
+            dispatch(Redux.Screen.GardenToPlantDetail(it))
+          }
         }
       }
     }

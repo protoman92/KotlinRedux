@@ -43,10 +43,10 @@ interface ISagaOutput<T> {
   fun catchError(catcher: (Throwable) -> T): ISagaOutput<T>
 
   /** Catch error with suspending [catcher] */
-  fun catchErrorSuspend(catcher: suspend CoroutineScope.(Throwable) -> T): ISagaOutput<T>
+  fun catchSuspend(catcher: suspend CoroutineScope.(Throwable) -> T): ISagaOutput<T>
 
   /** Catch error with async [catcher] */
-  fun catchErrorAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<T>): ISagaOutput<T>
+  fun catchAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<T>): ISagaOutput<T>
 
   /** Delay each emission by [delayMillis] */
   fun delay(delayMillis: Long): ISagaOutput<T>
@@ -100,8 +100,9 @@ interface ISagaOutput<T> {
 /** Abstract class to allow better interfacing with Java */
 abstract class SagaEffect<R> : ISagaEffect<R> {
   /** Call [ISagaEffect] with convenience parameters for testing */
-  fun invoke(scope: CoroutineScope, state: Any, dispatch: IActionDispatcher) =
-    this.invoke(SagaInput(scope, { state }, dispatch))
+  fun invoke(scope: CoroutineScope, state: Any, dispatch: IActionDispatcher): ISagaOutput<R> {
+    return this.invoke(SagaInput(scope, { state }, dispatch))
+  }
 
   fun <R2> transform(transformer: ISagaEffectTransformer<R, R2>): SagaEffect<R2> = transformer(this)
 }

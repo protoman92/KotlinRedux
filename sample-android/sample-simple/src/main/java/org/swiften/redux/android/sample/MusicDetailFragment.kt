@@ -30,9 +30,11 @@ class MusicDetailFragment : Fragment(),
   class A(val goToTrackInformation: () -> Unit)
 
   companion object : IPropMapper<State, Unit, S, A> {
-    override fun mapAction(dispatch: IActionDispatcher, state: State, outProps: Unit) = A {
-      this.mapState(state, outProps).track?.also {
-        dispatch(MainRedux.Screen.WebView(it.previewUrl))
+    override fun mapAction(dispatch: IActionDispatcher, state: State, outProps: Unit): A {
+      return A {
+        this.mapState(state, outProps).track?.also {
+          dispatch(MainRedux.Screen.WebView(it.previewUrl))
+        }
       }
     }
 

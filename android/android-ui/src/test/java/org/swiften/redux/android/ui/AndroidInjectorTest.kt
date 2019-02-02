@@ -52,7 +52,7 @@ class AndroidInjectorTest : PropInjectorTest() {
      * of times prop injection happens.
      */
     override var reduxProps by VetoableObservableProp<ReduxProps<S, S, A>>(
-      { _, _ -> false}
+      { _, _ -> false }
     ) { _, _ -> this.propsInjectionCount.incrementAndGet() }
 
     val propsInjectionCount = AtomicInteger()

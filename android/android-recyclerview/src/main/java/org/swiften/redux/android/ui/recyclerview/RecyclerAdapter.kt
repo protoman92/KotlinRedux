@@ -37,8 +37,9 @@ abstract class DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction>(
   VH : IPropContainer<GlobalState, VHState, VHAction> {
   protected val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-    this.adapter.onCreateViewHolder(parent, viewType)
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+    return this.adapter.onCreateViewHolder(parent, viewType)
+  }
 
   override fun getItemViewType(position: Int) = this.adapter.getItemViewType(position)
   override fun getItemId(position: Int) = this.adapter.getItemId(position)
@@ -107,8 +108,9 @@ fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecycl
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<GlobalState, VHState, VHAction> {
   return object : DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction>(adapter) {
-    override fun getItemCount() =
-      adapterMapper.mapState(this@injectRecyclerAdapter.lastState(), Unit)
+    override fun getItemCount(): Int {
+      return adapterMapper.mapState(this@injectRecyclerAdapter.lastState(), Unit)
+    }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
       val subscription = this@injectRecyclerAdapter.inject(holder, position, vhMapper)

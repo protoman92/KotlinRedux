@@ -121,7 +121,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     justEffect(1)
       .map { throw error; 1 }
       .delay(1000)
-      .catchErrorAsync { this.async { 100 } }
+      .catchAsync { this.async { 100 } }
       .invoke(this, State()) { }
       .subscribe({ finalValues.add(it) })
 
@@ -224,7 +224,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     val finalOutput = justEffect(1)
       .mapSuspend { delay(this@CommonSagaEffectTest.timeout); it }
       .timeout(1000)
-      .catchErrorSuspend { 100 }
+      .catchSuspend { 100 }
       .invoke(this, State()) { }
 
     // When && Then

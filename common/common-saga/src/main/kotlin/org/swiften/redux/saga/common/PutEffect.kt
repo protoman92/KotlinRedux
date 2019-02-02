@@ -17,6 +17,7 @@ internal class PutEffect<P>(
   private val source: ISagaEffect<P>,
   private val actionCreator: (P) -> IReduxAction
 ) : SagaEffect<Any>() {
-  override fun invoke(p1: SagaInput) =
-    source.invoke(p1).map { p1.dispatch(this@PutEffect.actionCreator(it)) as Any }
+  override fun invoke(p1: SagaInput): ISagaOutput<Any> {
+    return this.source.invoke(p1).map { p1.dispatch(this@PutEffect.actionCreator(it)) as Any }
+  }
 }

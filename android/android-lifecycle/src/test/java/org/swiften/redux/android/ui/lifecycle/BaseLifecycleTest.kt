@@ -134,4 +134,3 @@ open class BaseLifecycleTest {
     override val deinitialize: IDeinitializer = {}
   }
 }
-

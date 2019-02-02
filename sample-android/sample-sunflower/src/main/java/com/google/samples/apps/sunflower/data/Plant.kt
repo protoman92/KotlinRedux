@@ -32,12 +32,13 @@ data class Plant(
   val imageUrl: String = ""
 ) {
 
-    /**
-     * Determines if the plant should be watered.  Returns true if [since]'s date > date of last
-     * watering + watering Interval; false otherwise.
-     */
-    fun shouldBeWatered(since: Calendar, lastWateringDate: Calendar) =
-        since > lastWateringDate.apply { add(DAY_OF_YEAR, wateringInterval) }
+  /**
+   * Determines if the plant should be watered.  Returns true if [since]'s date > date of last
+   * watering + watering Interval; false otherwise.
+   */
+  fun shouldBeWatered(since: Calendar, lastWateringDate: Calendar): Boolean {
+    return since > lastWateringDate.apply { add(DAY_OF_YEAR, wateringInterval) }
+  }
 
-    override fun toString() = name
+  override fun toString() = name
 }

@@ -6,7 +6,6 @@
 package org.swiften.redux.core
 
 import java.util.UUID
-import java.util.concurrent.locks.ReentrantLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -38,6 +37,8 @@ internal class LoggingMiddleware<GlobalState>(
 }
 
 /** Create a [LoggingMiddleware] with [logger] */
-fun <GlobalState> createLoggingMiddleware(logger: (GlobalState, IReduxAction?) -> Unit = { s, a ->
-  println("Redux: Last action $a, Last state $s")
-}): IMiddleware<GlobalState> = LoggingMiddleware(logger)
+fun <GlobalState> createLoggingMiddleware(
+  logger: (GlobalState, IReduxAction?) -> Unit = { s, a ->
+println("Redux: Last action $a, Last state $s")
+}
+): IMiddleware<GlobalState> = LoggingMiddleware(logger)

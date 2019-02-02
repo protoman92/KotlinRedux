@@ -45,14 +45,17 @@ class PlantListFragment : Fragment(),
   class A(val updateGrowZone: () -> Unit)
 
   companion object : IPropMapper<Redux.State, Unit, S, A> {
-    override fun mapState(state: Redux.State, outProps: Unit) =
-      S(plantCount = state.plants?.size ?: 0)
+    override fun mapState(state: Redux.State, outProps: Unit): S {
+      return S(plantCount = state.plants?.size ?: 0)
+    }
 
-    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit) = A {
-      if (state.selectedGrowZone == Redux.NO_GROW_ZONE) {
-        dispatch(Redux.Action.SelectGrowZone(9))
-      } else {
-        dispatch(Redux.Action.SelectGrowZone(Redux.NO_GROW_ZONE))
+    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit): A {
+      return A {
+        if (state.selectedGrowZone == Redux.NO_GROW_ZONE) {
+          dispatch(Redux.Action.SelectGrowZone(9))
+        } else {
+          dispatch(Redux.Action.SelectGrowZone(Redux.NO_GROW_ZONE))
+        }
       }
     }
   }
