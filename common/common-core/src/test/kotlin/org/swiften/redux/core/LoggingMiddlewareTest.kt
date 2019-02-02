@@ -5,7 +5,7 @@
 
 package org.swiften.redux.core
 
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /** Created by haipham on 2019/01/27 */
@@ -28,6 +28,6 @@ class LoggingMiddlewareTest: BaseMiddlewareTest() {
 
     // Then
     // Value is 3 due to last value being relayed on subscription.
-    Assert.assertEquals(logged, 3)
+    assertEquals(logged, 3)
   }
 }

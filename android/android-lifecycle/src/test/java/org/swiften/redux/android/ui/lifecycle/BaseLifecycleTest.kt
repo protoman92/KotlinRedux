@@ -11,7 +11,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDeinitializer
@@ -179,16 +183,16 @@ open class BaseLifecycleTest {
     owner.registry.markState(Lifecycle.State.DESTROYED)
 
     // Then
-    Assert.assertEquals(onCreateCount.get(), 1)
-    Assert.assertEquals(startCount.get(), 1)
-    Assert.assertEquals(owner.registry.registerCount.get(), 2)
-    Assert.assertEquals(onResumeCount.get(), 1)
-    Assert.assertEquals(onPauseCount.get(), 1)
-    Assert.assertEquals(endCount.get(), 1)
-    Assert.assertEquals(owner.registry.unregisterCount.get(), 1)
+    assertEquals(onCreateCount.get(), 1)
+    assertEquals(startCount.get(), 1)
+    assertEquals(owner.registry.registerCount.get(), 2)
+    assertEquals(onResumeCount.get(), 1)
+    assertEquals(onPauseCount.get(), 1)
+    assertEquals(endCount.get(), 1)
+    assertEquals(owner.registry.unregisterCount.get(), 1)
 
     /** The lifecycle registry should have been removed by now */
-    Assert.assertEquals(onDestroyCount.get(), 0)
+    assertEquals(onDestroyCount.get(), 0)
   }
 
   @Test
@@ -202,10 +206,10 @@ open class BaseLifecycleTest {
 
     // When && Then
     owner.registry.markState(Lifecycle.State.STARTED)
-    Assert.assertNotNull(injector.subscription.get())
-    Assert.assertFalse(injector.subscription.get().isUnsubscribed())
+    assertNotNull(injector.subscription.get())
+    assertFalse(injector.subscription.get().isUnsubscribed())
     owner.registry.markState(Lifecycle.State.DESTROYED)
-    Assert.assertTrue(injector.subscription.get().isUnsubscribed())
+    assertTrue(injector.subscription.get().isUnsubscribed())
   }
 
   @Test
@@ -220,13 +224,13 @@ open class BaseLifecycleTest {
 
     // When && Then
     activity.registry.markState(Lifecycle.State.CREATED)
-    Assert.assertNotNull(activity.fm.callbacks.get())
+    assertNotNull(activity.fm.callbacks.get())
     activity.fm.callbacks.get().onFragmentStarted(activity.fm, Fragment())
     activity.fm.callbacks.get().onFragmentStarted(activity.fm, Fragment())
     activity.fm.callbacks.get().onFragmentStarted(activity.fm, Fragment())
-    Assert.assertEquals(injectionCount.get(), 3)
+    assertEquals(injectionCount.get(), 3)
     activity.registry.markState(Lifecycle.State.DESTROYED)
-    Assert.assertNull(activity.fm.callbacks.get())
+    assertNull(activity.fm.callbacks.get())
   }
 }
 

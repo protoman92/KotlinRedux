@@ -11,7 +11,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -44,7 +44,7 @@ class LiveDataEffectTest {
       delay(1500)
 
       // Then
-      Assert.assertEquals(finalValues.sorted(), arrayListOf(0, 2, 4))
+      assertEquals(finalValues.sorted(), arrayListOf(0, 2, 4))
     }
   }
 }

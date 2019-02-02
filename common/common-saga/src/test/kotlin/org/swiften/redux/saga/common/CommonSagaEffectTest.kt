@@ -16,7 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.After
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
@@ -81,7 +81,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       }
 
       // Then
-      Assert.assertEquals(finalValues.sorted(), actualValues.sorted())
+      assertEquals(finalValues.sorted(), actualValues.sorted())
     }
   }
 
@@ -106,7 +106,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       }
 
       // Then
-      Assert.assertEquals(finalValues, arrayListOf(100))
+      assertEquals(finalValues, arrayListOf(100))
     }
   }
 
@@ -131,7 +131,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       }
 
       // Then
-      Assert.assertEquals(finalValues, arrayListOf(100))
+      assertEquals(finalValues, arrayListOf(100))
     }
   }
 
@@ -155,7 +155,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       }
 
       // Then
-      Assert.assertEquals(finalValues, arrayListOf(0, 2))
+      assertEquals(finalValues, arrayListOf(0, 2))
     }
   }
 
@@ -178,7 +178,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       }
 
       // Then
-      Assert.assertEquals(dispatched, arrayListOf(Action(0)))
+      assertEquals(dispatched, arrayListOf(Action(0)))
     }
   }
 
@@ -201,7 +201,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       }
 
       // Then
-      Assert.assertEquals(retries.get(), retryCount + 1)
+      assertEquals(retries.get(), retryCount + 1)
     }
   }
 
@@ -215,7 +215,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       .invoke(this, State()) { }
 
     // When && Then
-    Assert.assertEquals(finalOutput.nextValue(this.timeout), "12")
+    assertEquals(finalOutput.nextValue(this.timeout), "12")
   }
 
   @Test
@@ -228,6 +228,6 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       .invoke(this, State()) { }
 
     // When && Then
-    Assert.assertEquals(finalOutput.nextValue(this.timeout), 100)
+    assertEquals(finalOutput.nextValue(this.timeout), 100)
   }
 }

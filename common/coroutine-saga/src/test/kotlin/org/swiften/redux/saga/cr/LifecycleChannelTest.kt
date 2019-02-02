@@ -25,7 +25,7 @@ class LifecycleChannelTest {
     channel.close()
 
     // Then
-    Assert.assertEquals(closed, 2)
+    assertEquals(closed, 2)
   }
 
   @Test
@@ -41,7 +41,7 @@ class LifecycleChannelTest {
     channel.cancel()
 
     // Then
-    Assert.assertEquals(cancelled, 3)
+    assertEquals(cancelled, 3)
   }
 
   @Test
@@ -60,7 +60,7 @@ class LifecycleChannelTest {
     channel.cancel()
 
     // Then
-    Assert.assertEquals(closed, 2)
-    Assert.assertEquals(cancelled, 1)
+    assertEquals(closed, 2)
+    assertEquals(cancelled, 1)
   }
 }

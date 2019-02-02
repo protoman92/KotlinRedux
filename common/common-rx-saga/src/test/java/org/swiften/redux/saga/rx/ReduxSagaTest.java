@@ -8,9 +8,9 @@ package org.swiften.redux.saga.rx;
 import io.reactivex.Single;
 import kotlin.Unit;
 import kotlinx.coroutines.GlobalScope;
-import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.swiften.redux.saga.common.CommonEffects.map;
 import static org.swiften.redux.saga.common.CommonEffects.retry;
 import static org.swiften.redux.saga.rx.SagaEffects.call;
@@ -31,6 +31,6 @@ public final class ReduxSagaTest {
       .nextValue(1000);
 
     // When && Then
-    Assert.assertEquals(value, 6);
+    assertEquals(value, 6);
   }
 }

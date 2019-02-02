@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxFlowable
 import kotlinx.coroutines.withTimeoutOrNull
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.CommonSagaEffectTest
@@ -62,8 +62,8 @@ class SagaEffectTest : CommonSagaEffectTest() {
       .invoke(this, State()) { }
 
     // When && Then
-    Assert.assertEquals(sourceOutput1.nextValue(this.timeout), 3)
-    Assert.assertEquals(sourceOutput2.nextValue(this.timeout), 4)
+    assertEquals(sourceOutput1.nextValue(this.timeout), 3)
+    assertEquals(sourceOutput2.nextValue(this.timeout), 4)
   }
 
   @Test
@@ -97,7 +97,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       }
 
       // Then
-      Assert.assertEquals(finalValues.size, 1)
+      assertEquals(finalValues.size, 1)
     }
   }
 }

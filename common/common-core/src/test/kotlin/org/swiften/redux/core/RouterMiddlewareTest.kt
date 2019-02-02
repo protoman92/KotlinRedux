@@ -5,7 +5,8 @@
 
 package org.swiften.redux.core
 
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /** Created by haipham on 2018/12/16 */
@@ -45,7 +46,7 @@ class RouterMiddlewareTest: BaseMiddlewareTest() {
     wrappedStore.dispatch(Screen.Screen3)
 
     // Then
-    Assert.assertEquals(router.screens, arrayListOf(
+    assertEquals(router.screens, arrayListOf(
       Screen.Screen1,
       Screen.Screen2,
       Screen.Screen3
@@ -65,6 +66,6 @@ class RouterMiddlewareTest: BaseMiddlewareTest() {
     wrappedStore.dispatch(DefaultReduxAction.Deinitialize)
 
     // Then
-    Assert.assertTrue(router.deinitialized)
+    assertTrue(router.deinitialized)
   }
 }

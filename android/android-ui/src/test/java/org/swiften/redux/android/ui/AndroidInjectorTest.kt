@@ -9,7 +9,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.android.util.AndroidUtil
@@ -59,7 +60,7 @@ class AndroidInjectorTest : PropInjectorTest() {
     val afterInjectionCount = AtomicInteger()
 
     override fun beforePropInjectionStarts(sp: StaticProps<S>) {
-      Assert.assertNotNull(this.reduxProps)
+      assertNotNull(this.reduxProps)
       this.beforeInjectionCount.incrementAndGet()
     }
 
@@ -86,7 +87,7 @@ class AndroidInjectorTest : PropInjectorTest() {
 
       // Then
       /** By now, [runner] should have been called upon as many times as specified */
-      Assert.assertEquals(this@AndroidInjectorTest.runner.runCount,
+      assertEquals(this@AndroidInjectorTest.runner.runCount,
         view.propsInjectionCount.get() +
           view.beforeInjectionCount.get() +
           view.afterInjectionCount.get()

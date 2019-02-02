@@ -5,7 +5,7 @@
 
 package org.swiften.redux.core
 
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /** Created by haipham on 2018/04/08 */
@@ -19,12 +19,12 @@ class ReducerWrapperTest {
 
     // When & Then
     original = reducer(original, DefaultReduxAction.Dummy)
-    Assert.assertEquals(original, 0)
+    assertEquals(original, 0)
     original = reducer(original, DefaultReduxAction.ReplaceState(1000))
-    Assert.assertEquals(original, 1000)
+    assertEquals(original, 1000)
     original = reducer(original, object : IReduxAction {})
-    Assert.assertEquals(original, 1001)
+    assertEquals(original, 1001)
     original = reducer(original, DefaultReduxAction.MapState<Int> { it * 2 })
-    Assert.assertEquals(original, 2002)
+    assertEquals(original, 2002)
   }
 }

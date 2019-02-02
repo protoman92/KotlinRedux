@@ -70,7 +70,7 @@ class SagaOutputTest : CoroutineScope {
       finalOutput.dispose()
 
       // Then
-      Assert.assertEquals(finalValues.sorted(), actualValues.sorted())
+      assertEquals(finalValues.sorted(), actualValues.sorted())
     }
   }
 
@@ -127,7 +127,7 @@ class SagaOutputTest : CoroutineScope {
       delay(1000)
 
       // Then
-      Assert.assertEquals(finalValues.size, 0)
+      assertEquals(finalValues.size, 0)
     }
   }
 
@@ -168,7 +168,7 @@ class SagaOutputTest : CoroutineScope {
         while (finalValues.sorted() != arrayListOf(0, 1, 2, 3)) { }; Unit
       }
 
-      Assert.assertEquals(finalValues.sorted(), arrayListOf(0, 1, 2, 3))
+      assertEquals(finalValues.sorted(), arrayListOf(0, 1, 2, 3))
     }
   }
 
@@ -209,7 +209,7 @@ class SagaOutputTest : CoroutineScope {
       }
 
       // Then
-      Assert.assertEquals(finalValues, actualValues)
+      assertEquals(finalValues, actualValues)
     }
   }
 
@@ -232,7 +232,7 @@ class SagaOutputTest : CoroutineScope {
       delay(1000)
 
       // Then
-      Assert.assertEquals(finalValues, arrayListOf(100))
+      assertEquals(finalValues, arrayListOf(100))
     }
   }
 
@@ -280,8 +280,8 @@ class SagaOutputTest : CoroutineScope {
         output6
       ).forEach { assert(it) }
 
-      Assert.assertTrue(flatMapChannel1.isClosedForReceive)
-      Assert.assertTrue(flatMapChannel2.isClosedForReceive)
+      assertTrue(flatMapChannel1.isClosedForReceive)
+      assertTrue(flatMapChannel2.isClosedForReceive)
     }
   }
 
@@ -291,7 +291,7 @@ class SagaOutputTest : CoroutineScope {
   fun `Output should be terminated correctly on scope context cancel`() {
     test_terminatingOutput_shouldWorkCorrectly(
       { a, _ -> a.coroutineContext.cancel() },
-      { Assert.assertTrue(it.channel.isClosedForReceive) }
+      { assertTrue(it.channel.isClosedForReceive) }
     )
   }
 
@@ -301,7 +301,7 @@ class SagaOutputTest : CoroutineScope {
   fun `Output should be terminated correctly on dispose`() {
     test_terminatingOutput_shouldWorkCorrectly(
       { _, b -> b.dispose() },
-      { Assert.assertTrue(it.channel.isClosedForReceive) }
+      { assertTrue(it.channel.isClosedForReceive) }
     )
   }
 }

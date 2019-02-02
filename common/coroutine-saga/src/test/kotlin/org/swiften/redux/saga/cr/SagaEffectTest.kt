@@ -61,8 +61,8 @@ class SagaEffectTest : CommonSagaEffectTest() {
       .invoke(this, State()) { }
 
     // When && Then
-    Assert.assertEquals(sourceOutput1.nextValue(this.timeout), 3)
-    Assert.assertEquals(sourceOutput2.nextValue(this.timeout), 4)
+    assertEquals(sourceOutput1.nextValue(this.timeout), 3)
+    assertEquals(sourceOutput2.nextValue(this.timeout), 4)
   }
 
   @Test
@@ -84,8 +84,8 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
       while (parent != null) {
         val channel = parent.channel as Channel<*>
-        Assert.assertTrue(channel.isClosedForSend)
-        Assert.assertTrue(channel.isClosedForReceive)
+        assertTrue(channel.isClosedForSend)
+        assertTrue(channel.isClosedForReceive)
         parent = parent.source
       }
     }
@@ -110,7 +110,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       }
 
       // Then
-      Assert.assertTrue(sourceOutput.channel.isClosedForReceive)
+      assertTrue(sourceOutput.channel.isClosedForReceive)
     }
   }
 }

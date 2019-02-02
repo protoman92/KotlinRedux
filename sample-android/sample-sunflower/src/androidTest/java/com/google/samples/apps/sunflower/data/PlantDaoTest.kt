@@ -23,7 +23,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.google.samples.apps.sunflower.utilities.getValue
 import org.hamcrest.Matchers.equalTo
 import org.junit.After
-import org.junit.Assert.assertThat
+import org.junit.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

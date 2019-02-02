@@ -9,7 +9,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -29,7 +29,7 @@ class SubscriptionTest {
       delay(1000)
 
       // Then
-      Assert.assertEquals(unsubCount.get(), 1)
+      assertEquals(unsubCount.get(), 1)
     }
   }
 
@@ -49,7 +49,7 @@ class SubscriptionTest {
       delay(1000)
 
       // Then
-      Assert.assertEquals(unsubCount, subscriptions.size)
+      assertEquals(unsubCount, subscriptions.size)
     }
   }
 
@@ -65,6 +65,6 @@ class SubscriptionTest {
     composite.unsubscribe()
 
     // Then
-    Assert.assertEquals(unsubCount, 0)
+    assertEquals(unsubCount, 0)
   }
 }

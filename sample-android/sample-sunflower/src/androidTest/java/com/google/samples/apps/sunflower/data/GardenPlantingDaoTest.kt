@@ -27,7 +27,7 @@ import com.google.samples.apps.sunflower.utilities.testPlant
 import com.google.samples.apps.sunflower.utilities.testPlants
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
-import org.junit.Assert.assertNull
+import org.junit.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

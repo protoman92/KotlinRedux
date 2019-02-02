@@ -5,7 +5,7 @@
 
 package org.swiften.redux.ui
 
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /** Created by haipham on 2019/01/16 */
@@ -21,8 +21,8 @@ class ObservablePropTest {
     prop = 1; prop = 2; prop = 3
 
     // Then
-    Assert.assertEquals(setCount, 3)
-    Assert.assertEquals(prop, 3)
+    assertEquals(setCount, 3)
+    assertEquals(prop, 3)
   }
 
   @Test
@@ -41,7 +41,7 @@ class ObservablePropTest {
     prop = VariableProps(S("3"), A {})
 
     // Then
-    Assert.assertEquals(setCount, 3)
-    Assert.assertEquals(prop.state, S("3"))
+    assertEquals(setCount, 3)
+    assertEquals(prop.state, S("3"))
   }
 }

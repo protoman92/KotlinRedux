@@ -8,14 +8,12 @@ package org.swiften.redux.async
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.swiften.redux.core.BaseMiddlewareTest
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.DispatchWrapper
-import org.swiften.redux.core.MiddlewareInput
-import org.swiften.redux.core.ReduxSubscription
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/26 */
@@ -42,8 +40,8 @@ class AsyncMiddlewareTest : BaseMiddlewareTest() {
       delay(500)
 
       // Then
-      Assert.assertEquals(dispatched.get(), 2)
-      Assert.assertTrue(job.isCancelled)
+      assertEquals(dispatched.get(), 2)
+      assertTrue(job.isCancelled)
     }
   }
 }

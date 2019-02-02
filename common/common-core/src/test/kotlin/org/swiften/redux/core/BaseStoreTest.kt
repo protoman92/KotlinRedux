@@ -14,7 +14,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.Random
 import java.util.concurrent.atomic.AtomicInteger
@@ -99,7 +99,7 @@ abstract class BaseStoreTest : CoroutineScope {
       }
 
       // Then
-      Assert.assertEquals(store.lastState(), currentState)
+      assertEquals(store.lastState(), currentState)
     }
   }
 
@@ -123,7 +123,7 @@ abstract class BaseStoreTest : CoroutineScope {
       delay(1000)
 
       // / Then
-      Assert.assertEquals(receivedUpdates.get(), currentUpdates)
+      assertEquals(receivedUpdates.get(), currentUpdates)
     }
   }
 }

@@ -5,7 +5,8 @@
 
 package org.swiften.redux.ui
 
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.core.IActionDispatcher
@@ -50,7 +51,7 @@ open class PropInjectorTest {
     val afterInjectionCount = AtomicInteger()
 
     override fun beforePropInjectionStarts(sp: StaticProps<S>) {
-      Assert.assertNotNull(this.reduxProps)
+      assertNotNull(this.reduxProps)
       this.beforeInjectionCount.incrementAndGet()
     }
 
@@ -100,12 +101,12 @@ open class PropInjectorTest {
     injector.inject(view, Unit, this.mapper)
 
     // Then
-    Assert.assertEquals(this.store.unsubscribeCount.get(), 1)
-    Assert.assertEquals(view.propsInjectionCount.get(), 6)
-    Assert.assertEquals(view.beforeInjectionCount.get(), 2)
-    Assert.assertEquals(view.afterInjectionCount.get(), 1)
+    assertEquals(this.store.unsubscribeCount.get(), 1)
+    assertEquals(view.propsInjectionCount.get(), 6)
+    assertEquals(view.beforeInjectionCount.get(), 2)
+    assertEquals(view.afterInjectionCount.get(), 1)
 
-    Assert.assertEquals(allProps, arrayListOf(
+    assertEquals(allProps, arrayListOf(
       null to S(""),
       S("") to S("1"),
       S("1") to S("2"),

@@ -5,7 +5,7 @@
 
 package org.swiften.redux.core
 
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /** Created by haipham on 2019/01/15 */
@@ -26,6 +26,6 @@ class DefaultActionStoreTest : BaseStoreTest() {
     store.deinitialize()
 
     // Then
-    Assert.assertEquals(lastAction, DefaultReduxAction.Deinitialize)
+    assertEquals(lastAction, DefaultReduxAction.Deinitialize)
   }
 }

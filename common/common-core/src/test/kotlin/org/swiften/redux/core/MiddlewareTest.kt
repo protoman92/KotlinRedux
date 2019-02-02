@@ -5,13 +5,8 @@
 
 package org.swiften.redux.core
 
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.DispatchWrapper
-import org.swiften.redux.core.ThreadSafeStore
-import org.swiften.redux.core.applyMiddlewares
-import org.swiften.redux.core.combineMiddlewares
 
 /** Created by haipham on 2018/12/16 */
 class MiddlewareTest: BaseMiddlewareTest() {
@@ -52,7 +47,7 @@ class MiddlewareTest: BaseMiddlewareTest() {
     wrappedStore.dispatch(DefaultReduxAction.Dummy)
 
     // Then
-    Assert.assertEquals(ordering, arrayListOf(3, 2, 1, 3, 2, 1, 3, 2, 1))
+    assertEquals(ordering, arrayListOf(3, 2, 1, 3, 2, 1, 3, 2, 1))
   }
 
   @Test
@@ -64,6 +59,6 @@ class MiddlewareTest: BaseMiddlewareTest() {
     val wrapper = combineMiddlewares<Int>(arrayListOf())(store)
 
     // Then
-    Assert.assertEquals(wrapper.id, DispatchWrapper.ROOT_WRAPPER)
+    assertEquals(wrapper.id, DispatchWrapper.ROOT_WRAPPER)
   }
 }
