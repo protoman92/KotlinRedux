@@ -6,6 +6,8 @@
       <module fileurl="file://$PROJECT_DIR$/common/KotlinRedux-common.iml" filepath="$PROJECT_DIR$/common/KotlinRedux-common.iml" />
       <module fileurl="file://$PROJECT_DIR$/KotlinRedux-redux-jvm.iml" filepath="$PROJECT_DIR$/KotlinRedux-redux-jvm.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample-android/KotlinRedux-sample-android.iml" filepath="$PROJECT_DIR$/sample-android/KotlinRedux-sample-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android.iml" filepath="$PROJECT_DIR$/android/android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android-all/android-all.iml" filepath="$PROJECT_DIR$/android/android-all/android-all.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-all/android-android-all.iml" filepath="$PROJECT_DIR$/android/android-all/android-android-all.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-core-rx-saga/android-android-core-rx-saga.iml" filepath="$PROJECT_DIR$/android/android-core-rx-saga/android-android-core-rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-lifecycle/android-android-lifecycle.iml" filepath="$PROJECT_DIR$/android/android-lifecycle/android-android-lifecycle.iml" />
@@ -14,14 +16,31 @@
       <module fileurl="file://$PROJECT_DIR$/android/android-router/android-android-router.iml" filepath="$PROJECT_DIR$/android/android-router/android-android-router.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-ui/android-android-ui.iml" filepath="$PROJECT_DIR$/android/android-ui/android-android-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-util/android-android-util.iml" filepath="$PROJECT_DIR$/android/android-util/android-android-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android-lifecycle/android-lifecycle.iml" filepath="$PROJECT_DIR$/android/android-lifecycle/android-lifecycle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android-livedata-rx-saga/android-livedata-rx-saga.iml" filepath="$PROJECT_DIR$/android/android-livedata-rx-saga/android-livedata-rx-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android-recyclerview/android-recyclerview.iml" filepath="$PROJECT_DIR$/android/android-recyclerview/android-recyclerview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android-router/android-router.iml" filepath="$PROJECT_DIR$/android/android-router/android-router.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android-rx-saga/android-rx-saga.iml" filepath="$PROJECT_DIR$/android/android-rx-saga/android-rx-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android-ui/android-ui.iml" filepath="$PROJECT_DIR$/android/android-ui/android-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android-util/android-util.iml" filepath="$PROJECT_DIR$/android/android-util/android-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-all/common-all.iml" filepath="$PROJECT_DIR$/common/common-all/common-all.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common-async/common-async.iml" filepath="$PROJECT_DIR$/common/common-async/common-async.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-async/common-common-async.iml" filepath="$PROJECT_DIR$/common/common-async/common-common-async.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-core/common-common-core.iml" filepath="$PROJECT_DIR$/common/common-core/common-common-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-rx-saga/common-common-rx-saga.iml" filepath="$PROJECT_DIR$/common/common-rx-saga/common-common-rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-common-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-ui/common-common-ui.iml" filepath="$PROJECT_DIR$/common/common-ui/common-common-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common-core/common-core.iml" filepath="$PROJECT_DIR$/common/common-core/common-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common-rx-saga/common-rx-saga.iml" filepath="$PROJECT_DIR$/common/common-rx-saga/common-rx-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common-ui/common-ui.iml" filepath="$PROJECT_DIR$/common/common-ui/common-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/redux-jvm.iml" filepath="$PROJECT_DIR$/redux-jvm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample-android/sample-android.iml" filepath="$PROJECT_DIR$/sample-android/sample-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample-android/sample-simple/sample-android-sample-simple.iml" filepath="$PROJECT_DIR$/sample-android/sample-simple/sample-android-sample-simple.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample-android/sample-sunflower/sample-android-sample-sunflower.iml" filepath="$PROJECT_DIR$/sample-android/sample-sunflower/sample-android-sample-sunflower.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample-android/sample-simple/sample-simple.iml" filepath="$PROJECT_DIR$/sample-android/sample-simple/sample-simple.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample-android/sample-sunflower/sample-sunflower.iml" filepath="$PROJECT_DIR$/sample-android/sample-sunflower/sample-sunflower.iml" />
     </modules>
   </component>
 </project>

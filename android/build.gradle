@@ -92,7 +92,7 @@ project(':android:android-ui') {
     api project(':common:common-ui')
     api project(':android:android-util')
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
-    testApi project (path: ":common:common-ui", configuration: 'testArtifacts')
+    testImplementation project (path: ":common:common-ui", configuration: 'testArtifacts')
   }
 }
 
@@ -113,7 +113,7 @@ project(':android:android-recyclerview') {
   }
 }
 
-project(':android:android-core-rx-saga') {
+project(':android:android-rx-saga') {
   dependencies {
     api project(':common:common-saga')
     api project(':common:common-rx-saga')
@@ -147,7 +147,7 @@ project(':android:android-all') {
     api project(':android:android-lifecycle')
     api project(':android:android-recyclerview')
     api project(':android:android-router')
-    api project(':android:android-core-rx-saga')
+    api project(':android:android-rx-saga')
     api project(':android:android-livedata-rx-saga')
   }
 }

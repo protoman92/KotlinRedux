@@ -82,7 +82,7 @@ project(':common:common-async') {
   dependencies {
     api project(':common:common-core')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
-    testApi project (path: ":common:common-core", configuration: 'testArtifacts')
+    testImplementation project (path: ":common:common-core", configuration: 'testArtifacts')
   }
 }
 
@@ -102,7 +102,7 @@ project(':common:common-saga') {
     api project(':common:common-core')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito"
-    testApi project (path: ":common:common-core", configuration: 'testArtifacts')
+    testImplementation project (path: ":common:common-core", configuration: 'testArtifacts')
   }
 }
 
@@ -112,7 +112,7 @@ project(':common:common-rx-saga') {
     api project(':common:common-saga')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
-    testApi project (path: ":common:common-saga", configuration: 'testArtifacts')
+    testImplementation project (path: ":common:common-saga", configuration: 'testArtifacts')
   }
 }
 
