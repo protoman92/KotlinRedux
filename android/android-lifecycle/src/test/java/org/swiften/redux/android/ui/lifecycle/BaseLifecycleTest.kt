@@ -23,6 +23,8 @@ import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.ReduxProps
+import org.swiften.redux.ui.StaticProps
 import java.io.FileDescriptor
 import java.io.PrintWriter
 import java.util.Collections
@@ -114,17 +116,18 @@ open class BaseLifecycleTest {
   }
 
   class TestInjector : IPropInjector<Int> {
-    val injectionCount = AtomicInteger()
     val dispatched = Collections.synchronizedList(mutableListOf<IReduxAction>())
     val subscriptions = Collections.synchronizedList(arrayListOf<IReduxSubscription>())
+    val injectionCount get() = this.subscriptions.size
 
     override fun <OutProps, State, Action> inject(
       view: IPropContainer<Int, State, Action>,
       outProps: OutProps,
       mapper: IPropMapper<Int, OutProps, State, Action>
     ): IReduxSubscription {
-      this.injectionCount.incrementAndGet()
       val subscription = ReduxSubscription("$view") {}
+      val static = StaticProps(this, subscription)
+      view.reduxProps = ReduxProps(static, null)
       this.subscriptions.add(subscription)
       return subscription
     }
