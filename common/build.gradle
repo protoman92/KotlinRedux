@@ -39,6 +39,17 @@ subprojects {
     resolutionStrategy.cacheChangingModulesFor 24, 'hours'
   }
 
+  configurations { testArtifacts.extendsFrom testRuntime }
+
+  task testJar (type: Jar) {
+    classifier "test"
+    from sourceSets.test.output
+  }
+
+  artifacts {
+    testArtifacts testJar
+  }
+
   compileKotlin {
     kotlinOptions {
       jvmTarget = project.ext.jvmTarget
@@ -62,17 +73,6 @@ subprojects {
 }
 
 project(':common:common-core') {
-  configurations { testArtifacts.extendsFrom testRuntime }
-
-  task testJar (type: Jar) {
-    classifier "test"
-    from sourceSets.test.output
-  }
-
-  artifacts {
-    testArtifacts testJar
-  }
-
   dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
   }
@@ -87,17 +87,6 @@ project(':common:common-async') {
 }
 
 project(':common:common-saga') {
-  configurations { testArtifacts.extendsFrom testRuntime }
-
-  task testJar (type: Jar) {
-    classifier "test"
-    from sourceSets.test.output
-  }
-
-  artifacts {
-    testArtifacts testJar
-  }
-
   dependencies {
     api project(':common:common-core')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
@@ -117,17 +106,6 @@ project(':common:common-rx-saga') {
 }
 
 project(':common:common-ui') {
-  configurations { testArtifacts.extendsFrom testRuntime }
-
-  task testJar (type: Jar) {
-    classifier "test"
-    from sourceSets.test.output
-  }
-
-  artifacts {
-    testArtifacts testJar
-  }
-
   dependencies {
     api project(':common:common-core')
   }

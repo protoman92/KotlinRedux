@@ -49,6 +49,19 @@ subprojects {
     resolutionStrategy.cacheChangingModulesFor 24, 'hours'
   }
 
+  configurations {
+    testArtifacts
+  }
+
+  task testJar(type: Jar, dependsOn: "assembleDebugUnitTest") {
+    classifier = 'test'
+    from "$project.buildDir/tmp/kotlin-classes/debugUnitTest"
+  }
+
+  artifacts {
+    testArtifacts testJar
+  }
+
   android {
     compileSdkVersion compileSdk
 
@@ -110,6 +123,7 @@ project(':android:android-recyclerview') {
     api project(':android:android-lifecycle')
     implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle"
     implementation "androidx.recyclerview:recyclerview:$recyclerView"
+    testImplementation project (path: ":android:android-lifecycle", configuration: 'testArtifacts')
   }
 }
 
