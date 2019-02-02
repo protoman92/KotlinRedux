@@ -87,6 +87,9 @@ subprojects {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin"
     testImplementation "junit:junit:$junit"
+    testImplementation "androidx.test:runner:$testRunner"
+    testImplementation "androidx.test.ext:junit:$androidxJunit"
+    testImplementation "org.robolectric:robolectric:$robolectric"
     androidTestImplementation "androidx.test:runner:$testRunner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunit"

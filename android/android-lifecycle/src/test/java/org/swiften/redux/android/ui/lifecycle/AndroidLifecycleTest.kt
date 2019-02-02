@@ -25,12 +25,12 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
     val onResumeCount = AtomicInteger()
     val onPauseCount = AtomicInteger()
     val onDestroyCount = AtomicInteger()
-    val startCount = AtomicInteger()
-    val endCount = AtomicInteger()
+    val lifecycleStartCount = AtomicInteger()
+    val lifecycleEndCount = AtomicInteger()
 
     object : LifecycleObserver(owner, object : ILifecycleCallback {
-      override fun onSafeForStartingLifecycleAwareTasks() { startCount.incrementAndGet() }
-      override fun onSafeForEndingLifecycleAwareTasks() { endCount.incrementAndGet() }
+      override fun onSafeForStartingLifecycleAwareTasks() { lifecycleStartCount.incrementAndGet() }
+      override fun onSafeForEndingLifecycleAwareTasks() { lifecycleEndCount.incrementAndGet() }
     }) {
       override fun onCreate() {
         super.onCreate()
@@ -61,11 +61,11 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
 
     // Then
     assertEquals(onCreateCount.get(), 1)
-    assertEquals(startCount.get(), 1)
+    assertEquals(lifecycleStartCount.get(), 1)
     assertEquals(owner.registry.registerCount.get(), 2)
     assertEquals(onResumeCount.get(), 1)
     assertEquals(onPauseCount.get(), 1)
-    assertEquals(endCount.get(), 1)
+    assertEquals(lifecycleEndCount.get(), 1)
     assertEquals(owner.registry.unregisterCount.get(), 1)
 
     /** The lifecycle registry should have been removed by now */
@@ -83,10 +83,9 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
 
     // When && Then
     owner.registry.markState(Lifecycle.State.STARTED)
-    assertNotNull(injector.subscription.get())
-    assertFalse(injector.subscription.get().isUnsubscribed())
+    injector.subscriptions.forEach { assertFalse(it.isUnsubscribed()) }
     owner.registry.markState(Lifecycle.State.DESTROYED)
-    assertTrue(injector.subscription.get().isUnsubscribed())
+    injector.subscriptions.forEach { assertTrue(it.isUnsubscribed()) }
   }
 
   @Test

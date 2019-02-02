@@ -12,7 +12,6 @@ import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IStateGetterProvider
 import org.swiften.redux.core.ReduxSubscription
-import java.util.Date
 import java.util.UUID
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read

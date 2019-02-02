@@ -11,12 +11,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDeinitializer
 import org.swiften.redux.core.IReduxAction
@@ -122,7 +116,7 @@ open class BaseLifecycleTest {
   class TestInjector : IPropInjector<Int> {
     val injectionCount = AtomicInteger()
     val dispatched = Collections.synchronizedList(mutableListOf<IReduxAction>())
-    val subscription = AtomicReference<IReduxSubscription>()
+    val subscriptions = Collections.synchronizedList(arrayListOf<IReduxSubscription>())
 
     override fun <OutProps, State, Action> inject(
       view: IPropContainer<Int, State, Action>,
@@ -131,7 +125,7 @@ open class BaseLifecycleTest {
     ): IReduxSubscription {
       this.injectionCount.incrementAndGet()
       val subscription = ReduxSubscription("$view") {}
-      this.subscription.set(subscription)
+      this.subscriptions.add(subscription)
       return subscription
     }
 

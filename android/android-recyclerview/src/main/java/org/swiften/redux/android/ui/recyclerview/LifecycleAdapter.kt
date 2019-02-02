@@ -18,7 +18,7 @@ import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.IVariablePropContainer
 import org.swiften.redux.ui.unsubscribeSafely
 
-/** Created by haipham on 2019/01/24/1 */
+/** Created by haipham on 2019/01/24 */
 /** Perform [injectRecyclerAdapter], but also handle lifecycle with [lifecycleOwner] */
 fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecyclerAdapter(
   lifecycleOwner: LifecycleOwner,
@@ -37,6 +37,17 @@ fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecycl
 
   return wrappedAdapter
 }
+
+fun <GlobalState, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecyclerAdapter(
+  lifecycleOwner: LifecycleOwner,
+  adapter: Adapter,
+  vhMapper: IPropMapper<GlobalState, Int, VHState, VHAction>
+) where
+  VH : RecyclerView.ViewHolder,
+  VH : IPropContainer<GlobalState, VHState, VHAction>,
+  Adapter : RecyclerView.Adapter<VH>,
+  Adapter : IStateMapper<GlobalState, Unit, Int> =
+  this.injectRecyclerAdapter(lifecycleOwner, adapter, adapter, vhMapper)
 
 /** Perform [injectDiffedAdapter], but also handle lifecycle with [lifecycleOwner] */
 fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(

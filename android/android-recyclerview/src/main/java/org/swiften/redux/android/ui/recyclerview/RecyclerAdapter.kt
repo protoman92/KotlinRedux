@@ -32,9 +32,9 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
 /** [RecyclerView.Adapter] that delegates method calls to another [RecyclerView.Adapter] */
 abstract class DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>
-) : RecyclerView.Adapter<VH>()
-  where VH : RecyclerView.ViewHolder,
-        VH : IPropContainer<GlobalState, VHState, VHAction> {
+) : RecyclerView.Adapter<VH>() where
+  VH : RecyclerView.ViewHolder,
+  VH : IPropContainer<GlobalState, VHState, VHAction> {
   protected val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
