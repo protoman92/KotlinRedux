@@ -12,7 +12,12 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 /** Created by haipham on 2019/19/01 */
-/** Note that [notifier] passes along both the previous and upcoming [T] values */
+/**
+ * Note that [notifier] passes along both the previous and upcoming [T] values
+ * @param T The property type to be observed.
+ * @param equalChecker Check equality for two [T] instances.
+ * @param notifier Broadcast the latest [T] instance.
+ */
 open class VetoableObservableProp<T : Any>(
   private val equalChecker: (T?, T) -> Boolean = { a, b -> a == b },
   private val notifier: (T?, T) -> Unit
@@ -30,14 +35,20 @@ open class VetoableObservableProp<T : Any>(
   }
 }
 
-/** Use this to avoid lateinit modifiers for [VariableProps] */
+/**
+ * Use this to avoid lateinit modifiers for [VariableProps]
+ * @param notifier See [VetoableObservableProp.notifier].
+ */
 class ObservableVariableProps<S, A>(
   notifier: (IVariableProps<S, A>?, IVariableProps<S, A>?) -> Unit
 ) : ReadWriteProperty<Any?, IVariableProps<S, A>> by VetoableObservableProp(
   { a, b -> a?.state == b.state }, notifier
 )
 
-/** Use this to avoid lateinit modifiers for [ReduxProps] */
+/**
+ * Use this to avoid lateinit modifiers for [ReduxProps]
+ * @param notifier See [VetoableObservableProp.notifier].
+ */
 class ObservableReduxProps<GlobalState, S, A>(
   notifier: (IVariableProps<S, A>?, IVariableProps<S, A>?) -> Unit
 ) : ReadWriteProperty<Any?, ReduxProps<GlobalState, S, A>> by VetoableObservableProp({ a, b ->

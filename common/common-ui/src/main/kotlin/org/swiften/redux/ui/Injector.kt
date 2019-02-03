@@ -18,22 +18,33 @@ import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 /** Created by haipham on 2018/12/16 */
-/** Handle lifecycles for a target of [IPropInjector]  */
+/**
+ * Handle lifecycles for a target of [IPropInjector].
+ * @param GlobalState The global state type.
+ */
 interface IPropLifecycleOwner<GlobalState> {
-  /** This is called before [IPropInjector.inject] is called */
+  /** This is called before [IPropInjector.inject] is called. */
   fun beforePropInjectionStarts(sp: StaticProps<GlobalState>)
 
-  /** This is called after [IReduxSubscription.unsubscribe] is called */
+  /** This is called after [IReduxSubscription.unsubscribe] is called. */
   fun afterPropInjectionEnds()
 }
 
-/** Treat this as a delegate for [IPropLifecycleOwner] that does not hold any logic */
+/**
+ * Treat this as a delegate for [IPropLifecycleOwner] that does not hold any logic.
+ * @param GlobalState The global state type.
+ */
 class EmptyPropLifecycleOwner<GlobalState> : IPropLifecycleOwner<GlobalState> {
   override fun beforePropInjectionStarts(sp: StaticProps<GlobalState>) {}
   override fun afterPropInjectionEnds() {}
 }
 
-/** Represents a container for [ReduxProps] */
+/**
+ * Represents a container for [ReduxProps].
+ * @param GlobalState The global state type.
+ * @param State The container state.
+ * @param Action the container action.
+ */
 interface IPropContainer<GlobalState, State, Action> : IPropLifecycleOwner<GlobalState> {
   var reduxProps: ReduxProps<GlobalState, State, Action>
 }
@@ -41,20 +52,43 @@ interface IPropContainer<GlobalState, State, Action> : IPropLifecycleOwner<Globa
 /**
  * Similar to [IPropContainer], but only for views that are not interested in [StaticProps]
  * because its parent will manually inject [reduxProps].
+ * @param State The container state.
+ * @param Action the container action.
  */
 interface IVariablePropContainer<State, Action> {
   var reduxProps: IVariableProps<State, Action>
 }
 
-/** Maps [GlobalState] to [State] for a [IPropContainer] */
+/**
+ * Maps [GlobalState] to [State] for a [IPropContainer].
+ * @param GlobalState The global state type.
+ * @param OutProps Property as defined by a view's parent.
+ * @param State The container state.
+ */
 interface IStateMapper<GlobalState, OutProps, State> {
-  /** Map [GlobalState] to [State] using [OutProps] */
+  /**
+   * Map [GlobalState] to [State] using [OutProps]
+   * @param state The latest [GlobalState] instance.
+   * @param outProps The [OutProps] instance.
+   * @return A [State] instance.
+   */
   fun mapState(state: GlobalState, outProps: OutProps): State
 }
 
-/** Maps [IActionDispatcher] and [GlobalState] to [Action] for a [IPropContainer] */
+/**
+ * Maps [IActionDispatcher] and [GlobalState] to [Action] for a [IPropContainer].
+ * @param GlobalState The global state type.
+ * @param OutProps Property as defined by a view's parent.
+ * @param Action The container action.
+ */
 interface IActionMapper<GlobalState, OutProps, Action> {
-  /** Map [IActionDispatcher] to [Action] using [GlobalState] and [OutProps] */
+  /**
+   * Map [IActionDispatcher] to [Action] using [GlobalState] and [OutProps]
+   * @param dispatch See [IReduxStore.dispatch].
+   * @param state The latest [GlobalState] instance.
+   * @param outProps The [OutProps] instance.
+   * @return An [Action] instance.
+   */
   fun mapAction(dispatch: IActionDispatcher, state: GlobalState, outProps: OutProps): Action
 }
 
@@ -66,12 +100,20 @@ interface IActionMapper<GlobalState, OutProps, Action> {
  * [IPropInjector.inject] for said children. The [OutProps] generic for these children
  * should therefore be an [Int] that corresponds to their respective indexes in the parent.
  * Generally, though, [OutProps] tends to be [Unit].
+ *
+ * @param GlobalState The global state type.
+ * @param OutProps Property as defined by a view's parent.
+ * @param State The container state.
+ * @param Action The container action.
  */
 interface IPropMapper<GlobalState, OutProps, State, Action> :
   IStateMapper<GlobalState, OutProps, State>,
   IActionMapper<GlobalState, OutProps, Action>
 
-/** Inject state and actions into an [IPropContainer] */
+/**
+ * Inject state and actions into an [IPropContainer].
+ * @param GlobalState The global state type.
+ */
 interface IPropInjector<GlobalState> :
   IDispatcherProvider,
   IStateGetterProvider<GlobalState>,
@@ -79,6 +121,13 @@ interface IPropInjector<GlobalState> :
   /**
    * Inject [State] and [Action] into [view]. This method does not handle lifecycles, so
    * platform-specific methods can be defined for this purpose.
+   * @param OutProps Property as defined by a view's parent.
+   * @param State The container state.
+   * @param Action The container action.
+   * @param view An [IPropContainer] instance.
+   * @param outProps An [OutProps] instance.
+   * @param mapper An [IPropMapper] instance.
+   * @return An [IReduxSubscription] instance.
    */
   fun <OutProps, State, Action> inject(
     view: IPropContainer<GlobalState, State, Action>,
@@ -91,6 +140,8 @@ interface IPropInjector<GlobalState> :
  * A [IPropInjector] implementation that handles [inject] in a thread-safe manner. It
  * also invokes [IPropLifecycleOwner.beforePropInjectionStarts] and
  * [IPropLifecycleOwner.afterPropInjectionEnds] when appropriate.
+ * @param GlobalState The global state type.
+ * @param store An [IReduxStore] instance.
  */
 open class PropInjector<GlobalState>(private val store: IReduxStore<GlobalState>) :
   IPropInjector<GlobalState>,
@@ -171,6 +222,8 @@ open class PropInjector<GlobalState>(private val store: IReduxStore<GlobalState>
  * Kotlin code, and catch [NullPointerException] to satisfy Java code. Also return the
  * [ReduxSubscription.id] that can be used to track and remove the relevant [ReduxSubscription]
  * from other containers.
+ * @param GlobalState The global state type.
+ * @return The [IReduxSubscription.id].
  */
 fun <GlobalState> IPropContainer<GlobalState, *, *>.unsubscribeSafely(): String? {
   try {

@@ -18,7 +18,10 @@ import org.swiften.redux.core.MiddlewareInput
 import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2019/01/26 */
-/** [IMiddleware] implementation that calls [DispatchWrapper.dispatch] on another thread */
+/**
+ * [IMiddleware] implementation that calls [DispatchWrapper.dispatch] on another thread.
+ * @param context A [CoroutineContext] instance.
+ */
 internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddleware<Any> {
   @ExperimentalCoroutinesApi
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
@@ -39,6 +42,11 @@ internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddlew
   }
 }
 
-/** Create a [AsyncMiddleware] with [context] */
-fun createAsyncMiddleware(context: CoroutineContext = SupervisorJob()): IMiddleware<Any> =
-  AsyncMiddleware(context)
+/**
+ * Create a [AsyncMiddleware] with [context]
+ * @param context See [AsyncMiddleware.context].
+ * @return An [AsyncMiddleware] instance.
+ */
+fun createAsyncMiddleware(context: CoroutineContext = SupervisorJob()): IMiddleware<Any> {
+  return AsyncMiddleware(context)
+}
