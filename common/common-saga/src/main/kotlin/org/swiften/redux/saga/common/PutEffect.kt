@@ -12,6 +12,9 @@ import org.swiften.redux.core.IReduxStore
 /**
  * [ISagaEffect] whose [ISagaOutput] deposits some values emitted by [source] into a [IReduxStore]
  * using [actionCreator].
+ * @param P The source emission type.
+ * @param source The source [ISagaEffect].
+ * @param actionCreator Function that creates [IReduxAction] from [P].
  */
 internal class PutEffect<P>(
   private val source: ISagaEffect<P>,

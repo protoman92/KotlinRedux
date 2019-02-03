@@ -9,6 +9,12 @@ package org.swiften.redux.saga.common
 /**
  * [ISagaEffect] whose [ISagaOutput] enforces ordering for two [ISagaOutput] created by two other
  * [ISagaEffect].
+ * @param R The first source emission type.
+ * @param R2 The second source emission type.
+ * @param R3 The result emission type.
+ * @param source1 The first source [ISagaEffect].
+ * @param source2 The second source [ISagaEffect].
+ * @param combiner Function that combines [R] and [R2] to produce [R3].
  */
 internal class ThenEffect<R, R2, R3>(
   private val source1: ISagaEffect<R>,

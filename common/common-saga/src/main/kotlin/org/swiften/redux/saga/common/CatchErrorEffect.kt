@@ -9,7 +9,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 
 /** Created by haipham on 2018/12/26 */
-/** [ISagaEffect] whose [ISagaOutput] catches [Throwable] from upstream */
+/**
+ * [ISagaEffect] whose [ISagaOutput] catches [Throwable] from upstream.
+ * @param R The result emission type.
+ * @param source The source [ISagaEffect].
+ * @param catcher Function that catches error.
+ */
 internal class CatchErrorEffect<R>(
   private val source: ISagaEffect<R>,
   private val catcher: (Throwable) -> R
@@ -17,7 +22,12 @@ internal class CatchErrorEffect<R>(
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).catchError(this.catcher)
 }
 
-/** Similar to [CatchErrorEffect], but handles suspending [catcher] */
+/**
+ * Similar to [CatchErrorEffect], but handles suspending [catcher].
+ * @param R The result emission type.
+ * @param source The source [ISagaEffect].
+ * @param catcher Function that catches error.
+ */
 internal class SuspendCatchErrorEffect<R>(
   private val source: ISagaEffect<R>,
   private val catcher: suspend CoroutineScope.(Throwable) -> R
@@ -25,7 +35,12 @@ internal class SuspendCatchErrorEffect<R>(
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).catchSuspend(this.catcher)
 }
 
-/** Similar to [CatchErrorEffect], but handles async [catcher] */
+/**
+ * Similar to [CatchErrorEffect], but handles async [catcher].
+ * @param R The result emission type.
+ * @param source The source [ISagaEffect].
+ * @param catcher Function that catches error.
+ */
 internal class AsyncCatchErrorEffect<R>(
   private val source: ISagaEffect<R>,
   private val catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>

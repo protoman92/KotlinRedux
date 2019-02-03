@@ -6,10 +6,15 @@
 package org.swiften.redux.saga.common
 
 /** Created by haipham on 2019/01/05 */
-/** [ISagaEffect] whose [ISagaOutput] filters emissions with [selector] */
+/**
+ * [ISagaEffect] whose [ISagaOutput] filters emissions with [predicate].
+ * @param R The result emission type.
+ * @param source The source [ISagaEffect].
+ * @param predicate Condition checker.
+ */
 internal class FilterEffect<R>(
   private val source: ISagaEffect<R>,
-  private val selector: (R) -> Boolean
+  private val predicate: (R) -> Boolean
 ) : SagaEffect<R>() {
-  override fun invoke(p1: SagaInput) = this.source.invoke(p1).filter(this.selector)
+  override fun invoke(p1: SagaInput) = this.source.invoke(p1).filter(this.predicate)
 }

@@ -9,6 +9,10 @@ package org.swiften.redux.saga.common
 /**
  * [ISagaEffect] whose output performs some asynchronous work with [transformer], based on the
  * emissions from another [source], and then emit the result.
+ * @param P The source emission type.
+ * @param R The result emission type.
+ * @param source The source [ISagaEffect].
+ * @param transformer Function that transforms [P] to [R].
  */
 internal class MapEffect<P, R>(
   private val source: ISagaEffect<P>,

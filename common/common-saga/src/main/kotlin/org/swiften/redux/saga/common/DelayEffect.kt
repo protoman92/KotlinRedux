@@ -6,7 +6,12 @@
 package org.swiften.redux.saga.common
 
 /** Created by haipham on 2019/01/07 */
-/** [ISagaEffect] whose [ISagaOutput] delays emissions by [millis] */
+/**
+ * [ISagaEffect] whose [ISagaOutput] delays emissions by [millis].
+ * @param R The result emission type.
+ * @param source The source [ISagaEffect].
+ * @param millis Delay time in milliseconds.
+ */
 internal class DelayEffect<R>(
   private val source: ISagaEffect<R>,
   private val millis: Long

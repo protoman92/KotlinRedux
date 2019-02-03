@@ -6,7 +6,12 @@
 package org.swiften.redux.saga.common
 
 /** Created by haipham on 2019/01/14 */
-/** [ISagaEffect] whose [ISagaOutput] can time out if no value is emitted within [millis] */
+/**
+ * [ISagaEffect] whose [ISagaOutput] can time out if no value is emitted within [millis].
+ * @param R The result emission type.
+ * @param source The source [ISagaEffect].
+ * @param millis The timeout time in milliseconds.
+ */
 internal class TimeoutEffect<R>(
   private val source: ISagaEffect<R>,
   private val millis: Long

@@ -9,7 +9,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 
 /** Created by haipham on 2019/01/07 */
-/** Similar to [MapEffect], but handles async functions */
+/**
+ * Similar to [MapEffect], but handles async functions.
+ * @param P The source emission type.
+ * @param R The result emission type.
+ * @param source The source [ISagaEffect].
+ * @param transformer Transformation function.
+ */
 internal class AsyncMapEffect<P, R>(
   private val source: ISagaEffect<P>,
   private val transformer: suspend CoroutineScope.(P) -> Deferred<R>
