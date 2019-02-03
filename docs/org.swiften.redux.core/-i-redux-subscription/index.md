@@ -11,14 +11,14 @@ must also have an [id](id.md) that can be used to perform selective unsubscripti
 
 | Name | Summary |
 |---|---|
-| [id](id.md) | `abstract val id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [id](id.md) | `abstract val id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>The unique identifier of this [IReduxSubscription](./index.md). |
 
 ### Functions
 
 | Name | Summary |
 |---|---|
-| [isUnsubscribed](is-unsubscribed.md) | `abstract fun isUnsubscribed(): `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
-| [unsubscribe](unsubscribe.md) | `abstract fun unsubscribe(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
+| [isUnsubscribed](is-unsubscribed.md) | `abstract fun isUnsubscribed(): `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)<br>Check if this [IReduxSubscription](./index.md) is unsubscribed. |
+| [unsubscribe](unsubscribe.md) | `abstract fun unsubscribe(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Unsubscribe from this [IReduxSubscription](./index.md). |
 
 ### Inheritors
 

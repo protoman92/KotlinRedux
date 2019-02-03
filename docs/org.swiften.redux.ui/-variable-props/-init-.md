@@ -6,3 +6,8 @@
 
 [IVariableProps](../-i-variable-props/index.md) implementation
 
+### Parameters
+
+`state` - See [IVariableProps.state](../-i-variable-props/state.md).
+
+`action` - See [IVariableProps.action](../-i-variable-props/action.md).

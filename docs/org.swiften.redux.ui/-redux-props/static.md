@@ -2,4 +2,7 @@
 
 # static
 
-`val static: `[`IStaticProps`](../-i-static-props/index.md)`<`[`GlobalState`](index.md#GlobalState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L35)
+`val static: `[`IStaticProps`](../-i-static-props/index.md)`<`[`GlobalState`](index.md#GlobalState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L56)
+
+An [IStaticProps](../-i-static-props/index.md) instance.
+

@@ -7,3 +7,8 @@
 Use this class to perform some [unsubscribe](unsubscribe.md) logic. For e.g.: terminate a [IReduxSubscription](../-i-redux-subscription/index.md)
 from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md).
 
+### Parameters
+
+`id` - See [IReduxSubscription.id](../-i-redux-subscription/id.md).
+
+`_unsubscribe` - Function that contains unsubscription logic.

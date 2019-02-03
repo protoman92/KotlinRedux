@@ -2,10 +2,16 @@
 
 # IVariablePropContainer
 
-`interface IVariablePropContainer<State, Action>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L45)
+`interface IVariablePropContainer<State, Action>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L58)
 
 Similar to [IPropContainer](../-i-prop-container/index.md), but only for views that are not interested in [StaticProps](../-static-props/index.md)
 because its parent will manually inject [reduxProps](redux-props.md).
+
+### Parameters
+
+`State` - The container state.
+
+`Action` - the container action.
 
 ### Properties
 

@@ -23,7 +23,7 @@ inheritance here to ensure [StaticProps.injector](../../org.swiften.redux.ui/-st
 
 | Name | Summary |
 |---|---|
-| [store](../../org.swiften.redux.ui/-prop-injector/store.md) | `val store: `[`IReduxStore`](../../org.swiften.redux.core/-i-redux-store.md)`<`[`GlobalState`](../../org.swiften.redux.ui/-prop-injector/index.md#GlobalState)`>` |
+| [store](../../org.swiften.redux.ui/-prop-injector/store.md) | `val store: `[`IReduxStore`](../../org.swiften.redux.core/-i-redux-store.md)`<`[`GlobalState`](../../org.swiften.redux.ui/-prop-injector/index.md#GlobalState)`>`<br>An [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md) instance. |
 
 ### Functions
 

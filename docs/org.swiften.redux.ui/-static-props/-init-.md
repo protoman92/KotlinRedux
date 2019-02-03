@@ -6,3 +6,8 @@
 
 [IStaticProps](../-i-static-props/index.md) implementation
 
+### Parameters
+
+`injector` - See [IStaticProps.injector](../-i-static-props/injector.md).
+
+`subscription` - See [IStaticProps.subscription](../-i-static-props/subscription.md).

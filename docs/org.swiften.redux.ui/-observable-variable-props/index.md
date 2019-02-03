@@ -2,9 +2,13 @@
 
 # ObservableVariableProps
 
-`class ObservableVariableProps<S, A>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/ObservableProp.kt#L34)
+`class ObservableVariableProps<S, A>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/ObservableProp.kt#L42)
 
 Use this to avoid lateinit modifiers for [VariableProps](../-variable-props/index.md)
+
+### Parameters
+
+`notifier` - See [VetoableObservableProp.notifier](../-vetoable-observable-prop/notifier.md).
 
 ### Constructors
 

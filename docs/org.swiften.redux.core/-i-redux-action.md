@@ -2,9 +2,9 @@
 
 # IReduxAction
 
-`interface IReduxAction` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L31)
+`interface IReduxAction` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L36)
 
-Represents a Redux action
+Represents a Redux action.
 
 ### Inheritors
 

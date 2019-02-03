@@ -2,10 +2,16 @@
 
 # FinalStore
 
-`class FinalStore<GlobalState> : `[`IReduxStore`](../-i-redux-store.md)`<`[`GlobalState`](index.md#GlobalState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/FinalStore.kt#L13)
+`class FinalStore<GlobalState> : `[`IReduxStore`](../-i-redux-store.md)`<`[`GlobalState`](index.md#GlobalState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/FinalStore.kt#L15)
 
 [FinalStore](./index.md) is a [IReduxStore](../-i-redux-store.md) that combines all crucial [IReduxStore](../-i-redux-store.md) implementations to
 provide a full suite of functionalities.
+
+### Parameters
+
+`GlobalState` - The global state type.
+
+`store` - An [IReduxStore](../-i-redux-store.md) instance.
 
 ### Constructors
 

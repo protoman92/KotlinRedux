@@ -6,3 +6,10 @@
 
 Note that [notifier](notifier.md) passes along both the previous and upcoming [T](index.md#T) values
 
+### Parameters
+
+`T` - The property type to be observed.
+
+`equalChecker` - Check equality for two [T](index.md#T) instances.
+
+`notifier` - Broadcast the latest [T](index.md#T) instance.

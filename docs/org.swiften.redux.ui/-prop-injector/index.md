@@ -2,11 +2,17 @@
 
 # PropInjector
 
-`open class PropInjector<GlobalState> : `[`IPropInjector`](../-i-prop-injector/index.md)`<`[`GlobalState`](index.md#GlobalState)`>, `[`IDispatcherProvider`](../../org.swiften.redux.core/-i-dispatcher-provider/index.md)`, `[`IStateGetterProvider`](../../org.swiften.redux.core/-i-state-getter-provider/index.md)`<`[`GlobalState`](index.md#GlobalState)`>, `[`IDeinitializerProvider`](../../org.swiften.redux.core/-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L95)
+`open class PropInjector<GlobalState> : `[`IPropInjector`](../-i-prop-injector/index.md)`<`[`GlobalState`](index.md#GlobalState)`>, `[`IDispatcherProvider`](../../org.swiften.redux.core/-i-dispatcher-provider/index.md)`, `[`IStateGetterProvider`](../../org.swiften.redux.core/-i-state-getter-provider/index.md)`<`[`GlobalState`](index.md#GlobalState)`>, `[`IDeinitializerProvider`](../../org.swiften.redux.core/-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L146)
 
 A [IPropInjector](../-i-prop-injector/index.md) implementation that handles [inject](inject.md) in a thread-safe manner. It
 also invokes [IPropLifecycleOwner.beforePropInjectionStarts](../-i-prop-lifecycle-owner/before-prop-injection-starts.md) and
 [IPropLifecycleOwner.afterPropInjectionEnds](../-i-prop-lifecycle-owner/after-prop-injection-ends.md) when appropriate.
+
+### Parameters
+
+`GlobalState` - The global state type.
+
+`store` - An [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md) instance.
 
 ### Constructors
 
@@ -18,7 +24,7 @@ also invokes [IPropLifecycleOwner.beforePropInjectionStarts](../-i-prop-lifecycl
 
 | Name | Summary |
 |---|---|
-| [store](store.md) | `val store: `[`IReduxStore`](../../org.swiften.redux.core/-i-redux-store.md)`<`[`GlobalState`](index.md#GlobalState)`>` |
+| [store](store.md) | `val store: `[`IReduxStore`](../../org.swiften.redux.core/-i-redux-store.md)`<`[`GlobalState`](index.md#GlobalState)`>`<br>An [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md) instance. |
 
 ### Functions
 

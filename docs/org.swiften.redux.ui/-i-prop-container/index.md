@@ -2,9 +2,17 @@
 
 # IPropContainer
 
-`interface IPropContainer<GlobalState, State, Action> : `[`IPropLifecycleOwner`](../-i-prop-lifecycle-owner/index.md)`<`[`GlobalState`](index.md#GlobalState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L37)
+`interface IPropContainer<GlobalState, State, Action> : `[`IPropLifecycleOwner`](../-i-prop-lifecycle-owner/index.md)`<`[`GlobalState`](index.md#GlobalState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L48)
 
-Represents a container for [ReduxProps](../-redux-props/index.md)
+Represents a container for [ReduxProps](../-redux-props/index.md).
+
+### Parameters
+
+`GlobalState` - The global state type.
+
+`State` - The container state.
+
+`Action` - the container action.
 
 ### Properties
 
@@ -16,8 +24,8 @@ Represents a container for [ReduxProps](../-redux-props/index.md)
 
 | Name | Summary |
 |---|---|
-| [afterPropInjectionEnds](../-i-prop-lifecycle-owner/after-prop-injection-ends.md) | `abstract fun afterPropInjectionEnds(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>This is called after [IReduxSubscription.unsubscribe](../../org.swiften.redux.core/-i-redux-subscription/unsubscribe.md) is called |
-| [beforePropInjectionStarts](../-i-prop-lifecycle-owner/before-prop-injection-starts.md) | `abstract fun beforePropInjectionStarts(sp: `[`StaticProps`](../-static-props/index.md)`<`[`GlobalState`](../-i-prop-lifecycle-owner/index.md#GlobalState)`>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>This is called before [IPropInjector.inject](../-i-prop-injector/inject.md) is called |
+| [afterPropInjectionEnds](../-i-prop-lifecycle-owner/after-prop-injection-ends.md) | `abstract fun afterPropInjectionEnds(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>This is called after [IReduxSubscription.unsubscribe](../../org.swiften.redux.core/-i-redux-subscription/unsubscribe.md) is called. |
+| [beforePropInjectionStarts](../-i-prop-lifecycle-owner/before-prop-injection-starts.md) | `abstract fun beforePropInjectionStarts(sp: `[`StaticProps`](../-static-props/index.md)`<`[`GlobalState`](../-i-prop-lifecycle-owner/index.md#GlobalState)`>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>This is called before [IPropInjector.inject](../-i-prop-injector/inject.md) is called. |
 
 ### Extension Functions
 

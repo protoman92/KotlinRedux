@@ -2,9 +2,15 @@
 
 # IVariableProps
 
-`interface IVariableProps<State, Action>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L18)
+`interface IVariableProps<State, Action>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L25)
 
 Container for an [IPropContainer](../-i-prop-container/index.md) mutable properties
+
+### Parameters
+
+`State` - State type.
+
+`Action` - Action type.
 
 ### Properties
 

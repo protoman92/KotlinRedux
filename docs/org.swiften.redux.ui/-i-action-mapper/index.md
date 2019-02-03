@@ -2,9 +2,17 @@
 
 # IActionMapper
 
-`interface IActionMapper<GlobalState, OutProps, Action>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L56)
+`interface IActionMapper<GlobalState, OutProps, Action>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L84)
 
-Maps [IActionDispatcher](../../org.swiften.redux.core/-i-action-dispatcher.md) and [GlobalState](index.md#GlobalState) to [Action](index.md#Action) for a [IPropContainer](../-i-prop-container/index.md)
+Maps [IActionDispatcher](../../org.swiften.redux.core/-i-action-dispatcher.md) and [GlobalState](index.md#GlobalState) to [Action](index.md#Action) for a [IPropContainer](../-i-prop-container/index.md).
+
+### Parameters
+
+`GlobalState` - The global state type.
+
+`OutProps` - Property as defined by a view's parent.
+
+`Action` - The container action.
 
 ### Functions
 

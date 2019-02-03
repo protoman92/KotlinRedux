@@ -6,3 +6,8 @@
 
 Container for [StaticProps](../-static-props/index.md) and [VariableProps](../-variable-props/index.md)
 
+### Parameters
+
+`static` - An [IStaticProps](../-i-static-props/index.md) instance.
+
+`variable` - An [IVariableProps](../-i-variable-props/index.md) instance.

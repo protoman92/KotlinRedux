@@ -2,9 +2,13 @@
 
 # IReduxSubscriberProvider
 
-`interface IReduxSubscriberProvider<GlobalState>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L54)
+`interface IReduxSubscriberProvider<GlobalState>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L68)
 
-Represents an object that provides [IReduxSubscriber](../-i-redux-subscriber.md)
+Represents an object that provides [IReduxSubscriber](../-i-redux-subscriber.md).
+
+### Parameters
+
+`GlobalState` - The global state type.
 
 ### Properties
 

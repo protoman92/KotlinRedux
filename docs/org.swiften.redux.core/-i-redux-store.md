@@ -2,11 +2,15 @@
 
 # IReduxStore
 
-`interface IReduxStore<GlobalState> : `[`IReducerProvider`](-i-reducer-provider/index.md)`<`[`GlobalState`](-i-redux-store.md#GlobalState)`>, `[`IDispatcherProvider`](-i-dispatcher-provider/index.md)`, `[`IStateGetterProvider`](-i-state-getter-provider/index.md)`<`[`GlobalState`](-i-redux-store.md#GlobalState)`>, `[`IReduxSubscriberProvider`](-i-redux-subscriber-provider/index.md)`<`[`GlobalState`](-i-redux-store.md#GlobalState)`>, `[`IDeinitializerProvider`](-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L63)
+`interface IReduxStore<GlobalState> : `[`IReducerProvider`](-i-reducer-provider/index.md)`<`[`GlobalState`](-i-redux-store.md#GlobalState)`>, `[`IDispatcherProvider`](-i-dispatcher-provider/index.md)`, `[`IStateGetterProvider`](-i-state-getter-provider/index.md)`<`[`GlobalState`](-i-redux-store.md#GlobalState)`>, `[`IReduxSubscriberProvider`](-i-redux-subscriber-provider/index.md)`<`[`GlobalState`](-i-redux-store.md#GlobalState)`>, `[`IDeinitializerProvider`](-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L78)
 
 Represents a Redux store that can dispatch [IReduxAction](-i-redux-action.md) with a [IActionDispatcher](-i-action-dispatcher.md) to mutate
 some internal [GlobalState](-i-redux-store.md#GlobalState). Other objects can subscribe to [GlobalState](-i-redux-store.md#GlobalState) updates using
 [subscribe](-i-redux-subscriber-provider/subscribe.md).
+
+### Parameters
+
+`GlobalState` - The global state type.
 
 ### Inherited Properties
 
@@ -22,7 +26,7 @@ some internal [GlobalState](-i-redux-store.md#GlobalState). Other objects can su
 
 | Name | Summary |
 |---|---|
-| [DefaultActionStore](-default-action-store/index.md) | `class DefaultActionStore<GlobalState> : `[`IReduxStore`](./-i-redux-store.md)`<`[`GlobalState`](-default-action-store/index.md#GlobalState)`>`<br>A [IReduxStore](./-i-redux-store.md) that handles [DefaultReduxAction](-default-redux-action/index.md) |
-| [EnhancedReduxStore](-enhanced-redux-store/index.md) | `class EnhancedReduxStore<GlobalState> : `[`IReduxStore`](./-i-redux-store.md)`<`[`GlobalState`](-enhanced-redux-store/index.md#GlobalState)`>`<br>Enhance a [store](-enhanced-redux-store/store.md) by overriding its [IReduxStore.dispatch](-i-dispatcher-provider/dispatch.md) with [dispatch](-enhanced-redux-store/dispatch.md) |
+| [DefaultActionStore](-default-action-store/index.md) | `class DefaultActionStore<GlobalState> : `[`IReduxStore`](./-i-redux-store.md)`<`[`GlobalState`](-default-action-store/index.md#GlobalState)`>`<br>A [IReduxStore](./-i-redux-store.md) that handles [DefaultReduxAction](-default-redux-action/index.md). |
+| [EnhancedReduxStore](-enhanced-redux-store/index.md) | `class EnhancedReduxStore<GlobalState> : `[`IReduxStore`](./-i-redux-store.md)`<`[`GlobalState`](-enhanced-redux-store/index.md#GlobalState)`>`<br>Enhance a [store](-enhanced-redux-store/store.md) by overriding its [IReduxStore.dispatch](-i-dispatcher-provider/dispatch.md) with [dispatch](-enhanced-redux-store/dispatch.md). |
 | [FinalStore](-final-store/index.md) | `class FinalStore<GlobalState> : `[`IReduxStore`](./-i-redux-store.md)`<`[`GlobalState`](-final-store/index.md#GlobalState)`>`<br>[FinalStore](-final-store/index.md) is a [IReduxStore](./-i-redux-store.md) that combines all crucial [IReduxStore](./-i-redux-store.md) implementations to provide a full suite of functionalities. |
 | [ThreadSafeStore](-thread-safe-store/index.md) | `class ThreadSafeStore<GlobalState> : `[`IReduxStore`](./-i-redux-store.md)`<`[`GlobalState`](-thread-safe-store/index.md#GlobalState)`>`<br>[ThreadSafeStore](-thread-safe-store/index.md) is a [IReduxStore](./-i-redux-store.md) implementation that supports thread-safe accesses and modifications. Pass in the initial [state](-thread-safe-store/state.md) and the store's [reducer](-thread-safe-store/reducer.md) in the constructor. |

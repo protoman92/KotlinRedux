@@ -4,5 +4,8 @@
 
 `EmptyPropLifecycleOwner()`
 
-Treat this as a delegate for [IPropLifecycleOwner](../-i-prop-lifecycle-owner/index.md) that does not hold any logic
+Treat this as a delegate for [IPropLifecycleOwner](../-i-prop-lifecycle-owner/index.md) that does not hold any logic.
 
+### Parameters
+
+`GlobalState` - The global state type.

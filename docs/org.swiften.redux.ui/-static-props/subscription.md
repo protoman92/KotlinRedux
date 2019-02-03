@@ -2,7 +2,9 @@
 
 # subscription
 
-`val subscription: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L26)
+`val subscription: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L37)
 
 Overrides [IStaticProps.subscription](../-i-static-props/subscription.md)
+
+See [IStaticProps.subscription](../-i-static-props/subscription.md).
 

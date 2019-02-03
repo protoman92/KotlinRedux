@@ -4,5 +4,8 @@
 
 `AsyncMiddleware(context: <ERROR CLASS>)`
 
-[IMiddleware](../../org.swiften.redux.core/-i-middleware.md) implementation that calls [DispatchWrapper.dispatch](../../org.swiften.redux.core/-dispatch-wrapper/dispatch.md) on another thread
+[IMiddleware](../../org.swiften.redux.core/-i-middleware.md) implementation that calls [DispatchWrapper.dispatch](../../org.swiften.redux.core/-dispatch-wrapper/dispatch.md) on another thread.
 
+### Parameters
+
+`context` - A [CoroutineContext](#) instance.

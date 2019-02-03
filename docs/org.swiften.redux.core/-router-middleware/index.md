@@ -2,22 +2,30 @@
 
 # RouterMiddleware
 
-`@PublishedApi internal class RouterMiddleware<Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IMiddleware`](../-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/RouterMiddleware.kt#L28)
+`@PublishedApi internal class RouterMiddleware<Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IMiddleware`](../-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/RouterMiddleware.kt#L37)
 
-[IMiddleware](../-i-middleware.md) implementation for [IRouter](../-i-router/index.md) middleware
+[IMiddleware](../-i-middleware.md) implementation for [IRouter](../-i-router/index.md) middleware.
+
+### Parameters
+
+`Screen` - The app [IRouterScreen](../-i-router-screen.md) type.
+
+`cls` - The [Class](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html) of the [Screen](index.md#Screen) type to check type for [IReduxAction](../-i-redux-action.md).
+
+`router` - An [IRouter](../-i-router/index.md) instance.
 
 ### Constructors
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `RouterMiddleware(cls: `[`KClass`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html)`<`[`Screen`](index.md#Screen)`>, router: `[`IRouter`](../-i-router/index.md)`<`[`Screen`](index.md#Screen)`>)``RouterMiddleware(cls: `[`Class`](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html)`<`[`Screen`](index.md#Screen)`>, router: `[`IRouter`](../-i-router/index.md)`<`[`Screen`](index.md#Screen)`>)`<br>[IMiddleware](../-i-middleware.md) implementation for [IRouter](../-i-router/index.md) middleware |
+| [&lt;init&gt;](-init-.md) | `RouterMiddleware(cls: `[`KClass`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html)`<`[`Screen`](index.md#Screen)`>, router: `[`IRouter`](../-i-router/index.md)`<`[`Screen`](index.md#Screen)`>)``RouterMiddleware(cls: `[`Class`](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html)`<`[`Screen`](index.md#Screen)`>, router: `[`IRouter`](../-i-router/index.md)`<`[`Screen`](index.md#Screen)`>)`<br>[IMiddleware](../-i-middleware.md) implementation for [IRouter](../-i-router/index.md) middleware. |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
-| [cls](cls.md) | `val cls: `[`Class`](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html)`<`[`Screen`](index.md#Screen)`>` |
-| [router](router.md) | `val router: `[`IRouter`](../-i-router/index.md)`<`[`Screen`](index.md#Screen)`>` |
+| [cls](cls.md) | `val cls: `[`Class`](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html)`<`[`Screen`](index.md#Screen)`>`<br>The [Class](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html) of the [Screen](index.md#Screen) type to check type for [IReduxAction](../-i-redux-action.md). |
+| [router](router.md) | `val router: `[`IRouter`](../-i-router/index.md)`<`[`Screen`](index.md#Screen)`>`<br>An [IRouter](../-i-router/index.md) instance. |
 
 ### Functions
 

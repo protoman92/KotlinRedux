@@ -8,3 +8,8 @@ A [IPropInjector](../-i-prop-injector/index.md) implementation that handles [inj
 also invokes [IPropLifecycleOwner.beforePropInjectionStarts](../-i-prop-lifecycle-owner/before-prop-injection-starts.md) and
 [IPropLifecycleOwner.afterPropInjectionEnds](../-i-prop-lifecycle-owner/after-prop-injection-ends.md) when appropriate.
 
+### Parameters
+
+`GlobalState` - The global state type.
+
+`store` - An [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md) instance.

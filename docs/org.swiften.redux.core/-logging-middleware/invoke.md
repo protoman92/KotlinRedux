@@ -2,4 +2,4 @@
 
 # invoke
 
-`fun invoke(p1: `[`MiddlewareInput`](../-middleware-input/index.md)`<`[`GlobalState`](index.md#GlobalState)`>): `[`DispatchMapper`](../-dispatch-mapper.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/LoggingMiddleware.kt#L17)
+`fun invoke(p1: `[`MiddlewareInput`](../-middleware-input/index.md)`<`[`GlobalState`](index.md#GlobalState)`>): `[`DispatchMapper`](../-dispatch-mapper.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/LoggingMiddleware.kt#L23)

@@ -6,7 +6,7 @@
 
 | Name | Summary |
 |---|---|
-| [AsyncMiddleware](-async-middleware/index.md) | `internal class AsyncMiddleware : `[`IMiddleware`](../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>`<br>[IMiddleware](../org.swiften.redux.core/-i-middleware.md) implementation that calls [DispatchWrapper.dispatch](../org.swiften.redux.core/-dispatch-wrapper/dispatch.md) on another thread |
+| [AsyncMiddleware](-async-middleware/index.md) | `internal class AsyncMiddleware : `[`IMiddleware`](../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>`<br>[IMiddleware](../org.swiften.redux.core/-i-middleware.md) implementation that calls [DispatchWrapper.dispatch](../org.swiften.redux.core/-dispatch-wrapper/dispatch.md) on another thread. |
 
 ### Functions
 

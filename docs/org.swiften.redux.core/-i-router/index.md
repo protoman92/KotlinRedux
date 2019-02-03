@@ -2,9 +2,13 @@
 
 # IRouter
 
-`interface IRouter<Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IDeinitializerProvider`](../-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/RouterMiddleware.kt#L18)
+`interface IRouter<Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IDeinitializerProvider`](../-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/RouterMiddleware.kt#L21)
 
-Abstract the necessary work to navigate from one [Screen](index.md#Screen) to another
+Abstract the necessary work to navigate from one [Screen](index.md#Screen) to another.
+
+### Parameters
+
+`Screen` - The app [IRouterScreen](../-i-router-screen.md) type.
 
 ### Inherited Properties
 

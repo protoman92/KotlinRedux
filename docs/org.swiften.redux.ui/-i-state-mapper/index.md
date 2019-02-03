@@ -2,9 +2,17 @@
 
 # IStateMapper
 
-`interface IStateMapper<GlobalState, OutProps, State>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L50)
+`interface IStateMapper<GlobalState, OutProps, State>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L68)
 
-Maps [GlobalState](index.md#GlobalState) to [State](index.md#State) for a [IPropContainer](../-i-prop-container/index.md)
+Maps [GlobalState](index.md#GlobalState) to [State](index.md#State) for a [IPropContainer](../-i-prop-container/index.md).
+
+### Parameters
+
+`GlobalState` - The global state type.
+
+`OutProps` - Property as defined by a view's parent.
+
+`State` - The container state.
 
 ### Functions
 

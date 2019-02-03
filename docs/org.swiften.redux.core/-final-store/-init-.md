@@ -7,3 +7,8 @@
 [FinalStore](index.md) is a [IReduxStore](../-i-redux-store.md) that combines all crucial [IReduxStore](../-i-redux-store.md) implementations to
 provide a full suite of functionalities.
 
+### Parameters
+
+`GlobalState` - The global state type.
+
+`store` - An [IReduxStore](../-i-redux-store.md) instance.

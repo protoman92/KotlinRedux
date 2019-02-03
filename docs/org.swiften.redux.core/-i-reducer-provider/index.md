@@ -2,9 +2,13 @@
 
 # IReducerProvider
 
-`interface IReducerProvider<GlobalState>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L34)
+`interface IReducerProvider<GlobalState>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L42)
 
-Represents an object that provides [IReducer](../-i-reducer.md)
+Represents an object that provides [IReducer](../-i-reducer.md).
+
+### Parameters
+
+`GlobalState` - The global state type.
 
 ### Properties
 

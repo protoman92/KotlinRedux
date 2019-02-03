@@ -6,3 +6,6 @@
 
 Use this to avoid lateinit modifiers for [VariableProps](../-variable-props/index.md)
 
+### Parameters
+
+`notifier` - See [VetoableObservableProp.notifier](../-vetoable-observable-prop/notifier.md).

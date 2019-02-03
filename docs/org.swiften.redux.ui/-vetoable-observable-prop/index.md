@@ -2,9 +2,17 @@
 
 # VetoableObservableProp
 
-`open class VetoableObservableProp<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/ObservableProp.kt#L16)
+`open class VetoableObservableProp<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/ObservableProp.kt#L21)
 
 Note that [notifier](notifier.md) passes along both the previous and upcoming [T](index.md#T) values
+
+### Parameters
+
+`T` - The property type to be observed.
+
+`equalChecker` - Check equality for two [T](index.md#T) instances.
+
+`notifier` - Broadcast the latest [T](index.md#T) instance.
 
 ### Constructors
 
@@ -16,9 +24,9 @@ Note that [notifier](notifier.md) passes along both the previous and upcoming [T
 
 | Name | Summary |
 |---|---|
-| [equalChecker](equal-checker.md) | `val equalChecker: (`[`T`](index.md#T)`?, `[`T`](index.md#T)`) -> `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
+| [equalChecker](equal-checker.md) | `val equalChecker: (`[`T`](index.md#T)`?, `[`T`](index.md#T)`) -> `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)<br>Check equality for two [T](index.md#T) instances. |
 | [lock](lock.md) | `val lock: <ERROR CLASS>` |
-| [notifier](notifier.md) | `val notifier: (`[`T`](index.md#T)`?, `[`T`](index.md#T)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
+| [notifier](notifier.md) | `val notifier: (`[`T`](index.md#T)`?, `[`T`](index.md#T)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Broadcast the latest [T](index.md#T) instance. |
 | [value](value.md) | `lateinit var value: `[`T`](index.md#T) |
 
 ### Functions

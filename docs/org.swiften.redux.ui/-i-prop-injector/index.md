@@ -2,9 +2,13 @@
 
 # IPropInjector
 
-`interface IPropInjector<GlobalState> : `[`IDispatcherProvider`](../../org.swiften.redux.core/-i-dispatcher-provider/index.md)`, `[`IStateGetterProvider`](../../org.swiften.redux.core/-i-state-getter-provider/index.md)`<`[`GlobalState`](index.md#GlobalState)`>, `[`IDeinitializerProvider`](../../org.swiften.redux.core/-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L75)
+`interface IPropInjector<GlobalState> : `[`IDispatcherProvider`](../../org.swiften.redux.core/-i-dispatcher-provider/index.md)`, `[`IStateGetterProvider`](../../org.swiften.redux.core/-i-state-getter-provider/index.md)`<`[`GlobalState`](index.md#GlobalState)`>, `[`IDeinitializerProvider`](../../org.swiften.redux.core/-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L117)
 
-Inject state and actions into an [IPropContainer](../-i-prop-container/index.md)
+Inject state and actions into an [IPropContainer](../-i-prop-container/index.md).
+
+### Parameters
+
+`GlobalState` - The global state type.
 
 ### Inherited Properties
 

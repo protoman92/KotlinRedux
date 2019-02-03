@@ -2,9 +2,13 @@
 
 # IStaticProps
 
-`interface IStaticProps<GlobalState>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L12)
+`interface IStaticProps<GlobalState>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L15)
 
 Container for an [IPropContainer](../-i-prop-container/index.md) static properties
+
+### Parameters
+
+`GlobalState` - The global state type.
 
 ### Properties
 
