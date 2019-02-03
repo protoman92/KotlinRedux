@@ -5,18 +5,77 @@
 
 package org.swiften.redux.android.ui.lifecycle
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.io.FileDescriptor
+import java.io.PrintWriter
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 
 /** Created by haipham on 2019/02/03 */
 class AndroidLifecycleTest : BaseLifecycleTest() {
+  @Suppress("ImplicitNullableNothingType")
+  class TestFragmentManager : FragmentManager() {
+    val callbacks = AtomicReference<FragmentLifecycleCallbacks>()
+
+    override fun saveFragmentInstanceState(f: Fragment?) = null
+    override fun findFragmentById(id: Int) = null
+    override fun getFragments() = mutableListOf<Fragment>()
+    override fun beginTransaction() = throw RuntimeException()
+    override fun putFragment(bundle: Bundle, key: String, fragment: Fragment) {}
+    override fun removeOnBackStackChangedListener(listener: OnBackStackChangedListener) {}
+    override fun getFragment(bundle: Bundle, key: String): Fragment? = null
+    override fun getPrimaryNavigationFragment() = null
+    override fun getBackStackEntryCount() = 0
+    override fun isDestroyed() = false
+    override fun getBackStackEntryAt(index: Int) = throw RuntimeException("")
+    override fun executePendingTransactions() = false
+    override fun popBackStackImmediate() = false
+    override fun popBackStackImmediate(name: String?, flags: Int) = false
+    override fun popBackStackImmediate(id: Int, flags: Int) = false
+    override fun findFragmentByTag(tag: String?) = null
+    override fun addOnBackStackChangedListener(listener: OnBackStackChangedListener) {}
+
+    override fun dump(
+      prefix: String?,
+      fd: FileDescriptor?,
+      writer: PrintWriter?,
+      args: Array<out String>?
+    ) {}
+
+    override fun isStateSaved() = false
+    override fun popBackStack() {}
+    override fun popBackStack(name: String?, flags: Int) {}
+    override fun popBackStack(id: Int, flags: Int) {}
+
+    override fun registerFragmentLifecycleCallbacks(
+      cb: FragmentLifecycleCallbacks,
+      recursive: Boolean
+    ) {
+      this.callbacks.set(cb)
+    }
+
+    override fun unregisterFragmentLifecycleCallbacks(cb: FragmentLifecycleCallbacks) {
+      this.callbacks.set(null)
+    }
+  }
+
+  class TestActivity : IAppCompatActivity, LifecycleOwner {
+    val registry = TestLifecycleRegistry(this)
+    val fm = TestFragmentManager()
+    override fun getLifecycle(): Lifecycle = this@TestActivity.registry
+    override val supportFragmentManager get() = fm
+  }
+
   @Test
   fun `Moving to new state should notify lifecycle observer`() {
     // Setup

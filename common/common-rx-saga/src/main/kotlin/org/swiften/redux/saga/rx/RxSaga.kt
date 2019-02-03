@@ -63,14 +63,14 @@ class SagaOutput<T>(
     return this.with(this.stream.filter(predicate))
   }
 
-  override fun delay(delayMillis: Long): ISagaOutput<T> {
-    if (delayMillis <= 0) { return this }
-    return this.with(this.stream.delay(delayMillis, TimeUnit.MILLISECONDS))
+  override fun delay(millis: Long): ISagaOutput<T> {
+    if (millis <= 0) { return this }
+    return this.with(this.stream.delay(millis, TimeUnit.MILLISECONDS))
   }
 
-  override fun debounce(timeMillis: Long): ISagaOutput<T> {
-    if (timeMillis <= 0) { return this }
-    return this.with(this.stream.debounce(timeMillis, TimeUnit.MILLISECONDS))
+  override fun debounce(millis: Long): ISagaOutput<T> {
+    if (millis <= 0) { return this }
+    return this.with(this.stream.debounce(millis, TimeUnit.MILLISECONDS))
   }
 
   override fun catchError(catcher: (Throwable) -> T): ISagaOutput<T> {
