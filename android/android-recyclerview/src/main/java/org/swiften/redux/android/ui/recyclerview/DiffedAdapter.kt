@@ -17,7 +17,6 @@ import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ReduxProps
-import org.swiften.redux.ui.StaticProps
 import org.swiften.redux.ui.VariableProps
 import org.swiften.redux.ui.unsubscribeSafely
 
@@ -40,13 +39,13 @@ abstract class ReduxListAdapter<GlobalState, GlobalExt, VH, S, A>(
   diffCallback: DiffUtil.ItemCallback<S>
 ) : ListAdapter<S, VH>(diffCallback),
   IPropLifecycleOwner<GlobalState, GlobalExt> by EmptyPropLifecycleOwner(),
-  IPropContainer<GlobalState, GlobalExt, List<S>, A> where VH : RecyclerView.ViewHolder {
+  IPropContainer<List<S>, A> where VH : RecyclerView.ViewHolder {
   /**
    * Since we are only calling [ListAdapter.submitList] when [reduxProps] arrives, the
    * [VariableProps.action] instance must be non-null upon [onBindViewHolder]. As a result, we can
    * safely access [VariableProps.action] in [onBindViewHolder].
    */
-  override var reduxProps by ObservableReduxProps<GlobalState, GlobalExt, List<S>, A> { _, next ->
+  override var reduxProps by ObservableReduxProps<List<S>, A> { _, next ->
     this.submitList(next?.state ?: arrayListOf())
   }
 
@@ -123,7 +122,7 @@ fun <GlobalState, GlobalExt, VH, VHS, VHA> IPropInjector<GlobalState, GlobalExt>
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ReduxListAdapter<GlobalState, GlobalExt, VH, VHS, VHA> where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GlobalState, GlobalExt, VHS, VHA> {
+  VH : IPropContainer<VHS, VHA> {
   val listAdapter = object : ReduxListAdapter<GlobalState, GlobalExt, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
@@ -135,9 +134,8 @@ fun <GlobalState, GlobalExt, VH, VHS, VHA> IPropInjector<GlobalState, GlobalExt>
           "maintainer if you are encountering this behavior."
       } as VHA
 
-      val static = StaticProps(this.reduxProps.s.injector, ReduxSubscription.EMPTY)
       val variable = VariableProps(this.getItem(position), action)
-      holder.reduxProps = ReduxProps(static, variable)
+      holder.reduxProps = ReduxProps(ReduxSubscription.EMPTY, variable)
     }
   }
 

@@ -35,7 +35,7 @@ abstract class DelegateRecyclerAdapter<GlobalState, GlobalExt, VH, VHState, VHAc
   private val adapter: RecyclerView.Adapter<VH>
 ) : RecyclerView.Adapter<VH>() where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GlobalState, GlobalExt, VHState, VHAction> {
+  VH : IPropContainer<VHState, VHAction> {
   protected val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -107,7 +107,7 @@ fun <GlobalState, GlobalExt, VH, VHState, VHAction> IPropInjector<GlobalState, G
   vhMapper: IPropMapper<GlobalState, GlobalExt, Int, VHState, VHAction>
 ): DelegateRecyclerAdapter<GlobalState, GlobalExt, VH, VHState, VHAction> where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GlobalState, GlobalExt, VHState, VHAction>,
+  VH : IPropContainer<VHState, VHAction>,
   VH : IPropLifecycleOwner<GlobalState, GlobalExt> {
   return object : DelegateRecyclerAdapter<GlobalState, GlobalExt, VH, VHState, VHAction>(adapter) {
     override fun getItemCount(): Int {

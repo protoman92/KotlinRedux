@@ -37,14 +37,12 @@ open class VetoableObservableProp<T : Any>(
 
 /**
  * Use this to avoid lateinit modifiers for [ReduxProps]
- * @param GlobalState The global state type.
- * @param GlobalExt The global external argument.
  * @param S See [VariableProps.state].
  * @param A See [VariableProps.action].
  * @param notifier See [VetoableObservableProp.notifier].
  */
-class ObservableReduxProps<GlobalState, GlobalExt, S, A>(
+class ObservableReduxProps<S, A>(
   notifier: (IVariableProps<S, A>?, IVariableProps<S, A>?) -> Unit
-) : ReadWriteProperty<Any?, ReduxProps<GlobalState, GlobalExt, S, A>> by VetoableObservableProp({ a, b ->
+) : ReadWriteProperty<Any?, ReduxProps<S, A>> by VetoableObservableProp({ a, b ->
   a?.v?.state == b.v?.state
 }, { prev, next -> notifier(prev?.v, next.v) })

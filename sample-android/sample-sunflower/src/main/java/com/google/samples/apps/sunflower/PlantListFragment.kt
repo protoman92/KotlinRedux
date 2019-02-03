@@ -37,7 +37,7 @@ import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 class PlantListFragment : Fragment(),
-  IPropContainer<Redux.State, Unit, PlantListFragment.S, PlantListFragment.A>,
+  IPropContainer<PlantListFragment.S, PlantListFragment.A>,
   IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
   IPropMapper<Redux.State, Unit, Unit, PlantListFragment.S, PlantListFragment.A>
   by PlantListFragment {
@@ -60,7 +60,7 @@ class PlantListFragment : Fragment(),
     }
   }
 
-  override var reduxProps by ObservableReduxProps<Redux.State, Unit, S, A> { prev, next ->
+  override var reduxProps by ObservableReduxProps<S, A> { prev, next ->
     if (next?.state?.plantCount != prev?.state?.plantCount) {
       this.plant_list.adapter?.notifyDataSetChanged()
     }

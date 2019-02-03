@@ -44,7 +44,7 @@ open class BaseLifecycleTest {
   }
 
   class TestLifecycleOwner : LifecycleOwner,
-    IPropContainer<Int, Unit, Int, Unit>,
+    IPropContainer<Int, Unit>,
     IPropLifecycleOwner<Int, Unit> by EmptyPropLifecycleOwner(),
     IPropMapper<Int, Unit, Unit, Int, Unit> by TestLifecycleOwner {
     companion object : IPropMapper<Int, Unit, Unit, Int, Unit> {
@@ -53,7 +53,7 @@ open class BaseLifecycleTest {
     }
 
     val registry = TestLifecycleRegistry(this)
-    override var reduxProps by ObservableReduxProps<Int, Unit, Int, Unit> { _, _ -> }
+    override var reduxProps by ObservableReduxProps<Int, Unit> { _, _ -> }
     override fun getLifecycle(): Lifecycle = this.registry
   }
 
@@ -67,7 +67,7 @@ open class BaseLifecycleTest {
       outProps: OutProps,
       mapper: IPropMapper<Int, Unit, OutProps, State, Action>
     ): IReduxSubscription where
-      View : IPropContainer<Int, Unit, State, Action>,
+      View : IPropContainer<State, Action>,
       View : IPropLifecycleOwner<Int, Unit> {
       val lastState = this.lastState()
       val subscription = ReduxSubscription("$view") {}
@@ -75,7 +75,7 @@ open class BaseLifecycleTest {
       val state = mapper.mapState(lastState, outProps)
       val action = mapper.mapAction(this.dispatch, lastState, Unit, outProps)
       val variable = VariableProps(state, action)
-      view.reduxProps = ReduxProps(static, variable)
+      view.reduxProps = ReduxProps(static.subscription, variable)
       this.subscriptions.add(subscription)
       return subscription
     }

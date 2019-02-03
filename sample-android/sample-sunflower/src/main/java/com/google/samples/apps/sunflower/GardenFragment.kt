@@ -35,7 +35,7 @@ import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 class GardenFragment : Fragment(),
-  IPropContainer<Redux.State, Unit, GardenFragment.S, Unit>,
+  IPropContainer<GardenFragment.S, Unit>,
   IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
   IPropMapper<Redux.State, Unit, Unit, GardenFragment.S, Unit> by GardenFragment {
   data class S(val gardenPlantingCount: Int)
@@ -45,7 +45,7 @@ class GardenFragment : Fragment(),
     override fun mapState(state: Redux.State, outProps: Unit) = S(state.gardenPlantings?.size ?: 0)
   }
 
-  override var reduxProps by ObservableReduxProps<Redux.State, Unit, S, Unit> { prev, next ->
+  override var reduxProps by ObservableReduxProps<S, Unit> { prev, next ->
     next?.state?.also {
       if (it.gardenPlantingCount == 0) {
         this.garden_list.visibility = View.GONE

@@ -34,7 +34,7 @@ import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
-  IPropContainer<State, Unit, SearchFragment.S, SearchFragment.A>,
+  IPropContainer<SearchFragment.S, SearchFragment.A>,
   IPropLifecycleOwner<State, Unit> by EmptyPropLifecycleOwner(),
   IPropMapper<State, Unit, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
   data class S(val query: String?, val loading: Boolean?)
@@ -83,7 +83,7 @@ class SearchFragment : Fragment(),
     private val trackName: TextView,
     private val artistName: TextView
   ) : RecyclerView.ViewHolder(parent),
-    IPropContainer<State, Unit, ViewHolder.S1, ViewHolder.A1> {
+    IPropContainer<ViewHolder.S1, ViewHolder.A1> {
     data class S1(val trackName: String? = null, val artistName: String? = null)
     data class A1(val goToMusicDetail: (Int) -> Unit)
 
@@ -94,7 +94,7 @@ class SearchFragment : Fragment(),
       }
     }
 
-    override var reduxProps by ObservableReduxProps<State, Unit, S1, A1> { _, next ->
+    override var reduxProps by ObservableReduxProps<S1, A1> { _, next ->
       next?.state?.also {
         this.trackName.text = it.trackName
         this.artistName.text = it.artistName
@@ -117,7 +117,7 @@ class SearchFragment : Fragment(),
     }
   }
 
-  override var reduxProps by ObservableReduxProps<State, Unit, S, A> { _, next ->
+  override var reduxProps by ObservableReduxProps<S, A> { _, next ->
     if (next?.state?.loading == true) {
       this.backgroundDim.visibility = View.VISIBLE
       this.progressBar.visibility = View.VISIBLE

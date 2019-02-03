@@ -54,14 +54,12 @@ data class VariableProps<State, Action>(
 
 /**
  * Container for [StaticProps] and [VariableProps].
- * @param GlobalState The global state type.
- * @param GlobalExt The global external argument.
  * @param State The state type.
  * @param Action The action type.
- * @param s An [IStaticProps] instance.
+ * @param s An [IReduxSubscription] instance.
  * @param v An [IVariableProps] instance.
  */
-data class ReduxProps<GlobalState, GlobalExt, State, Action>(
-  val s: IStaticProps<GlobalState, GlobalExt>,
+data class ReduxProps<State, Action>(
+  val s: IReduxSubscription,
   val v: IVariableProps<State, Action>?
 )

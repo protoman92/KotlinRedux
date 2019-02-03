@@ -53,7 +53,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Redux.State, Unit, ViewHolder.S, ViewHolder.A>,
+    IPropContainer<ViewHolder.S, ViewHolder.A>,
     IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
     IPropMapper<Redux.State, Unit, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
     data class S(val plantings: PlantAndGardenPlantings?)
@@ -73,7 +73,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
       }
     }
 
-    override var reduxProps by ObservableReduxProps<Redux.State, Unit, S, A> { _, next ->
+    override var reduxProps by ObservableReduxProps<S, A> { _, next ->
       next?.state?.plantings?.also { p ->
         if (p.gardenPlantings.isNotEmpty()) {
           val context = this.itemView.context

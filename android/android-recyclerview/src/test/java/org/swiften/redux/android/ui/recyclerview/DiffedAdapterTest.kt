@@ -28,10 +28,10 @@ import org.swiften.redux.ui.ObservableReduxProps
 @RunWith(RobolectricTestRunner::class)
 class DiffedAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Int, Unit, Int, ViewHolder.A> {
+    IPropContainer<Int, ViewHolder.A> {
     class A
 
-    override var reduxProps by ObservableReduxProps<Int, Unit, Int, A> { _, _ -> }
+    override var reduxProps by ObservableReduxProps<Int, A> { _, _ -> }
   }
 
   class RecyclerAdapter : ReduxRecyclerViewAdapter<ViewHolder>(),
@@ -85,7 +85,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
       wrappedAdapter.onBindViewHolder(viewHolder, i)
 
       /** Even if this is called, it should not do anything */
-      viewHolder.reduxProps.s.subscription.unsubscribe()
+      viewHolder.reduxProps.s.unsubscribe()
     }
 
     // Then - view holder injection

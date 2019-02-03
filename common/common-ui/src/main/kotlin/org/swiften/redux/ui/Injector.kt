@@ -43,13 +43,11 @@ class EmptyPropLifecycleOwner<GlobalState, GlobalExt> : IPropLifecycleOwner<Glob
 
 /**
  * Represents a container for [ReduxProps].
- * @param GlobalState The global state type.
- * @param GlobalExt The global external argument.
  * @param State The container state.
  * @param Action the container action.
  */
-interface IPropContainer<GlobalState, GlobalExt, State, Action> {
-  var reduxProps: ReduxProps<GlobalState, GlobalExt, State, Action>
+interface IPropContainer<State, Action> {
+  var reduxProps: ReduxProps<State, Action>
 }
 
 /**
@@ -141,7 +139,7 @@ interface IPropInjector<GlobalState, GlobalExt> :
     outProps: OutProps,
     mapper: IPropMapper<GlobalState, GlobalExt, OutProps, State, Action>
   ): IReduxSubscription where
-    View : IPropContainer<GlobalState, GlobalExt, State, Action>,
+    View : IPropContainer<State, Action>,
     View : IPropLifecycleOwner<GlobalState, GlobalExt>
 }
 
@@ -166,7 +164,7 @@ open class PropInjector<GlobalState, GlobalExt>(
     outProps: OutProps,
     mapper: IPropMapper<GlobalState, GlobalExt, OutProps, State, Action>
   ): IReduxSubscription where
-    View : IPropContainer<GlobalState, GlobalExt, State, Action>,
+    View : IPropContainer<State, Action>,
     View : IPropLifecycleOwner<GlobalState, GlobalExt> {
     /**
      * It does not matter what the id is, as long as it is unique. This is because we will be
@@ -194,7 +192,7 @@ open class PropInjector<GlobalState, GlobalExt>(
      * a [Throwable], most notably [UninitializedPropertyAccessException] if [view] uses
      * [ObservableReduxProps] as delegate property.
      */
-    view.reduxProps = ReduxProps(staticProps, null)
+    view.reduxProps = ReduxProps(staticProps.subscription, null)
     view.beforePropInjectionStarts(staticProps)
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
@@ -226,7 +224,7 @@ open class PropInjector<GlobalState, GlobalExt>(
       view.afterPropInjectionEnds()
     }
 
-    view.reduxProps = view.reduxProps.copy(StaticProps(this, wrappedSub))
+    view.reduxProps = view.reduxProps.copy(wrappedSub)
     return wrappedSub
   }
 }
@@ -239,9 +237,9 @@ open class PropInjector<GlobalState, GlobalExt>(
  * from other containers.
  * @return The [IReduxSubscription.id].
  */
-fun IPropContainer<*, *, *, *>.unsubscribeSafely(): String? {
+fun IPropContainer<*, *>.unsubscribeSafely(): String? {
   try {
-    val subscription = this.reduxProps.s.subscription
+    val subscription = this.reduxProps.s
     subscription.unsubscribe()
     return subscription.id
   } catch (e: UninitializedPropertyAccessException) {

@@ -30,12 +30,12 @@ class AndroidPropInjector<GlobalState, GlobalExt>(
     outProps: OutProps,
     mapper: IPropMapper<GlobalState, GlobalExt, OutProps, State, Action>
   ): IReduxSubscription where
-    View : IPropContainer<GlobalState, GlobalExt, State, Action>,
+    View : IPropContainer<State, Action>,
     View : IPropLifecycleOwner<GlobalState, GlobalExt> {
     return super.inject(object :
-      IPropContainer<GlobalState, GlobalExt, State, Action>,
+      IPropContainer<State, Action>,
       IPropLifecycleOwner<GlobalState, GlobalExt> {
-      override var reduxProps: ReduxProps<GlobalState, GlobalExt, State, Action>
+      override var reduxProps: ReduxProps<State, Action>
         get() = view.reduxProps
         set(value) {
           this@AndroidPropInjector.runner { view.reduxProps = value }

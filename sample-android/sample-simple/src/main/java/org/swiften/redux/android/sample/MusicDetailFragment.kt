@@ -23,7 +23,7 @@ import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2019/01/12 */
 class MusicDetailFragment : Fragment(),
-  IPropContainer<State, Unit, MusicDetailFragment.S, MusicDetailFragment.A>,
+  IPropContainer<MusicDetailFragment.S, MusicDetailFragment.A>,
   IPropLifecycleOwner<State, Unit> by EmptyPropLifecycleOwner(),
   IPropMapper<State, Unit, Unit, MusicDetailFragment.S, MusicDetailFragment.A> by MusicDetailFragment {
   class S(val track: MusicTrack?)
@@ -41,7 +41,7 @@ class MusicDetailFragment : Fragment(),
     override fun mapState(state: State, outProps: Unit) = S(state.currentSelectedTrack())
   }
 
-  override var reduxProps by ObservableReduxProps<State, Unit, S, A> { _, next ->
+  override var reduxProps by ObservableReduxProps<S, A> { _, next ->
     next?.state?.track?.also {
       this.trackName.text = it.trackName
       this.artistName.text = it.artistName

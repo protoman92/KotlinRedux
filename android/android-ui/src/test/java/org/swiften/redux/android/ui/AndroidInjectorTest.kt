@@ -45,14 +45,14 @@ class AndroidInjectorTest : PropInjectorTest() {
     this.runner = Runner()
   }
 
-  internal class AndroidView : IPropContainer<S, Unit, S, A>, IPropLifecycleOwner<S, Unit> {
+  internal class AndroidView : IPropContainer<S, A>, IPropLifecycleOwner<S, Unit> {
     /**
      * Make sue [VetoableObservableProp.equalChecker] always returns false to avoid comparison
      * because [AndroidUtil.IMainThreadRunner.invoke] is performed before the prop comparison
      * happens. By returning false we can compare the actual [Runner.runCount] with the number
      * of times prop injection happens.
      */
-    override var reduxProps by VetoableObservableProp<ReduxProps<S, Unit, S, A>>(
+    override var reduxProps by VetoableObservableProp<ReduxProps<S, A>>(
       { _, _ -> false }
     ) { _, _ -> this.propsInjectionCount.incrementAndGet() }
 

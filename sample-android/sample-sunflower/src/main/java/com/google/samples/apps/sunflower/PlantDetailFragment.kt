@@ -56,7 +56,7 @@ import org.swiften.redux.ui.StaticProps
  */
 @SuppressLint("RestrictedApi")
 class PlantDetailFragment : Fragment(),
-  IPropContainer<Redux.State, Unit, PlantDetailFragment.S, PlantDetailFragment.A>,
+  IPropContainer<PlantDetailFragment.S, PlantDetailFragment.A>,
   IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
   IPropMapper<Redux.State, Unit, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
   by PlantDetailFragment {
@@ -72,7 +72,7 @@ class PlantDetailFragment : Fragment(),
       A { state.selectedPlant?.id?.also { dispatch(Redux.Action.AddPlantToGarden(it)) } }
   }
 
-  override var reduxProps by ObservableReduxProps<Redux.State, Unit, S, A> { _, next ->
+  override var reduxProps by ObservableReduxProps<S, A> { _, next ->
     next?.state?.plant?.also { p ->
       this.shareText = this.getString(R.string.share_text_plant, p.name)
       this.plant_watering.text = this.context?.let { this.bindWateringText(it, p.wateringInterval) }
