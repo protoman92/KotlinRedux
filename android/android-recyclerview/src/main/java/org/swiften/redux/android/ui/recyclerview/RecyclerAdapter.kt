@@ -31,7 +31,7 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
 }
 
 /** [RecyclerView.Adapter] that delegates method calls to another [RecyclerView.Adapter] */
-abstract class DelegateRecyclerAdapter<GlobalState, GlobalExt, VH, VHState, VHAction>(
+abstract class DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>
 ) : RecyclerView.Adapter<VH>() where
   VH : RecyclerView.ViewHolder,
@@ -101,15 +101,15 @@ abstract class DelegateRecyclerAdapter<GlobalState, GlobalExt, VH, VHState, VHAc
  * support lifecycle handling, so we will need to manually set null via [RecyclerView.setAdapter]
  * in order to invoke [RecyclerView.Adapter.onViewRecycled], e.g. on orientation change.
  */
-fun <GlobalState, GlobalExt, VH, VHState, VHAction> IPropInjector<GlobalState, GlobalExt>.injectRecyclerAdapter(
+fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecyclerAdapter(
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IStateMapper<GlobalState, Unit, Int>,
-  vhMapper: IPropMapper<GlobalState, GlobalExt, Int, VHState, VHAction>
-): DelegateRecyclerAdapter<GlobalState, GlobalExt, VH, VHState, VHAction> where
+  adapterMapper: IStateMapper<GState, Unit, Int>,
+  vhMapper: IPropMapper<GState, GExt, Int, VHState, VHAction>
+): DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GlobalState, GlobalExt> {
-  return object : DelegateRecyclerAdapter<GlobalState, GlobalExt, VH, VHState, VHAction>(adapter) {
+  VH : IPropLifecycleOwner<GState, GExt> {
+  return object : DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction>(adapter) {
     override fun getItemCount(): Int {
       return adapterMapper.mapState(this@injectRecyclerAdapter.lastState(), Unit)
     }

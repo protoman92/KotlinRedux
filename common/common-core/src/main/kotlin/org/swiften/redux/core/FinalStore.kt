@@ -9,13 +9,13 @@ package org.swiften.redux.core
 /**
  * [FinalStore] is a [IReduxStore] that combines all crucial [IReduxStore] implementations to
  * provide a full suite of functionalities.
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  * @param store An [IReduxStore] instance.
  */
-class FinalStore<GlobalState> private constructor(store: IReduxStore<GlobalState>) :
-  IReduxStore<GlobalState> by store {
-  constructor(state: GlobalState, reducer: IReducer<GlobalState>) :
-    this(fun (): IReduxStore<GlobalState> {
+class FinalStore<GState> private constructor(store: IReduxStore<GState>) :
+  IReduxStore<GState> by store {
+  constructor(state: GState, reducer: IReducer<GState>) :
+    this(fun (): IReduxStore<GState> {
       val rootStore = ThreadSafeStore(state, reducer)
       return DefaultActionStore(rootStore)
     }())

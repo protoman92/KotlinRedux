@@ -13,16 +13,16 @@ import kotlin.concurrent.write
 /**
  * [ThreadSafeStore] is a [IReduxStore] implementation that supports thread-safe accesses and
  * modifications. Pass in the initial [state] and the store's [reducer] in the constructor.
- * @param GlobalState The global state type.
- * @param state The initial default [GlobalState] instance.
+ * @param GState The global state type.
+ * @param state The initial default [GState] instance.
  * @param reducer A [IReducer] instance.
  */
-class ThreadSafeStore<GlobalState>(
-  private var state: GlobalState,
-  override val reducer: IReducer<GlobalState>
-) : IReduxStore<GlobalState> {
+class ThreadSafeStore<GState>(
+  private var state: GState,
+  override val reducer: IReducer<GState>
+) : IReduxStore<GState> {
   private val lock = ReentrantReadWriteLock()
-  private val subscribers = HashMap<String, (GlobalState) -> Unit>()
+  private val subscribers = HashMap<String, (GState) -> Unit>()
 
   override val lastState = { this.lock.read { this.state } }
 
@@ -31,10 +31,10 @@ class ThreadSafeStore<GlobalState>(
     this.lock.read { this.subscribers.forEach { it.value(this.state) } }
   }
 
-  override val subscribe: IReduxSubscriber<GlobalState> = { id, callback ->
+  override val subscribe: IReduxSubscriber<GState> = { id, callback ->
     this.lock.write { this.subscribers[id] = callback }
 
-    /** Relay the last [GlobalState] to this subscriber */
+    /** Relay the last [GState] to this subscriber */
     this.lock.read { callback(this.state) }
     ReduxSubscription(id) { this.lock.write { this.subscribers.remove(id) } }
   }

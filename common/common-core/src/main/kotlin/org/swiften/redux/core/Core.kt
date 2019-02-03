@@ -12,22 +12,22 @@ typealias IActionDispatcher = (IReduxAction) -> Unit
 /**
  * Represents a Redux reducer that reduce a [IReduxAction] onto a previous state to produce a new
  * state.
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  */
-typealias IReducer<GlobalState> = (GlobalState, IReduxAction) -> GlobalState
+typealias IReducer<GState> = (GState, IReduxAction) -> GState
 
 /**
  * Get the last internal state.
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  */
-typealias IStateGetter<GlobalState> = () -> GlobalState
+typealias IStateGetter<GState> = () -> GState
 
 /**
  * Subscribe to state updates with a callback. The subscriber id should be a unique id that
  * identifies that subscriber. The resulting [IReduxSubscription] can be used to unsubscribe.
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  */
-typealias IReduxSubscriber<GlobalState> = (String, (GlobalState) -> Unit) -> IReduxSubscription
+typealias IReduxSubscriber<GState> = (String, (GState) -> Unit) -> IReduxSubscription
 
 /** Perform some deinitialization logic. */
 typealias IDeinitializer = Function0<Unit>
@@ -37,10 +37,10 @@ interface IReduxAction
 
 /**
  * Represents an object that provides [IReducer].
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  */
-interface IReducerProvider<GlobalState> {
-  val reducer: IReducer<GlobalState>
+interface IReducerProvider<GState> {
+  val reducer: IReducer<GState>
 }
 
 /** Represents an object that provides [IActionDispatcher]. */
@@ -50,10 +50,10 @@ interface IDispatcherProvider {
 
 /**
  * Represents an object that provides [IStateGetter].
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  */
-interface IStateGetterProvider<GlobalState> {
-  val lastState: IStateGetter<GlobalState>
+interface IStateGetterProvider<GState> {
+  val lastState: IStateGetter<GState>
 }
 
 /** Represents an object that provides [IDeinitializer]. */
@@ -63,21 +63,21 @@ interface IDeinitializerProvider {
 
 /**
  * Represents an object that provides [IReduxSubscriber].
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  */
-interface IReduxSubscriberProvider<GlobalState> {
-  val subscribe: IReduxSubscriber<GlobalState>
+interface IReduxSubscriberProvider<GState> {
+  val subscribe: IReduxSubscriber<GState>
 }
 
 /**
  * Represents a Redux store that can dispatch [IReduxAction] with a [IActionDispatcher] to mutate
- * some internal [GlobalState]. Other objects can subscribe to [GlobalState] updates using
+ * some internal [GState]. Other objects can subscribe to [GState] updates using
  * [subscribe].
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  */
-interface IReduxStore<GlobalState> :
-  IReducerProvider<GlobalState>,
+interface IReduxStore<GState> :
+  IReducerProvider<GState>,
   IDispatcherProvider,
-  IStateGetterProvider<GlobalState>,
-  IReduxSubscriberProvider<GlobalState>,
+  IStateGetterProvider<GState>,
+  IReduxSubscriberProvider<GState>,
   IDeinitializerProvider

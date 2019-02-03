@@ -8,7 +8,7 @@ package org.swiften.redux.core
 /** Created by haipham on 2018/01/27 */
 /** Mock test class to provide some utilities */
 open class BaseMiddlewareTest {
-  fun <GlobalState> mockMiddlewareInput(state: GlobalState): MiddlewareInput<GlobalState> {
+  fun <GState> mockMiddlewareInput(state: GState): MiddlewareInput<GState> {
     return MiddlewareInput({ state }, { _, _ -> ReduxSubscription("mock") {} })
   }
 

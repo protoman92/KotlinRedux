@@ -20,12 +20,12 @@ import kotlin.concurrent.write
 /** Created by haipham on 2018/12/16 */
 /**
  * Handle lifecycles for a target of [IPropInjector].
- * @param GlobalState The global state type.
- * @param GlobalExt The global external argument.
+ * @param GState The global state type.
+ * @param GExt The global external argument.
  */
-interface IPropLifecycleOwner<GlobalState, GlobalExt> {
+interface IPropLifecycleOwner<GState, GExt> {
   /** This is called before [IPropInjector.inject] is called. */
-  fun beforePropInjectionStarts(sp: StaticProps<GlobalState, GlobalExt>)
+  fun beforePropInjectionStarts(sp: StaticProps<GState, GExt>)
 
   /** This is called after [IReduxSubscription.unsubscribe] is called. */
   fun afterPropInjectionEnds()
@@ -33,11 +33,11 @@ interface IPropLifecycleOwner<GlobalState, GlobalExt> {
 
 /**
  * Treat this as a delegate for [IPropLifecycleOwner] that does not hold any logic.
- * @param GlobalState The global state type.
- * @param GlobalExt The global external argument.
+ * @param GState The global state type.
+ * @param GExt The global external argument.
  */
-class EmptyPropLifecycleOwner<GlobalState, GlobalExt> : IPropLifecycleOwner<GlobalState, GlobalExt> {
-  override fun beforePropInjectionStarts(sp: StaticProps<GlobalState, GlobalExt>) {}
+class EmptyPropLifecycleOwner<GState, GExt> : IPropLifecycleOwner<GState, GExt> {
+  override fun beforePropInjectionStarts(sp: StaticProps<GState, GExt>) {}
   override fun afterPropInjectionEnds() {}
 }
 
@@ -53,54 +53,54 @@ interface IPropContainer<State, Action> {
 /**
  * Represents static dependencies for [IActionMapper]. [IActionMapper.mapAction] will have access
  * to [IDispatcherProvider.dispatch] and [external].
- * @param GlobalExt The global external argument.
+ * @param GExt The global external argument.
  */
-interface IActionDependency<GlobalExt> : IDispatcherProvider {
-  val external: GlobalExt
+interface IActionDependency<GExt> : IDispatcherProvider {
+  val external: GExt
 }
 
 /**
- * Maps [GlobalState] to [State] for a [IPropContainer].
- * @param GlobalState The global state type.
+ * Maps [GState] to [State] for a [IPropContainer].
+ * @param GState The global state type.
  * @param OutProps Property as defined by a view's parent.
  * @param State The container state.
  */
-interface IStateMapper<GlobalState, OutProps, State> {
+interface IStateMapper<GState, OutProps, State> {
   /**
-   * Map [GlobalState] to [State] using [OutProps]
-   * @param state The latest [GlobalState] instance.
+   * Map [GState] to [State] using [OutProps]
+   * @param state The latest [GState] instance.
    * @param outProps The [OutProps] instance.
    * @return A [State] instance.
    */
-  fun mapState(state: GlobalState, outProps: OutProps): State
+  fun mapState(state: GState, outProps: OutProps): State
 }
 
 /**
- * Maps [IActionDispatcher] and [GlobalState] to [Action] for a [IPropContainer]. Note that [Action]
- * can include external, non-Redux related dependencies provided by [GlobalExt].
+ * Maps [IActionDispatcher] and [GState] to [Action] for a [IPropContainer]. Note that [Action]
+ * can include external, non-Redux related dependencies provided by [GExt].
  *
  * For example, if the app wants to load an image into a view, it's probably not a good idea to
- * download that image and store in the [GlobalState] to be mapped into [VariableProps.state]. It
- * is better to inject an image downloader in [Action] using [GlobalExt].
- * @param GlobalState The global state type.
- * @param GlobalExt The global external argument.
+ * download that image and store in the [GState] to be mapped into [VariableProps.state]. It
+ * is better to inject an image downloader in [Action] using [GExt].
+ * @param GState The global state type.
+ * @param GExt The global external argument.
  * @param OutProps Property as defined by a view's parent.
  * @param Action The container action.
  */
-interface IActionMapper<GlobalState, GlobalExt, OutProps, Action> {
+interface IActionMapper<GState, GExt, OutProps, Action> {
   /**
-   * Map [IActionDispatcher] to [Action] using [GlobalState], [GlobalExt] and [OutProps]
+   * Map [IActionDispatcher] to [Action] using [GState], [GExt] and [OutProps]
    * @param static An [IActionDependency] instance.
-   * @param state The latest [GlobalState] instance.
-   * @param ext The [GlobalExt] instance.
+   * @param state The latest [GState] instance.
+   * @param ext The [GExt] instance.
    * @param outProps The [OutProps] instance.
    * @return An [Action] instance.
    */
-  fun mapAction(static: IActionDependency<GlobalExt>, state: GlobalState, outProps: OutProps): Action
+  fun mapAction(static: IActionDependency<GExt>, state: GState, outProps: OutProps): Action
 }
 
 /**
- * Maps [GlobalState] to [State] and [Action] for a [IPropContainer]. [OutProps] is the view's
+ * Maps [GState] to [State] and [Action] for a [IPropContainer]. [OutProps] is the view's
  * immutable property as dictated by its parent.
  *
  * For example, a parent view, which contains a list of child views, wants to call
@@ -108,24 +108,24 @@ interface IActionMapper<GlobalState, GlobalExt, OutProps, Action> {
  * should therefore be an [Int] that corresponds to their respective indexes in the parent.
  * Generally, though, [OutProps] tends to be [Unit].
  *
- * @param GlobalState The global state type.
- * @param GlobalExt The global external argument.
+ * @param GState The global state type.
+ * @param GExt The global external argument.
  * @param OutProps Property as defined by a view's parent.
  * @param State The container state.
  * @param Action The container action.
  */
-interface IPropMapper<GlobalState, GlobalExt, OutProps, State, Action> :
-  IStateMapper<GlobalState, OutProps, State>,
-  IActionMapper<GlobalState, GlobalExt, OutProps, Action>
+interface IPropMapper<GState, GExt, OutProps, State, Action> :
+  IStateMapper<GState, OutProps, State>,
+  IActionMapper<GState, GExt, OutProps, Action>
 
 /**
  * Inject state and actions into an [IPropContainer].
- * @param GlobalState The global state type.
- * @param GlobalExt The global external argument.
+ * @param GState The global state type.
+ * @param GExt The global external argument.
  */
-interface IPropInjector<GlobalState, GlobalExt> :
-  IActionDependency<GlobalExt>,
-  IStateGetterProvider<GlobalState>,
+interface IPropInjector<GState, GExt> :
+  IActionDependency<GExt>,
+  IStateGetterProvider<GState>,
   IDeinitializerProvider {
   /**
    * Inject [State] and [Action] into [view]. This method does not handle lifecycles, so
@@ -141,35 +141,35 @@ interface IPropInjector<GlobalState, GlobalExt> :
   fun <OutProps, View, State, Action> inject(
     view: View,
     outProps: OutProps,
-    mapper: IPropMapper<GlobalState, GlobalExt, OutProps, State, Action>
+    mapper: IPropMapper<GState, GExt, OutProps, State, Action>
   ): IReduxSubscription where
     View : IPropContainer<State, Action>,
-    View : IPropLifecycleOwner<GlobalState, GlobalExt>
+    View : IPropLifecycleOwner<GState, GExt>
 }
 
 /**
  * A [IPropInjector] implementation that handles [inject] in a thread-safe manner. It
  * also invokes [IPropLifecycleOwner.beforePropInjectionStarts] and
  * [IPropLifecycleOwner.afterPropInjectionEnds] when appropriate.
- * @param GlobalState The global state type.
- * @param GlobalExt The global external argument.
+ * @param GState The global state type.
+ * @param GExt The global external argument.
  * @param store An [IReduxStore] instance.
  */
-open class PropInjector<GlobalState, GlobalExt>(
-  private val store: IReduxStore<GlobalState>,
-  override val external: GlobalExt
+open class PropInjector<GState, GExt>(
+  private val store: IReduxStore<GState>,
+  override val external: GExt
 ) :
-  IPropInjector<GlobalState, GlobalExt>,
+  IPropInjector<GState, GExt>,
   IDispatcherProvider by store,
-  IStateGetterProvider<GlobalState> by store,
+  IStateGetterProvider<GState> by store,
   IDeinitializerProvider by store {
   override fun <OutProps, View, State, Action> inject(
     view: View,
     outProps: OutProps,
-    mapper: IPropMapper<GlobalState, GlobalExt, OutProps, State, Action>
+    mapper: IPropMapper<GState, GExt, OutProps, State, Action>
   ): IReduxSubscription where
     View : IPropContainer<State, Action>,
-    View : IPropLifecycleOwner<GlobalState, GlobalExt> {
+    View : IPropLifecycleOwner<GState, GExt> {
     /**
      * It does not matter what the id is, as long as it is unique. This is because we will be
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep
@@ -201,7 +201,7 @@ open class PropInjector<GlobalState, GlobalExt>(
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
 
-    val onStateUpdate: (GlobalState) -> Unit = {
+    val onStateUpdate: (GState) -> Unit = {
       val next = mapper.mapState(it, outProps)
       val prev = lock.read { previousState }
 
@@ -216,8 +216,8 @@ open class PropInjector<GlobalState, GlobalExt>(
     }
 
     /**
-     * Immediately set [IPropContainer.reduxProps] based on [store]'s last [GlobalState], in case
-     * this [store] does not relay last [GlobalState] on subscription.
+     * Immediately set [IPropContainer.reduxProps] based on [store]'s last [GState], in case
+     * this [store] does not relay last [GState] on subscription.
      */
     onStateUpdate(this.store.lastState())
     val subscription = this.store.subscribe(subscriberId, onStateUpdate)

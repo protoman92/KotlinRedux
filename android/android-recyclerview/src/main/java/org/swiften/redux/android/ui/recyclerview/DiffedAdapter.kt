@@ -34,11 +34,11 @@ interface IDiffItemCallback<T> {
  * Custom Redux-compatible [ListAdapter] implementation. This [ListAdapter] can receive [ReduxProps]
  * in order to call [ListAdapter.submitList].
  */
-abstract class ReduxListAdapter<GlobalState, GlobalExt, VH, S, A>(
+abstract class ReduxListAdapter<GState, GExt, VH, S, A>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<S>
 ) : ListAdapter<S, VH>(diffCallback),
-  IPropLifecycleOwner<GlobalState, GlobalExt> by EmptyPropLifecycleOwner(),
+  IPropLifecycleOwner<GState, GExt> by EmptyPropLifecycleOwner(),
   IPropContainer<List<S>, A> where VH : RecyclerView.ViewHolder {
   /**
    * Since we are only calling [ListAdapter.submitList] when [reduxProps] arrives, the
@@ -116,14 +116,14 @@ abstract class ReduxListAdapter<GlobalState, GlobalExt, VH, S, A>(
  * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].
  */
 @Suppress("UNCHECKED_CAST")
-fun <GlobalState, GlobalExt, VH, VHS, VHA> IPropInjector<GlobalState, GlobalExt>.injectDiffedAdapter(
+fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter(
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GlobalState, GlobalExt, Unit, List<VHS>, VHA>,
+  adapterMapper: IPropMapper<GState, GExt, Unit, List<VHS>, VHA>,
   diffCallback: DiffUtil.ItemCallback<VHS>
-): ReduxListAdapter<GlobalState, GlobalExt, VH, VHS, VHA> where
+): ReduxListAdapter<GState, GExt, VH, VHS, VHA> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHS, VHA> {
-  val listAdapter = object : ReduxListAdapter<GlobalState, GlobalExt, VH, VHS, VHA>(adapter, diffCallback) {
+  val listAdapter = object : ReduxListAdapter<GState, GExt, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
       require(this.reduxProps.v?.action is Any, { "Use Unit instead of null for prop mapping" })

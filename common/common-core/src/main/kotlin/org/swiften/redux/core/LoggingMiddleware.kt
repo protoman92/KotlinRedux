@@ -14,13 +14,13 @@ import kotlin.concurrent.write
 /**
  * [IMiddleware] implementation that supports logging. Specify [logger] to customize how events
  * are formatted.
- * @param GlobalState The global state type.
- * @param logger Function to specify how [GlobalState] and [IReduxAction] are formatted.
+ * @param GState The global state type.
+ * @param logger Function to specify how [GState] and [IReduxAction] are formatted.
  */
-internal class LoggingMiddleware<GlobalState>(
-  private val logger: (GlobalState, IReduxAction?) -> Unit
-) : IMiddleware<GlobalState> {
-  override fun invoke(p1: MiddlewareInput<GlobalState>): DispatchMapper {
+internal class LoggingMiddleware<GState>(
+  private val logger: (GState, IReduxAction?) -> Unit
+) : IMiddleware<GState> {
+  override fun invoke(p1: MiddlewareInput<GState>): DispatchMapper {
     return { wrapper ->
       val lock = ReentrantReadWriteLock()
       val subscriberId = "${this@LoggingMiddleware}${UUID.randomUUID()}"
@@ -44,12 +44,12 @@ internal class LoggingMiddleware<GlobalState>(
 
 /**
  * Create a [LoggingMiddleware] with [logger].
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  * @param logger See [LoggingMiddleware.logger].
  * @return A [LoggingMiddleware] instance.
  */
-fun <GlobalState> createLoggingMiddleware(
-  logger: (GlobalState, IReduxAction?) -> Unit = { s, a ->
+fun <GState> createLoggingMiddleware(
+  logger: (GState, IReduxAction?) -> Unit = { s, a ->
 println("Redux: Last action $a, Last state $s")
 }
-): IMiddleware<GlobalState> = LoggingMiddleware(logger)
+): IMiddleware<GState> = LoggingMiddleware(logger)

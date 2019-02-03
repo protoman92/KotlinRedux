@@ -12,19 +12,19 @@ typealias DispatchMapper = (DispatchWrapper) -> DispatchWrapper
 /**
  * Represents a Redux middleware that accepts an [MiddlewareInput] and produces a
  * [DispatchWrapper].
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  */
-typealias IMiddleware<GlobalState> = (MiddlewareInput<GlobalState>) -> DispatchMapper
+typealias IMiddleware<GState> = (MiddlewareInput<GState>) -> DispatchMapper
 
 /**
  * Input for middlewares that includes some functionalities from [IReduxStore].
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  * @param stateGetter See [IReduxStore.lastState].
  * @param subscriber See [IReduxStore.subscribe].
  */
-class MiddlewareInput<out GlobalState>(
-  val stateGetter: IStateGetter<GlobalState>,
-  val subscriber: IReduxSubscriber<GlobalState>
+class MiddlewareInput<out GState>(
+  val stateGetter: IStateGetter<GState>,
+  val subscriber: IReduxSubscriber<GState>
 )
 
 /**
@@ -40,25 +40,25 @@ class DispatchWrapper(val id: String, val dispatch: IActionDispatcher) {
 
 /**
  * Enhance a [store] by overriding its [IReduxStore.dispatch] with [dispatch].
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  * @param store An [IReduxStore] instance.
  * @param dispatch An overriding [IActionDispatcher] instance.
  */
-private class EnhancedReduxStore<GlobalState>(
-  private val store: IReduxStore<GlobalState>,
+private class EnhancedReduxStore<GState>(
+  private val store: IReduxStore<GState>,
   override val dispatch: (IReduxAction) -> Unit
-) : IReduxStore<GlobalState> by store
+) : IReduxStore<GState> by store
 
 /**
  * Combine [middlewares] into a master [IMiddleware] and apply it to a [IReduxStore.dispatch] to
  * produce a [DispatchWrapper].
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  * @param middlewares The [IMiddleware] instances to be applied to an [IReduxStore].
  * @return Function that maps [IReduxStore.dispatch] to a [DispatchMapper].
  */
-internal fun <GlobalState> combineMiddlewares(
-  middlewares: Collection<IMiddleware<GlobalState>>
-): (IReduxStore<GlobalState>) -> DispatchWrapper {
+internal fun <GState> combineMiddlewares(
+  middlewares: Collection<IMiddleware<GState>>
+): (IReduxStore<GState>) -> DispatchWrapper {
   return fun(store): DispatchWrapper {
     val input = MiddlewareInput(store.lastState, store.subscribe)
     val rootWrapper = DispatchWrapper(DispatchWrapper.ROOT_WRAPPER, store.dispatch)
@@ -72,13 +72,13 @@ internal fun <GlobalState> combineMiddlewares(
 
 /**
  * Apply [middlewares] to a [IReduxStore] instance to get an enhanced [IReduxStore]
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  * @param middlewares The [IMiddleware] instances to be applied to an [IReduxStore].
  * @return Function that maps an [IReduxStore] to an [EnhancedReduxStore].
  */
-fun <GlobalState> applyMiddlewares(
-  middlewares: Collection<IMiddleware<GlobalState>>
-): (IReduxStore<GlobalState>) -> IReduxStore<GlobalState> = fun(store): IReduxStore<GlobalState> {
+fun <GState> applyMiddlewares(
+  middlewares: Collection<IMiddleware<GState>>
+): (IReduxStore<GState>) -> IReduxStore<GState> = fun(store): IReduxStore<GState> {
   val wrapper = combineMiddlewares(middlewares)(store)
   return EnhancedReduxStore(store, wrapper.dispatch)
 }
@@ -86,10 +86,10 @@ fun <GlobalState> applyMiddlewares(
 /**
  * Apply [middlewares] to a [IReduxStore] instance. This is a convenience method that uses
  * varargs.
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  * @param middlewares The [IMiddleware] instances to be applied to an [IReduxStore].
  * @return Function that maps an [IReduxStore] to an [EnhancedReduxStore].
  */
-fun <GlobalState> applyMiddlewares(vararg middlewares: IMiddleware<GlobalState>): (IReduxStore<GlobalState>) -> IReduxStore<GlobalState> {
+fun <GState> applyMiddlewares(vararg middlewares: IMiddleware<GState>): (IReduxStore<GState>) -> IReduxStore<GState> {
   return applyMiddlewares(middlewares.asList())
 }

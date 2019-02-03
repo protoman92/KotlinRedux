@@ -76,14 +76,14 @@ open class LifecycleObserver(
 }
 
 /** Call [IPropInjector.inject] for [lifecycleOwner] */
-fun <GlobalState, GlobalExt, LC, OP, S, A> IPropInjector<GlobalState, GlobalExt>.injectLifecycle(
+fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   lifecycleOwner: LC,
   outProps: OP,
-  mapper: IPropMapper<GlobalState, GlobalExt, OP, S, A>
+  mapper: IPropMapper<GState, GExt, OP, S, A>
 ): LC where
   LC : LifecycleOwner,
   LC : IPropContainer<S, A>,
-  LC : IPropLifecycleOwner<GlobalState, GlobalExt> {
+  LC : IPropLifecycleOwner<GState, GExt> {
   var subscription: IReduxSubscription? = null
 
   /**
@@ -96,7 +96,7 @@ fun <GlobalState, GlobalExt, LC, OP, S, A> IPropInjector<GlobalState, GlobalExt>
     override fun onSafeForStartingLifecycleAwareTasks() {
       subscription = inject(object :
         IPropContainer<S, A> by lifecycleOwner,
-        IPropLifecycleOwner<GlobalState, GlobalExt> by lifecycleOwner {
+        IPropLifecycleOwner<GState, GExt> by lifecycleOwner {
         override var reduxProps: ReduxProps<S, A>
           get() = lifecycleOwner.reduxProps
 
@@ -119,14 +119,14 @@ fun <GlobalState, GlobalExt, LC, OP, S, A> IPropInjector<GlobalState, GlobalExt>
 }
 
 /** Call [IPropInjector.inject] for [lifecycleOwner] but it also implements [IPropMapper] */
-fun <GlobalState, GlobalExt, LC, OP, S, A> IPropInjector<GlobalState, GlobalExt>.injectLifecycle(
+fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   lifecycleOwner: LC,
   outProps: OP
 ): LC where
   LC : LifecycleOwner,
   LC : IPropContainer<S, A>,
-  LC : IPropLifecycleOwner<GlobalState, GlobalExt>,
-  LC : IPropMapper<GlobalState, GlobalExt, OP, S, A> {
+  LC : IPropLifecycleOwner<GState, GExt>,
+  LC : IPropMapper<GState, GExt, OP, S, A> {
   return this.injectLifecycle(lifecycleOwner, outProps, lifecycleOwner)
 }
 
@@ -134,12 +134,12 @@ fun <GlobalState, GlobalExt, LC, OP, S, A> IPropInjector<GlobalState, GlobalExt>
  * Call [IPropInjector.inject] for [lifecycleOwner] but it also implements [IPropMapper] and
  * out props is [Unit].
  */
-fun <GlobalState, GlobalExt, LC, S, A> IPropInjector<GlobalState, GlobalExt>.injectLifecycle(
+fun <GState, GExt, LC, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   lifecycleOwner: LC
 ): LC where
   LC : LifecycleOwner,
   LC : IPropContainer<S, A>,
-  LC : IPropLifecycleOwner<GlobalState, GlobalExt>,
-  LC : IPropMapper<GlobalState, GlobalExt, Unit, S, A> {
+  LC : IPropLifecycleOwner<GState, GExt>,
+  LC : IPropMapper<GState, GExt, Unit, S, A> {
   return this.injectLifecycle(lifecycleOwner, Unit)
 }

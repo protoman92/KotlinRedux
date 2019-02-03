@@ -28,9 +28,9 @@ class AppCompatActivityWrapper(private val activity: AppCompatActivity) : IAppCo
  * Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary. This injection
  * session automatically disposes of itself when [ILifecycleCallback.onDestroy] is called.
  */
-internal fun <GlobalState, GlobalExt> IPropInjector<GlobalState, GlobalExt>.injectFragment(
+internal fun <GState, GExt> IPropInjector<GState, GExt>.injectFragment(
   activity: IAppCompatActivity,
-  inject: IPropInjector<GlobalState, GlobalExt>.(LifecycleOwner) -> Unit
+  inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
 ) {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
@@ -55,9 +55,9 @@ internal fun <GlobalState, GlobalExt> IPropInjector<GlobalState, GlobalExt>.inje
 }
 
 /** Call [injectFragment] with an [AppCompatActivity] */
-internal fun <GlobalState, GlobalExt> IPropInjector<GlobalState, GlobalExt>.injectFragment(
+internal fun <GState, GExt> IPropInjector<GState, GExt>.injectFragment(
   activity: AppCompatActivity,
-  inject: IPropInjector<GlobalState, GlobalExt>.(LifecycleOwner) -> Unit
+  inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
 ) {
   return this.injectFragment(AppCompatActivityWrapper(activity), inject)
 }

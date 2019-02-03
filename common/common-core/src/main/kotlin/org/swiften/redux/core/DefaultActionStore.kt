@@ -8,11 +8,11 @@ package org.swiften.redux.core
 /** Created by haipham on 2019/01/15 */
 /**
  * A [IReduxStore] that handles [DefaultReduxAction].
- * @param GlobalState The global state type.
+ * @param GState The global state type.
  * @param store An [IReduxStore] instance.
  */
-class DefaultActionStore<GlobalState>(private val store: IReduxStore<GlobalState>) :
-  IReduxStore<GlobalState> by store {
+class DefaultActionStore<GState>(private val store: IReduxStore<GState>) :
+  IReduxStore<GState> by store {
   override val reducer = ReduxReducerWrapper(this.store.reducer)
 
   override val deinitialize: IDeinitializer = {

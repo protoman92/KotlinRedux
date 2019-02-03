@@ -20,25 +20,25 @@ import java.io.Serializable
 import java.util.Date
 
 /** Created by haipham on 2018/12/17 */
-/** Handle saving/restoring [GlobalState] instances. */
-interface IBundleStateSaver<GlobalState> {
-  fun saveState(bundle: Bundle, state: GlobalState)
-  fun restoreState(bundle: Bundle): GlobalState?
+/** Handle saving/restoring [GState] instances. */
+interface IBundleStateSaver<GState> {
+  fun saveState(bundle: Bundle, state: GState)
+  fun restoreState(bundle: Bundle): GState?
 }
 
 /**
  * Listen to [Activity] lifecycle callbacks and perform [inject] when necessary. We can also
- * declare [saveState] and [restoreState] to handle [GlobalState] persistence.
+ * declare [saveState] and [restoreState] to handle [GState] persistence.
  *
  * When [Application.ActivityLifecycleCallbacks.onActivityCreated] is called, perform [inject]
  * on the [AppCompatActivity] being created, and also call [injectFragment]. This is why
  * [inject] accepts [LifecycleOwner] as its only parameter so that it can handle both
  * [AppCompatActivity] and [Fragment].
  */
-fun <GlobalState, GlobalExt> IPropInjector<GlobalState, GlobalExt>.injectActivity(
+fun <GState, GExt> IPropInjector<GState, GExt>.injectActivity(
   application: Application,
-  saver: IBundleStateSaver<GlobalState>,
-  inject: IPropInjector<GlobalState, GlobalExt>.(LifecycleOwner) -> Unit
+  saver: IBundleStateSaver<GState>,
+  inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks {
   val callback = object : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity?) {}
@@ -72,36 +72,36 @@ fun <GlobalState, GlobalExt> IPropInjector<GlobalState, GlobalExt>.injectActivit
 }
 
 /**
- * Similar to [injectActivity], but provides default persistence for when [GlobalState] is
+ * Similar to [injectActivity], but provides default persistence for when [GState] is
  * [Serializable]
  */
-inline fun <reified GlobalState, GlobalExt> IPropInjector<GlobalState, GlobalExt>.injectActivitySerializable(
+inline fun <reified GState, GExt> IPropInjector<GState, GExt>.injectActivitySerializable(
   application: Application,
-  noinline inject: IPropInjector<GlobalState, GlobalExt>.(LifecycleOwner) -> Unit
-): Application.ActivityLifecycleCallbacks where GlobalState : Serializable {
+  noinline inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
+): Application.ActivityLifecycleCallbacks where GState : Serializable {
   val key = "REDUX_STATE_${Date().time}"
 
-  return this.injectActivity(application, object : IBundleStateSaver<GlobalState> {
-    override fun saveState(bundle: Bundle, state: GlobalState) = bundle.putSerializable(key, state)
+  return this.injectActivity(application, object : IBundleStateSaver<GState> {
+    override fun saveState(bundle: Bundle, state: GState) = bundle.putSerializable(key, state)
 
-    override fun restoreState(bundle: Bundle): GlobalState? {
-      return bundle.getSerializable(key)?.takeIf { it is GlobalState }?.run { this as GlobalState }
+    override fun restoreState(bundle: Bundle): GState? {
+      return bundle.getSerializable(key)?.takeIf { it is GState }?.run { this as GState }
     }
   }, inject)
 }
 
 /**
- * Similar to [injectActivity], but provides default persistence for when [GlobalState] is
+ * Similar to [injectActivity], but provides default persistence for when [GState] is
  * [Parcelable]
  */
-inline fun <reified GlobalState, GlobalExt> IPropInjector<GlobalState, GlobalExt>.injectActivityParcelable(
+inline fun <reified GState, GExt> IPropInjector<GState, GExt>.injectActivityParcelable(
   application: Application,
-  noinline inject: IPropInjector<GlobalState, GlobalExt>.(LifecycleOwner) -> Unit
-): Application.ActivityLifecycleCallbacks where GlobalState : Parcelable {
+  noinline inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
+): Application.ActivityLifecycleCallbacks where GState : Parcelable {
   val key = "REDUX_STATE_${Date().time}"
 
-  return this.injectActivity(application, object : IBundleStateSaver<GlobalState> {
-    override fun saveState(bundle: Bundle, state: GlobalState) = bundle.putParcelable(key, state)
-    override fun restoreState(bundle: Bundle) = bundle.getParcelable<GlobalState>(key)
+  return this.injectActivity(application, object : IBundleStateSaver<GState> {
+    override fun saveState(bundle: Bundle, state: GState) = bundle.putParcelable(key, state)
+    override fun restoreState(bundle: Bundle) = bundle.getParcelable<GState>(key)
   }, inject)
 }

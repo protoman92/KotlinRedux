@@ -10,11 +10,11 @@ import org.swiften.redux.core.IReduxSubscription
 /** Created by haipham on 2019/01/16 */
 /**
  * Container for an [IPropContainer] static properties.
- * @param GlobalState The global state type.
- * @param GlobalExt The global external argument.
+ * @param GState The global state type.
+ * @param GExt The global external argument.
  */
-interface IStaticProps<GlobalState, GlobalExt> {
-  val injector: IPropInjector<GlobalState, GlobalExt>
+interface IStaticProps<GState, GExt> {
+  val injector: IPropInjector<GState, GExt>
   val subscription: IReduxSubscription
 }
 
@@ -30,15 +30,15 @@ interface IVariableProps<State, Action> {
 
 /**
  * [IStaticProps] implementation.
- * @param GlobalState The global state type.
- * @param GlobalExt The global external argument.
+ * @param GState The global state type.
+ * @param GExt The global external argument.
  * @param injector See [IStaticProps.injector].
  * @param subscription See [IStaticProps.subscription].
  */
-data class StaticProps<GlobalState, GlobalExt>(
-  override val injector: IPropInjector<GlobalState, GlobalExt>,
+data class StaticProps<GState, GExt>(
+  override val injector: IPropInjector<GState, GExt>,
   override val subscription: IReduxSubscription
-) : IStaticProps<GlobalState, GlobalExt>
+) : IStaticProps<GState, GExt>
 
 /**
  * [IVariableProps] implementation.

@@ -20,15 +20,15 @@ import org.swiften.redux.ui.unsubscribeSafely
 
 /** Created by haipham on 2019/01/24 */
 /** Perform [injectRecyclerAdapter], but also handle lifecycle with [lifecycleOwner] */
-fun <GlobalState, GlobalExt, VH, VHState, VHAction> IPropInjector<GlobalState, GlobalExt>.injectRecyclerAdapter(
+fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecyclerAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IStateMapper<GlobalState, Unit, Int>,
-  vhMapper: IPropMapper<GlobalState, GlobalExt, Int, VHState, VHAction>
+  adapterMapper: IStateMapper<GState, Unit, Int>,
+  vhMapper: IPropMapper<GState, GExt, Int, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GlobalState, GlobalExt> {
+  VH : IPropLifecycleOwner<GState, GExt> {
   val wrappedAdapter = this.injectRecyclerAdapter(adapter, adapterMapper, vhMapper)
 
   LifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
@@ -39,24 +39,24 @@ fun <GlobalState, GlobalExt, VH, VHState, VHAction> IPropInjector<GlobalState, G
   return wrappedAdapter
 }
 
-fun <GlobalState, GlobalExt, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState, GlobalExt>.injectRecyclerAdapter(
+fun <GState, GExt, Adapter, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecyclerAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: Adapter,
-  vhMapper: IPropMapper<GlobalState, GlobalExt, Int, VHState, VHAction>
+  vhMapper: IPropMapper<GState, GExt, Int, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GlobalState, GlobalExt>,
+  VH : IPropLifecycleOwner<GState, GExt>,
   Adapter : RecyclerView.Adapter<VH>,
-  Adapter : IStateMapper<GlobalState, Unit, Int> {
+  Adapter : IStateMapper<GState, Unit, Int> {
   return this.injectRecyclerAdapter(lifecycleOwner, adapter, adapter, vhMapper)
 }
 
 /** Perform [injectDiffedAdapter], but also handle lifecycle with [lifecycleOwner] */
-fun <GlobalState, GlobalExt, VH, VHS, VHA> IPropInjector<GlobalState, GlobalExt>.injectDiffedAdapter(
+fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GlobalState, GlobalExt, Unit, List<VHS>, VHA>,
+  adapterMapper: IPropMapper<GState, GExt, Unit, List<VHS>, VHA>,
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
@@ -72,10 +72,10 @@ fun <GlobalState, GlobalExt, VH, VHS, VHA> IPropInjector<GlobalState, GlobalExt>
 }
 
 /** Instead of [DiffUtil.ItemCallback], use [IDiffItemCallback] to avoid abstract class */
-fun <GlobalState, GlobalExt, VH, VHS, VHA> IPropInjector<GlobalState, GlobalExt>.injectDiffedAdapter(
+fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GlobalState, GlobalExt, Unit, List<VHS>, VHA>,
+  adapterMapper: IPropMapper<GState, GExt, Unit, List<VHS>, VHA>,
   diffCallback: IDiffItemCallback<VHS>
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
@@ -96,14 +96,14 @@ fun <GlobalState, GlobalExt, VH, VHS, VHA> IPropInjector<GlobalState, GlobalExt>
  * Convenience [injectDiffedAdapter] for when [mapper] implements both [IPropMapper] and
  * [DiffUtil.ItemCallback].
  */
-fun <GlobalState, GlobalExt, Mapper, VH, VHS, VHA> IPropInjector<GlobalState, GlobalExt>.injectDiffedAdapter(
+fun <GState, GExt, Mapper, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
   mapper: Mapper
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHS, VHA>,
-  Mapper : IPropMapper<GlobalState, GlobalExt, Unit, List<VHS>, VHA>,
+  Mapper : IPropMapper<GState, GExt, Unit, List<VHS>, VHA>,
   Mapper : IDiffItemCallback<VHS> {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, mapper, mapper)
 }
@@ -112,14 +112,14 @@ fun <GlobalState, GlobalExt, Mapper, VH, VHS, VHA> IPropInjector<GlobalState, Gl
  * Convenience [injectDiffedAdapter] for when [adapter] implements both [RecyclerView.Adapter],
  * [IPropMapper] and [DiffUtil.ItemCallback].
  */
-fun <GlobalState, GlobalExt, Adapter, VH, VHS, VHA> IPropInjector<GlobalState, GlobalExt>.injectDiffedAdapter(
+fun <GState, GExt, Adapter, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: Adapter
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHS, VHA>,
   Adapter : RecyclerView.Adapter<VH>,
-  Adapter : IPropMapper<GlobalState, GlobalExt, Unit, List<VHS>, VHA>,
+  Adapter : IPropMapper<GState, GExt, Unit, List<VHS>, VHA>,
   Adapter : IDiffItemCallback<VHS> {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, adapter)
 }
