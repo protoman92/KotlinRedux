@@ -28,10 +28,10 @@ import org.swiften.redux.ui.ObservableReduxProps
 @RunWith(RobolectricTestRunner::class)
 class DiffedAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Int, Int, ViewHolder.A?> {
+    IPropContainer<Int, Int, ViewHolder.A> {
     class A
 
-    override var reduxProps by ObservableReduxProps<Int, Int, A?> { _, _ -> }
+    override var reduxProps by ObservableReduxProps<Int, Int, A> { _, _ -> }
   }
 
   class RecyclerAdapter : ReduxRecyclerViewAdapter<ViewHolder>(),
@@ -39,7 +39,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     IDiffItemCallback<Int> by RecyclerAdapter {
     companion object : IPropMapper<Int, Unit, List<Int>, ViewHolder.A>, IDiffItemCallback<Int> {
       override fun mapState(state: Int, outProps: Unit): List<Int> {
-        return arrayListOf(state)
+        return (0 until state).map { it }
       }
 
       override fun mapAction(dispatch: IActionDispatcher, state: Int, outProps: Unit): ViewHolder.A {
@@ -58,7 +58,13 @@ class DiffedAdapterTest : BaseLifecycleTest() {
   @Test
   fun `Injecting props for diffed adapter should work`() {
     // Setup
-    val injector = BaseLifecycleTest.TestInjector()
+    val totalItemCount = 3
+
+    /**
+     * Override [BaseLifecycleTest.TestInjector.lastState] to avoid calling
+     * [ReduxListAdapter.submitList]. This allows us to specify how many [ViewHolder] to create.
+     */
+    val injector = BaseLifecycleTest.TestInjector { totalItemCount }
     val lifecycleOwner = BaseLifecycleTest.TestLifecycleOwner()
     val adapter = RecyclerAdapter()
 
@@ -70,18 +76,17 @@ class DiffedAdapterTest : BaseLifecycleTest() {
 
     // When - view holder injection
     /** Submit new items to ensure view holders binding do not throw index exception */
-    wrappedAdapter.submitList(arrayListOf(0, 1, 2))
     val viewGroup = LinearLayout(InstrumentationRegistry.getInstrumentation().context)
-    val viewHolder1 = wrappedAdapter.onCreateViewHolder(viewGroup, 0)
-    val viewHolder2 = wrappedAdapter.onCreateViewHolder(viewGroup, 0)
-    val viewHolder3 = wrappedAdapter.onCreateViewHolder(viewGroup, 0)
 
-    /** No injections here, just manually setting of props, so injection count remains the same */
-    arrayListOf(viewHolder1, viewHolder2, viewHolder3).forEachIndexed { i, vh ->
-      wrappedAdapter.onBindViewHolder(vh, i)
+    (0 until totalItemCount).forEachIndexed { i, _ ->
+      val viewHolder = wrappedAdapter.onCreateViewHolder(viewGroup, 0)
+
+      /** No injections here, just manually setting of props, so injection count remains the same */
+      wrappedAdapter.onBindViewHolder(viewHolder, i)
 
       /** Even if this is called, it should not do anything */
-      vh.reduxProps.s.subscription.unsubscribe()
+      viewHolder.reduxProps.s.subscription.unsubscribe()
+
     }
 
     // Then - view holder injection

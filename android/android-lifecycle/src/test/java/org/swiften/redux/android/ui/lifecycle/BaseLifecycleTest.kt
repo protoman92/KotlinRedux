@@ -25,6 +25,7 @@ import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ReduxProps
 import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.VariableProps
 import java.io.FileDescriptor
 import java.io.PrintWriter
 import java.util.Collections
@@ -115,7 +116,7 @@ open class BaseLifecycleTest {
     override val supportFragmentManager get() = fm
   }
 
-  class TestInjector : IPropInjector<Int> {
+  class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IPropInjector<Int> {
     val dispatched = Collections.synchronizedList(mutableListOf<IReduxAction>())
     val subscriptions = Collections.synchronizedList(arrayListOf<IReduxSubscription>())
     val injectionCount get() = this.subscriptions.size
@@ -125,15 +126,18 @@ open class BaseLifecycleTest {
     ): IReduxSubscription where
       View : IPropContainer<Int, State, Action>,
       View : IPropLifecycleOwner<Int> {
+      val lastState = this.lastState()
       val subscription = ReduxSubscription("$view") {}
       val static = StaticProps(this, subscription)
-      view.reduxProps = ReduxProps(static, null)
+      val state = mapper.mapState(lastState, outProps)
+      val action = mapper.mapAction(this.dispatch, lastState, outProps)
+      val variable = VariableProps(state, action)
+      view.reduxProps = ReduxProps(static, variable)
       this.subscriptions.add(subscription)
       return subscription
     }
 
     override val dispatch: IActionDispatcher = { this.dispatched.add(it) }
-    override val lastState: IStateGetter<Int> = { 0 }
     override val deinitialize: IDeinitializer = {}
   }
 }

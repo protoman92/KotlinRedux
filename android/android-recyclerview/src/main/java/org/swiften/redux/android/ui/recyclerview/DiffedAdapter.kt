@@ -41,6 +41,11 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
 ) : ListAdapter<S, VH>(diffCallback),
   IPropLifecycleOwner<GlobalState> by EmptyPropLifecycleOwner(),
   IPropContainer<GlobalState, List<S>, A> where VH : RecyclerView.ViewHolder {
+  /**
+   * Since we are only calling [ListAdapter.submitList] when [reduxProps] arrives, the
+   * [VariableProps.action] instance must be non-null upon [onBindViewHolder]. As a result, we can
+   * safely access [VariableProps.action] in [onBindViewHolder].
+   */
   override var reduxProps by ObservableReduxProps<GlobalState, List<S>, A> { _, next ->
     this.submitList(next?.state ?: arrayListOf())
   }
@@ -111,18 +116,27 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
  * Note that this does not support lifecycle handling, so we will need to manually set null via
  * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].
  */
+@Suppress("UNCHECKED_CAST")
 fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>, VHA>,
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ReduxListAdapter<GlobalState, VH, VHS, VHA> where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GlobalState, VHS, VHA?> {
+  VH : IPropContainer<GlobalState, VHS, VHA> {
   val listAdapter = object : ReduxListAdapter<GlobalState, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
+      require(this.reduxProps.v?.action is Any, { "Use Unit instead of null for prop mapping"})
+
+      val action = requireNotNull(this.reduxProps.v?.action as Any) {
+        "By the time this method is called, injection must have already happened at the adapter" +
+          "level and there is no way for action props to be null. Please contact the library" +
+          "maintainer if you are encountering this behavior."
+      } as VHA
+
       val static = StaticProps(this.reduxProps.s.injector, ReduxSubscription.EMPTY)
-      val variable = VariableProps(this.getItem(position), this.reduxProps.v?.action)
+      val variable = VariableProps(this.getItem(position), action)
       holder.reduxProps = ReduxProps(static, variable)
     }
   }
