@@ -51,7 +51,7 @@ class GardenFragment : Fragment(),
   }
 
   override var reduxProps by ObservableReduxProps<S, Unit> { prev, next ->
-    next?.state?.also {
+    next.state?.also {
       if (it.gardenPlantingCount == 0) {
         this.garden_list.visibility = View.GONE
         this.empty_garden.visibility = View.VISIBLE

@@ -65,7 +65,7 @@ class PlantListFragment : Fragment(),
   }
 
   override var reduxProps by ObservableReduxProps<S, A> { prev, next ->
-    if (next?.state?.plantCount != prev?.state?.plantCount) {
+    if (next.state?.plantCount != prev?.state?.plantCount) {
       this.plant_list.adapter?.notifyDataSetChanged()
     }
   }

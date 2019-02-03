@@ -78,7 +78,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
     }
 
     override var reduxProps by ObservableReduxProps<S, A> { _, next ->
-      next?.state?.plantings?.also { p ->
+      next.state?.plantings?.also { p ->
         if (p.gardenPlantings.isNotEmpty()) {
           val context = this.itemView.context
           val gardenPlanting = p.gardenPlantings[0]

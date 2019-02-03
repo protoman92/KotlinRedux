@@ -94,7 +94,7 @@ class SearchFragment : Fragment(),
     }
 
     override var reduxProps by ObservableReduxProps<S1, A1> { _, next ->
-      next?.state?.also {
+      next.state?.also {
         this.trackName.text = it.trackName
         this.artistName.text = it.artistName
       }
@@ -116,7 +116,7 @@ class SearchFragment : Fragment(),
   }
 
   override var reduxProps by ObservableReduxProps<S, A> { _, next ->
-    if (next?.state?.loading == true) {
+    if (next.state?.loading == true) {
       this.backgroundDim.visibility = View.VISIBLE
       this.progressBar.visibility = View.VISIBLE
     } else {

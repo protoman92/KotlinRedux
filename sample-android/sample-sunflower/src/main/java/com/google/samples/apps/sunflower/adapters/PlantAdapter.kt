@@ -86,7 +86,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
     }
 
     override var reduxProps by ObservableReduxProps<Plant, A> { _, next ->
-      next?.state?.also {
+      next.state?.also {
         this.title.text = it.name
 
         Picasso.get()

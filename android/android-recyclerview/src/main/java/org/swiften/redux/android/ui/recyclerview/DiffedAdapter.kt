@@ -45,7 +45,7 @@ abstract class ReduxListAdapter<GState, GExt, VH, S, A>(
    * safely access [VariableProps.action] in [onBindViewHolder].
    */
   override var reduxProps by ObservableReduxProps<List<S>, A> { _, next ->
-    this.submitList(next?.state ?: arrayListOf())
+    this.submitList(next.state ?: arrayListOf())
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {

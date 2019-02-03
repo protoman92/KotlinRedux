@@ -82,7 +82,7 @@ class PlantDetailFragment : Fragment(),
   }
 
   override var reduxProps by ObservableReduxProps<S, A> { _, next ->
-    next?.state?.plant?.also { p ->
+    next.state?.plant?.also { p ->
       this.shareText = this.getString(R.string.share_text_plant, p.name)
       this.plant_watering.text = this.context?.let { this.bindWateringText(it, p.wateringInterval) }
       this.plant_detail.text = HtmlCompat.fromHtml(p.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
@@ -95,7 +95,7 @@ class PlantDetailFragment : Fragment(),
         .into(this.detail_image)
     }
 
-    next?.state?.isPlanted?.also { this.fab.visibility = if (it) View.GONE else View.VISIBLE }
+    next.state?.isPlanted?.also { this.fab.visibility = if (it) View.GONE else View.VISIBLE }
   }
 
   private var shareText: String = ""

@@ -44,7 +44,7 @@ open class PropInjectorTest {
       this.propsInjectionCount.incrementAndGet()
     }
 
-    var propCallback: ((IVariableProps<S, A>?, IVariableProps<S, A>?) -> Unit)? = null
+    var propCallback: ((IVariableProps<S, A>?, IVariableProps<S, A>) -> Unit)? = null
     val propsInjectionCount = AtomicInteger()
     val beforeInjectionCount = AtomicInteger()
     val afterInjectionCount = AtomicInteger()
@@ -87,7 +87,7 @@ open class PropInjectorTest {
     val injector = this.createInjector(this.store)
     val view = View()
     val allProps = arrayListOf<Pair<S?, S?>>()
-    view.propCallback = { prev, next -> allProps.add(prev?.state to next?.state) }
+    view.propCallback = { prev, next -> allProps.add(prev?.state to next.state) }
 
     // When
     injector.inject(view, Unit, this.mapper)
