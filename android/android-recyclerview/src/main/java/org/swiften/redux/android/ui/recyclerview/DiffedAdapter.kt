@@ -9,14 +9,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.IVariablePropContainer
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ReduxProps
+import org.swiften.redux.ui.StaticProps
 import org.swiften.redux.ui.VariableProps
 import org.swiften.redux.ui.unsubscribeSafely
 
@@ -116,11 +117,13 @@ fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ReduxListAdapter<GlobalState, VH, VHS, VHA> where
   VH : RecyclerView.ViewHolder,
-  VH : IVariablePropContainer<VHS, VHA?> {
+  VH : IPropContainer<GlobalState, VHS, VHA?> {
   val listAdapter = object : ReduxListAdapter<GlobalState, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
-      holder.reduxProps = VariableProps(this.getItem(position), this.reduxProps.variable?.action)
+      val static = StaticProps(this.reduxProps.static.injector, ReduxSubscription.EMPTY)
+      val variable = VariableProps(this.getItem(position), this.reduxProps.variable?.action)
+      holder.reduxProps = ReduxProps(static, variable)
     }
   }
 

@@ -19,19 +19,19 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
 import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.IVariablePropContainer
-import org.swiften.redux.ui.ObservableVariableProps
+import org.swiften.redux.ui.ObservableReduxProps
 
 /** Created by haipham on 2019/02/03 */
 @Config(manifest = Config.NONE)
 @RunWith(RobolectricTestRunner::class)
 class DiffedAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IVariablePropContainer<Int, ViewHolder.A?> {
+    IPropContainer<Int, Int, ViewHolder.A?> {
     class A
 
-    override var reduxProps by ObservableVariableProps<Int, A?> { _, _ -> }
+    override var reduxProps by ObservableReduxProps<Int, Int, A?> { _, _ -> }
   }
 
   class RecyclerAdapter : ReduxRecyclerViewAdapter<ViewHolder>(),
@@ -77,9 +77,12 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     val viewHolder3 = wrappedAdapter.onCreateViewHolder(viewGroup, 0)
 
     /** No injections here, just manually setting of props, so injection count remains the same */
-    wrappedAdapter.onBindViewHolder(viewHolder1, 0)
-    wrappedAdapter.onBindViewHolder(viewHolder2, 1)
-    wrappedAdapter.onBindViewHolder(viewHolder3, 2)
+    arrayListOf(viewHolder1, viewHolder2, viewHolder3).forEachIndexed { i, vh ->
+      wrappedAdapter.onBindViewHolder(vh, i)
+
+      /** Even if this is called, it should not do anything */
+      vh.reduxProps.static.subscription.unsubscribe()
+    }
 
     // Then - view holder injection
     assertEquals(injector.injectionCount, 1)

@@ -29,9 +29,7 @@ import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.IVariablePropContainer
 import org.swiften.redux.ui.ObservableReduxProps
-import org.swiften.redux.ui.ObservableVariableProps
 import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2018/12/20 */
@@ -82,18 +80,18 @@ class SearchFragment : Fragment(),
     private val trackName: TextView,
     private val artistName: TextView
   ) : RecyclerView.ViewHolder(parent),
-    IVariablePropContainer<ViewHolder.S1, ViewHolder.A1?> {
+    IPropContainer<State, ViewHolder.S1, ViewHolder.A1?> {
     data class S1(val trackName: String? = null, val artistName: String? = null)
     data class A1(val goToMusicDetail: (Int) -> Unit)
 
     init {
       this.parent.setOnClickListener {
         val index = this.layoutPosition
-        this.reduxProps.action?.also { a -> a.goToMusicDetail(index) }
+        this.reduxProps.variable?.action?.also { a -> a.goToMusicDetail(index) }
       }
     }
 
-    override var reduxProps by ObservableVariableProps<S1, A1?> { _, next ->
+    override var reduxProps by ObservableReduxProps<State, S1, A1?> { _, next ->
       next?.state?.also {
         this.trackName.text = it.trackName
         this.artistName.text = it.artistName

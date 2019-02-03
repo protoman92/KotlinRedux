@@ -50,16 +50,6 @@ interface IPropContainer<GlobalState, State, Action> {
 }
 
 /**
- * Similar to [IPropContainer], but only for views that are not interested in [StaticProps]
- * because its parent will manually inject [reduxProps].
- * @param State The container state.
- * @param Action the container action.
- */
-interface IVariablePropContainer<State, Action> {
-  var reduxProps: IVariableProps<State, Action>
-}
-
-/**
  * Maps [GlobalState] to [State] for a [IPropContainer].
  * @param GlobalState The global state type.
  * @param OutProps Property as defined by a view's parent.

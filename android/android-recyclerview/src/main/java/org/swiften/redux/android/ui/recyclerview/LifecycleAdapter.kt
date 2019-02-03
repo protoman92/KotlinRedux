@@ -16,7 +16,6 @@ import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
-import org.swiften.redux.ui.IVariablePropContainer
 import org.swiften.redux.ui.unsubscribeSafely
 
 /** Created by haipham on 2019/01/24 */
@@ -61,7 +60,7 @@ fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IVariablePropContainer<VHS, VHA?> {
+  VH : IPropContainer<GlobalState, VHS, VHA?> {
   val wrappedAdapter = this.injectDiffedAdapter(adapter, adapterMapper, diffCallback)
 
   LifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
@@ -80,7 +79,7 @@ fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   diffCallback: IDiffItemCallback<VHS>
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IVariablePropContainer<VHS, VHA?> {
+  VH : IPropContainer<GlobalState, VHS, VHA?> {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, adapterMapper,
     object : DiffUtil.ItemCallback<VHS>() {
       override fun areItemsTheSame(oldItem: VHS, newItem: VHS): Boolean {
@@ -103,7 +102,7 @@ fun <GlobalState, Mapper, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedA
   mapper: Mapper
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IVariablePropContainer<VHS, VHA?>,
+  VH : IPropContainer<GlobalState, VHS, VHA?>,
   Mapper : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
   Mapper : IDiffItemCallback<VHS> {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, mapper, mapper)
@@ -118,7 +117,7 @@ fun <GlobalState, Adapter, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffed
   adapter: Adapter
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IVariablePropContainer<VHS, VHA?>,
+  VH : IPropContainer<GlobalState, VHS, VHA?>,
   Adapter : RecyclerView.Adapter<VH>,
   Adapter : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
   Adapter : IDiffItemCallback<VHS> {

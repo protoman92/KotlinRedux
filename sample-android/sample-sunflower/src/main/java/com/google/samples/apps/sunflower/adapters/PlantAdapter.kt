@@ -31,9 +31,9 @@ import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.IVariablePropContainer
-import org.swiften.redux.ui.ObservableVariableProps
+import org.swiften.redux.ui.ObservableReduxProps
 
 /**
  * Adapter for the [RecyclerView] in [PlantListFragment].
@@ -69,7 +69,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IVariablePropContainer<Plant, ViewHolder.A?> {
+    IPropContainer<Redux.State, Plant, ViewHolder.A?> {
     class A(val goToPlantDetail: (Int) -> Unit)
 
     private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
@@ -77,11 +77,11 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
 
     init {
       this.itemView.setOnClickListener {
-        this@ViewHolder.reduxProps.action?.goToPlantDetail?.invoke(this.layoutPosition)
+        this@ViewHolder.reduxProps.variable?.action?.goToPlantDetail?.invoke(this.layoutPosition)
       }
     }
 
-    override var reduxProps by ObservableVariableProps<Plant, A?> { _, next ->
+    override var reduxProps by ObservableReduxProps<Redux.State, Plant, A?> { _, next ->
       next?.state?.also {
         this.title.text = it.name
 

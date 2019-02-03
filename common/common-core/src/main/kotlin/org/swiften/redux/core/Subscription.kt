@@ -39,6 +39,16 @@ class ReduxSubscription(
   override val id: String,
   private val _unsubscribe: () -> Unit
 ) : IReduxSubscription {
+  companion object {
+    val EMPTY_ID = "EMPTY"
+
+    /**
+     * Mock [ReduxSubscription] that is used every time there is no meaningful subscription logic
+     * to be unsubscribed on.
+     */
+    val EMPTY = ReduxSubscription(this.EMPTY_ID) {}
+  }
+
   private val _isUnsubscribed = AtomicBoolean()
   override fun isUnsubscribed() = this._isUnsubscribed.get()
   override fun unsubscribe() { if (!this._isUnsubscribed.getAndSet(true)) this._unsubscribe() }
