@@ -1,13 +1,16 @@
 <component name="ProjectDictionaryState">
   <dictionary name="haipham">
     <words>
+      <w>alltypes</w>
       <w>coroutine</w>
       <w>coroutines</w>
+      <w>crossinline</w>
       <w>deinitialization</w>
       <w>deinitialize</w>
       <w>deinitialized</w>
       <w>deinitializer</w>
       <w>deinitializing</w>
+      <w>dokka</w>
       <w>itunes</w>
       <w>ktlint</w>
       <w>lateinit</w>
@@ -18,10 +21,12 @@
       <w>pham</w>
       <w>recyclerview</w>
       <w>redux</w>
+      <w>typealias</w>
       <w>unsub</w>
       <w>unsubscribing</w>
       <w>unsubscription</w>
       <w>vetoable</w>
+      <w>viethai</w>
     </words>
   </dictionary>
 </component>

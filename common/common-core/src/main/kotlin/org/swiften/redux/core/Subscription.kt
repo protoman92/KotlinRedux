@@ -77,7 +77,7 @@ class CompositeReduxSubscription(override val id: String) : IReduxSubscription {
 
   /**
    * Remove an [IReduxSubscription] instance whose [IReduxSubscription.id] equals [id].
-   * @param id A [String] value.
+   * @param subscribeId A [String] value.
    */
   fun remove(subscribeId: String) {
     this.lock.write { this.subscriptions.remove(subscribeId) }

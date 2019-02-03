@@ -26,7 +26,7 @@ class AppCompatActivityWrapper(private val activity: AppCompatActivity) : IAppCo
 
 /**
  * Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary. This injection
- * session automatically disposes of itself when [LifecycleCallback.onDestroy] is called.
+ * session automatically disposes of itself when [ILifecycleCallback.onDestroy] is called.
  */
 internal fun <GlobalState> IPropInjector<GlobalState>.injectFragment(
   activity: IAppCompatActivity,
@@ -54,7 +54,7 @@ internal fun <GlobalState> IPropInjector<GlobalState>.injectFragment(
   }
 }
 
-/** Call [injectFragment] with an [AppCompatActivity] wrapped in [App] */
+/** Call [injectFragment] with an [AppCompatActivity] */
 internal fun <GlobalState> IPropInjector<GlobalState>.injectFragment(
   activity: AppCompatActivity,
   inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit

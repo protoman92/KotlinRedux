@@ -87,10 +87,10 @@ fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycle(
   var subscription: IReduxSubscription? = null
 
   /**
-   * We perform [IPropInjector.inject] in [LifecycleCallback.onStart] because by then
+   * We perform [IPropInjector.inject] in [ILifecycleCallback.onStart] because by then
    * the views would have been initialized, and thus can be accessed in
    * [IPropLifecycleOwner.beforePropInjectionStarts]. To mirror this, unsubscription is done
-   * in [LifecycleCallback.onStop] because said views are not destroyed yet.
+   * in [ILifecycleCallback.onStop] because said views are not destroyed yet.
    */
   LifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {

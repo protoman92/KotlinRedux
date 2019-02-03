@@ -6,6 +6,7 @@
 package org.swiften.redux.android.sample;
 
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +33,7 @@ public final class MainActivity extends AppCompatActivity implements
     }
   }
 
-  @Nullable
+  @NonNull
   @Override
   public ReduxProps<State, Unit, Unit> getReduxProps() {
     return this.reduxProps;
