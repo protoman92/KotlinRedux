@@ -186,17 +186,7 @@ open class PropInjector<GState, GExt>(
      * [IPropLifecycleOwner.beforePropInjectionStarts]
      */
     val staticProps = StaticProps(this, ReduxSubscription(subscriberId) {})
-
-    /**
-     * Inject [StaticProps] with a placebo [StaticProps.subscription] because we want
-     * [ReduxProps.s] to be available in [IPropLifecycleOwner.beforePropInjectionStarts]
-     * in case [view] needs to perform [inject] on its children.
-     *
-     * Beware that accessing [IPropContainer.reduxProps] before this point will probably throw
-     * a [Throwable], most notably [UninitializedPropertyAccessException] if [view] uses
-     * [ObservableReduxProps] as delegate property.
-     */
-    view.reduxProps = ReduxProps(staticProps.subscription, null)
+    view.reduxProps = ReduxProps(staticProps.subscription, null, null)
     view.beforePropInjectionStarts(staticProps)
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
@@ -210,7 +200,7 @@ open class PropInjector<GState, GExt>(
 
         if (next != prev) {
           val actions = mapper.mapAction(this, it, outProps)
-          view.reduxProps = view.reduxProps.copy(v = VariableProps(next, actions))
+          view.reduxProps = view.reduxProps.copy(state = next, action = actions)
         }
       }
     }

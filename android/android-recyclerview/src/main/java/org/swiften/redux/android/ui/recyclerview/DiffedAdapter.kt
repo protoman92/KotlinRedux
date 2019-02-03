@@ -17,7 +17,6 @@ import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ReduxProps
-import org.swiften.redux.ui.VariableProps
 import org.swiften.redux.ui.unsubscribeSafely
 
 /** Created by haipham on 2019/01/24 */
@@ -126,16 +125,15 @@ fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter
   val listAdapter = object : ReduxListAdapter<GState, GExt, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
-      require(this.reduxProps.v?.action is Any, { "Use Unit instead of null for prop mapping" })
+      require(this.reduxProps.action is Any) { "Use Unit instead of null for prop mapping" }
 
-      val action = requireNotNull(this.reduxProps.v?.action as Any) {
+      val action = requireNotNull(this.reduxProps.action as Any) {
         "By the time this method is called, injection must have already happened at the adapter" +
           "level and there is no way for action props to be null. Please contact the library" +
           "maintainer if you are encountering this behavior."
       } as VHA
 
-      val variable = VariableProps(this.getItem(position), action)
-      holder.reduxProps = ReduxProps(ReduxSubscription.EMPTY, variable)
+      holder.reduxProps = ReduxProps(ReduxSubscription.EMPTY, this.getItem(position), action)
     }
   }
 

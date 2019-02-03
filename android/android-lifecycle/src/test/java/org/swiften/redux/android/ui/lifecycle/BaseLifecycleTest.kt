@@ -22,8 +22,6 @@ import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ReduxProps
-import org.swiften.redux.ui.StaticProps
-import org.swiften.redux.ui.VariableProps
 import java.util.Collections
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -73,11 +71,9 @@ open class BaseLifecycleTest {
       View : IPropLifecycleOwner<Int, Unit> {
       val lastState = this.lastState()
       val subscription = ReduxSubscription("$view") {}
-      val static = StaticProps(this, subscription)
       val state = mapper.mapState(lastState, outProps)
       val action = mapper.mapAction(this, lastState, outProps)
-      val variable = VariableProps(state, action)
-      view.reduxProps = ReduxProps(static.subscription, variable)
+      view.reduxProps = ReduxProps(subscription, state, action)
       this.subscriptions.add(subscription)
       return subscription
     }

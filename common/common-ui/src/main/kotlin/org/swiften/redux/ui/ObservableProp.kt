@@ -44,5 +44,5 @@ open class VetoableObservableProp<T : Any>(
 class ObservableReduxProps<S, A>(
   notifier: (IVariableProps<S, A>?, IVariableProps<S, A>?) -> Unit
 ) : ReadWriteProperty<Any?, ReduxProps<S, A>> by VetoableObservableProp({ a, b ->
-  a?.v?.state == b.v?.state
-}, { prev, next -> notifier(prev?.v, next.v) })
+  a?.state == b.state
+}, { prev, next -> notifier(prev, next) })

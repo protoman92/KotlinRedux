@@ -142,7 +142,7 @@ class PlantDetailFragment : Fragment(),
 
   override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, Unit>) {
     this.fab.setOnClickListener {
-      this.reduxProps.v?.action?.addPlantToGarden?.invoke()
+      this.reduxProps.action?.addPlantToGarden?.invoke()
       Snackbar.make(it, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()
     }
   }
