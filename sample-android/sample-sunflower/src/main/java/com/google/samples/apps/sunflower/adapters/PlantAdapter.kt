@@ -77,7 +77,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
 
     init {
       this.itemView.setOnClickListener {
-        this@ViewHolder.reduxProps.variable?.action?.goToPlantDetail?.invoke(this.layoutPosition)
+        this@ViewHolder.reduxProps.v?.action?.goToPlantDetail?.invoke(this.layoutPosition)
       }
     }
 

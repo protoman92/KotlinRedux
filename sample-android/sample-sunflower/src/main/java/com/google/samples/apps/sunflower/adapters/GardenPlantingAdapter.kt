@@ -108,7 +108,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
 
     override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
       this.itemView.setOnClickListener {
-        this@ViewHolder.reduxProps.variable?.action?.goToPlantDetail?.invoke()
+        this@ViewHolder.reduxProps.v?.action?.goToPlantDetail?.invoke()
       }
     }
   }

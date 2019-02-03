@@ -162,7 +162,7 @@ open class PropInjector<GlobalState>(private val store: IReduxStore<GlobalState>
 
     /**
      * Inject [StaticProps] with a placebo [StaticProps.subscription] because we want
-     * [ReduxProps.static] to be available in [IPropLifecycleOwner.beforePropInjectionStarts]
+     * [ReduxProps.s] to be available in [IPropLifecycleOwner.beforePropInjectionStarts]
      * in case [view] needs to perform [inject] on its children.
      *
      * Beware that accessing [IPropContainer.reduxProps] before this point will probably throw
@@ -183,7 +183,7 @@ open class PropInjector<GlobalState>(private val store: IReduxStore<GlobalState>
 
         if (next != prev) {
           val actions = mapper.mapAction(this.store.dispatch, it, outProps)
-          view.reduxProps = view.reduxProps.copy(variable = VariableProps(next, actions))
+          view.reduxProps = view.reduxProps.copy(v = VariableProps(next, actions))
         }
       }
     }
@@ -217,7 +217,7 @@ open class PropInjector<GlobalState>(private val store: IReduxStore<GlobalState>
  */
 fun <GlobalState> IPropContainer<GlobalState, *, *>.unsubscribeSafely(): String? {
   try {
-    val subscription = this.reduxProps.static.subscription
+    val subscription = this.reduxProps.s.subscription
     subscription.unsubscribe()
     return subscription.id
   } catch (e: UninitializedPropertyAccessException) {

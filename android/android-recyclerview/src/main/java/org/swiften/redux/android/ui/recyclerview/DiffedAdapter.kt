@@ -121,8 +121,8 @@ fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   val listAdapter = object : ReduxListAdapter<GlobalState, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
-      val static = StaticProps(this.reduxProps.static.injector, ReduxSubscription.EMPTY)
-      val variable = VariableProps(this.getItem(position), this.reduxProps.variable?.action)
+      val static = StaticProps(this.reduxProps.s.injector, ReduxSubscription.EMPTY)
+      val variable = VariableProps(this.getItem(position), this.reduxProps.v?.action)
       holder.reduxProps = ReduxProps(static, variable)
     }
   }

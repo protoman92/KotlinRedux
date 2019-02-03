@@ -81,7 +81,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
       wrappedAdapter.onBindViewHolder(vh, i)
 
       /** Even if this is called, it should not do anything */
-      vh.reduxProps.static.subscription.unsubscribe()
+      vh.reduxProps.s.subscription.unsubscribe()
     }
 
     // Then - view holder injection

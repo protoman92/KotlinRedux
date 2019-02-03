@@ -49,10 +49,10 @@ data class VariableProps<State, Action>(
 
 /**
  * Container for [StaticProps] and [VariableProps]
- * @param static An [IStaticProps] instance.
- * @param variable An [IVariableProps] instance.
+ * @param s An [IStaticProps] instance.
+ * @param v An [IVariableProps] instance.
  */
 data class ReduxProps<GlobalState, State, Action>(
-  val static: IStaticProps<GlobalState>,
-  val variable: IVariableProps<State, Action>?
+  val s: IStaticProps<GlobalState>,
+  val v: IVariableProps<State, Action>?
 )

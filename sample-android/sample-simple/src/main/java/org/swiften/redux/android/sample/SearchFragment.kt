@@ -89,7 +89,7 @@ class SearchFragment : Fragment(),
     init {
       this.parent.setOnClickListener {
         val index = this.layoutPosition
-        this.reduxProps.variable?.action?.also { a -> a.goToMusicDetail(index) }
+        this.reduxProps.v?.action?.also { a -> a.goToMusicDetail(index) }
       }
     }
 
@@ -131,7 +131,7 @@ class SearchFragment : Fragment(),
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable?) {
-      this@SearchFragment.reduxProps.variable?.also { it.action.updateQuery(s?.toString()) }
+      this@SearchFragment.reduxProps.v?.also { it.action.updateQuery(s?.toString()) }
     }
   }
 
