@@ -12,6 +12,7 @@
 # .idea/**/dictionaries
 .idea/**/navEditor.xml
 .idea/**/shelf
+.idea/markdown*
 
 # Generated files
 .idea/**/contentModel.xml
