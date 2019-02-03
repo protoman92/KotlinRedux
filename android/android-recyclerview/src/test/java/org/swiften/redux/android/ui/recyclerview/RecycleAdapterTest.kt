@@ -19,8 +19,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
-import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -37,7 +37,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
     IPropLifecycleOwner<Int, Unit> by EmptyPropLifecycleOwner() {
     companion object : IPropMapper<Int, Unit, Int, Int, Unit> {
       override fun mapState(state: Int, outProps: Int) = state
-      override fun mapAction(dispatch: IActionDispatcher, state: Int, ext: Unit, outProps: Int) = Unit
+      override fun mapAction(static: IActionDependency<Unit>, state: Int, outProps: Int) = Unit
     }
 
     override var reduxProps by ObservableReduxProps<Int, Unit> { _, _ -> }

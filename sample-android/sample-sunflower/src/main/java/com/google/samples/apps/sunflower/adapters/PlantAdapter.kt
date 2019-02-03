@@ -30,7 +30,7 @@ import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
@@ -46,10 +46,14 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
     IDiffItemCallback<Plant> {
     override fun mapState(state: Redux.State, outProps: Unit) = state.plants ?: arrayListOf()
 
-    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, ext: Unit, outProps: Unit): ViewHolder.A {
+    override fun mapAction(
+      static: IActionDependency<Unit>,
+      state: Redux.State,
+      outProps: Unit
+    ): ViewHolder.A {
       return ViewHolder.A { index ->
         state.plants?.elementAtOrNull(index)?.plantId?.also {
-          dispatch(Redux.Screen.PlantListToPlantDetail(it))
+          static.dispatch(Redux.Screen.PlantListToPlantDetail(it))
         }
       }
     }

@@ -51,6 +51,15 @@ interface IPropContainer<State, Action> {
 }
 
 /**
+ * Represents static dependencies for [IActionMapper]. [IActionMapper.mapAction] will have access
+ * to [IDispatcherProvider.dispatch] and [external].
+ * @param GlobalExt The global external argument.
+ */
+interface IActionDependency<GlobalExt> : IDispatcherProvider {
+  val external: GlobalExt
+}
+
+/**
  * Maps [GlobalState] to [State] for a [IPropContainer].
  * @param GlobalState The global state type.
  * @param OutProps Property as defined by a view's parent.
@@ -81,18 +90,13 @@ interface IStateMapper<GlobalState, OutProps, State> {
 interface IActionMapper<GlobalState, GlobalExt, OutProps, Action> {
   /**
    * Map [IActionDispatcher] to [Action] using [GlobalState], [GlobalExt] and [OutProps]
-   * @param dispatch See [IReduxStore.dispatch].
+   * @param static An [IActionDependency] instance.
    * @param state The latest [GlobalState] instance.
    * @param ext The [GlobalExt] instance.
    * @param outProps The [OutProps] instance.
    * @return An [Action] instance.
    */
-  fun mapAction(
-    dispatch: IActionDispatcher,
-    state: GlobalState,
-    ext: GlobalExt,
-    outProps: OutProps
-  ): Action
+  fun mapAction(static: IActionDependency<GlobalExt>, state: GlobalState, outProps: OutProps): Action
 }
 
 /**
@@ -120,7 +124,7 @@ interface IPropMapper<GlobalState, GlobalExt, OutProps, State, Action> :
  * @param GlobalExt The global external argument.
  */
 interface IPropInjector<GlobalState, GlobalExt> :
-  IDispatcherProvider,
+  IActionDependency<GlobalExt>,
   IStateGetterProvider<GlobalState>,
   IDeinitializerProvider {
   /**
@@ -153,7 +157,7 @@ interface IPropInjector<GlobalState, GlobalExt> :
  */
 open class PropInjector<GlobalState, GlobalExt>(
   private val store: IReduxStore<GlobalState>,
-  private val extra: GlobalExt
+  override val external: GlobalExt
 ) :
   IPropInjector<GlobalState, GlobalExt>,
   IDispatcherProvider by store,
@@ -205,7 +209,7 @@ open class PropInjector<GlobalState, GlobalExt>(
         previousState = next
 
         if (next != prev) {
-          val actions = mapper.mapAction(this.store.dispatch, it, this.extra, outProps)
+          val actions = mapper.mapAction(this, it, outProps)
           view.reduxProps = view.reduxProps.copy(v = VariableProps(next, actions))
         }
       }

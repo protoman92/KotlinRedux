@@ -24,8 +24,8 @@ import kotlinx.android.synthetic.main.view_search_result.view.trackName
 import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
-import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -53,12 +53,11 @@ class SearchFragment : Fragment(),
       }
 
       override fun mapAction(
-        dispatch: IActionDispatcher,
+        static: IActionDependency<Unit>,
         state: State,
-        ex: Unit,
         outProps: Unit
       ): ViewHolder.A1 {
-        return ViewHolder.A1 { dispatch(MainRedux.Screen.MusicDetail(it)) }
+        return ViewHolder.A1 { static.dispatch(MainRedux.Screen.MusicDetail(it)) }
       }
 
       override fun areItemsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1): Boolean {
@@ -104,12 +103,11 @@ class SearchFragment : Fragment(),
 
   companion object : IPropMapper<State, Unit, Unit, S, A> {
     override fun mapAction(
-      dispatch: IActionDispatcher,
+      static: IActionDependency<Unit>,
       state: State,
-      ext: Unit,
       outProps: Unit
     ): A {
-      return A { dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
+      return A { static.dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
     }
 
     override fun mapState(state: State, outProps: Unit): S {

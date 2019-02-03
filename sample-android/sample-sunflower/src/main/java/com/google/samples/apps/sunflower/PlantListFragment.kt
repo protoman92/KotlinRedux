@@ -28,8 +28,8 @@ import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
-import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -49,12 +49,16 @@ class PlantListFragment : Fragment(),
       return S(plantCount = state.plants?.size ?: 0)
     }
 
-    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, ext: Unit, outProps: Unit): A {
+    override fun mapAction(
+      static: IActionDependency<Unit>,
+      state: Redux.State,
+      outProps: Unit
+    ): A {
       return A {
         if (state.selectedGrowZone == Redux.NO_GROW_ZONE) {
-          dispatch(Redux.Action.SelectGrowZone(9))
+          static.dispatch(Redux.Action.SelectGrowZone(9))
         } else {
-          dispatch(Redux.Action.SelectGrowZone(Redux.NO_GROW_ZONE))
+          static.dispatch(Redux.Action.SelectGrowZone(Redux.NO_GROW_ZONE))
         }
       }
     }

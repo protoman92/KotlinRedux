@@ -28,8 +28,8 @@ import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -64,10 +64,14 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
         return S(state.plantAndGardenPlantings?.elementAtOrNull(outProps))
       }
 
-      override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, ext: Unit, outProps: Int): A {
+      override fun mapAction(
+        static: IActionDependency<Unit>,
+        state: Redux.State,
+        outProps: Int
+      ): A {
         return A {
           this.mapState(state, outProps).plantings?.plant?.plantId?.let {
-            dispatch(Redux.Screen.GardenToPlantDetail(it))
+            static.dispatch(Redux.Screen.GardenToPlantDetail(it))
           }
         }
       }

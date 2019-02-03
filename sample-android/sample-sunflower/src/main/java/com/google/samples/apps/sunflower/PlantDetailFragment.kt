@@ -43,8 +43,8 @@ import kotlinx.android.synthetic.main.fragment_plant_detail.fab
 import kotlinx.android.synthetic.main.fragment_plant_detail.plant_detail
 import kotlinx.android.synthetic.main.fragment_plant_detail.plant_watering
 import kotlinx.android.synthetic.main.fragment_plant_detail.toolbar_layout
-import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -64,12 +64,21 @@ class PlantDetailFragment : Fragment(),
   class A(val addPlantToGarden: () -> Unit)
 
   companion object : IPropMapper<Redux.State, Unit, Unit, S, A> {
-    override fun mapState(state: Redux.State, outProps: Unit) = state.selectedPlant?.let {
-      S(it.id.let { id -> state.plants?.find { p -> p.plantId == id } }, it.isPlanted)
-    } ?: S()
+    override fun mapState(state: Redux.State, outProps: Unit): S {
+      return state.selectedPlant?.let {
+        S(it.id.let { id -> state.plants?.find { p -> p.plantId == id } }, it.isPlanted)
+      } ?: S()
+    }
 
-    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, ext: Unit, outProps: Unit) =
-      A { state.selectedPlant?.id?.also { dispatch(Redux.Action.AddPlantToGarden(it)) } }
+    override fun mapAction(
+      static: IActionDependency<Unit>,
+      state: Redux.State,
+      outProps: Unit
+    ): A {
+      return A { state.selectedPlant?.id?.also {
+        static.dispatch(Redux.Action.AddPlantToGarden(it))
+      } }
+    }
   }
 
   override var reduxProps by ObservableReduxProps<S, A> { _, next ->

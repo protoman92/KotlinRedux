@@ -9,7 +9,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
-import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
@@ -76,7 +75,7 @@ open class PropInjectorTest {
 
     this.mapper = object : IPropMapper<S, Unit, Unit, S, A> {
       override fun mapState(state: S, outProps: Unit) = state
-      override fun mapAction(dispatch: IActionDispatcher, state: S, ext: Unit, outProps: Unit) = A()
+      override fun mapAction(static: IActionDependency<Unit>, state: S, outProps: Unit) = A()
     }
   }
 

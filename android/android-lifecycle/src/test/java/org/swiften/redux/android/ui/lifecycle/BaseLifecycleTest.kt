@@ -15,6 +15,7 @@ import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -49,7 +50,7 @@ open class BaseLifecycleTest {
     IPropMapper<Int, Unit, Unit, Int, Unit> by TestLifecycleOwner {
     companion object : IPropMapper<Int, Unit, Unit, Int, Unit> {
       override fun mapState(state: Int, outProps: Unit) = state
-      override fun mapAction(dispatch: IActionDispatcher, state: Int, ext: Unit, outProps: Unit) = Unit
+      override fun mapAction(static: IActionDependency<Unit>, state: Int, outProps: Unit) = Unit
     }
 
     val registry = TestLifecycleRegistry(this)
@@ -58,6 +59,7 @@ open class BaseLifecycleTest {
   }
 
   class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IPropInjector<Int, Unit> {
+    override val external = Unit
     val dispatched = Collections.synchronizedList(mutableListOf<IReduxAction>())
     val subscriptions = Collections.synchronizedList(arrayListOf<IReduxSubscription>())
     val injectionCount get() = this.subscriptions.size
@@ -73,7 +75,7 @@ open class BaseLifecycleTest {
       val subscription = ReduxSubscription("$view") {}
       val static = StaticProps(this, subscription)
       val state = mapper.mapState(lastState, outProps)
-      val action = mapper.mapAction(this.dispatch, lastState, Unit, outProps)
+      val action = mapper.mapAction(this, lastState, outProps)
       val variable = VariableProps(state, action)
       view.reduxProps = ReduxProps(static.subscription, variable)
       this.subscriptions.add(subscription)

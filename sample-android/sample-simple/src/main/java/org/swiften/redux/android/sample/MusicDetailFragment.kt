@@ -13,8 +13,8 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_music_detail.artistName
 import kotlinx.android.synthetic.main.fragment_music_detail.trackName
 import kotlinx.android.synthetic.main.fragment_music_detail.trackOpen
-import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -30,10 +30,10 @@ class MusicDetailFragment : Fragment(),
   class A(val goToTrackInformation: () -> Unit)
 
   companion object : IPropMapper<State, Unit, Unit, S, A> {
-    override fun mapAction(dispatch: IActionDispatcher, state: State, ext: Unit, outProps: Unit): A {
+    override fun mapAction(static: IActionDependency<Unit>, state: State, outProps: Unit): A {
       return A {
         this.mapState(state, outProps).track?.also {
-          dispatch(MainRedux.Screen.WebView(it.previewUrl))
+          static.dispatch(MainRedux.Screen.WebView(it.previewUrl))
         }
       }
     }

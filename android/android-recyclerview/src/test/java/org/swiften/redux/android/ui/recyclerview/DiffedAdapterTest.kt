@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
-import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
@@ -42,7 +42,11 @@ class DiffedAdapterTest : BaseLifecycleTest() {
         return (0 until state).map { it }
       }
 
-      override fun mapAction(dispatch: IActionDispatcher, state: Int, ext: Unit, outProps: Unit): ViewHolder.A {
+      override fun mapAction(
+        static: IActionDependency<Unit>,
+        state: Int,
+        outProps: Unit
+      ): ViewHolder.A {
         return ViewHolder.A()
       }
 
