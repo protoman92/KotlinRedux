@@ -30,8 +30,10 @@ import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
+import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 
@@ -73,7 +75,8 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Plant, ViewHolder.A> {
+    IPropContainer<Plant, ViewHolder.A>,
+    IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner() {
     class A(val goToPlantDetail: (Int) -> Unit)
 
     private val image: ImageView = itemView.findViewById(R.id.plant_item_image)

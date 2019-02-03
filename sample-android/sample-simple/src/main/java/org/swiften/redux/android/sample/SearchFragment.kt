@@ -82,7 +82,8 @@ class SearchFragment : Fragment(),
     private val trackName: TextView,
     private val artistName: TextView
   ) : RecyclerView.ViewHolder(parent),
-    IPropContainer<ViewHolder.S1, ViewHolder.A1> {
+    IPropContainer<ViewHolder.S1, ViewHolder.A1>,
+    IPropLifecycleOwner<State, Unit> by EmptyPropLifecycleOwner() {
     data class S1(val trackName: String? = null, val artistName: String? = null)
     data class A1(val goToMusicDetail: (Int) -> Unit)
 

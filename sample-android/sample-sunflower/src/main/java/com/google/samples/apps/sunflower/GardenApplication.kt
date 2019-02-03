@@ -28,7 +28,6 @@ class GardenApplication : Application() {
     LeakCanary.install(this)
 
     val store = applyMiddlewares<Redux.State>(
-      createLoggingMiddleware(),
       createRouterMiddleware(Router(this)),
       createSagaMiddleware(
         arrayListOf(

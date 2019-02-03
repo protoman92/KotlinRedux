@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IPropContainer
@@ -17,7 +18,9 @@ import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ReduxProps
+import org.swiften.redux.ui.StaticProps
 import org.swiften.redux.ui.unsubscribeSafely
+import java.util.Date
 
 /** Created by haipham on 2019/01/24 */
 /** Callback for [DiffUtil.ItemCallback] since [DiffUtil.ItemCallback] is an abstract class */
@@ -39,6 +42,14 @@ abstract class ReduxListAdapter<GState, GExt, VH, S, A>(
 ) : ListAdapter<S, VH>(diffCallback),
   IPropLifecycleOwner<GState, GExt> by EmptyPropLifecycleOwner(),
   IPropContainer<List<S>, A> where VH : RecyclerView.ViewHolder {
+  internal lateinit var staticProps: StaticProps<GState, GExt>
+
+  /**
+   * Since we will be manually injecting props into [VH] instances, we will need to collect their
+   * [ReduxSubscription] here.
+   */
+  val vhSubscription = CompositeReduxSubscription("$this${Date().time}")
+
   /**
    * Since we are only calling [ListAdapter.submitList] when [reduxProps] arrives, the
    * [ReduxProps.action] instance must be non-null upon [onBindViewHolder]. As a result, we can
@@ -46,6 +57,10 @@ abstract class ReduxListAdapter<GState, GExt, VH, S, A>(
    */
   override var reduxProps by ObservableReduxProps<List<S>, A> { _, next ->
     this.submitList(next.state ?: arrayListOf())
+  }
+
+  override fun beforePropInjectionStarts(sp: StaticProps<GState, GExt>) {
+    this.staticProps = sp
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -121,7 +136,8 @@ fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ReduxListAdapter<GState, GExt, VH, VHS, VHA> where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHS, VHA> {
+  VH : IPropContainer<VHS, VHA>,
+  VH : IPropLifecycleOwner<GState, GExt> {
   val listAdapter = object : ReduxListAdapter<GState, GExt, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
@@ -133,7 +149,16 @@ fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter
           "maintainer if you are encountering this behavior."
       } as VHA
 
-      holder.reduxProps = ReduxProps(ReduxSubscription.EMPTY, this.getItem(position), action)
+      val subscribeId = "$holder${Date().time}"
+      val subscription = ReduxSubscription(subscribeId) { holder.afterPropInjectionEnds() }
+      this.vhSubscription.add(subscription)
+      holder.beforePropInjectionStarts(this.staticProps)
+      holder.reduxProps = ReduxProps(subscription, this.getItem(position), action)
+    }
+
+    override fun onViewRecycled(holder: VH) {
+      super.onViewRecycled(holder)
+      holder.unsubscribeSafely()?.also { this.vhSubscription.remove(it) }
     }
   }
 

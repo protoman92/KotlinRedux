@@ -11,27 +11,40 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
+import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.StaticProps
+import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/02/03 */
 @Config(manifest = Config.NONE)
 @RunWith(RobolectricTestRunner::class)
 class DiffedAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Int, ViewHolder.A> {
+    IPropContainer<Int, ViewHolder.A>,
+    IPropLifecycleOwner<Int, Unit> by EmptyPropLifecycleOwner() {
     class A
 
+    val afterInjection = AtomicInteger()
+
     override var reduxProps by ObservableReduxProps<Int, A> { _, _ -> }
+    override fun beforePropInjectionStarts(sp: StaticProps<Int, Unit>) {}
+
+    override fun afterPropInjectionEnds() {
+      this.afterInjection.incrementAndGet()
+    }
   }
 
   class RecyclerAdapter : ReduxRecyclerViewAdapter<ViewHolder>(),
@@ -81,20 +94,20 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     // When - view holder injection
     /** Submit new items to ensure view holders binding do not throw index exception */
     val viewGroup = LinearLayout(InstrumentationRegistry.getInstrumentation().context)
+    val viewHolders = mutableListOf<ViewHolder>()
 
     (0 until totalItemCount).forEachIndexed { i, _ ->
       val viewHolder = wrappedAdapter.onCreateViewHolder(viewGroup, 0)
+      viewHolders.add(viewHolder)
 
       /** No injections here, just manually setting of props, so injection count remains the same */
       wrappedAdapter.onBindViewHolder(viewHolder, i)
-
-      /** Even if this is called, it should not do anything */
-      viewHolder.reduxProps.s.unsubscribe()
     }
 
     // Then - view holder injection
     assertEquals(injector.injectionCount, 1)
-    injector.subscriptions.forEach { Assert.assertFalse(it.isUnsubscribed()) }
+    viewHolders.forEach { assertFalse(it.reduxProps.s.isUnsubscribed()) }
+    injector.subscriptions.forEach { assertFalse(it.isUnsubscribed()) }
 
     // When - lifecycle ending
     /** When state is destroyed, all subscriptions should have been disposed of */
@@ -104,6 +117,11 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     lifecycleOwner.registry.markState(Lifecycle.State.DESTROYED)
 
     // Then - lifecycle ending
-    injector.subscriptions.forEach { Assert.assertTrue(it.isUnsubscribed()) }
+    injector.subscriptions.forEach { assertTrue(it.isUnsubscribed()) }
+
+    viewHolders.forEach {
+      assertTrue(it.reduxProps.s.isUnsubscribed())
+      assertEquals(it.afterInjection.get(), 1)
+    }
   }
 }

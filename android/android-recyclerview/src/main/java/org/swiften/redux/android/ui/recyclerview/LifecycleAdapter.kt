@@ -60,12 +60,17 @@ fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHS, VHA> {
+  VH : IPropContainer<VHS, VHA>,
+  VH : IPropLifecycleOwner<GState, GExt> {
   val wrappedAdapter = this.injectDiffedAdapter(adapter, adapterMapper, diffCallback)
 
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {}
-    override fun onSafeForEndingLifecycleAwareTasks() { wrappedAdapter.unsubscribeSafely() }
+
+    override fun onSafeForEndingLifecycleAwareTasks() {
+      wrappedAdapter.unsubscribeSafely()
+      wrappedAdapter.vhSubscription.unsubscribe()
+    }
   })
 
   return wrappedAdapter
@@ -79,7 +84,8 @@ fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter
   diffCallback: IDiffItemCallback<VHS>
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHS, VHA> {
+  VH : IPropContainer<VHS, VHA>,
+  VH : IPropLifecycleOwner<GState, GExt> {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, adapterMapper,
     object : DiffUtil.ItemCallback<VHS>() {
       override fun areItemsTheSame(oldItem: VHS, newItem: VHS): Boolean {
@@ -103,6 +109,7 @@ fun <GState, GExt, Mapper, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffe
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHS, VHA>,
+  VH : IPropLifecycleOwner<GState, GExt>,
   Mapper : IPropMapper<GState, GExt, Unit, List<VHS>, VHA>,
   Mapper : IDiffItemCallback<VHS> {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, mapper, mapper)
@@ -118,6 +125,7 @@ fun <GState, GExt, Adapter, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiff
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHS, VHA>,
+  VH : IPropLifecycleOwner<GState, GExt>,
   Adapter : RecyclerView.Adapter<VH>,
   Adapter : IPropMapper<GState, GExt, Unit, List<VHS>, VHA>,
   Adapter : IDiffItemCallback<VHS> {

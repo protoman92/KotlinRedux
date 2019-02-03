@@ -48,6 +48,7 @@ abstract class DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction>(
 
   override fun onViewRecycled(holder: VH) {
     super.onViewRecycled(holder)
+    this.adapter.onViewRecycled(holder)
     holder.unsubscribeSafely()?.also { this.composite.remove(it) }
   }
 
@@ -69,7 +70,6 @@ abstract class DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction>(
   override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
     super.onDetachedFromRecyclerView(recyclerView)
     this.adapter.onDetachedFromRecyclerView(recyclerView)
-    this.composite.unsubscribe()
   }
 
   override fun setHasStableIds(hasStableIds: Boolean) {
@@ -117,6 +117,11 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecy
     override fun onBindViewHolder(holder: VH, position: Int) {
       val subscription = this@injectRecyclerAdapter.inject(holder, position, vhMapper)
       this.composite.add(subscription)
+    }
+
+    override fun onViewRecycled(holder: VH) {
+      super.onViewRecycled(holder)
+      holder.unsubscribeSafely()?.also { this.composite.remove(it) }
     }
   }
 }
