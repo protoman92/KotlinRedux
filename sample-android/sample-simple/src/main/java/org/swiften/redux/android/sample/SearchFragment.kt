@@ -34,17 +34,17 @@ import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
-  IPropContainer<State, SearchFragment.S, SearchFragment.A>,
-  IPropLifecycleOwner<State> by EmptyPropLifecycleOwner(),
-  IPropMapper<State, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
+  IPropContainer<State, Unit, SearchFragment.S, SearchFragment.A>,
+  IPropLifecycleOwner<State, Unit> by EmptyPropLifecycleOwner(),
+  IPropMapper<State, Unit, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
   data class S(val query: String?, val loading: Boolean?)
   class A(val updateQuery: (String?) -> Unit)
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IPropMapper<State, Unit, List<ViewHolder.S1>, ViewHolder.A1> by Adapter,
+    IPropMapper<State, Unit, Unit, List<ViewHolder.S1>, ViewHolder.A1> by Adapter,
     IDiffItemCallback<ViewHolder.S1> by Adapter {
     companion object :
-      IPropMapper<State, Unit, List<ViewHolder.S1>, ViewHolder.A1>,
+      IPropMapper<State, Unit, Unit, List<ViewHolder.S1>, ViewHolder.A1>,
       IDiffItemCallback<ViewHolder.S1> {
       override fun mapState(state: State, outProps: Unit): List<ViewHolder.S1> {
         return state.musicResult?.results
@@ -55,6 +55,7 @@ class SearchFragment : Fragment(),
       override fun mapAction(
         dispatch: IActionDispatcher,
         state: State,
+        ex: Unit,
         outProps: Unit
       ): ViewHolder.A1 {
         return ViewHolder.A1 { dispatch(MainRedux.Screen.MusicDetail(it)) }
@@ -82,7 +83,7 @@ class SearchFragment : Fragment(),
     private val trackName: TextView,
     private val artistName: TextView
   ) : RecyclerView.ViewHolder(parent),
-    IPropContainer<State, ViewHolder.S1, ViewHolder.A1> {
+    IPropContainer<State, Unit, ViewHolder.S1, ViewHolder.A1> {
     data class S1(val trackName: String? = null, val artistName: String? = null)
     data class A1(val goToMusicDetail: (Int) -> Unit)
 
@@ -93,7 +94,7 @@ class SearchFragment : Fragment(),
       }
     }
 
-    override var reduxProps by ObservableReduxProps<State, S1, A1> { _, next ->
+    override var reduxProps by ObservableReduxProps<State, Unit, S1, A1> { _, next ->
       next?.state?.also {
         this.trackName.text = it.trackName
         this.artistName.text = it.artistName
@@ -101,10 +102,11 @@ class SearchFragment : Fragment(),
     }
   }
 
-  companion object : IPropMapper<State, Unit, S, A> {
+  companion object : IPropMapper<State, Unit, Unit, S, A> {
     override fun mapAction(
       dispatch: IActionDispatcher,
       state: State,
+      ext: Unit,
       outProps: Unit
     ): A {
       return A { dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
@@ -115,7 +117,7 @@ class SearchFragment : Fragment(),
     }
   }
 
-  override var reduxProps by ObservableReduxProps<State, S, A> { _, next ->
+  override var reduxProps by ObservableReduxProps<State, Unit, S, A> { _, next ->
     if (next?.state?.loading == true) {
       this.backgroundDim.visibility = View.VISIBLE
       this.progressBar.visibility = View.VISIBLE
@@ -141,7 +143,7 @@ class SearchFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
-  override fun beforePropInjectionStarts(sp: StaticProps<State>) {
+  override fun beforePropInjectionStarts(sp: StaticProps<State, Unit>) {
     this.querySearch.also { it.addTextChangedListener(this.querySearchWatcher) }
 
     this.searchResult.also {

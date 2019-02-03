@@ -31,11 +31,11 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
 }
 
 /** [RecyclerView.Adapter] that delegates method calls to another [RecyclerView.Adapter] */
-abstract class DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction>(
+abstract class DelegateRecyclerAdapter<GlobalState, GlobalExt, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>
 ) : RecyclerView.Adapter<VH>() where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GlobalState, VHState, VHAction> {
+  VH : IPropContainer<GlobalState, GlobalExt, VHState, VHAction> {
   protected val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -101,15 +101,15 @@ abstract class DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction>(
  * support lifecycle handling, so we will need to manually set null via [RecyclerView.setAdapter]
  * in order to invoke [RecyclerView.Adapter.onViewRecycled], e.g. on orientation change.
  */
-fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecyclerAdapter(
+fun <GlobalState, GlobalExt, VH, VHState, VHAction> IPropInjector<GlobalState, GlobalExt>.injectRecyclerAdapter(
   adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IStateMapper<GlobalState, Unit, Int>,
-  vhMapper: IPropMapper<GlobalState, Int, VHState, VHAction>
-): DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction> where
+  vhMapper: IPropMapper<GlobalState, GlobalExt, Int, VHState, VHAction>
+): DelegateRecyclerAdapter<GlobalState, GlobalExt, VH, VHState, VHAction> where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GlobalState, VHState, VHAction>,
-  VH : IPropLifecycleOwner<GlobalState> {
-  return object : DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction>(adapter) {
+  VH : IPropContainer<GlobalState, GlobalExt, VHState, VHAction>,
+  VH : IPropLifecycleOwner<GlobalState, GlobalExt> {
+  return object : DelegateRecyclerAdapter<GlobalState, GlobalExt, VH, VHState, VHAction>(adapter) {
     override fun getItemCount(): Int {
       return adapterMapper.mapState(this@injectRecyclerAdapter.lastState(), Unit)
     }

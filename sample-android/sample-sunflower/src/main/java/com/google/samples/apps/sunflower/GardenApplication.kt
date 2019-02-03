@@ -40,7 +40,7 @@ class GardenApplication : Application() {
       createAsyncMiddleware()
     )(FinalStore(Redux.State(), Redux.Reducer))
 
-    val injector = AndroidPropInjector(store)
+    val injector = AndroidPropInjector(store, Unit)
 
     injector.injectActivityParcelable(this) {
       when (it) {

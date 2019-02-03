@@ -48,6 +48,8 @@ internal class LoggingMiddleware<GlobalState>(
  * @param logger See [LoggingMiddleware.logger].
  * @return A [LoggingMiddleware] instance.
  */
-fun <GlobalState> createLoggingMiddleware(logger: (GlobalState, IReduxAction?) -> Unit = { s, a ->
-  println("Redux: Last action $a, Last state $s")
-}): IMiddleware<GlobalState> = LoggingMiddleware(logger)
+fun <GlobalState> createLoggingMiddleware(
+  logger: (GlobalState, IReduxAction?) -> Unit = { s, a ->
+println("Redux: Last action $a, Last state $s")
+}
+): IMiddleware<GlobalState> = LoggingMiddleware(logger)

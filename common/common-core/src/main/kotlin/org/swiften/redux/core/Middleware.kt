@@ -90,7 +90,6 @@ fun <GlobalState> applyMiddlewares(
  * @param middlewares The [IMiddleware] instances to be applied to an [IReduxStore].
  * @return Function that maps an [IReduxStore] to an [EnhancedReduxStore].
  */
-fun <GlobalState> applyMiddlewares(vararg middlewares: IMiddleware<GlobalState>)
-  : (IReduxStore<GlobalState>) -> IReduxStore<GlobalState> {
+fun <GlobalState> applyMiddlewares(vararg middlewares: IMiddleware<GlobalState>): (IReduxStore<GlobalState>) -> IReduxStore<GlobalState> {
   return applyMiddlewares(middlewares.asList())
 }

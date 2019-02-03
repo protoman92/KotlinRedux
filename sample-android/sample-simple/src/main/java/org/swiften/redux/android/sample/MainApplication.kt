@@ -57,7 +57,7 @@ class MainApplication : Application() {
       createAsyncMiddleware()
     )(FinalStore(State(), MainRedux.Reducer))
 
-    val injector = AndroidPropInjector(store)
+    val injector = AndroidPropInjector(store, Unit)
 
     injector.injectActivitySerializable(this) {
       when (it) {

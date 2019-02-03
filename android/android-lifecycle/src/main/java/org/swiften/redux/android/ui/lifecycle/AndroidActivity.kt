@@ -35,10 +35,10 @@ interface IBundleStateSaver<GlobalState> {
  * [inject] accepts [LifecycleOwner] as its only parameter so that it can handle both
  * [AppCompatActivity] and [Fragment].
  */
-fun <GlobalState> IPropInjector<GlobalState>.injectActivity(
+fun <GlobalState, GlobalExt> IPropInjector<GlobalState, GlobalExt>.injectActivity(
   application: Application,
   saver: IBundleStateSaver<GlobalState>,
-  inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
+  inject: IPropInjector<GlobalState, GlobalExt>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks {
   val callback = object : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity?) {}
@@ -75,9 +75,9 @@ fun <GlobalState> IPropInjector<GlobalState>.injectActivity(
  * Similar to [injectActivity], but provides default persistence for when [GlobalState] is
  * [Serializable]
  */
-inline fun <reified GlobalState> IPropInjector<GlobalState>.injectActivitySerializable(
+inline fun <reified GlobalState, GlobalExt> IPropInjector<GlobalState, GlobalExt>.injectActivitySerializable(
   application: Application,
-  noinline inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
+  noinline inject: IPropInjector<GlobalState, GlobalExt>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks where GlobalState : Serializable {
   val key = "REDUX_STATE_${Date().time}"
 
@@ -94,9 +94,9 @@ inline fun <reified GlobalState> IPropInjector<GlobalState>.injectActivitySerial
  * Similar to [injectActivity], but provides default persistence for when [GlobalState] is
  * [Parcelable]
  */
-inline fun <reified GlobalState> IPropInjector<GlobalState>.injectActivityParcelable(
+inline fun <reified GlobalState, GlobalExt> IPropInjector<GlobalState, GlobalExt>.injectActivityParcelable(
   application: Application,
-  noinline inject: IPropInjector<GlobalState>.(LifecycleOwner) -> Unit
+  noinline inject: IPropInjector<GlobalState, GlobalExt>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks where GlobalState : Parcelable {
   val key = "REDUX_STATE_${Date().time}"
 

@@ -35,18 +35,18 @@ interface IDiffItemCallback<T> {
  * Custom Redux-compatible [ListAdapter] implementation. This [ListAdapter] can receive [ReduxProps]
  * in order to call [ListAdapter.submitList].
  */
-abstract class ReduxListAdapter<GlobalState, VH, S, A>(
+abstract class ReduxListAdapter<GlobalState, GlobalExt, VH, S, A>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<S>
 ) : ListAdapter<S, VH>(diffCallback),
-  IPropLifecycleOwner<GlobalState> by EmptyPropLifecycleOwner(),
-  IPropContainer<GlobalState, List<S>, A> where VH : RecyclerView.ViewHolder {
+  IPropLifecycleOwner<GlobalState, GlobalExt> by EmptyPropLifecycleOwner(),
+  IPropContainer<GlobalState, GlobalExt, List<S>, A> where VH : RecyclerView.ViewHolder {
   /**
    * Since we are only calling [ListAdapter.submitList] when [reduxProps] arrives, the
    * [VariableProps.action] instance must be non-null upon [onBindViewHolder]. As a result, we can
    * safely access [VariableProps.action] in [onBindViewHolder].
    */
-  override var reduxProps by ObservableReduxProps<GlobalState, List<S>, A> { _, next ->
+  override var reduxProps by ObservableReduxProps<GlobalState, GlobalExt, List<S>, A> { _, next ->
     this.submitList(next?.state ?: arrayListOf())
   }
 
@@ -117,17 +117,17 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
  * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].
  */
 @Suppress("UNCHECKED_CAST")
-fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
+fun <GlobalState, GlobalExt, VH, VHS, VHA> IPropInjector<GlobalState, GlobalExt>.injectDiffedAdapter(
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>, VHA>,
+  adapterMapper: IPropMapper<GlobalState, GlobalExt, Unit, List<VHS>, VHA>,
   diffCallback: DiffUtil.ItemCallback<VHS>
-): ReduxListAdapter<GlobalState, VH, VHS, VHA> where
+): ReduxListAdapter<GlobalState, GlobalExt, VH, VHS, VHA> where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GlobalState, VHS, VHA> {
-  val listAdapter = object : ReduxListAdapter<GlobalState, VH, VHS, VHA>(adapter, diffCallback) {
+  VH : IPropContainer<GlobalState, GlobalExt, VHS, VHA> {
+  val listAdapter = object : ReduxListAdapter<GlobalState, GlobalExt, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
-      require(this.reduxProps.v?.action is Any, { "Use Unit instead of null for prop mapping"})
+      require(this.reduxProps.v?.action is Any, { "Use Unit instead of null for prop mapping" })
 
       val action = requireNotNull(this.reduxProps.v?.action as Any) {
         "By the time this method is called, injection must have already happened at the adapter" +

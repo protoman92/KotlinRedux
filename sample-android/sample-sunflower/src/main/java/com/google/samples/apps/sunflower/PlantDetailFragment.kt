@@ -56,23 +56,23 @@ import org.swiften.redux.ui.StaticProps
  */
 @SuppressLint("RestrictedApi")
 class PlantDetailFragment : Fragment(),
-  IPropContainer<Redux.State, PlantDetailFragment.S, PlantDetailFragment.A>,
-  IPropLifecycleOwner<Redux.State> by EmptyPropLifecycleOwner(),
-  IPropMapper<Redux.State, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
+  IPropContainer<Redux.State, Unit, PlantDetailFragment.S, PlantDetailFragment.A>,
+  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
+  IPropMapper<Redux.State, Unit, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
   by PlantDetailFragment {
   data class S(val plant: Plant? = null, val isPlanted: Boolean? = null)
   class A(val addPlantToGarden: () -> Unit)
 
-  companion object : IPropMapper<Redux.State, Unit, S, A> {
+  companion object : IPropMapper<Redux.State, Unit, Unit, S, A> {
     override fun mapState(state: Redux.State, outProps: Unit) = state.selectedPlant?.let {
       S(it.id.let { id -> state.plants?.find { p -> p.plantId == id } }, it.isPlanted)
     } ?: S()
 
-    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit) =
+    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, ext: Unit, outProps: Unit) =
       A { state.selectedPlant?.id?.also { dispatch(Redux.Action.AddPlantToGarden(it)) } }
   }
 
-  override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
+  override var reduxProps by ObservableReduxProps<Redux.State, Unit, S, A> { _, next ->
     next?.state?.plant?.also { p ->
       this.shareText = this.getString(R.string.share_text_plant, p.name)
       this.plant_watering.text = this.context?.let { this.bindWateringText(it, p.wateringInterval) }
@@ -131,7 +131,7 @@ class PlantDetailFragment : Fragment(),
     }
   }
 
-  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
+  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, Unit>) {
     this.fab.setOnClickListener {
       this.reduxProps.v?.action?.addPlantToGarden?.invoke()
       Snackbar.make(it, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()

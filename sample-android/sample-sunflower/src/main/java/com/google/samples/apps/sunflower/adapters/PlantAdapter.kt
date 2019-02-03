@@ -39,14 +39,14 @@ import org.swiften.redux.ui.ObservableReduxProps
  * Adapter for the [RecyclerView] in [PlantListFragment].
  */
 class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
-  IPropMapper<Redux.State, Unit, List<Plant>, PlantAdapter.ViewHolder.A> by PlantAdapter,
+  IPropMapper<Redux.State, Unit, Unit, List<Plant>, PlantAdapter.ViewHolder.A> by PlantAdapter,
   IDiffItemCallback<Plant> by PlantAdapter {
   companion object :
-    IPropMapper<Redux.State, Unit, List<Plant>, ViewHolder.A>,
+    IPropMapper<Redux.State, Unit, Unit, List<Plant>, ViewHolder.A>,
     IDiffItemCallback<Plant> {
     override fun mapState(state: Redux.State, outProps: Unit) = state.plants ?: arrayListOf()
 
-    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit): ViewHolder.A {
+    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, ext: Unit, outProps: Unit): ViewHolder.A {
       return ViewHolder.A { index ->
         state.plants?.elementAtOrNull(index)?.plantId?.also {
           dispatch(Redux.Screen.PlantListToPlantDetail(it))
@@ -69,7 +69,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Redux.State, Plant, ViewHolder.A> {
+    IPropContainer<Redux.State, Unit, Plant, ViewHolder.A> {
     class A(val goToPlantDetail: (Int) -> Unit)
 
     private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
@@ -81,7 +81,7 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
       }
     }
 
-    override var reduxProps by ObservableReduxProps<Redux.State, Plant, A> { _, next ->
+    override var reduxProps by ObservableReduxProps<Redux.State, Unit, Plant, A> { _, next ->
       next?.state?.also {
         this.title.text = it.name
 

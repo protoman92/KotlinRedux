@@ -28,21 +28,21 @@ import org.swiften.redux.ui.ObservableReduxProps
 @RunWith(RobolectricTestRunner::class)
 class DiffedAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Int, Int, ViewHolder.A> {
+    IPropContainer<Int, Unit, Int, ViewHolder.A> {
     class A
 
-    override var reduxProps by ObservableReduxProps<Int, Int, A> { _, _ -> }
+    override var reduxProps by ObservableReduxProps<Int, Unit, Int, A> { _, _ -> }
   }
 
   class RecyclerAdapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IPropMapper<Int, Unit, List<Int>, ViewHolder.A> by RecyclerAdapter,
+    IPropMapper<Int, Unit, Unit, List<Int>, ViewHolder.A> by RecyclerAdapter,
     IDiffItemCallback<Int> by RecyclerAdapter {
-    companion object : IPropMapper<Int, Unit, List<Int>, ViewHolder.A>, IDiffItemCallback<Int> {
+    companion object : IPropMapper<Int, Unit, Unit, List<Int>, ViewHolder.A>, IDiffItemCallback<Int> {
       override fun mapState(state: Int, outProps: Unit): List<Int> {
         return (0 until state).map { it }
       }
 
-      override fun mapAction(dispatch: IActionDispatcher, state: Int, outProps: Unit): ViewHolder.A {
+      override fun mapAction(dispatch: IActionDispatcher, state: Int, ext: Unit, outProps: Unit): ViewHolder.A {
         return ViewHolder.A()
       }
 
@@ -86,7 +86,6 @@ class DiffedAdapterTest : BaseLifecycleTest() {
 
       /** Even if this is called, it should not do anything */
       viewHolder.reduxProps.s.subscription.unsubscribe()
-
     }
 
     // Then - view holder injection

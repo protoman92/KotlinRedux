@@ -18,9 +18,9 @@ import org.swiften.redux.ui.StaticProps;
 
 /** Created by haipham on 2018/12/19 */
 public final class MainActivity extends AppCompatActivity implements
-  IPropContainer<State, Unit, Unit>,
-  IPropLifecycleOwner<State> {
-  private ReduxProps<State, Unit, Unit> reduxProps;
+  IPropContainer<State, Unit, Unit, Unit>,
+  IPropLifecycleOwner<State, Unit> {
+  private ReduxProps<State, Unit, Unit, Unit> reduxProps;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,17 +37,17 @@ public final class MainActivity extends AppCompatActivity implements
 
   @NonNull
   @Override
-  public ReduxProps<State, Unit, Unit> getReduxProps() {
+  public ReduxProps<State, Unit, Unit, Unit> getReduxProps() {
     return this.reduxProps;
   }
 
   @Override
-  public void setReduxProps(@Nullable ReduxProps<State, Unit, Unit> reduxProps) {
+  public void setReduxProps(@Nullable ReduxProps<State, Unit, Unit, Unit> reduxProps) {
     this.reduxProps = reduxProps;
   }
 
   @Override
-  public void beforePropInjectionStarts(@NotNull StaticProps<State> sp) { }
+  public void beforePropInjectionStarts(@NotNull StaticProps<State, Unit> sp) { }
 
   @Override
   public void afterPropInjectionEnds() { }

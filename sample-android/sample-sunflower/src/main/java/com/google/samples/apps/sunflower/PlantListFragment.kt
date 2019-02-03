@@ -37,19 +37,19 @@ import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 class PlantListFragment : Fragment(),
-  IPropContainer<Redux.State, PlantListFragment.S, PlantListFragment.A>,
-  IPropLifecycleOwner<Redux.State> by EmptyPropLifecycleOwner(),
-  IPropMapper<Redux.State, Unit, PlantListFragment.S, PlantListFragment.A>
+  IPropContainer<Redux.State, Unit, PlantListFragment.S, PlantListFragment.A>,
+  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
+  IPropMapper<Redux.State, Unit, Unit, PlantListFragment.S, PlantListFragment.A>
   by PlantListFragment {
   data class S(val plantCount: Int)
   class A(val updateGrowZone: () -> Unit)
 
-  companion object : IPropMapper<Redux.State, Unit, S, A> {
+  companion object : IPropMapper<Redux.State, Unit, Unit, S, A> {
     override fun mapState(state: Redux.State, outProps: Unit): S {
       return S(plantCount = state.plants?.size ?: 0)
     }
 
-    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit): A {
+    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, ext: Unit, outProps: Unit): A {
       return A {
         if (state.selectedGrowZone == Redux.NO_GROW_ZONE) {
           dispatch(Redux.Action.SelectGrowZone(9))
@@ -60,7 +60,7 @@ class PlantListFragment : Fragment(),
     }
   }
 
-  override var reduxProps by ObservableReduxProps<Redux.State, S, A> { prev, next ->
+  override var reduxProps by ObservableReduxProps<Redux.State, Unit, S, A> { prev, next ->
     if (next?.state?.plantCount != prev?.state?.plantCount) {
       this.plant_list.adapter?.notifyDataSetChanged()
     }
@@ -90,7 +90,7 @@ class PlantListFragment : Fragment(),
     }
   }
 
-  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
+  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, Unit>) {
     this.plant_list.adapter = sp.injector.injectDiffedAdapter(this, PlantAdapter())
   }
 }

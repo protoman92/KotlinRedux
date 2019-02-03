@@ -44,34 +44,36 @@ open class BaseLifecycleTest {
   }
 
   class TestLifecycleOwner : LifecycleOwner,
-    IPropContainer<Int, Int, Unit>,
-    IPropLifecycleOwner<Int> by EmptyPropLifecycleOwner(),
-    IPropMapper<Int, Unit, Int, Unit> by TestLifecycleOwner {
-    companion object : IPropMapper<Int, Unit, Int, Unit> {
+    IPropContainer<Int, Unit, Int, Unit>,
+    IPropLifecycleOwner<Int, Unit> by EmptyPropLifecycleOwner(),
+    IPropMapper<Int, Unit, Unit, Int, Unit> by TestLifecycleOwner {
+    companion object : IPropMapper<Int, Unit, Unit, Int, Unit> {
       override fun mapState(state: Int, outProps: Unit) = state
-      override fun mapAction(dispatch: IActionDispatcher, state: Int, outProps: Unit) = Unit
+      override fun mapAction(dispatch: IActionDispatcher, state: Int, ext: Unit, outProps: Unit) = Unit
     }
 
     val registry = TestLifecycleRegistry(this)
-    override var reduxProps by ObservableReduxProps<Int, Int, Unit> { _, _ -> }
+    override var reduxProps by ObservableReduxProps<Int, Unit, Int, Unit> { _, _ -> }
     override fun getLifecycle(): Lifecycle = this.registry
   }
 
-  class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IPropInjector<Int> {
+  class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IPropInjector<Int, Unit> {
     val dispatched = Collections.synchronizedList(mutableListOf<IReduxAction>())
     val subscriptions = Collections.synchronizedList(arrayListOf<IReduxSubscription>())
     val injectionCount get() = this.subscriptions.size
 
     override fun <OutProps, View, State, Action> inject(
-      view: View, outProps: OutProps, mapper: IPropMapper<Int, OutProps, State, Action>
+      view: View,
+      outProps: OutProps,
+      mapper: IPropMapper<Int, Unit, OutProps, State, Action>
     ): IReduxSubscription where
-      View : IPropContainer<Int, State, Action>,
-      View : IPropLifecycleOwner<Int> {
+      View : IPropContainer<Int, Unit, State, Action>,
+      View : IPropLifecycleOwner<Int, Unit> {
       val lastState = this.lastState()
       val subscription = ReduxSubscription("$view") {}
       val static = StaticProps(this, subscription)
       val state = mapper.mapState(lastState, outProps)
-      val action = mapper.mapAction(this.dispatch, lastState, outProps)
+      val action = mapper.mapAction(this.dispatch, lastState, Unit, outProps)
       val variable = VariableProps(state, action)
       view.reduxProps = ReduxProps(static, variable)
       this.subscriptions.add(subscription)

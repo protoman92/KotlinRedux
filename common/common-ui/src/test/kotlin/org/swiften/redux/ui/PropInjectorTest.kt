@@ -39,8 +39,8 @@ open class PropInjectorTest {
     }
   }
 
-  internal class View : IPropContainer<S, S, A>, IPropLifecycleOwner<S> {
-    override var reduxProps by ObservableReduxProps<S, S, A> { prev, next ->
+  internal class View : IPropContainer<S, Unit, S, A>, IPropLifecycleOwner<S, Unit> {
+    override var reduxProps by ObservableReduxProps<S, Unit, S, A> { prev, next ->
       this.propCallback?.invoke(prev, next)
       this.propsInjectionCount.incrementAndGet()
     }
@@ -50,7 +50,7 @@ open class PropInjectorTest {
     val beforeInjectionCount = AtomicInteger()
     val afterInjectionCount = AtomicInteger()
 
-    override fun beforePropInjectionStarts(sp: StaticProps<S>) {
+    override fun beforePropInjectionStarts(sp: StaticProps<S, Unit>) {
       assertNotNull(this.reduxProps)
       this.beforeInjectionCount.incrementAndGet()
     }
@@ -59,7 +59,7 @@ open class PropInjectorTest {
   }
 
   protected lateinit var store: StoreWrapper
-  protected lateinit var mapper: IPropMapper<S, Unit, S, A>
+  protected lateinit var mapper: IPropMapper<S, Unit, Unit, S, A>
 
   @Before
   open fun beforeMethod() {
@@ -74,13 +74,13 @@ open class PropInjectorTest {
 
     this.store = StoreWrapper(store)
 
-    this.mapper = object : IPropMapper<S, Unit, S, A> {
+    this.mapper = object : IPropMapper<S, Unit, Unit, S, A> {
       override fun mapState(state: S, outProps: Unit) = state
-      override fun mapAction(dispatch: IActionDispatcher, state: S, outProps: Unit) = A()
+      override fun mapAction(dispatch: IActionDispatcher, state: S, ext: Unit, outProps: Unit) = A()
     }
   }
 
-  open fun createInjector(store: IReduxStore<S>): IPropInjector<S> = PropInjector(store)
+  open fun createInjector(store: IReduxStore<S>): IPropInjector<S, Unit> = PropInjector(store, Unit)
 
   @Test
   fun `Injecting same state props - should not trigger set event`() {

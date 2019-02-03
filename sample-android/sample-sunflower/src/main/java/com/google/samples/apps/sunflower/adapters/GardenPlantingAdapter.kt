@@ -53,18 +53,18 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Redux.State, ViewHolder.S, ViewHolder.A>,
-    IPropLifecycleOwner<Redux.State> by EmptyPropLifecycleOwner(),
-    IPropMapper<Redux.State, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
+    IPropContainer<Redux.State, Unit, ViewHolder.S, ViewHolder.A>,
+    IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
+    IPropMapper<Redux.State, Unit, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
     data class S(val plantings: PlantAndGardenPlantings?)
     class A(val goToPlantDetail: () -> Unit)
 
-    companion object : IPropMapper<Redux.State, Int, S, A> {
+    companion object : IPropMapper<Redux.State, Unit, Int, S, A> {
       override fun mapState(state: Redux.State, outProps: Int): S {
         return S(state.plantAndGardenPlantings?.elementAtOrNull(outProps))
       }
 
-      override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Int): A {
+      override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, ext: Unit, outProps: Int): A {
         return A {
           this.mapState(state, outProps).plantings?.plant?.plantId?.let {
             dispatch(Redux.Screen.GardenToPlantDetail(it))
@@ -73,7 +73,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
       }
     }
 
-    override var reduxProps by ObservableReduxProps<Redux.State, S, A> { _, next ->
+    override var reduxProps by ObservableReduxProps<Redux.State, Unit, S, A> { _, next ->
       next?.state?.plantings?.also { p ->
         if (p.gardenPlantings.isNotEmpty()) {
           val context = this.itemView.context
@@ -106,7 +106,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
     private val plantDate: TextView = this.itemView.findViewById(R.id.plant_date)
     private val waterDate: TextView = this.itemView.findViewById(R.id.water_date)
 
-    override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
+    override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, Unit>) {
       this.itemView.setOnClickListener {
         this@ViewHolder.reduxProps.v?.action?.goToPlantDetail?.invoke()
       }

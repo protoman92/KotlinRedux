@@ -35,17 +35,17 @@ import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 class GardenFragment : Fragment(),
-  IPropContainer<Redux.State, GardenFragment.S, Unit>,
-  IPropLifecycleOwner<Redux.State> by EmptyPropLifecycleOwner(),
-  IPropMapper<Redux.State, Unit, GardenFragment.S, Unit> by GardenFragment {
+  IPropContainer<Redux.State, Unit, GardenFragment.S, Unit>,
+  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
+  IPropMapper<Redux.State, Unit, Unit, GardenFragment.S, Unit> by GardenFragment {
   data class S(val gardenPlantingCount: Int)
 
-  companion object : IPropMapper<Redux.State, Unit, S, Unit> {
-    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit) = Unit
+  companion object : IPropMapper<Redux.State, Unit, Unit, S, Unit> {
+    override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, ext: Unit, outProps: Unit) = Unit
     override fun mapState(state: Redux.State, outProps: Unit) = S(state.gardenPlantings?.size ?: 0)
   }
 
-  override var reduxProps by ObservableReduxProps<Redux.State, S, Unit> { prev, next ->
+  override var reduxProps by ObservableReduxProps<Redux.State, Unit, S, Unit> { prev, next ->
     next?.state?.also {
       if (it.gardenPlantingCount == 0) {
         this.garden_list.visibility = View.GONE
@@ -67,7 +67,7 @@ class GardenFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_garden, container, false)
 
-  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State>) {
+  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, Unit>) {
     this.garden_list.adapter = GardenPlantingAdapter().let {
       sp.injector.injectRecyclerAdapter(this, it, it, GardenPlantingAdapter.ViewHolder)
     }
