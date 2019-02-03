@@ -2,12 +2,12 @@
 
 # &lt;init&gt;
 
-`DefaultActionStore(store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GlobalState`](index.md#GlobalState)`>)`
+`DefaultActionStore(store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>)`
 
 A [IReduxStore](../-i-redux-store.md) that handles [DefaultReduxAction](../-default-redux-action/index.md).
 
 ### Parameters
 
-`GlobalState` - The global state type.
+`GState` - The global state type.
 
 `store` - An [IReduxStore](../-i-redux-store.md) instance.

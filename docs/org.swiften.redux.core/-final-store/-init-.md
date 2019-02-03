@@ -2,13 +2,13 @@
 
 # &lt;init&gt;
 
-`FinalStore(state: `[`GlobalState`](index.md#GlobalState)`, reducer: `[`IReducer`](../-i-reducer.md)`<`[`GlobalState`](index.md#GlobalState)`>)``private FinalStore(store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GlobalState`](index.md#GlobalState)`>)`
+`FinalStore(state: `[`GState`](index.md#GState)`, reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`>)``private FinalStore(store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>)`
 
 [FinalStore](index.md) is a [IReduxStore](../-i-redux-store.md) that combines all crucial [IReduxStore](../-i-redux-store.md) implementations to
 provide a full suite of functionalities.
 
 ### Parameters
 
-`GlobalState` - The global state type.
+`GState` - The global state type.
 
 `store` - An [IReduxStore](../-i-redux-store.md) instance.

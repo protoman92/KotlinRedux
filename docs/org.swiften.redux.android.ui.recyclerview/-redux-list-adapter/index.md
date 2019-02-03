@@ -2,7 +2,7 @@
 
 # ReduxListAdapter
 
-`abstract class ReduxListAdapter<GlobalState, VH, S, A> : `[`IPropLifecycleOwner`](../../org.swiften.redux.ui/-i-prop-lifecycle-owner/index.md)`<`[`GlobalState`](index.md#GlobalState)`>, `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<`[`GlobalState`](index.md#GlobalState)`, `[`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)`<`[`S`](index.md#S)`>?, `[`A`](index.md#A)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/DiffedAdapter.kt#L37)
+`abstract class ReduxListAdapter<GState, GExt, VH, S, A> : `[`IPropLifecycleOwner`](../../org.swiften.redux.ui/-i-prop-lifecycle-owner/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>, `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<`[`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)`<`[`S`](index.md#S)`>, `[`A`](index.md#A)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/DiffedAdapter.kt#L37)
 
 Custom Redux-compatible [ListAdapter](#) implementation. This [ListAdapter](#) can receive [ReduxProps](../../org.swiften.redux.ui/-redux-props/index.md)
 in order to call [ListAdapter.submitList](#).
@@ -18,7 +18,7 @@ in order to call [ListAdapter.submitList](#).
 | Name | Summary |
 |---|---|
 | [adapter](adapter.md) | `val adapter: <ERROR CLASS><`[`VH`](index.md#VH)`>` |
-| [reduxProps](redux-props.md) | `open var reduxProps: <ERROR CLASS>` |
+| [reduxProps](redux-props.md) | `open var reduxProps: <ERROR CLASS>`<br>Since we are only calling [ListAdapter.submitList](#) when [reduxProps](redux-props.md) arrives, the [VariableProps.action](../../org.swiften.redux.ui/-variable-props/action.md) instance must be non-null upon [onBindViewHolder](#). As a result, we can safely access [VariableProps.action](../../org.swiften.redux.ui/-variable-props/action.md) in [onBindViewHolder](#). |
 
 ### Functions
 
@@ -42,4 +42,4 @@ in order to call [ListAdapter.submitList](#).
 
 | Name | Summary |
 |---|---|
-| [unsubscribeSafely](../../org.swiften.redux.ui/unsubscribe-safely.md) | `fun <GlobalState> `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<`[`GlobalState`](../../org.swiften.redux.ui/unsubscribe-safely.md#GlobalState)`, *, *>.unsubscribeSafely(): `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`?`<br>Unsubscribe from [IPropContainer.reduxProps](../../org.swiften.redux.ui/-i-prop-container/redux-props.md) safely, i.e. catch [UninitializedPropertyAccessException](#) because this is most probably declared as lateinit in Kotlin code, and catch [NullPointerException](http://docs.oracle.com/javase/6/docs/api/java/lang/NullPointerException.html) to satisfy Java code. Also return the [ReduxSubscription.id](../../org.swiften.redux.core/-redux-subscription/id.md) that can be used to track and remove the relevant [ReduxSubscription](../../org.swiften.redux.core/-redux-subscription/index.md) from other containers. |
+| [unsubscribeSafely](../../org.swiften.redux.ui/unsubscribe-safely.md) | `fun `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<*, *>.unsubscribeSafely(): `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`?`<br>Unsubscribe from [IPropContainer.reduxProps](../../org.swiften.redux.ui/-i-prop-container/redux-props.md) safely, i.e. catch [UninitializedPropertyAccessException](#) because this is most probably declared as lateinit in Kotlin code, and catch [NullPointerException](http://docs.oracle.com/javase/6/docs/api/java/lang/NullPointerException.html) to satisfy Java code. Also return the [ReduxSubscription.id](../../org.swiften.redux.core/-redux-subscription/id.md) that can be used to track and remove the relevant [ReduxSubscription](../../org.swiften.redux.core/-redux-subscription/index.md) from other containers. |

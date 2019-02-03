@@ -6,5 +6,12 @@
 
 Overrides [ISagaOutput.retry](../../org.swiften.redux.saga.common/-i-saga-output/retry.md)
 
-Retry [times](../../org.swiften.redux.saga.common/-i-saga-output/retry.md#org.swiften.redux.saga.common.ISagaOutput$retry(kotlin.Long)/times) if a [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html) is encountered
+Retry [times](../../org.swiften.redux.saga.common/-i-saga-output/retry.md#org.swiften.redux.saga.common.ISagaOutput$retry(kotlin.Long)/times) if a [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html) is encountered.
+
+### Parameters
+
+`times` - The number of times to retry.
+
+**Return**
+An [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) instance.
 

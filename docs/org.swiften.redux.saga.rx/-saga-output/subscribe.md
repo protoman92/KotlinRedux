@@ -6,5 +6,10 @@
 
 Overrides [ISagaOutput.subscribe](../../org.swiften.redux.saga.common/-i-saga-output/subscribe.md)
 
-Subscribe to values with [onValue](../../org.swiften.redux.saga.common/-i-saga-output/subscribe.md#org.swiften.redux.saga.common.ISagaOutput$subscribe(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, kotlin.Unit)), kotlin.Function1((kotlin.Throwable, kotlin.Unit)))/onValue), and error with [onError](../../org.swiften.redux.saga.common/-i-saga-output/subscribe.md#org.swiften.redux.saga.common.ISagaOutput$subscribe(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, kotlin.Unit)), kotlin.Function1((kotlin.Throwable, kotlin.Unit)))/onError)
+Subscribe to values with [onValue](../../org.swiften.redux.saga.common/-i-saga-output/subscribe.md#org.swiften.redux.saga.common.ISagaOutput$subscribe(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, kotlin.Unit)), kotlin.Function1((kotlin.Throwable, kotlin.Unit)))/onValue), and error with [onError](../../org.swiften.redux.saga.common/-i-saga-output/subscribe.md#org.swiften.redux.saga.common.ISagaOutput$subscribe(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, kotlin.Unit)), kotlin.Function1((kotlin.Throwable, kotlin.Unit)))/onError).
 
+### Parameters
+
+`onValue` - Function that takes [T](../../org.swiften.redux.saga.common/-i-saga-output/index.md#T) and performs some side effects.
+
+`onError` - Function that takes [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html) and performs some side effects.

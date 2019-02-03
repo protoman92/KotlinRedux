@@ -2,22 +2,26 @@
 
 # SagaEffect
 
-`abstract class SagaEffect<R> : `[`ISagaEffect`](../-i-saga-effect.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L101)
+`abstract class SagaEffect<R> : `[`ISagaEffect`](../-i-saga-effect.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L180)
 
-Abstract class to allow better interfacing with Java
+Abstract class to allow better interfacing with Java.
+
+### Parameters
+
+`R` - The type of emission value.
 
 ### Constructors
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `SagaEffect()`<br>Abstract class to allow better interfacing with Java |
+| [&lt;init&gt;](-init-.md) | `SagaEffect()`<br>Abstract class to allow better interfacing with Java. |
 
 ### Functions
 
 | Name | Summary |
 |---|---|
-| [invoke](invoke.md) | `fun invoke(scope: <ERROR CLASS>, state: `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`): `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`R`](index.md#R)`>`<br>Call [ISagaEffect](../-i-saga-effect.md) with convenience parameters for testing |
-| [transform](transform.md) | `fun <R2> transform(transformer: `[`ISagaEffectTransformer`](../-i-saga-effect-transformer.md)`<`[`R`](index.md#R)`, `[`R2`](transform.md#R2)`>): `[`SagaEffect`](./index.md)`<`[`R2`](transform.md#R2)`>` |
+| [invoke](invoke.md) | `fun invoke(scope: <ERROR CLASS>, state: `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`): `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`R`](index.md#R)`>`<br>Call [ISagaEffect](../-i-saga-effect.md) with convenience parameters for testing. |
+| [transform](transform.md) | `fun <R2> transform(transformer: `[`ISagaEffectTransformer`](../-i-saga-effect-transformer.md)`<`[`R`](index.md#R)`, `[`R2`](transform.md#R2)`>): `[`SagaEffect`](./index.md)`<`[`R2`](transform.md#R2)`>`<br>Transform [this](#) into another [SagaEffect](./index.md) with [transformer](transform.md#org.swiften.redux.saga.common.SagaEffect$transform(kotlin.Function1((org.swiften.redux.saga.common.SagaEffect((org.swiften.redux.saga.common.SagaEffect.R)), org.swiften.redux.saga.common.SagaEffect((org.swiften.redux.saga.common.SagaEffect.transform.R2)))))/transformer). |
 
 ### Extension Functions
 

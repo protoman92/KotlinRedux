@@ -6,5 +6,14 @@
 
 Overrides [ISagaOutput.flatMap](../../org.swiften.redux.saga.common/-i-saga-output/flat-map.md)
 
-Flatten emissions from [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) produced by [transform](../../org.swiften.redux.saga.common/-i-saga-output/flat-map.md#org.swiften.redux.saga.common.ISagaOutput$flatMap(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, org.swiften.redux.saga.common.ISagaOutput((org.swiften.redux.saga.common.ISagaOutput.flatMap.T2)))))/transform)
+Flatten emissions from [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) produced by [transform](../../org.swiften.redux.saga.common/-i-saga-output/flat-map.md#org.swiften.redux.saga.common.ISagaOutput$flatMap(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, org.swiften.redux.saga.common.ISagaOutput((org.swiften.redux.saga.common.ISagaOutput.flatMap.T2)))))/transform).
+
+### Parameters
+
+`T2` - The type of emission of the resulting [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md).
+
+`transform` - Function that flat maps from [T](../../org.swiften.redux.saga.common/-i-saga-output/index.md#T) to [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) in a [CoroutineScope](#).
+
+**Return**
+An [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) instance.
 

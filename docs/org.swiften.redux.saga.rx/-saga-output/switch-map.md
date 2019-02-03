@@ -9,3 +9,12 @@ Overrides [ISagaOutput.switchMap](../../org.swiften.redux.saga.common/-i-saga-ou
 Flatten emissions from [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) produced by [transform](../../org.swiften.redux.saga.common/-i-saga-output/switch-map.md#org.swiften.redux.saga.common.ISagaOutput$switchMap(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, org.swiften.redux.saga.common.ISagaOutput((org.swiften.redux.saga.common.ISagaOutput.switchMap.T2)))))/transform), but accept only those from
 the latest one.
 
+### Parameters
+
+`T2` - The type of emission of the resulting [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md).
+
+`transform` - Function that switch maps from [T](../../org.swiften.redux.saga.common/-i-saga-output/index.md#T) to [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) in a [CoroutineScope](#).
+
+**Return**
+An [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) instance.
+

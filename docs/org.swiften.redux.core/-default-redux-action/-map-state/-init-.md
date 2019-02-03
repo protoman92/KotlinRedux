@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`MapState(fn: (`[`GlobalState`](index.md#GlobalState)`) -> `[`GlobalState`](index.md#GlobalState)`)`
+`MapState(fn: (`[`GState`](index.md#GState)`) -> `[`GState`](index.md#GState)`)`
 
-Replace the current [GlobalState](index.md#GlobalState) with [fn](fn.md)
+Replace the current [GState](index.md#GState) with [fn](fn.md)
 

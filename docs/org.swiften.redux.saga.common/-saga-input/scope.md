@@ -2,4 +2,7 @@
 
 # scope
 
-`val scope: <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L29)
+`val scope: <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L39)
+
+A [CoroutineScope](#) instance.
+

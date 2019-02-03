@@ -33,3 +33,10 @@ from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md).
 |---|---|
 | [isUnsubscribed](is-unsubscribed.md) | `fun isUnsubscribed(): `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)<br>Check if this [IReduxSubscription](../-i-redux-subscription/index.md) is unsubscribed. |
 | [unsubscribe](unsubscribe.md) | `fun unsubscribe(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Unsubscribe from this [IReduxSubscription](../-i-redux-subscription/index.md). |
+
+### Companion Object Properties
+
+| Name | Summary |
+|---|---|
+| [EMPTY](-e-m-p-t-y.md) | `val EMPTY: `[`ReduxSubscription`](./index.md)<br>Mock [ReduxSubscription](./index.md) that is used every time there is no meaningful subscription logic to be unsubscribed on. |
+| [EMPTY_ID](-e-m-p-t-y_-i-d.md) | `val EMPTY_ID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |

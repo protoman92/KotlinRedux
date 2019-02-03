@@ -2,11 +2,15 @@
 
 # VariableProps
 
-`data class VariableProps<State, Action> : `[`IVariableProps`](../-i-variable-props/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L45)
+`data class VariableProps<State, Action> : `[`IVariableProps`](../-i-variable-props/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L50)
 
-[IVariableProps](../-i-variable-props/index.md) implementation
+[IVariableProps](../-i-variable-props/index.md) implementation.
 
 ### Parameters
+
+`State` - The state type.
+
+`Action` - The action type.
 
 `state` - See [IVariableProps.state](../-i-variable-props/state.md).
 
@@ -16,7 +20,7 @@
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `VariableProps(state: `[`State`](index.md#State)`, action: `[`Action`](index.md#Action)`)`<br>[IVariableProps](../-i-variable-props/index.md) implementation |
+| [&lt;init&gt;](-init-.md) | `VariableProps(state: `[`State`](index.md#State)`, action: `[`Action`](index.md#Action)`)`<br>[IVariableProps](../-i-variable-props/index.md) implementation. |
 
 ### Properties
 

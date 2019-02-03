@@ -2,8 +2,15 @@
 
 # debounce
 
-`abstract fun debounce(timeMillis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`ISagaOutput`](index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L64)
+`abstract fun debounce(millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`ISagaOutput`](index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L97)
 
-Debounce emissions by [timeMillis](debounce.md#org.swiften.redux.saga.common.ISagaOutput$debounce(kotlin.Long)/timeMillis), i.e. accepting only values that are [timeMillis](debounce.md#org.swiften.redux.saga.common.ISagaOutput$debounce(kotlin.Long)/timeMillis) away
-from their immediate predecessors.
+Debounce emissions by [millis](debounce.md#org.swiften.redux.saga.common.ISagaOutput$debounce(kotlin.Long)/millis), i.e. accepting only values that are [millis](debounce.md#org.swiften.redux.saga.common.ISagaOutput$debounce(kotlin.Long)/millis) away from their
+immediate predecessors.
+
+### Parameters
+
+`millis` - Debounce time in milliseconds.
+
+**Return**
+An [ISagaOutput](index.md) instance.
 

@@ -2,11 +2,15 @@
 
 # ObservableReduxProps
 
-`class ObservableReduxProps<GlobalState, S, A>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/ObservableProp.kt#L52)
+`class ObservableReduxProps<S, A>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/ObservableProp.kt#L44)
 
 Use this to avoid lateinit modifiers for [ReduxProps](../-redux-props/index.md)
 
 ### Parameters
+
+`S` - See [VariableProps.state](../-variable-props/state.md).
+
+`A` - See [VariableProps.action](../-variable-props/action.md).
 
 `notifier` - See [VetoableObservableProp.notifier](../-vetoable-observable-prop/notifier.md).
 

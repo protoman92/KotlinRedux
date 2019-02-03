@@ -8,4 +8,6 @@ Treat this as a delegate for [IPropLifecycleOwner](../-i-prop-lifecycle-owner/in
 
 ### Parameters
 
-`GlobalState` - The global state type.
+`GState` - The global state type.
+
+`GExt` - The global external argument.

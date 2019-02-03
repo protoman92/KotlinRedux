@@ -2,9 +2,9 @@
 
 # IVariableProps
 
-`interface IVariableProps<State, Action>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L25)
+`interface IVariableProps<State, Action>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L26)
 
-Container for an [IPropContainer](../-i-prop-container/index.md) mutable properties
+Container for an [IPropContainer](../-i-prop-container/index.md) mutable properties.
 
 ### Parameters
 
@@ -23,4 +23,4 @@ Container for an [IPropContainer](../-i-prop-container/index.md) mutable propert
 
 | Name | Summary |
 |---|---|
-| [VariableProps](../-variable-props/index.md) | `data class VariableProps<State, Action> : `[`IVariableProps`](./index.md)`<`[`State`](../-variable-props/index.md#State)`, `[`Action`](../-variable-props/index.md#Action)`>`<br>[IVariableProps](./index.md) implementation |
+| [VariableProps](../-variable-props/index.md) | `data class VariableProps<State, Action> : `[`IVariableProps`](./index.md)`<`[`State`](../-variable-props/index.md#State)`, `[`Action`](../-variable-props/index.md#Action)`>`<br>[IVariableProps](./index.md) implementation. |

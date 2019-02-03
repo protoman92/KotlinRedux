@@ -6,5 +6,5 @@
 
 Overrides [ISagaOutput.onAction](../../org.swiften.redux.saga.common/-i-saga-output/on-action.md)
 
-Trigger every time an [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) arrives
+Trigger every time an [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) arrives.
 

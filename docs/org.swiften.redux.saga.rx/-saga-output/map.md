@@ -6,5 +6,14 @@
 
 Overrides [ISagaOutput.map](../../org.swiften.redux.saga.common/-i-saga-output/map.md)
 
-Map emissions from [T](../../org.swiften.redux.saga.common/-i-saga-output/index.md#T) to [T2](../../org.swiften.redux.saga.common/-i-saga-output/map.md#T2) with [transform](../../org.swiften.redux.saga.common/-i-saga-output/map.md#org.swiften.redux.saga.common.ISagaOutput$map(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, org.swiften.redux.saga.common.ISagaOutput.map.T2)))/transform)
+Map emissions from [T](../../org.swiften.redux.saga.common/-i-saga-output/index.md#T) to [T2](../../org.swiften.redux.saga.common/-i-saga-output/map.md#T2) with [transform](../../org.swiften.redux.saga.common/-i-saga-output/map.md#org.swiften.redux.saga.common.ISagaOutput$map(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, org.swiften.redux.saga.common.ISagaOutput.map.T2)))/transform).
+
+### Parameters
+
+`T2` - The type of emission of the resulting [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md).
+
+`transform` - Function that maps from [T](../../org.swiften.redux.saga.common/-i-saga-output/index.md#T) to [T2](../../org.swiften.redux.saga.common/-i-saga-output/map.md#T2).
+
+**Return**
+An [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) instance.
 

@@ -2,7 +2,7 @@
 
 # state
 
-`val state: `[`State`](index.md#State) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L46)
+`val state: `[`State`](index.md#State) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L51)
 
 Overrides [IVariableProps.state](../-i-variable-props/state.md)
 

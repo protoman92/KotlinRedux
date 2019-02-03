@@ -6,5 +6,12 @@
 
 Overrides [ISagaOutput.filter](../../org.swiften.redux.saga.common/-i-saga-output/filter.md)
 
-Filter out values that do not pass [predicate](../../org.swiften.redux.saga.common/-i-saga-output/filter.md#org.swiften.redux.saga.common.ISagaOutput$filter(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, kotlin.Boolean)))/predicate)
+Filter out values that do not pass [predicate](../../org.swiften.redux.saga.common/-i-saga-output/filter.md#org.swiften.redux.saga.common.ISagaOutput$filter(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, kotlin.Boolean)))/predicate).
+
+### Parameters
+
+`predicate` - Function that takes [T](../../org.swiften.redux.saga.common/-i-saga-output/index.md#T) and performs some logic checking, returning [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html).
+
+**Return**
+An [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) instance.
 

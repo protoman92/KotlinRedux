@@ -6,5 +6,12 @@
 
 Overrides [ISagaOutput.catchError](../../org.swiften.redux.saga.common/-i-saga-output/catch-error.md)
 
-Catch error with [catcher](../../org.swiften.redux.saga.common/-i-saga-output/catch-error.md#org.swiften.redux.saga.common.ISagaOutput$catchError(kotlin.Function1((kotlin.Throwable, org.swiften.redux.saga.common.ISagaOutput.T)))/catcher)
+Catch error with [catcher](../../org.swiften.redux.saga.common/-i-saga-output/catch-error.md#org.swiften.redux.saga.common.ISagaOutput$catchError(kotlin.Function1((kotlin.Throwable, org.swiften.redux.saga.common.ISagaOutput.T)))/catcher).
+
+### Parameters
+
+`catcher` - Function that catches [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html) and returns [T](../../org.swiften.redux.saga.common/-i-saga-output/index.md#T).
+
+**Return**
+An [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) instance.
 

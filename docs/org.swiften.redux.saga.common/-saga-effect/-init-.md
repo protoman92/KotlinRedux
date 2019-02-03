@@ -4,5 +4,8 @@
 
 `SagaEffect()`
 
-Abstract class to allow better interfacing with Java
+Abstract class to allow better interfacing with Java.
 
+### Parameters
+
+`R` - The type of emission value.

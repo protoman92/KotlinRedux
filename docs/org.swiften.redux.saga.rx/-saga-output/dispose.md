@@ -6,5 +6,5 @@
 
 Overrides [ISagaOutput.dispose](../../org.swiften.redux.saga.common/-i-saga-output/dispose.md)
 
-Terminate internal stream subscriptions
+Terminate internal stream subscriptions.
 

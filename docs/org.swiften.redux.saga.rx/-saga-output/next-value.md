@@ -6,5 +6,12 @@
 
 Overrides [ISagaOutput.nextValue](../../org.swiften.redux.saga.common/-i-saga-output/next-value.md)
 
-Get the next [T](../../org.swiften.redux.saga.common/-i-saga-output/index.md#T), but only if it arrives before [timeoutMillis](../../org.swiften.redux.saga.common/-i-saga-output/next-value.md#org.swiften.redux.saga.common.ISagaOutput$nextValue(kotlin.Long)/timeoutMillis)
+Get the next [T](../../org.swiften.redux.saga.common/-i-saga-output/index.md#T), but only if it arrives before [timeoutMillis](../../org.swiften.redux.saga.common/-i-saga-output/next-value.md#org.swiften.redux.saga.common.ISagaOutput$nextValue(kotlin.Long)/timeoutMillis).
+
+### Parameters
+
+`timeoutMillis` - Timeout time in milliseconds.
+
+**Return**
+An [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) instance.
 

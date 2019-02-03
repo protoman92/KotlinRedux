@@ -2,13 +2,13 @@
 
 # &lt;init&gt;
 
-`LoggingMiddleware(logger: (`[`GlobalState`](index.md#GlobalState)`, `[`IReduxAction`](../-i-redux-action.md)`?) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`
+`LoggingMiddleware(logger: (`[`GState`](index.md#GState)`, `[`IReduxAction`](../-i-redux-action.md)`?) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`
 
 [IMiddleware](../-i-middleware.md) implementation that supports logging. Specify [logger](logger.md) to customize how events
 are formatted.
 
 ### Parameters
 
-`GlobalState` - The global state type.
+`GState` - The global state type.
 
-`logger` - Function to specify how [GlobalState](index.md#GlobalState) and [IReduxAction](../-i-redux-action.md) are formatted.
+`logger` - Function to specify how [GState](index.md#GState) and [IReduxAction](../-i-redux-action.md) are formatted.

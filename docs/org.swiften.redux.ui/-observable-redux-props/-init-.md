@@ -8,4 +8,8 @@ Use this to avoid lateinit modifiers for [ReduxProps](../-redux-props/index.md)
 
 ### Parameters
 
+`S` - See [VariableProps.state](../-variable-props/state.md).
+
+`A` - See [VariableProps.action](../-variable-props/action.md).
+
 `notifier` - See [VetoableObservableProp.notifier](../-vetoable-observable-prop/notifier.md).

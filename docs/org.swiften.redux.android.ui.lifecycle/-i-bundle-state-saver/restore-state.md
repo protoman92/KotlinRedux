@@ -2,4 +2,4 @@
 
 # restoreState
 
-`abstract fun restoreState(bundle: <ERROR CLASS>): `[`GlobalState`](index.md#GlobalState)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidActivity.kt#L26)
+`abstract fun restoreState(bundle: <ERROR CLASS>): `[`GState`](index.md#GState)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidActivity.kt#L26)

@@ -2,7 +2,16 @@
 
 # flatMap
 
-`abstract fun <T2> flatMap(transform: (`[`T`](index.md#T)`) -> `[`ISagaOutput`](index.md)`<`[`T2`](flat-map.md#T2)`>): `[`ISagaOutput`](index.md)`<`[`T2`](flat-map.md#T2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L79)
+`abstract fun <T2> flatMap(transform: (`[`T`](index.md#T)`) -> `[`ISagaOutput`](index.md)`<`[`T2`](flat-map.md#T2)`>): `[`ISagaOutput`](index.md)`<`[`T2`](flat-map.md#T2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L136)
 
-Flatten emissions from [ISagaOutput](index.md) produced by [transform](flat-map.md#org.swiften.redux.saga.common.ISagaOutput$flatMap(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, org.swiften.redux.saga.common.ISagaOutput((org.swiften.redux.saga.common.ISagaOutput.flatMap.T2)))))/transform)
+Flatten emissions from [ISagaOutput](index.md) produced by [transform](flat-map.md#org.swiften.redux.saga.common.ISagaOutput$flatMap(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, org.swiften.redux.saga.common.ISagaOutput((org.swiften.redux.saga.common.ISagaOutput.flatMap.T2)))))/transform).
+
+### Parameters
+
+`T2` - The type of emission of the resulting [ISagaOutput](index.md).
+
+`transform` - Function that flat maps from [T](index.md#T) to [ISagaOutput](index.md) in a [CoroutineScope](#).
+
+**Return**
+An [ISagaOutput](index.md) instance.
 

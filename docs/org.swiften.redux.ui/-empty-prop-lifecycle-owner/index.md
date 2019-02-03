@@ -2,13 +2,15 @@
 
 # EmptyPropLifecycleOwner
 
-`class EmptyPropLifecycleOwner<GlobalState> : `[`IPropLifecycleOwner`](../-i-prop-lifecycle-owner/index.md)`<`[`GlobalState`](index.md#GlobalState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L37)
+`class EmptyPropLifecycleOwner<GState, GExt> : `[`IPropLifecycleOwner`](../-i-prop-lifecycle-owner/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L39)
 
 Treat this as a delegate for [IPropLifecycleOwner](../-i-prop-lifecycle-owner/index.md) that does not hold any logic.
 
 ### Parameters
 
-`GlobalState` - The global state type.
+`GState` - The global state type.
+
+`GExt` - The global external argument.
 
 ### Constructors
 
@@ -21,4 +23,4 @@ Treat this as a delegate for [IPropLifecycleOwner](../-i-prop-lifecycle-owner/in
 | Name | Summary |
 |---|---|
 | [afterPropInjectionEnds](after-prop-injection-ends.md) | `fun afterPropInjectionEnds(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>This is called after [IReduxSubscription.unsubscribe](../../org.swiften.redux.core/-i-redux-subscription/unsubscribe.md) is called. |
-| [beforePropInjectionStarts](before-prop-injection-starts.md) | `fun beforePropInjectionStarts(sp: `[`StaticProps`](../-static-props/index.md)`<`[`GlobalState`](index.md#GlobalState)`>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>This is called before [IPropInjector.inject](../-i-prop-injector/inject.md) is called. |
+| [beforePropInjectionStarts](before-prop-injection-starts.md) | `fun beforePropInjectionStarts(sp: `[`StaticProps`](../-static-props/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>This is called before [IPropInjector.inject](../-i-prop-injector/inject.md) is called. |

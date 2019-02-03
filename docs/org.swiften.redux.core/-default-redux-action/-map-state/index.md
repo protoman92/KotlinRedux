@@ -2,18 +2,18 @@
 
 # MapState
 
-`class MapState<GlobalState> : `[`DefaultReduxAction`](../index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Preset.kt#L18)
+`class MapState<GState> : `[`DefaultReduxAction`](../index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Preset.kt#L18)
 
-Replace the current [GlobalState](index.md#GlobalState) with [fn](fn.md)
+Replace the current [GState](index.md#GState) with [fn](fn.md)
 
 ### Constructors
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `MapState(fn: (`[`GlobalState`](index.md#GlobalState)`) -> `[`GlobalState`](index.md#GlobalState)`)`<br>Replace the current [GlobalState](index.md#GlobalState) with [fn](fn.md) |
+| [&lt;init&gt;](-init-.md) | `MapState(fn: (`[`GState`](index.md#GState)`) -> `[`GState`](index.md#GState)`)`<br>Replace the current [GState](index.md#GState) with [fn](fn.md) |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
-| [fn](fn.md) | `val fn: (`[`GlobalState`](index.md#GlobalState)`) -> `[`GlobalState`](index.md#GlobalState) |
+| [fn](fn.md) | `val fn: (`[`GState`](index.md#GState)`) -> `[`GState`](index.md#GState) |

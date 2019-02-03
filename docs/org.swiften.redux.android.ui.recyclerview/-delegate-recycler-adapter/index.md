@@ -2,7 +2,7 @@
 
 # DelegateRecyclerAdapter
 
-`abstract class DelegateRecyclerAdapter<GlobalState, VH : `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<`[`GlobalState`](index.md#GlobalState)`, `[`VHState`](index.md#VHState)`, `[`VHAction`](index.md#VHAction)`>, VHState, VHAction>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L33)
+`abstract class DelegateRecyclerAdapter<GState, GExt, VH : `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<`[`VHState`](index.md#VHState)`, `[`VHAction`](index.md#VHAction)`>, VHState, VHAction>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L34)
 
 [RecyclerView.Adapter](#) that delegates method calls to another [RecyclerView.Adapter](#)
 

@@ -6,5 +6,12 @@
 
 Overrides [ISagaOutput.timeout](../../org.swiften.redux.saga.common/-i-saga-output/timeout.md)
 
-Time out if no element is emitted within [millis](../../org.swiften.redux.saga.common/-i-saga-output/timeout.md#org.swiften.redux.saga.common.ISagaOutput$timeout(kotlin.Long)/millis)]
+Time out if no element is emitted within [millis](../../org.swiften.redux.saga.common/-i-saga-output/timeout.md#org.swiften.redux.saga.common.ISagaOutput$timeout(kotlin.Long)/millis).
+
+### Parameters
+
+`millis` - Timeout time in milliseconds.
+
+**Return**
+An [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) instance.
 

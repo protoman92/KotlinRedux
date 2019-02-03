@@ -4,9 +4,13 @@
 
 `VariableProps(state: `[`State`](index.md#State)`, action: `[`Action`](index.md#Action)`)`
 
-[IVariableProps](../-i-variable-props/index.md) implementation
+[IVariableProps](../-i-variable-props/index.md) implementation.
 
 ### Parameters
+
+`State` - The state type.
+
+`Action` - The action type.
 
 `state` - See [IVariableProps.state](../-i-variable-props/state.md).
 

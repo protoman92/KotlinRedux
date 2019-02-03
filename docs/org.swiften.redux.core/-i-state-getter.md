@@ -2,10 +2,10 @@
 
 # IStateGetter
 
-`typealias IStateGetter<GlobalState> = () -> `[`GlobalState`](-i-state-getter.md#GlobalState) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L23)
+`typealias IStateGetter<GState> = () -> `[`GState`](-i-state-getter.md#GState) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L23)
 
 Get the last internal state.
 
 ### Parameters
 
-`GlobalState` - The global state type.
+`GState` - The global state type.

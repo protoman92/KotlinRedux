@@ -2,12 +2,16 @@
 
 # &lt;init&gt;
 
-`ReduxProps(static: `[`IStaticProps`](../-i-static-props/index.md)`<`[`GlobalState`](index.md#GlobalState)`>, variable: `[`IVariableProps`](../-i-variable-props/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>?)`
+`ReduxProps(s: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`, v: `[`IVariableProps`](../-i-variable-props/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>?)`
 
-Container for [StaticProps](../-static-props/index.md) and [VariableProps](../-variable-props/index.md)
+Container for [StaticProps](../-static-props/index.md) and [VariableProps](../-variable-props/index.md).
 
 ### Parameters
 
-`static` - An [IStaticProps](../-i-static-props/index.md) instance.
+`State` - The state type.
 
-`variable` - An [IVariableProps](../-i-variable-props/index.md) instance.
+`Action` - The action type.
+
+`s` - An [IReduxSubscription](../../org.swiften.redux.core/-i-redux-subscription/index.md) instance.
+
+`v` - An [IVariableProps](../-i-variable-props/index.md) instance.
