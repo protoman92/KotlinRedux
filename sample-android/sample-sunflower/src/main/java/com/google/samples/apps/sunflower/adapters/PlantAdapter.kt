@@ -39,12 +39,12 @@ import org.swiften.redux.ui.ObservableReduxProps
  * Adapter for the [RecyclerView] in [PlantListFragment].
  */
 class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
-  IPropMapper<Redux.State, Unit, List<Plant>?, PlantAdapter.ViewHolder.A> by PlantAdapter,
+  IPropMapper<Redux.State, Unit, List<Plant>, PlantAdapter.ViewHolder.A> by PlantAdapter,
   IDiffItemCallback<Plant> by PlantAdapter {
   companion object :
-    IPropMapper<Redux.State, Unit, List<Plant>?, ViewHolder.A>,
+    IPropMapper<Redux.State, Unit, List<Plant>, ViewHolder.A>,
     IDiffItemCallback<Plant> {
-    override fun mapState(state: Redux.State, outProps: Unit) = state.plants
+    override fun mapState(state: Redux.State, outProps: Unit) = state.plants ?: arrayListOf()
 
     override fun mapAction(dispatch: IActionDispatcher, state: Redux.State, outProps: Unit): ViewHolder.A {
       return ViewHolder.A { index ->

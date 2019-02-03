@@ -35,10 +35,10 @@ class DiffedAdapterTest : BaseLifecycleTest() {
   }
 
   class RecyclerAdapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IPropMapper<Int, Unit, List<Int>?, ViewHolder.A> by RecyclerAdapter,
+    IPropMapper<Int, Unit, List<Int>, ViewHolder.A> by RecyclerAdapter,
     IDiffItemCallback<Int> by RecyclerAdapter {
-    companion object : IPropMapper<Int, Unit, List<Int>?, ViewHolder.A>, IDiffItemCallback<Int> {
-      override fun mapState(state: Int, outProps: Unit): List<Int>? {
+    companion object : IPropMapper<Int, Unit, List<Int>, ViewHolder.A>, IDiffItemCallback<Int> {
+      override fun mapState(state: Int, outProps: Unit): List<Int> {
         return arrayListOf(state)
       }
 

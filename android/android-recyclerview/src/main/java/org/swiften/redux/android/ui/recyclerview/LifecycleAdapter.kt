@@ -56,7 +56,7 @@ fun <GlobalState, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState>.inj
 fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
+  adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>, VHA>,
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
@@ -75,7 +75,7 @@ fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
 fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
+  adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>, VHA>,
   diffCallback: IDiffItemCallback<VHS>
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
@@ -103,7 +103,7 @@ fun <GlobalState, Mapper, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedA
 ): ListAdapter<VHS, VH> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<GlobalState, VHS, VHA?>,
-  Mapper : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
+  Mapper : IPropMapper<GlobalState, Unit, List<VHS>, VHA>,
   Mapper : IDiffItemCallback<VHS> {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, mapper, mapper)
 }
@@ -119,7 +119,7 @@ fun <GlobalState, Adapter, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffed
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<GlobalState, VHS, VHA?>,
   Adapter : RecyclerView.Adapter<VH>,
-  Adapter : IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
+  Adapter : IPropMapper<GlobalState, Unit, List<VHS>, VHA>,
   Adapter : IDiffItemCallback<VHS> {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, adapter)
 }

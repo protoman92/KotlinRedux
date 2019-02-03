@@ -41,13 +41,15 @@ class SearchFragment : Fragment(),
   class A(val updateQuery: (String?) -> Unit)
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1> by Adapter,
+    IPropMapper<State, Unit, List<ViewHolder.S1>, ViewHolder.A1> by Adapter,
     IDiffItemCallback<ViewHolder.S1> by Adapter {
     companion object :
-      IPropMapper<State, Unit, List<ViewHolder.S1>?, ViewHolder.A1>,
+      IPropMapper<State, Unit, List<ViewHolder.S1>, ViewHolder.A1>,
       IDiffItemCallback<ViewHolder.S1> {
-      override fun mapState(state: State, outProps: Unit): List<ViewHolder.S1>? {
-        return state.musicResult?.results?.map { ViewHolder.S1(it.trackName, it.artistName) }
+      override fun mapState(state: State, outProps: Unit): List<ViewHolder.S1> {
+        return state.musicResult?.results
+          ?.map { ViewHolder.S1(it.trackName, it.artistName) }
+          ?: arrayListOf()
       }
 
       override fun mapAction(

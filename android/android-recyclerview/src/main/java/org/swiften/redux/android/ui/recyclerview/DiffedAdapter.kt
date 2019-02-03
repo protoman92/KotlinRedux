@@ -40,8 +40,8 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
   diffCallback: DiffUtil.ItemCallback<S>
 ) : ListAdapter<S, VH>(diffCallback),
   IPropLifecycleOwner<GlobalState> by EmptyPropLifecycleOwner(),
-  IPropContainer<GlobalState, List<S>?, A> where VH : RecyclerView.ViewHolder {
-  override var reduxProps by ObservableReduxProps<GlobalState, List<S>?, A> { _, next ->
+  IPropContainer<GlobalState, List<S>, A> where VH : RecyclerView.ViewHolder {
+  override var reduxProps by ObservableReduxProps<GlobalState, List<S>, A> { _, next ->
     this.submitList(next?.state ?: arrayListOf())
   }
 
@@ -113,7 +113,7 @@ abstract class ReduxListAdapter<GlobalState, VH, S, A>(
  */
 fun <GlobalState, VH, VHS, VHA> IPropInjector<GlobalState>.injectDiffedAdapter(
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>?, VHA>,
+  adapterMapper: IPropMapper<GlobalState, Unit, List<VHS>, VHA>,
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ReduxListAdapter<GlobalState, VH, VHS, VHA> where
   VH : RecyclerView.ViewHolder,
