@@ -190,7 +190,7 @@ abstract class SagaEffect<R> : ISagaEffect<R> {
   }
 
   /**
-   * Transform [this] into another [SagaEffect] with [transformer].
+   * Transform into another [SagaEffect] with [transformer].
    * @param R2 The emission type of the resulting [SagaEffect].
    * @param transformer A [ISagaEffectTransformer] instance.
    * @return A [SagaEffect] instance.

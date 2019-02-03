@@ -41,8 +41,8 @@ abstract class ReduxListAdapter<GState, GExt, VH, S, A>(
   IPropContainer<List<S>, A> where VH : RecyclerView.ViewHolder {
   /**
    * Since we are only calling [ListAdapter.submitList] when [reduxProps] arrives, the
-   * [VariableProps.action] instance must be non-null upon [onBindViewHolder]. As a result, we can
-   * safely access [VariableProps.action] in [onBindViewHolder].
+   * [ReduxProps.action] instance must be non-null upon [onBindViewHolder]. As a result, we can
+   * safely access [ReduxProps.action] in [onBindViewHolder].
    */
   override var reduxProps by ObservableReduxProps<List<S>, A> { _, next ->
     this.submitList(next.state ?: arrayListOf())
@@ -107,9 +107,9 @@ abstract class ReduxListAdapter<GState, GExt, VH, S, A>(
  *
  * Since we do not call [IPropInjector.inject] directly into [VH], we cannot use
  * [IPropMapper.mapAction] on [VH] itself. As a result, we must pass down
- * [VariableProps.action] from [ReduxListAdapter.reduxProps] into each [VH] instance. The
- * [VHA] should contain actions that take at least one [Int] parameter, (e.g. (Int) -> Unit),
- * so that we can use [RecyclerView.ViewHolder.getLayoutPosition] to call them.
+ * [ReduxProps.action] from [ReduxListAdapter.reduxProps] into each [VH] instance. The [VHA] should
+ * contain actions that take at least one [Int] parameter, (e.g. (Int) -> Unit), so that we can use
+ * [RecyclerView.ViewHolder.getLayoutPosition] to call them.
  *
  * Note that this does not support lifecycle handling, so we will need to manually set null via
  * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].

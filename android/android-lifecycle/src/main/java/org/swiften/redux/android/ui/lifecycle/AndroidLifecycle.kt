@@ -34,7 +34,7 @@ interface ILifecycleCallback {
 
 /** Use this [LifecycleObserver] to unsubscribe from a [IReduxSubscription] */
 @Suppress("unused")
-open class LifecycleObserver(
+open class ReduxLifecycleObserver(
   private val lifecycleOwner: LifecycleOwner,
   private val callback: ILifecycleCallback
 ) : LifecycleObserver, ILifecycleCallback {
@@ -87,12 +87,12 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   var subscription: IReduxSubscription? = null
 
   /**
-   * We perform [IPropInjector.inject] in [ILifecycleCallback.onStart] because by then
+   * We perform [IPropInjector.inject] in [ReduxLifecycleObserver.onStart] because by then
    * the views would have been initialized, and thus can be accessed in
    * [IPropLifecycleOwner.beforePropInjectionStarts]. To mirror this, unsubscription is done
-   * in [ILifecycleCallback.onStop] because said views are not destroyed yet.
+   * in [ReduxLifecycleObserver.onStop] because said views are not destroyed yet.
    */
-  LifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
+  ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
       subscription = inject(object :
         IPropContainer<S, A> by lifecycleOwner,

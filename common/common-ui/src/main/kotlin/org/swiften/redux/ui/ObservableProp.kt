@@ -37,8 +37,8 @@ open class VetoableObservableProp<T : Any>(
 
 /**
  * Use this to avoid lateinit modifiers for [ReduxProps]
- * @param S See [VariableProps.state].
- * @param A See [VariableProps.action].
+ * @param S See [ReduxProps.state].
+ * @param A See [ReduxProps.action].
  * @param notifier See [VetoableObservableProp.notifier].
  */
 class ObservableReduxProps<S, A>(

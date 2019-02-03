@@ -40,7 +40,7 @@ class ReduxSubscription(
   private val _unsubscribe: () -> Unit
 ) : IReduxSubscription {
   companion object {
-    val EMPTY_ID = "EMPTY"
+    const val EMPTY_ID = "EMPTY"
 
     /**
      * Mock [ReduxSubscription] that is used every time there is no meaningful subscription logic

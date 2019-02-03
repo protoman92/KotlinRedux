@@ -10,8 +10,8 @@ import org.swiften.redux.core.IReduxSubscription
 /** Created by haipham on 2019/01/16 */
 /**
  * Container for an [IPropContainer] mutable properties.
- * @param State State type.
- * @param Action Action type.
+ * @param State State type that contains view information.
+ * @param Action Action type that handles view interactions.
  */
 interface IVariableProps<State, Action> {
   val state: State?
@@ -21,17 +21,17 @@ interface IVariableProps<State, Action> {
 /**
  * Container for an static dependencies.
  * @param GState The global state type.
- * @param GExt The global external argument.
- * @param injector See [IStaticProps.injector].
+ * @param GExt See [IPropInjector.external].
+ * @param injector An [IPropInjector] instance.
  */
 data class StaticProps<GState, GExt>(
   val injector: IPropInjector<GState, GExt>
 )
 
 /**
- * Container for [StaticProps] and [VariableProps].
- * @param State The state type.
- * @param Action The action type.
+ * Container for [s], [state] and [action].
+ * @param State See [IVariableProps.state].
+ * @param Action See [IVariableProps.action].
  * @param s An [IReduxSubscription] instance.
  * @param state A [State] instance.
  * @param action An [Action] instance.

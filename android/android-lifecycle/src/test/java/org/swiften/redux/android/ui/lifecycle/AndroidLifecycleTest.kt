@@ -87,7 +87,7 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
     val lifecycleStartCount = AtomicInteger()
     val lifecycleEndCount = AtomicInteger()
 
-    object : LifecycleObserver(owner, object : ILifecycleCallback {
+    object : ReduxLifecycleObserver(owner, object : ILifecycleCallback {
       override fun onSafeForStartingLifecycleAwareTasks() { lifecycleStartCount.incrementAndGet() }
       override fun onSafeForEndingLifecycleAwareTasks() { lifecycleEndCount.incrementAndGet() }
     }) {

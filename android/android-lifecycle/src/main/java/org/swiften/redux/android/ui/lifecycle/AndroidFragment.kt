@@ -26,7 +26,7 @@ class AppCompatActivityWrapper(private val activity: AppCompatActivity) : IAppCo
 
 /**
  * Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary. This injection
- * session automatically disposes of itself when [ILifecycleCallback.onDestroy] is called.
+ * session automatically disposes of itself when [ReduxLifecycleObserver.onDestroy] is called.
  */
 internal fun <GState, GExt> IPropInjector<GState, GExt>.injectFragment(
   activity: IAppCompatActivity,
@@ -38,7 +38,7 @@ internal fun <GState, GExt> IPropInjector<GState, GExt>.injectFragment(
     }
   }
 
-  object : LifecycleObserver(activity, object : ILifecycleCallback {
+  object : ReduxLifecycleObserver(activity, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {}
     override fun onSafeForEndingLifecycleAwareTasks() {}
   }) {
