@@ -7,6 +7,7 @@ buildscript {
 
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
+    classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka"
   }
 }
 
@@ -18,9 +19,8 @@ repositories {
   jcenter()
 }
 
-/** Jitpack support */
-subprojects {
-  apply plugin: "maven"
+allprojects {
+  apply plugin: "org.jetbrains.dokka"
 }
 
 subprojects {
@@ -28,16 +28,12 @@ subprojects {
     jcenter()
   }
 
+  apply plugin: "maven"
   apply plugin: "kotlin"
   group = 'com.github.protoman92'
   version '1.0-SNAPSHOT'
 
   project.apply from: "${rootDir}/constants.gradle"
-
-  configurations.all {
-    // Make sure the latest JitPack releases are used.
-    resolutionStrategy.cacheChangingModulesFor 24, 'hours'
-  }
 
   configurations { testArtifacts.extendsFrom testRuntime }
 
@@ -65,10 +61,6 @@ subprojects {
   dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
     testImplementation "junit:junit:$junit"
-  }
-
-  test {
-    maxHeapSize = project.ext.testHeapSize
   }
 }
 

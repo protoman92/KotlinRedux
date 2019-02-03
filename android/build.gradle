@@ -11,6 +11,7 @@ buildscript {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
     classpath "com.android.tools.build:gradle:3.3.0"
     classpath "com.github.dcendents:android-maven-gradle-plugin:$androidMavenGradle"
+    classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka"
   } 
 }
 
@@ -24,9 +25,8 @@ repositories {
   maven { url = "https://jitpack.io" }
 }
 
-/** Jitpack support */
-subprojects {
-  apply plugin: 'com.github.dcendents.android-maven'
+allprojects {
+  apply plugin: "org.jetbrains.dokka-android"
 }
 
 subprojects {
@@ -38,16 +38,12 @@ subprojects {
   
   apply plugin: 'com.android.library'
   apply plugin: 'kotlin-android'
+  apply plugin: 'com.github.dcendents.android-maven'
 
   project.apply from: "${rootDir}/constants.gradle"
   project.apply from: "${rootDir}/android/constants.gradle"
   group = 'com.github.protoman92'
   version '1.0-SNAPSHOT'
-
-  configurations.all {
-    // Make sure the latest JitPack releases are used.
-    resolutionStrategy.cacheChangingModulesFor 24, 'hours'
-  }
 
   configurations {
     testArtifacts
@@ -93,10 +89,6 @@ subprojects {
     androidTestImplementation "androidx.test:runner:$testRunner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunit"
-  }
-
-  test {
-    maxHeapSize = project.ext.testHeapSize
   }
 }
 

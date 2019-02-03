@@ -1,0 +1,59 @@
+buildscript {
+  project.apply from: "${rootDir}/constants.gradle"
+
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka"
+  }
+}
+
+
+apply plugin: 'org.jetbrains.dokka'
+project.apply from: "${rootDir}/constants.gradle"
+
+dokka {
+  moduleName = dokkaOutputDir
+  outputFormat = dokkaOutputFormat
+  outputDirectory = rootDir
+  includeNonPublic = true
+  skipEmptyPackages = true
+
+  def validProjects = subprojects.findAll { p -> !p.name.contains("sample") }
+
+  sourceDirs = files(validProjects.collectMany { p -> [
+    new File(p.projectDir, "/src/main/java"),
+    new File(p.projectDir, "/src/main/kotlin")
+  ] })
+
+  validProjects.each { p ->
+    def path
+
+    if (p.name.startsWith("android")) {
+      path = new File(p.projectDir, "/src/main/java")
+    } else {
+      path = new File(p.projectDir, "/src/main/kotlin")
+    }
+
+    def relativePath = rootDir.toPath().relativize(path.toPath()).toString()
+
+    linkMapping {
+      dir = path
+      url = "https://github.com/protoman92/KotlinRedux/tree/master/$relativePath"
+      suffix = "#L"
+    }
+
+    return path
+  }
+}
+
+subprojects {
+  project.apply from: "${rootDir}/constants.gradle"
+
+  configurations.all {
+    // Make sure the latest JitPack releases are used.
+    resolutionStrategy.cacheChangingModulesFor 24, 'hours'
+  }
+}
