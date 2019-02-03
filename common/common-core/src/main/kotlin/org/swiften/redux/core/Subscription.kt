@@ -16,14 +16,24 @@ import kotlin.concurrent.write
  * must also have an [id] that can be used to perform selective unsubscription.
  */
 interface IReduxSubscription {
+  /** The unique identifier of this [IReduxSubscription]. */
   val id: String
+
+  /**
+   * Check if this [IReduxSubscription] is unsubscribed.
+   * @return The subscription status.
+   */
   fun isUnsubscribed(): Boolean
+
+  /** Unsubscribe from this [IReduxSubscription]. */
   fun unsubscribe()
 }
 
 /**
  * Use this class to perform some [unsubscribe] logic. For e.g.: terminate a [IReduxSubscription]
  * from [IReduxStore.subscribe].
+ * @param id See [IReduxSubscription.id].
+ * @param _unsubscribe Function that contains unsubscription logic.
  */
 class ReduxSubscription(
   override val id: String,
@@ -38,6 +48,7 @@ class ReduxSubscription(
  * Composite [IReduxSubscription] that may contain other [IReduxSubscription], and when
  * [IReduxSubscription.unsubscribe] is called, all the children [IReduxSubscription] will also
  * be unsubscribed from.
+ * @param id See [IReduxSubscription.id].
  */
 class CompositeReduxSubscription(override val id: String) : IReduxSubscription {
   private val subscriptions = mutableMapOf<String, IReduxSubscription>()
@@ -56,10 +67,23 @@ class CompositeReduxSubscription(override val id: String) : IReduxSubscription {
     }
   }
 
+  /**
+   * Add an [IReduxSubscription] to [subscriptions].
+   * @param subscription An [IReduxSubscription] instance.
+   */
   fun add(subscription: IReduxSubscription) {
     this.lock.write { this.subscriptions[subscription.id] = subscription }
   }
 
+  /**
+   * Remove an [IReduxSubscription] instance whose [IReduxSubscription.id] equals [id].
+   * @param id A [String] value.
+   */
   fun remove(subscribeId: String) = this.lock.write { this.subscriptions.remove(subscribeId) }
+
+  /**
+   * Remove an [IReduxSubscription] from [subscriptions].
+   * @param subscription An [IReduxSubscription] instance.
+   */
   fun remove(subscription: IReduxSubscription) = this.remove(subscription.id)
 }

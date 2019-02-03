@@ -18,7 +18,12 @@ sealed class DefaultReduxAction : IReduxAction {
   class MapState<GlobalState>(val fn: (GlobalState) -> GlobalState) : DefaultReduxAction()
 }
 
-/** Default wrapper to handle [DefaultReduxAction] */
+/**
+ * Default wrapper to handle [DefaultReduxAction]. Pass in a [reducer] instance to handle non-
+ * [DefaultReduxAction].
+ * @param GlobalState The global state type.
+ * @param reducer See [IReduxStore.reducer].
+ */
 class ReduxReducerWrapper<GlobalState>(private val reducer: IReducer<GlobalState>) :
   IReducer<GlobalState> by reducer {
   @Suppress("UNCHECKED_CAST")

@@ -9,6 +9,8 @@ package org.swiften.redux.core
 /**
  * [FinalStore] is a [IReduxStore] that combines all crucial [IReduxStore] implementations to
  * provide a full suite of functionalities.
+ * @param GlobalState The global state type.
+ * @param store An [IReduxStore] instance.
  */
 class FinalStore<GlobalState> private constructor(store: IReduxStore<GlobalState>) :
   IReduxStore<GlobalState> by store {

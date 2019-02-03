@@ -13,6 +13,9 @@ import kotlin.concurrent.write
 /**
  * [ThreadSafeStore] is a [IReduxStore] implementation that supports thread-safe accesses and
  * modifications. Pass in the initial [state] and the store's [reducer] in the constructor.
+ * @param GlobalState The global state type.
+ * @param state The initial default [GlobalState] instance.
+ * @param reducer A [IReducer] instance.
  */
 class ThreadSafeStore<GlobalState>(
   private var state: GlobalState,

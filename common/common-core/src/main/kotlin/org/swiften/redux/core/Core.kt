@@ -6,51 +6,65 @@
 package org.swiften.redux.core
 
 /** Created by haipham on 2018/03/31 */
-/** Represents an [IReduxAction] dispatcher */
+/** Represents an [IReduxAction] dispatcher. */
 typealias IActionDispatcher = (IReduxAction) -> Unit
 
 /**
  * Represents a Redux reducer that reduce a [IReduxAction] onto a previous state to produce a new
  * state.
+ * @param GlobalState The global state type.
  */
 typealias IReducer<GlobalState> = (GlobalState, IReduxAction) -> GlobalState
 
-/** Get the last internal state */
+/**
+ * Get the last internal state.
+ * @param GlobalState The global state type.
+ */
 typealias IStateGetter<GlobalState> = () -> GlobalState
 
 /**
  * Subscribe to state updates with a callback. The subscriber id should be a unique id that
  * identifies that subscriber. The resulting [IReduxSubscription] can be used to unsubscribe.
+ * @param GlobalState The global state type.
  */
 typealias IReduxSubscriber<GlobalState> = (String, (GlobalState) -> Unit) -> IReduxSubscription
 
-/** Perform some deinitialization logic */
+/** Perform some deinitialization logic. */
 typealias IDeinitializer = Function0<Unit>
 
-/** Represents a Redux action */
+/** Represents a Redux action. */
 interface IReduxAction
 
-/** Represents an object that provides [IReducer] */
+/**
+ * Represents an object that provides [IReducer].
+ * @param GlobalState The global state type.
+ */
 interface IReducerProvider<GlobalState> {
   val reducer: IReducer<GlobalState>
 }
 
-/** Represents an object that provides [IActionDispatcher] */
+/** Represents an object that provides [IActionDispatcher]. */
 interface IDispatcherProvider {
   val dispatch: IActionDispatcher
 }
 
-/** Represents an object that provides [IStateGetter] */
+/**
+ * Represents an object that provides [IStateGetter].
+ * @param GlobalState The global state type.
+ */
 interface IStateGetterProvider<GlobalState> {
   val lastState: IStateGetter<GlobalState>
 }
 
-/** Represents an object that provides [IDeinitializer] */
+/** Represents an object that provides [IDeinitializer]. */
 interface IDeinitializerProvider {
   val deinitialize: IDeinitializer
 }
 
-/** Represents an object that provides [IReduxSubscriber] */
+/**
+ * Represents an object that provides [IReduxSubscriber].
+ * @param GlobalState The global state type.
+ */
 interface IReduxSubscriberProvider<GlobalState> {
   val subscribe: IReduxSubscriber<GlobalState>
 }
@@ -59,6 +73,7 @@ interface IReduxSubscriberProvider<GlobalState> {
  * Represents a Redux store that can dispatch [IReduxAction] with a [IActionDispatcher] to mutate
  * some internal [GlobalState]. Other objects can subscribe to [GlobalState] updates using
  * [subscribe].
+ * @param GlobalState The global state type.
  */
 interface IReduxStore<GlobalState> :
   IReducerProvider<GlobalState>,

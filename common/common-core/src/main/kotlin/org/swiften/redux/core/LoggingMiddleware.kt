@@ -11,6 +11,12 @@ import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 /** Created by haipham on 2019/01/27 */
+/**
+ * [IMiddleware] implementation that supports logging. Specify [logger] to customize how events
+ * are formatted.
+ * @param GlobalState The global state type.
+ * @param logger Function to specify how [GlobalState] and [IReduxAction] are formatted.
+ */
 internal class LoggingMiddleware<GlobalState>(
   private val logger: (GlobalState, IReduxAction?) -> Unit
 ) : IMiddleware<GlobalState> {
@@ -36,9 +42,12 @@ internal class LoggingMiddleware<GlobalState>(
   }
 }
 
-/** Create a [LoggingMiddleware] with [logger] */
-fun <GlobalState> createLoggingMiddleware(
-  logger: (GlobalState, IReduxAction?) -> Unit = { s, a ->
-println("Redux: Last action $a, Last state $s")
-}
-): IMiddleware<GlobalState> = LoggingMiddleware(logger)
+/**
+ * Create a [LoggingMiddleware] with [logger].
+ * @param GlobalState The global state type.
+ * @param logger See [LoggingMiddleware.logger].
+ * @return A [LoggingMiddleware] instance.
+ */
+fun <GlobalState> createLoggingMiddleware(logger: (GlobalState, IReduxAction?) -> Unit = { s, a ->
+  println("Redux: Last action $a, Last state $s")
+}): IMiddleware<GlobalState> = LoggingMiddleware(logger)
