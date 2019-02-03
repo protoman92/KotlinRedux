@@ -82,6 +82,10 @@ interface IStateMapper<GState, OutProps, State> {
  * For example, if the app wants to load an image into a view, it's probably not a good idea to
  * download that image and store in the [GState] to be mapped into [VariableProps.state]. It
  * is better to inject an image downloader in [Action] using [GExt].
+ *
+ * The reason why [GExt] is used here instead of in [IStateMapper] is because [ReduxProps.state]
+ * will be used for comparisons when determining if injection should occur. [ReduxProps.state]
+ * should therefore be pure of external objects.
  * @param GState The global state type.
  * @param GExt The global external argument.
  * @param OutProps Property as defined by a view's parent.
@@ -100,7 +104,7 @@ interface IActionMapper<GState, GExt, OutProps, Action> {
 }
 
 /**
- * Maps [GState] to [State] and [Action] for a [IPropContainer]. [OutProps] is the view's
+ * Maps [GState] and [GExt] to [State] and [Action] for a [IPropContainer]. [OutProps] is the view's
  * immutable property as dictated by its parent.
  *
  * For example, a parent view, which contains a list of child views, wants to call
@@ -119,7 +123,8 @@ interface IPropMapper<GState, GExt, OutProps, State, Action> :
   IActionMapper<GState, GExt, OutProps, Action>
 
 /**
- * Inject state and actions into an [IPropContainer].
+ * Inject state and actions into an [IPropContainer]. Aside from [GState], we can use [GExt] as a
+ * container for non-Redux related dependencies, such as image-loading helpers.
  * @param GState The global state type.
  * @param GExt The global external argument.
  */
@@ -182,12 +187,10 @@ open class PropInjector<GState, GExt>(
 
     /**
      * Since [IReduxStore.subscribe] has not been called yet, we pass in a placebo
-     * [ReduxSubscription], but [StaticProps.injector] is still available for
-     * [IPropLifecycleOwner.beforePropInjectionStarts]
+     * [ReduxSubscription] which will later be replaced with the actual [IReduxSubscription].
      */
-    val staticProps = StaticProps(this, ReduxSubscription(subscriberId) {})
-    view.reduxProps = ReduxProps(staticProps.subscription, null, null)
-    view.beforePropInjectionStarts(staticProps)
+    view.reduxProps = ReduxProps(ReduxSubscription(subscriberId) {}, null, null)
+    view.beforePropInjectionStarts(StaticProps(this))
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
 

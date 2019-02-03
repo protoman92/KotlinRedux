@@ -23,11 +23,9 @@ interface IVariableProps<State, Action> {
  * @param GState The global state type.
  * @param GExt The global external argument.
  * @param injector See [IStaticProps.injector].
- * @param subscription See [IStaticProps.subscription].
  */
 data class StaticProps<GState, GExt>(
-  val injector: IPropInjector<GState, GExt>,
-  val subscription: IReduxSubscription
+  val injector: IPropInjector<GState, GExt>
 )
 
 /**
