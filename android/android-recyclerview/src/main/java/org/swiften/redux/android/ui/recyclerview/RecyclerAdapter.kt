@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.unsubscribeSafely
@@ -106,7 +107,8 @@ fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecycl
   vhMapper: IPropMapper<GlobalState, Int, VHState, VHAction>
 ): DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction> where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GlobalState, VHState, VHAction> {
+  VH : IPropContainer<GlobalState, VHState, VHAction>,
+  VH : IPropLifecycleOwner<GlobalState> {
   return object : DelegateRecyclerAdapter<GlobalState, VH, VHState, VHAction>(adapter) {
     override fun getItemCount(): Int {
       return adapterMapper.mapState(this@injectRecyclerAdapter.lastState(), Unit)

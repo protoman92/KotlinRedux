@@ -120,11 +120,11 @@ open class BaseLifecycleTest {
     val subscriptions = Collections.synchronizedList(arrayListOf<IReduxSubscription>())
     val injectionCount get() = this.subscriptions.size
 
-    override fun <OutProps, State, Action> inject(
-      view: IPropContainer<Int, State, Action>,
-      outProps: OutProps,
-      mapper: IPropMapper<Int, OutProps, State, Action>
-    ): IReduxSubscription {
+    override fun <OutProps, View, State, Action> inject(
+      view: View, outProps: OutProps, mapper: IPropMapper<Int, OutProps, State, Action>
+    ): IReduxSubscription where
+      View : IPropContainer<Int, State, Action>,
+      View : IPropLifecycleOwner<Int> {
       val subscription = ReduxSubscription("$view") {}
       val static = StaticProps(this, subscription)
       view.reduxProps = ReduxProps(static, null)

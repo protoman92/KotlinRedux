@@ -45,7 +45,7 @@ class EmptyPropLifecycleOwner<GlobalState> : IPropLifecycleOwner<GlobalState> {
  * @param State The container state.
  * @param Action the container action.
  */
-interface IPropContainer<GlobalState, State, Action> : IPropLifecycleOwner<GlobalState> {
+interface IPropContainer<GlobalState, State, Action> {
   var reduxProps: ReduxProps<GlobalState, State, Action>
 }
 
@@ -129,11 +129,11 @@ interface IPropInjector<GlobalState> :
    * @param mapper An [IPropMapper] instance.
    * @return An [IReduxSubscription] instance.
    */
-  fun <OutProps, State, Action> inject(
-    view: IPropContainer<GlobalState, State, Action>,
-    outProps: OutProps,
-    mapper: IPropMapper<GlobalState, OutProps, State, Action>
-  ): IReduxSubscription
+  fun <OutProps, View, State, Action> inject(
+    view: View, outProps: OutProps, mapper: IPropMapper<GlobalState, OutProps, State, Action>
+  ): IReduxSubscription where
+    View : IPropContainer<GlobalState, State, Action>,
+    View : IPropLifecycleOwner<GlobalState>
 }
 
 /**
@@ -148,11 +148,11 @@ open class PropInjector<GlobalState>(private val store: IReduxStore<GlobalState>
   IDispatcherProvider by store,
   IStateGetterProvider<GlobalState> by store,
   IDeinitializerProvider by store {
-  override fun <OutProps, State, Action> inject(
-    view: IPropContainer<GlobalState, State, Action>,
-    outProps: OutProps,
-    mapper: IPropMapper<GlobalState, OutProps, State, Action>
-  ): IReduxSubscription {
+  override fun <OutProps, View, State, Action> inject(
+    view: View, outProps: OutProps, mapper: IPropMapper<GlobalState, OutProps, State, Action>
+  ): IReduxSubscription where
+    View : IPropContainer<GlobalState, State, Action>,
+    View : IPropLifecycleOwner<GlobalState> {
     /**
      * It does not matter what the id is, as long as it is unique. This is because we will be
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep

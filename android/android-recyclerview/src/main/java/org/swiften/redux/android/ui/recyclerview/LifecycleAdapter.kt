@@ -13,6 +13,7 @@ import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.LifecycleObserver
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.IVariablePropContainer
@@ -27,7 +28,8 @@ fun <GlobalState, VH, VHState, VHAction> IPropInjector<GlobalState>.injectRecycl
   vhMapper: IPropMapper<GlobalState, Int, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GlobalState, VHState, VHAction> {
+  VH : IPropContainer<GlobalState, VHState, VHAction>,
+  VH : IPropLifecycleOwner<GlobalState> {
   val wrappedAdapter = this.injectRecyclerAdapter(adapter, adapterMapper, vhMapper)
 
   LifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
@@ -45,6 +47,7 @@ fun <GlobalState, Adapter, VH, VHState, VHAction> IPropInjector<GlobalState>.inj
 ): RecyclerView.Adapter<VH> where
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<GlobalState, VHState, VHAction>,
+  VH : IPropLifecycleOwner<GlobalState>,
   Adapter : RecyclerView.Adapter<VH>,
   Adapter : IStateMapper<GlobalState, Unit, Int> {
   return this.injectRecyclerAdapter(lifecycleOwner, adapter, adapter, vhMapper)

@@ -17,6 +17,7 @@ import org.swiften.redux.android.util.AndroidUtil
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.PropInjectorTest
 import org.swiften.redux.ui.ReduxProps
 import org.swiften.redux.ui.StaticProps
@@ -44,7 +45,7 @@ class AndroidInjectorTest : PropInjectorTest() {
     this.runner = Runner()
   }
 
-  internal class AndroidView : IPropContainer<S, S, A> {
+  internal class AndroidView : IPropContainer<S, S, A>, IPropLifecycleOwner<S> {
     /**
      * Make sue [VetoableObservableProp.equalChecker] always returns false to avoid comparison
      * because [AndroidUtil.IMainThreadRunner.invoke] is performed before the prop comparison

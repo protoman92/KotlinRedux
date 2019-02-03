@@ -94,23 +94,22 @@ fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycle(
    */
   LifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
-      subscription = inject(
-        object : IPropContainer<GlobalState, S, A> by lifecycleOwner {
-          override var reduxProps: ReduxProps<GlobalState, S, A>
-            get() = lifecycleOwner.reduxProps
+      subscription = inject(object :
+        IPropContainer<GlobalState, S, A> by lifecycleOwner,
+        IPropLifecycleOwner<GlobalState> by lifecycleOwner {
+        override var reduxProps: ReduxProps<GlobalState, S, A>
+          get() = lifecycleOwner.reduxProps
 
-            /**
-             * If [Lifecycle.getCurrentState] is [Lifecycle.State.DESTROYED], do not set
-             * [IPropContainer.reduxProps] since there's no point in doing so.
-             */
-            set(value) = lifecycleOwner.lifecycle.currentState
-              .takeUnless { it == Lifecycle.State.DESTROYED }
-              .let { lifecycleOwner.reduxProps = value }
+          /**
+           * If [Lifecycle.getCurrentState] is [Lifecycle.State.DESTROYED], do not set
+           * [IPropContainer.reduxProps] since there's no point in doing so.
+           */
+          set(value) = lifecycleOwner.lifecycle.currentState
+            .takeUnless { it == Lifecycle.State.DESTROYED }
+            .let { lifecycleOwner.reduxProps = value }
 
-          override fun toString() = lifecycleOwner.toString()
-        },
-        outProps, mapper
-      )
+        override fun toString() = lifecycleOwner.toString()
+      }, outProps, mapper)
     }
 
     override fun onSafeForEndingLifecycleAwareTasks() { subscription?.unsubscribe() }
@@ -127,8 +126,9 @@ fun <GlobalState, LC, OP, S, A> IPropInjector<GlobalState>.injectLifecycle(
   LC : LifecycleOwner,
   LC : IPropContainer<GlobalState, S, A>,
   LC : IPropLifecycleOwner<GlobalState>,
-  LC : IPropMapper<GlobalState, OP, S, A> =
-  this.injectLifecycle(lifecycleOwner, outProps, lifecycleOwner)
+  LC : IPropMapper<GlobalState, OP, S, A> {
+  return this.injectLifecycle(lifecycleOwner, outProps, lifecycleOwner)
+}
 
 /**
  * Call [IPropInjector.inject] for [lifecycleOwner] but it also implements [IPropMapper] and
@@ -138,5 +138,6 @@ fun <GlobalState, LC, S, A> IPropInjector<GlobalState>.injectLifecycle(lifecycle
   LC : LifecycleOwner,
   LC : IPropContainer<GlobalState, S, A>,
   LC : IPropLifecycleOwner<GlobalState>,
-  LC : IPropMapper<GlobalState, Unit, S, A> =
-  this.injectLifecycle(lifecycleOwner, Unit)
+  LC : IPropMapper<GlobalState, Unit, S, A> {
+  return this.injectLifecycle(lifecycleOwner, Unit)
+}
