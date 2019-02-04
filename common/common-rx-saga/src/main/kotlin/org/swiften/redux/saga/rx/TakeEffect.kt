@@ -26,7 +26,7 @@ internal abstract class TakeEffect<P, R>(
    * Flatten an [ISagaOutput] that streams [ISagaOutput] to access the values streamed by
    * the inner [ISagaOutput].
    */
-  abstract fun flatten(nestedOutput: ISagaOutput<ISagaOutput<R>>): ISagaOutput<R>
+  abstract fun flatten(nested: ISagaOutput<ISagaOutput<R>>): ISagaOutput<R>
 
   override operator fun invoke(p1: SagaInput): ISagaOutput<R> {
     val subject = PublishProcessor.create<P>()

@@ -35,18 +35,18 @@ import org.swiften.redux.ui.StaticProps
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
   IPropContainer<SearchFragment.S, SearchFragment.A>,
-  IPropLifecycleOwner<State, Unit> by EmptyPropLifecycleOwner(),
-  IPropMapper<State, Unit, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
+  IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner(),
+  IPropMapper<MainRedux.State, Unit, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
   data class S(val query: String?, val loading: Boolean?)
   class A(val updateQuery: (String?) -> Unit)
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IPropMapper<State, Unit, Unit, List<ViewHolder.S1>, ViewHolder.A1> by Adapter,
+    IPropMapper<MainRedux.State, Unit, Unit, List<ViewHolder.S1>, ViewHolder.A1> by Adapter,
     IDiffItemCallback<ViewHolder.S1> by Adapter {
     companion object :
-      IPropMapper<State, Unit, Unit, List<ViewHolder.S1>, ViewHolder.A1>,
+      IPropMapper<MainRedux.State, Unit, Unit, List<ViewHolder.S1>, ViewHolder.A1>,
       IDiffItemCallback<ViewHolder.S1> {
-      override fun mapState(state: State, outProps: Unit): List<ViewHolder.S1> {
+      override fun mapState(state: MainRedux.State, outProps: Unit): List<ViewHolder.S1> {
         return state.musicResult?.results
           ?.map { ViewHolder.S1(it.trackName, it.artistName) }
           ?: arrayListOf()
@@ -54,7 +54,7 @@ class SearchFragment : Fragment(),
 
       override fun mapAction(
         static: IActionDependency<Unit>,
-        state: State,
+        state: MainRedux.State,
         outProps: Unit
       ): ViewHolder.A1 {
         return ViewHolder.A1 { static.dispatch(MainRedux.Screen.MusicDetail(it)) }
@@ -83,7 +83,7 @@ class SearchFragment : Fragment(),
     private val artistName: TextView
   ) : RecyclerView.ViewHolder(parent),
     IPropContainer<ViewHolder.S1, ViewHolder.A1>,
-    IPropLifecycleOwner<State, Unit> by EmptyPropLifecycleOwner() {
+    IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner() {
     data class S1(val trackName: String? = null, val artistName: String? = null)
     data class A1(val goToMusicDetail: (Int) -> Unit)
 
@@ -102,16 +102,16 @@ class SearchFragment : Fragment(),
     }
   }
 
-  companion object : IPropMapper<State, Unit, Unit, S, A> {
+  companion object : IPropMapper<MainRedux.State, Unit, Unit, S, A> {
     override fun mapAction(
       static: IActionDependency<Unit>,
-      state: State,
+      state: MainRedux.State,
       outProps: Unit
     ): A {
       return A { static.dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
     }
 
-    override fun mapState(state: State, outProps: Unit): S {
+    override fun mapState(state: MainRedux.State, outProps: Unit): S {
       return S(state.autocompleteQuery, state.loadingMusic)
     }
   }
@@ -142,7 +142,7 @@ class SearchFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
-  override fun beforePropInjectionStarts(sp: StaticProps<State, Unit>) {
+  override fun beforePropInjectionStarts(sp: StaticProps<MainRedux.State, Unit>) {
     this.querySearch.also { it.addTextChangedListener(this.querySearchWatcher) }
 
     this.searchResult.also {

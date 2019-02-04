@@ -8,9 +8,21 @@ package org.swiften.redux.android.sample
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IRouterScreen
+import java.io.Serializable
 
 /** Created by haipham on 2018/12/19 */
 object MainRedux {
+  data class State(
+    val autocompleteQuery: String? = "",
+    val musicResult: MusicResult? = null,
+    val selectedResultIndex: Int? = null,
+    val loadingMusic: Boolean? = null
+  ) : Serializable {
+    fun currentSelectedTrack() = this.selectedResultIndex?.let { index ->
+      this.musicResult?.results?.elementAtOrNull(index)
+    }
+  }
+
   sealed class Action : IReduxAction {
     class UpdateAutocompleteQuery(val query: String?) : Action()
     class UpdateMusicResult(val result: MusicResult?) : Action()

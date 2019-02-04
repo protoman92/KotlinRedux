@@ -11,9 +11,9 @@ import org.swiften.redux.ui.IPropInjector;
 
 /** Created by haipham on 2018/12/19 */
 public final class MainDependency {
-  @NonNull final IPropInjector<State, Unit> injector;
+  @NonNull final IPropInjector<MainRedux.State, Unit> injector;
 
-  MainDependency(@NonNull IPropInjector<State, Unit> injector) {
+  MainDependency(@NonNull IPropInjector<MainRedux.State, Unit> injector) {
     this.injector = injector;
   }
 }

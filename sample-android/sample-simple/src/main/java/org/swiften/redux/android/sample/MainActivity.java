@@ -19,7 +19,7 @@ import org.swiften.redux.ui.StaticProps;
 /** Created by haipham on 2018/12/19 */
 public final class MainActivity extends AppCompatActivity implements
   IPropContainer<Unit, Unit>,
-  IPropLifecycleOwner<State, Unit> {
+  IPropLifecycleOwner<MainRedux.State, Unit> {
   private ReduxProps<Unit, Unit> reduxProps;
 
   @Override
@@ -47,7 +47,7 @@ public final class MainActivity extends AppCompatActivity implements
   }
 
   @Override
-  public void beforePropInjectionStarts(@NotNull StaticProps<State, Unit> sp) { }
+  public void beforePropInjectionStarts(@NotNull StaticProps<MainRedux.State, Unit> sp) { }
 
   @Override
   public void afterPropInjectionEnds() { }

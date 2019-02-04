@@ -29,33 +29,11 @@ class MainApplication : Application() {
     val api = MainApi()
     val repository = MainRepository(api, JSONDecoder())
 
-    val store = applyMiddlewares<State>(
-      createRouterMiddleware(
-        createSingleActivityRouter<MainActivity, MainRedux.Screen>(this) { activity, screen ->
-          val f: Fragment? = when (screen) {
-            is MainRedux.Screen.MusicDetail -> MusicDetailFragment()
-
-            is MainRedux.Screen.WebView -> {
-              val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(screen.url))
-              activity.startActivity(browserIntent)
-              null
-            }
-
-            else -> null
-          }
-
-          f?.also {
-            activity.supportFragmentManager
-              .beginTransaction()
-              .add(R.id.fragment, it, it.javaClass.canonicalName)
-              .addToBackStack(null)
-              .commitAllowingStateLoss()
-          }
-        }
-      ),
+    val store = applyMiddlewares<MainRedux.State>(
+      createRouterMiddleware(MainRouter(this)),
       createSagaMiddleware(MainSaga.sagas(repository)),
       createAsyncMiddleware()
-    )(FinalStore(State(), MainRedux.Reducer))
+    )(FinalStore(MainRedux.State(), MainRedux.Reducer))
 
     val injector = AndroidPropInjector(store, Unit)
 

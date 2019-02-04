@@ -24,13 +24,17 @@ import org.swiften.redux.ui.StaticProps
 /** Created by haipham on 2019/01/12 */
 class MusicDetailFragment : Fragment(),
   IPropContainer<MusicDetailFragment.S, MusicDetailFragment.A>,
-  IPropLifecycleOwner<State, Unit> by EmptyPropLifecycleOwner(),
-  IPropMapper<State, Unit, Unit, MusicDetailFragment.S, MusicDetailFragment.A> by MusicDetailFragment {
+  IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner(),
+  IPropMapper<MainRedux.State, Unit, Unit, MusicDetailFragment.S, MusicDetailFragment.A> by MusicDetailFragment {
   class S(val track: MusicTrack?)
   class A(val goToTrackInformation: () -> Unit)
 
-  companion object : IPropMapper<State, Unit, Unit, S, A> {
-    override fun mapAction(static: IActionDependency<Unit>, state: State, outProps: Unit): A {
+  companion object : IPropMapper<MainRedux.State, Unit, Unit, S, A> {
+    override fun mapAction(
+      static: IActionDependency<Unit>,
+      state: MainRedux.State,
+      outProps: Unit
+    ): A {
       return A {
         this.mapState(state, outProps).track?.also {
           static.dispatch(MainRedux.Screen.WebView(it.previewUrl))
@@ -38,7 +42,7 @@ class MusicDetailFragment : Fragment(),
       }
     }
 
-    override fun mapState(state: State, outProps: Unit) = S(state.currentSelectedTrack())
+    override fun mapState(state: MainRedux.State, outProps: Unit) = S(state.currentSelectedTrack())
   }
 
   override var reduxProps by ObservableReduxProps<S, A> { _, next ->
@@ -58,7 +62,7 @@ class MusicDetailFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_music_detail, container, false)
 
-  override fun beforePropInjectionStarts(sp: StaticProps<State, Unit>) {
+  override fun beforePropInjectionStarts(sp: StaticProps<MainRedux.State, Unit>) {
     this.trackOpen.setOnClickListener(this.trackOpenListener)
   }
 }
