@@ -16,15 +16,22 @@ import org.swiften.redux.core.IRouter
 import org.swiften.redux.core.IRouterScreen
 
 /** Created by haipham on 2019/01/12 */
-/** [IRouter] that works for a single [AppCompatActivity] and multiple [Fragment] */
+/**
+ * [IRouter] that works for a single [AppCompatActivity] and multiple [Fragment].
+ * @param AT The [AppCompatActivity] type used by the [application].
+ * @param Screen The [IRouterScreen] type used by the [application].
+ * @param cls The [AT] [Class] instance.
+ * @param application The main [Application] instance.
+ * @param runner An [AndroidUtil.IMainThreadRunner] instance.
+ * @param navigate Function that performs the navigation.
+ */
 @PublishedApi
 internal class SingleActivityRouter<AT, Screen>(
   private val cls: Class<AT>,
   private val application: Application,
   private val runner: AndroidUtil.IMainThreadRunner,
   private val navigate: (AT, Screen) -> Unit
-) :
-  IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen {
+) : IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen {
   private var activity: AT? = null
 
   private val callbacks by lazy {
@@ -60,10 +67,34 @@ internal class SingleActivityRouter<AT, Screen>(
   }
 }
 
-/** Create a [SingleActivityRouter] */
+/**
+ * Create a [SingleActivityRouter].
+ * @param AT The [AppCompatActivity] type used by the [application].
+ * @param Screen The [IRouterScreen] type used by the [application].
+ * @param cls The [AT] [Class] instance.
+ * @param application The main [Application] instance.
+ * @param runner An [AndroidUtil.IMainThreadRunner] instance.
+ * @param navigate Function that performs the navigation.
+ * @return A [SingleActivityRouter] instance.
+ */
 inline fun <reified AT, Screen> createSingleActivityRouter(
   application: Application,
   runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner,
   noinline navigate: (AT, Screen) -> Unit
 ): IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen =
   SingleActivityRouter(AT::class.java, application, runner, navigate)
+
+/**
+ * Create a [SingleActivityRouter] with the default [AndroidUtil.MainThreadRunner].
+ * @param AT The [AppCompatActivity] type used by the [application].
+ * @param Screen The [IRouterScreen] type used by the [application].
+ * @param cls The [AT] [Class] instance.
+ * @param application The main [Application] instance.
+ * @param navigate Function that performs the navigation.
+ * @return A [SingleActivityRouter] instance.
+ */
+inline fun <reified AT, Screen> createSingleActivityRouter(
+  application: Application,
+  noinline navigate: (AT, Screen) -> Unit
+): IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen =
+  SingleActivityRouter(AT::class.java, application, AndroidUtil.MainThreadRunner, navigate)
