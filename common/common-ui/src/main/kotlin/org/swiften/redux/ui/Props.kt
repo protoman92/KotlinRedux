@@ -24,7 +24,7 @@ interface IVariableProps<State, Action> {
  * @param GExt See [IPropInjector.external].
  * @param injector An [IPropInjector] instance.
  */
-data class StaticProps<GState, GExt>(
+data class StaticProps<GState : Any, GExt : Any>(
   val injector: IPropInjector<GState, GExt>
 )
 

@@ -39,7 +39,7 @@ fun <GState, GExt> IPropInjector<GState, GExt>.injectActivity(
   application: Application,
   saver: IBundleStateSaver<GState>,
   inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
-): Application.ActivityLifecycleCallbacks {
+): Application.ActivityLifecycleCallbacks where GState : Any, GExt : Any {
   val callback = object : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity?) {}
     override fun onActivityResumed(activity: Activity?) {}
@@ -78,7 +78,7 @@ fun <GState, GExt> IPropInjector<GState, GExt>.injectActivity(
 inline fun <reified GState, GExt> IPropInjector<GState, GExt>.injectActivitySerializable(
   application: Application,
   noinline inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
-): Application.ActivityLifecycleCallbacks where GState : Serializable {
+): Application.ActivityLifecycleCallbacks where GState : Any, GState : Serializable, GExt : Any {
   val key = "REDUX_STATE_${Date().time}"
 
   return this.injectActivity(application, object : IBundleStateSaver<GState> {
@@ -97,7 +97,7 @@ inline fun <reified GState, GExt> IPropInjector<GState, GExt>.injectActivitySeri
 inline fun <reified GState, GExt> IPropInjector<GState, GExt>.injectActivityParcelable(
   application: Application,
   noinline inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
-): Application.ActivityLifecycleCallbacks where GState : Parcelable {
+): Application.ActivityLifecycleCallbacks where GState : Any, GState : Parcelable, GExt : Any {
   val key = "REDUX_STATE_${Date().time}"
 
   return this.injectActivity(application, object : IBundleStateSaver<GState> {

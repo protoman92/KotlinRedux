@@ -31,7 +31,7 @@ class AppCompatActivityWrapper(private val activity: AppCompatActivity) : IAppCo
 internal fun <GState, GExt> IPropInjector<GState, GExt>.injectFragment(
   activity: IAppCompatActivity,
   inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
-) {
+) where GState : Any, GExt : Any {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
       inject(this@injectFragment, f)
@@ -58,6 +58,6 @@ internal fun <GState, GExt> IPropInjector<GState, GExt>.injectFragment(
 internal fun <GState, GExt> IPropInjector<GState, GExt>.injectFragment(
   activity: AppCompatActivity,
   inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
-) {
+) where GState : Any, GExt : Any {
   return this.injectFragment(AppCompatActivityWrapper(activity), inject)
 }

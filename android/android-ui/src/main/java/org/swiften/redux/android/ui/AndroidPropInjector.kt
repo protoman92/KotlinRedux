@@ -24,7 +24,7 @@ class AndroidPropInjector<GState, GExt>(
   store: IReduxStore<GState>,
   external: GExt,
   private val runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner
-) : PropInjector<GState, GExt>(store, external) {
+) : PropInjector<GState, GExt>(store, external) where GState : Any, GExt : Any {
   override fun <OutProps, View, State, Action> inject(
     view: View,
     outProps: OutProps,

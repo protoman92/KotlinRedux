@@ -41,7 +41,7 @@ abstract class ReduxListAdapter<GState, GExt, VH, S, A>(
   diffCallback: DiffUtil.ItemCallback<S>
 ) : ListAdapter<S, VH>(diffCallback),
   IPropLifecycleOwner<GState, GExt> by EmptyPropLifecycleOwner(),
-  IPropContainer<List<S>, A> where VH : RecyclerView.ViewHolder {
+  IPropContainer<List<S>, A> where GState : Any, GExt : Any, VH : RecyclerView.ViewHolder {
   internal lateinit var staticProps: StaticProps<GState, GExt>
 
   /**
@@ -135,25 +135,19 @@ fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter
   adapterMapper: IPropMapper<GState, GExt, Unit, List<VHS>, VHA>,
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ReduxListAdapter<GState, GExt, VH, VHS, VHA> where
+  GState : Any,
+  GExt : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHS, VHA>,
   VH : IPropLifecycleOwner<GState, GExt> {
   val listAdapter = object : ReduxListAdapter<GState, GExt, VH, VHS, VHA>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
-      require(this.reduxProps.action is Any) { "Use Unit instead of null for prop mapping" }
-
-      val action = requireNotNull(this.reduxProps.action as Any) {
-        "By the time this method is called, injection must have already happened at the adapter" +
-          "level and there is no way for action props to be null. Please contact the library" +
-          "maintainer if you are encountering this behavior."
-      } as VHA
-
       val subscribeId = "$holder${Date().time}"
       val subscription = ReduxSubscription(subscribeId) { holder.afterPropInjectionEnds() }
       this.vhSubscription.add(subscription)
       holder.beforePropInjectionStarts(this.staticProps)
-      holder.reduxProps = ReduxProps(subscription, this.getItem(position), action)
+      holder.reduxProps = ReduxProps(subscription, this.getItem(position), this.reduxProps.action)
     }
 
     override fun onViewRecycled(holder: VH) {

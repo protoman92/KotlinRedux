@@ -106,6 +106,8 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecy
   adapterMapper: IStateMapper<GState, Unit, Int>,
   vhMapper: IPropMapper<GState, GExt, Int, VHState, VHAction>
 ): DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction> where
+  GState : Any,
+  GExt : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
   VH : IPropLifecycleOwner<GState, GExt> {

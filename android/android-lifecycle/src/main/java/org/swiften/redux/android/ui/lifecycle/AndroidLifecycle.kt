@@ -81,6 +81,8 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   outProps: OP,
   mapper: IPropMapper<GState, GExt, OP, S, A>
 ): LC where
+  GState : Any,
+  GExt : Any,
   LC : LifecycleOwner,
   LC : IPropContainer<S, A>,
   LC : IPropLifecycleOwner<GState, GExt> {
@@ -123,6 +125,8 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   lifecycleOwner: LC,
   outProps: OP
 ): LC where
+  GState : Any,
+  GExt : Any,
   LC : LifecycleOwner,
   LC : IPropContainer<S, A>,
   LC : IPropLifecycleOwner<GState, GExt>,
@@ -137,6 +141,8 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
 fun <GState, GExt, LC, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   lifecycleOwner: LC
 ): LC where
+  GState : Any,
+  GExt : Any,
   LC : LifecycleOwner,
   LC : IPropContainer<S, A>,
   LC : IPropLifecycleOwner<GState, GExt>,

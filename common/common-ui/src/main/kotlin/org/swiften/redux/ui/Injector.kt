@@ -23,7 +23,7 @@ import kotlin.concurrent.write
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
  */
-interface IPropLifecycleOwner<GState, GExt> {
+interface IPropLifecycleOwner<GState : Any, GExt : Any> {
   /** This is called before [IPropInjector.inject] is called. */
   fun beforePropInjectionStarts(sp: StaticProps<GState, GExt>)
 
@@ -36,7 +36,7 @@ interface IPropLifecycleOwner<GState, GExt> {
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
  */
-class EmptyPropLifecycleOwner<GState, GExt> : IPropLifecycleOwner<GState, GExt> {
+class EmptyPropLifecycleOwner<GState : Any, GExt : Any> : IPropLifecycleOwner<GState, GExt> {
   override fun beforePropInjectionStarts(sp: StaticProps<GState, GExt>) {}
   override fun afterPropInjectionEnds() {}
 }
@@ -65,7 +65,7 @@ interface IActionDependency<GExt> : IDispatcherProvider {
  * @param OutProps Property as defined by a view's parent.
  * @param State The container state.
  */
-interface IStateMapper<GState, OutProps, State> {
+interface IStateMapper<GState : Any, OutProps, State> {
   /**
    * Map [GState] to [State] using [OutProps]
    * @param state The latest [GState] instance.
@@ -91,7 +91,7 @@ interface IStateMapper<GState, OutProps, State> {
  * @param OutProps Property as defined by a view's parent.
  * @param Action See [ReduxProps.action].
  */
-interface IActionMapper<GState, GExt, OutProps, Action> {
+interface IActionMapper<GState : Any, GExt : Any, OutProps, Action> {
   /**
    * Map [IActionDispatcher] to [Action] using [GState], [GExt] and [OutProps]
    * @param static An [IActionDependency] instance.
@@ -117,7 +117,7 @@ interface IActionMapper<GState, GExt, OutProps, Action> {
  * @param State See [ReduxProps.state].
  * @param Action See [ReduxProps.action].
  */
-interface IPropMapper<GState, GExt, OutProps, State, Action> :
+interface IPropMapper<GState : Any, GExt : Any, OutProps, State, Action> :
   IStateMapper<GState, OutProps, State>,
   IActionMapper<GState, GExt, OutProps, Action>
 
@@ -127,7 +127,7 @@ interface IPropMapper<GState, GExt, OutProps, State, Action> :
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
  */
-interface IPropInjector<GState, GExt> :
+interface IPropInjector<GState : Any, GExt : Any> :
   IActionDependency<GExt>,
   IStateGetterProvider<GState>,
   IDeinitializerProvider {
@@ -159,7 +159,7 @@ interface IPropInjector<GState, GExt> :
  * @param GExt See [IPropInjector.external].
  * @param store An [IReduxStore] instance.
  */
-open class PropInjector<GState, GExt>(
+open class PropInjector<GState : Any, GExt : Any>(
   private val store: IReduxStore<GState>,
   override val external: GExt
 ) :

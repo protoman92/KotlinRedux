@@ -26,6 +26,8 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecy
   adapterMapper: IStateMapper<GState, Unit, Int>,
   vhMapper: IPropMapper<GState, GExt, Int, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
+  GState : Any,
+  GExt : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
   VH : IPropLifecycleOwner<GState, GExt> {
@@ -44,6 +46,8 @@ fun <GState, GExt, Adapter, VH, VHState, VHAction> IPropInjector<GState, GExt>.i
   adapter: Adapter,
   vhMapper: IPropMapper<GState, GExt, Int, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
+  GState : Any,
+  GExt : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
   VH : IPropLifecycleOwner<GState, GExt>,
@@ -59,6 +63,8 @@ fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter
   adapterMapper: IPropMapper<GState, GExt, Unit, List<VHS>, VHA>,
   diffCallback: DiffUtil.ItemCallback<VHS>
 ): ListAdapter<VHS, VH> where
+  GState : Any,
+  GExt : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHS, VHA>,
   VH : IPropLifecycleOwner<GState, GExt> {
@@ -83,6 +89,8 @@ fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter
   adapterMapper: IPropMapper<GState, GExt, Unit, List<VHS>, VHA>,
   diffCallback: IDiffItemCallback<VHS>
 ): ListAdapter<VHS, VH> where
+  GState : Any,
+  GExt : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHS, VHA>,
   VH : IPropLifecycleOwner<GState, GExt> {
@@ -107,6 +115,8 @@ fun <GState, GExt, Mapper, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffe
   adapter: RecyclerView.Adapter<VH>,
   mapper: Mapper
 ): ListAdapter<VHS, VH> where
+  GState : Any,
+  GExt : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHS, VHA>,
   VH : IPropLifecycleOwner<GState, GExt>,
@@ -123,6 +133,8 @@ fun <GState, GExt, Adapter, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiff
   lifecycleOwner: LifecycleOwner,
   adapter: Adapter
 ): ListAdapter<VHS, VH> where
+  GState : Any,
+  GExt : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHS, VHA>,
   VH : IPropLifecycleOwner<GState, GExt>,
