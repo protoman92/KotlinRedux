@@ -35,6 +35,8 @@ import androidx.core.text.italic
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.samples.apps.sunflower.data.Plant
+import com.google.samples.apps.sunflower.dependency.IDependency
+import com.google.samples.apps.sunflower.dependency.IPicassoProvider
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.LARGE_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
@@ -57,11 +59,11 @@ import org.swiften.redux.ui.StaticProps
 @SuppressLint("RestrictedApi")
 class PlantDetailFragment : Fragment(),
   IPropContainer<PlantDetailFragment.S, PlantDetailFragment.A>,
-  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner() {
+  IPropLifecycleOwner<Redux.State, IDependency> by EmptyPropLifecycleOwner() {
   data class S(val plant: Plant? = null, val isPlanted: Boolean? = null)
-  class A(val addPlantToGarden: () -> Unit)
+  class A(override val picasso: Picasso, val addPlantToGarden: () -> Unit) : IPicassoProvider
 
-  companion object : IPropMapper<Redux.State, Unit, Unit, S, A> {
+  companion object : IPropMapper<Redux.State, IDependency, Unit, S, A> {
     override fun mapState(state: Redux.State, outProps: Unit): S {
       return state.selectedPlant?.let {
         S(it.id.let { id -> state.plants?.find { p -> p.plantId == id } }, it.isPlanted)
@@ -69,11 +71,11 @@ class PlantDetailFragment : Fragment(),
     }
 
     override fun mapAction(
-      static: IActionDependency<Unit>,
+      static: IActionDependency<IDependency>,
       state: Redux.State,
       outProps: Unit
     ): A {
-      return A { state.selectedPlant?.id?.also {
+      return A(static.external.picasso) { state.selectedPlant?.id?.also {
         static.dispatch(Redux.Action.AddPlantToGarden(it))
       } }
     }
@@ -86,11 +88,12 @@ class PlantDetailFragment : Fragment(),
       this.plant_detail.text = HtmlCompat.fromHtml(p.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
       this.toolbar_layout.title = p.name
 
-      Picasso.get()
-        .load(p.imageUrl)
-        .centerCrop()
-        .resize(LARGE_IMAGE_DIMEN, LARGE_IMAGE_DIMEN)
-        .into(this.detail_image)
+      next.action?.picasso?.also {
+        it.load(p.imageUrl)
+          .centerCrop()
+          .resize(LARGE_IMAGE_DIMEN, LARGE_IMAGE_DIMEN)
+          .into(this.detail_image)
+      }
     }
 
     next.state?.isPlanted?.also { this.fab.visibility = if (it) View.GONE else View.VISIBLE }
@@ -131,6 +134,7 @@ class PlantDetailFragment : Fragment(),
               addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
             }
           }
+
         startActivity(shareIntent)
         return true
       }
@@ -138,7 +142,7 @@ class PlantDetailFragment : Fragment(),
     }
   }
 
-  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, Unit>) {
+  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, IDependency>) {
     this.fab.setOnClickListener {
       this.reduxProps.action?.addPlantToGarden?.invoke()
       Snackbar.make(it, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()

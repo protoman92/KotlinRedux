@@ -6,10 +6,12 @@
 package com.google.samples.apps.sunflower
 
 import android.app.Application
+import com.google.samples.apps.sunflower.dependency.IDependency
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.dependency.Router
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.squareup.leakcanary.LeakCanary
+import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.android.ui.lifecycle.injectActivityParcelable
@@ -27,6 +29,10 @@ class GardenApplication : Application() {
     if (LeakCanary.isInAnalyzerProcess(this)) { return }
     LeakCanary.install(this)
 
+    val dependency: IDependency = object : IDependency {
+      override val picasso = Picasso.get()
+    }
+
     val store = applyMiddlewares<Redux.State>(
       createRouterMiddleware(Router(this)),
       createSagaMiddleware(
@@ -39,13 +45,14 @@ class GardenApplication : Application() {
       createAsyncMiddleware()
     )(FinalStore(Redux.State(), Redux.Reducer))
 
-    val injector = AndroidPropInjector(store, Unit)
+    val injector = AndroidPropInjector(store, dependency)
 
     injector.injectActivityParcelable(this) {
       when (it) {
         is GardenFragment -> this.injectLifecycle(it, Unit, GardenFragment)
         is PlantDetailFragment -> this.injectLifecycle(it, Unit, PlantDetailFragment)
         is PlantListFragment -> this.injectLifecycle(it, Unit, PlantListFragment)
+        else -> Unit
       }
     }
   }

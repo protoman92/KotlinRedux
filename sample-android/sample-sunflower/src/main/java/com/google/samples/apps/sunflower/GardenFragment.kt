@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
+import com.google.samples.apps.sunflower.dependency.IDependency
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_garden.empty_garden
 import kotlinx.android.synthetic.main.fragment_garden.garden_list
@@ -36,12 +37,12 @@ import org.swiften.redux.ui.StaticProps
 
 class GardenFragment : Fragment(),
   IPropContainer<GardenFragment.S, Unit>,
-  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner() {
+  IPropLifecycleOwner<Redux.State, IDependency> by EmptyPropLifecycleOwner() {
   data class S(val gardenPlantingCount: Int)
 
-  companion object : IPropMapper<Redux.State, Unit, Unit, S, Unit> {
+  companion object : IPropMapper<Redux.State, IDependency, Unit, S, Unit> {
     override fun mapAction(
-      static: IActionDependency<Unit>,
+      static: IActionDependency<IDependency>,
       state: Redux.State,
       outProps: Unit
     ) = Unit
@@ -71,7 +72,7 @@ class GardenFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_garden, container, false)
 
-  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, Unit>) {
+  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, IDependency>) {
     this.garden_list.adapter = GardenPlantingAdapter().let {
       sp.injector.injectRecyclerAdapter(this, it, it, GardenPlantingAdapter.ViewHolder)
     }

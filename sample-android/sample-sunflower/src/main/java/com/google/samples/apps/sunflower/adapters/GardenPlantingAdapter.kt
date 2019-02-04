@@ -24,6 +24,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
+import com.google.samples.apps.sunflower.dependency.IDependency
+import com.google.samples.apps.sunflower.dependency.IPicassoProvider
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
@@ -54,22 +56,21 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     IPropContainer<ViewHolder.S, ViewHolder.A>,
-    IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
-    IPropMapper<Redux.State, Unit, Int, ViewHolder.S, ViewHolder.A> by ViewHolder {
+    IPropLifecycleOwner<Redux.State, IDependency> by EmptyPropLifecycleOwner() {
     data class S(val plantings: PlantAndGardenPlantings?)
-    class A(val goToPlantDetail: () -> Unit)
+    class A(override val picasso: Picasso, val goToPlantDetail: () -> Unit) : IPicassoProvider
 
-    companion object : IPropMapper<Redux.State, Unit, Int, S, A> {
+    companion object : IPropMapper<Redux.State, IDependency, Int, S, A> {
       override fun mapState(state: Redux.State, outProps: Int): S {
         return S(state.plantAndGardenPlantings?.elementAtOrNull(outProps))
       }
 
       override fun mapAction(
-        static: IActionDependency<Unit>,
+        static: IActionDependency<IDependency>,
         state: Redux.State,
         outProps: Int
       ): A {
-        return A {
+        return A(static.external.picasso) {
           this.mapState(state, outProps).plantings?.plant?.plantId?.let {
             static.dispatch(Redux.Screen.GardenToPlantDetail(it))
           }
@@ -96,11 +97,12 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
           this.plantDate.text = context.getString(R.string.planted_date, p.plant.name, plantDateStr)
           this.waterDate.text = wateringStr
 
-          Picasso.get()
-            .load(p.plant.imageUrl)
-            .centerCrop()
-            .resize(SMALL_IMAGE_DIMEN, SMALL_IMAGE_DIMEN)
-            .into(this.imageView)
+          next.action?.picasso?.also {
+            it.load(p.plant.imageUrl)
+              .centerCrop()
+              .resize(SMALL_IMAGE_DIMEN, SMALL_IMAGE_DIMEN)
+              .into(this.imageView)
+          }
         }
       }
     }
@@ -110,7 +112,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
     private val plantDate: TextView = this.itemView.findViewById(R.id.plant_date)
     private val waterDate: TextView = this.itemView.findViewById(R.id.water_date)
 
-    override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, Unit>) {
+    override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, IDependency>) {
       this.itemView.setOnClickListener {
         this@ViewHolder.reduxProps.action?.goToPlantDetail?.invoke()
       }

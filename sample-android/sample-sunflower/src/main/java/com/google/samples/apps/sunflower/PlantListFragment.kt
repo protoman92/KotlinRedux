@@ -25,6 +25,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
+import com.google.samples.apps.sunflower.dependency.IDependency
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
@@ -38,17 +39,17 @@ import org.swiften.redux.ui.StaticProps
 
 class PlantListFragment : Fragment(),
   IPropContainer<PlantListFragment.S, PlantListFragment.A>,
-  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner() {
+  IPropLifecycleOwner<Redux.State, IDependency> by EmptyPropLifecycleOwner() {
   data class S(val plantCount: Int)
   class A(val updateGrowZone: () -> Unit)
 
-  companion object : IPropMapper<Redux.State, Unit, Unit, S, A> {
+  companion object : IPropMapper<Redux.State, IDependency, Unit, S, A> {
     override fun mapState(state: Redux.State, outProps: Unit): S {
       return S(plantCount = state.plants?.size ?: 0)
     }
 
     override fun mapAction(
-      static: IActionDependency<Unit>,
+      static: IActionDependency<IDependency>,
       state: Redux.State,
       outProps: Unit
     ): A {
@@ -92,7 +93,7 @@ class PlantListFragment : Fragment(),
     }
   }
 
-  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, Unit>) {
+  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, IDependency>) {
     this.plant_list.adapter = sp.injector.injectDiffedAdapter(this, PlantAdapter(), PlantAdapter)
   }
 }

@@ -25,6 +25,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.PlantListFragment
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
+import com.google.samples.apps.sunflower.dependency.IDependency
+import com.google.samples.apps.sunflower.dependency.IPicassoProvider
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
@@ -42,16 +44,16 @@ import org.swiften.redux.ui.ObservableReduxProps
  */
 class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>() {
   companion object :
-    IPropMapper<Redux.State, Unit, Unit, List<Plant>, ViewHolder.A>,
+    IPropMapper<Redux.State, IDependency, Unit, List<Plant>, ViewHolder.A>,
     IDiffItemCallback<Plant> {
     override fun mapState(state: Redux.State, outProps: Unit) = state.plants ?: arrayListOf()
 
     override fun mapAction(
-      static: IActionDependency<Unit>,
+      static: IActionDependency<IDependency>,
       state: Redux.State,
       outProps: Unit
     ): ViewHolder.A {
-      return ViewHolder.A { index ->
+      return ViewHolder.A (static.external.picasso) { index ->
         state.plants?.elementAtOrNull(index)?.plantId?.also {
           static.dispatch(Redux.Screen.PlantListToPlantDetail(it))
         }
@@ -74,8 +76,8 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>() {
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     IPropContainer<Plant, ViewHolder.A>,
-    IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner() {
-    class A(val goToPlantDetail: (Int) -> Unit)
+    IPropLifecycleOwner<Redux.State, IDependency> by EmptyPropLifecycleOwner() {
+    class A(override val picasso: Picasso, val goToPlantDetail: (Int) -> Unit) : IPicassoProvider
 
     private val image: ImageView = itemView.findViewById(R.id.plant_item_image)
     private val title: TextView = itemView.findViewById(R.id.plant_item_title)
@@ -87,14 +89,15 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>() {
     }
 
     override var reduxProps by ObservableReduxProps<Plant, A> { _, next ->
-      next.state?.also {
-        this.title.text = it.name
+      next.state?.also { state ->
+        this.title.text = state.name
 
-        Picasso.get()
-          .load(it.imageUrl)
-          .centerCrop()
-          .resize(SMALL_IMAGE_DIMEN, SMALL_IMAGE_DIMEN)
-          .into(this.image)
+        next.action?.picasso?.also {
+          it.load(state.imageUrl)
+            .centerCrop()
+            .resize(SMALL_IMAGE_DIMEN, SMALL_IMAGE_DIMEN)
+            .into(this.image)
+        }
       }
     }
   }
