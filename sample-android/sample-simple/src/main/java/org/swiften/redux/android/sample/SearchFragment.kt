@@ -35,14 +35,11 @@ import org.swiften.redux.ui.StaticProps
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
   IPropContainer<SearchFragment.S, SearchFragment.A>,
-  IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner(),
-  IPropMapper<MainRedux.State, Unit, Unit, SearchFragment.S, SearchFragment.A> by SearchFragment {
+  IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner() {
   data class S(val query: String?, val loading: Boolean?)
   class A(val updateQuery: (String?) -> Unit)
 
-  class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IPropMapper<MainRedux.State, Unit, Unit, List<ViewHolder.S1>, ViewHolder.A1> by Adapter,
-    IDiffItemCallback<ViewHolder.S1> by Adapter {
+  class Adapter : ReduxRecyclerViewAdapter<ViewHolder>() {
     companion object :
       IPropMapper<MainRedux.State, Unit, Unit, List<ViewHolder.S1>, ViewHolder.A1>,
       IDiffItemCallback<ViewHolder.S1> {
@@ -148,7 +145,7 @@ class SearchFragment : Fragment(),
     this.searchResult.also {
       it.setHasFixedSize(true)
       it.layoutManager = LinearLayoutManager(this.context)
-      it.adapter = sp.injector.injectDiffedAdapter(this, Adapter())
+      it.adapter = sp.injector.injectDiffedAdapter(this, Adapter(), Adapter)
     }
   }
 }

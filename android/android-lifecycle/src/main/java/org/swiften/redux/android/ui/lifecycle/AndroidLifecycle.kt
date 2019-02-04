@@ -133,19 +133,3 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   LC : IPropMapper<GState, GExt, OP, S, A> {
   return this.injectLifecycle(lifecycleOwner, outProps, lifecycleOwner)
 }
-
-/**
- * Call [IPropInjector.inject] for [lifecycleOwner] but it also implements [IPropMapper] and
- * out props is [Unit].
- */
-fun <GState, GExt, LC, S, A> IPropInjector<GState, GExt>.injectLifecycle(
-  lifecycleOwner: LC
-): LC where
-  GState : Any,
-  GExt : Any,
-  LC : LifecycleOwner,
-  LC : IPropContainer<S, A>,
-  LC : IPropLifecycleOwner<GState, GExt>,
-  LC : IPropMapper<GState, GExt, Unit, S, A> {
-  return this.injectLifecycle(lifecycleOwner, Unit)
-}

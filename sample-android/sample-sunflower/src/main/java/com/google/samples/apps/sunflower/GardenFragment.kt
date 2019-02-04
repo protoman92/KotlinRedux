@@ -36,8 +36,7 @@ import org.swiften.redux.ui.StaticProps
 
 class GardenFragment : Fragment(),
   IPropContainer<GardenFragment.S, Unit>,
-  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
-  IPropMapper<Redux.State, Unit, Unit, GardenFragment.S, Unit> by GardenFragment {
+  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner() {
   data class S(val gardenPlantingCount: Int)
 
   companion object : IPropMapper<Redux.State, Unit, Unit, S, Unit> {

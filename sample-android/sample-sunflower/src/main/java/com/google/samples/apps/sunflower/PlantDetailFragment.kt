@@ -57,9 +57,7 @@ import org.swiften.redux.ui.StaticProps
 @SuppressLint("RestrictedApi")
 class PlantDetailFragment : Fragment(),
   IPropContainer<PlantDetailFragment.S, PlantDetailFragment.A>,
-  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
-  IPropMapper<Redux.State, Unit, Unit, PlantDetailFragment.S, PlantDetailFragment.A>
-  by PlantDetailFragment {
+  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner() {
   data class S(val plant: Plant? = null, val isPlanted: Boolean? = null)
   class A(val addPlantToGarden: () -> Unit)
 

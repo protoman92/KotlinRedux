@@ -24,8 +24,7 @@ import org.swiften.redux.ui.StaticProps
 /** Created by haipham on 2019/01/12 */
 class MusicDetailFragment : Fragment(),
   IPropContainer<MusicDetailFragment.S, MusicDetailFragment.A>,
-  IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner(),
-  IPropMapper<MainRedux.State, Unit, Unit, MusicDetailFragment.S, MusicDetailFragment.A> by MusicDetailFragment {
+  IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner() {
   class S(val track: MusicTrack?)
   class A(val goToTrackInformation: () -> Unit)
 

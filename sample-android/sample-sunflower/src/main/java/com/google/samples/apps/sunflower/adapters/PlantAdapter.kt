@@ -40,9 +40,7 @@ import org.swiften.redux.ui.ObservableReduxProps
 /**
  * Adapter for the [RecyclerView] in [PlantListFragment].
  */
-class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>(),
-  IPropMapper<Redux.State, Unit, Unit, List<Plant>, PlantAdapter.ViewHolder.A> by PlantAdapter,
-  IDiffItemCallback<Plant> by PlantAdapter {
+class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>() {
   companion object :
     IPropMapper<Redux.State, Unit, Unit, List<Plant>, ViewHolder.A>,
     IDiffItemCallback<Plant> {

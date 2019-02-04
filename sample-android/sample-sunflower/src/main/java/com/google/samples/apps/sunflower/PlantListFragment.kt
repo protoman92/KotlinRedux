@@ -38,9 +38,7 @@ import org.swiften.redux.ui.StaticProps
 
 class PlantListFragment : Fragment(),
   IPropContainer<PlantListFragment.S, PlantListFragment.A>,
-  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner(),
-  IPropMapper<Redux.State, Unit, Unit, PlantListFragment.S, PlantListFragment.A>
-  by PlantListFragment {
+  IPropLifecycleOwner<Redux.State, Unit> by EmptyPropLifecycleOwner() {
   data class S(val plantCount: Int)
   class A(val updateGrowZone: () -> Unit)
 
@@ -95,6 +93,6 @@ class PlantListFragment : Fragment(),
   }
 
   override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, Unit>) {
-    this.plant_list.adapter = sp.injector.injectDiffedAdapter(this, PlantAdapter())
+    this.plant_list.adapter = sp.injector.injectDiffedAdapter(this, PlantAdapter(), PlantAdapter)
   }
 }

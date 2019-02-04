@@ -43,9 +43,9 @@ class GardenApplication : Application() {
 
     injector.injectActivityParcelable(this) {
       when (it) {
-        is GardenFragment -> this.injectLifecycle(it)
-        is PlantDetailFragment -> this.injectLifecycle(it)
-        is PlantListFragment -> this.injectLifecycle(it)
+        is GardenFragment -> this.injectLifecycle(it, Unit, GardenFragment)
+        is PlantDetailFragment -> this.injectLifecycle(it, Unit, PlantDetailFragment)
+        is PlantListFragment -> this.injectLifecycle(it, Unit, PlantListFragment)
       }
     }
   }
