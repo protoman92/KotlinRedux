@@ -5,9 +5,23 @@
 
 package org.swiften.redux.android.sample
 
-import org.swiften.redux.core.IReduxAction
+import kotlinx.coroutines.async
 import org.swiften.redux.core.IReducer
+import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
+import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.common.catchAsync
+import org.swiften.redux.saga.common.justThen
+import org.swiften.redux.saga.common.map
+import org.swiften.redux.saga.common.mapAsync
+import org.swiften.redux.saga.common.put
+import org.swiften.redux.saga.common.then
+import org.swiften.redux.saga.rx.SagaEffects
+import org.swiften.redux.saga.rx.SagaEffects.justPut
+import org.swiften.redux.saga.rx.SagaEffects.select
+import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
+import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
+import org.swiften.redux.saga.rx.TakeEffectOptions
 import java.io.Serializable
 
 /** Created by haipham on 2018/12/19 */
@@ -52,6 +66,35 @@ object MainRedux {
         }
 
         else -> return p1
+      }
+    }
+  }
+
+  object Saga {
+    fun sagas(api: IMainRepository) = arrayListOf(
+      this.autocompleteSaga(api),
+      this.previewSelectedTrack()
+    )
+
+    private fun autocompleteSaga(api: IMainRepository): SagaEffect<Any> {
+      return takeLatestAction<Action.UpdateAutocompleteQuery, String, Any>(
+        { it.query },
+        TakeEffectOptions(500)
+      ) { query ->
+        justPut(Action.UpdateLoadingResult(true))
+          .justThen(query)
+          .mapAsync { this.async { api.searchMusicStore(it) } }
+          .catchAsync { this.async { api.createFakeResult() } }
+          .put { Action.UpdateMusicResult(it) }
+          .then(SagaEffects.justPut(Action.UpdateLoadingResult(false)))
+      }
+    }
+
+    private fun previewSelectedTrack(): SagaEffect<Any> {
+      return takeEveryAction<Action.PreviewTrack, Unit, Any>({ Unit }) {
+        select<State, MusicTrack?> { it.currentSelectedTrack() }
+          .map { it?.previewUrl ?: "" }
+          .put { MainRedux.Screen.WebView(it) }
       }
     }
   }

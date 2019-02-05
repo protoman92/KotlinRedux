@@ -6,18 +6,13 @@
 package org.swiften.redux.android.sample
 
 import android.app.Application
-import android.content.Intent
-import android.net.Uri
-import androidx.fragment.app.Fragment
 import com.squareup.leakcanary.LeakCanary
-import org.swiften.redux.android.router.createSingleActivityRouter
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.async.createAsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
-import org.swiften.redux.core.createLoggingMiddleware
 import org.swiften.redux.core.createRouterMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
 
@@ -31,7 +26,7 @@ class MainApplication : Application() {
     val repository = MainRepository(api, JSONDecoder())
 
     val store = applyMiddlewares<MainRedux.State>(
-      createSagaMiddleware(MainSaga.sagas(repository)),
+      createSagaMiddleware(MainRedux.Saga.sagas(repository)),
       createRouterMiddleware(MainRouter(this)),
       createAsyncMiddleware()
     )(FinalStore(MainRedux.State(), MainRedux.Reducer))
