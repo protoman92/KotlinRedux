@@ -102,7 +102,7 @@ object CommonEffects {
   }
 
   /**
-   * Create a [AsyncMapEffect].
+   * Create an [AsyncMapEffect].
    * @param R The result emission type.
    * @param transformer Function that transforms [P] to [R].
    * @return An [ISagaEffectTransformer] instance.
@@ -112,6 +112,14 @@ object CommonEffects {
     ISagaEffectTransformer<P, R> {
     return { AsyncMapEffect(it, transformer) }
   }
+
+  /**
+   * Create a [CompactMapEffect].
+   * @param R The result emission type.
+   * @return An [ISagaEffectTransformer] instance.
+   */
+  @JvmStatic
+  fun <R : Any> compactMap(): ISagaEffectTransformer<R?, R> = { CompactMapEffect(it) }
 
   /**
    * Create a [PutEffect].

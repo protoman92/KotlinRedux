@@ -122,7 +122,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       .map { throw error; 1 }
       .delay(1000)
       .catchAsync { this.async { 100 } }
-      .invoke(this, State()) { }
+      .invoke(this, State()) {}
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -132,6 +132,27 @@ abstract class CommonSagaEffectTest : CoroutineScope {
 
       // Then
       assertEquals(finalValues, arrayListOf(100))
+    }
+  }
+
+  @Test
+  @Suppress("UNREACHABLE_CODE")
+  fun `Compact map effect should unwrap nullable values`() {
+    // Setup
+    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+
+    // When
+    justEffect(1)
+      .map { null }
+      .compactMap()
+      .invoke(this, State()) {}
+      .subscribe({ finalValues.add(it) })
+
+    runBlocking {
+      delay(1000)
+
+      // Then
+      assertEquals(finalValues, arrayListOf<Int>())
     }
   }
 

@@ -54,6 +54,13 @@ fun <P, R> SagaEffect<P>.mapAsync(transformer: suspend CoroutineScope.(P) -> Def
   return this.transform(CommonEffects.mapAsync(transformer))
 }
 
+/**
+ * Invoke a [CompactMapEffect] on [this].
+ * @param R The result emission type.
+ * @return An [ISagaEffect] instance.
+ */
+fun <R : Any> SagaEffect<R?>.compactMap() = this.transform<R>(CommonEffects.compactMap())
+
 /** Invoke a [PutEffect] on the current [CommonEffects] */
 fun <P> SagaEffect<P>.put(actionCreator: (P) -> IReduxAction): SagaEffect<Any> {
   return this.transform(CommonEffects.put(actionCreator))
