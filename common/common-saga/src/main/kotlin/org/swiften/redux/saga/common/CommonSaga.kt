@@ -32,12 +32,12 @@ typealias ISagaEffectTransformer<R, R2> = (SagaEffect<R>) -> SagaEffect<R2>
 /**
  * [SagaInput] for an [ISagaEffect], which exposes a [IReduxStore]'s internal functionalities.
  * @param scope A [CoroutineScope] instance.
- * @param stateGetter See [IReduxStore.lastState].
+ * @param lastState See [IReduxStore.lastState].
  * @param dispatch See [IReduxStore.dispatch].
  */
 class SagaInput(
   val scope: CoroutineScope = GlobalScope,
-  val stateGetter: IStateGetter<*>,
+  val lastState: IStateGetter<*>,
   val dispatch: IActionDispatcher
 )
 
@@ -181,13 +181,26 @@ abstract class SagaEffect<R> : ISagaEffect<R> {
   /**
    * Call [ISagaEffect] with convenience parameters for testing.
    * @param scope A [CoroutineScope] instance.
-   * @param state See [SagaInput.stateGetter].
+   * @param state See [SagaInput.lastState].
    * @param dispatch See [SagaInput.dispatch].
    * @return An [ISagaOutput] instance.
    */
   fun invoke(scope: CoroutineScope, state: Any, dispatch: IActionDispatcher): ISagaOutput<R> {
     return this.invoke(SagaInput(scope, { state }, dispatch))
   }
+
+  /**
+   * Call [ISagaEffect] with convenience parameters for testing.
+   * @param state See [SagaInput.lastState].
+   * @return An [ISagaOutput] instance.
+   */
+  fun invoke(state: Any) = this.invoke(GlobalScope, state) {}
+
+  /**
+   * Call [ISagaEffect] with convenience parameters for testing.
+   * @return An [ISagaOutput] instance.
+   */
+  fun invoke() = this.invoke({})
 
   /**
    * Transform into another [SagaEffect] with [transformer].

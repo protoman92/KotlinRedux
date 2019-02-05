@@ -20,7 +20,7 @@ internal class SelectEffect<State, R>(
   private val selector: (State) -> R
 ) : SagaEffect<R>() {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
-    val lastState = p1.stateGetter()
+    val lastState = p1.lastState()
     require(this.cls.isInstance(lastState))
     return SagaEffects.just(this.selector(this.cls.cast(lastState))).invoke(p1)
   }

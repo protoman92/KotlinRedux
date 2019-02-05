@@ -5,75 +5,52 @@
 
 package org.swiften.redux.saga.common
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxAction
-import java.util.Collections
+import java.util.Collections.synchronizedList
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/07 */
 /** Use this test class for common [ISagaEffect] tests */
-abstract class CommonSagaEffectTest : CoroutineScope {
-  class State
+abstract class CommonSagaEffectTest {
+  protected class State
 
-  sealed class TakeAction : IReduxAction {
-    data class Action1(val value: Int) : TakeAction()
-  }
-
-  override val coroutineContext get() = this.job
-
-  private lateinit var job: Job
   protected val timeout: Long = 10000
-
-  @Before
-  fun beforeMethod() { this.job = SupervisorJob() }
-
-  @After
-  fun afterMethod() {
-    this.coroutineContext.cancelChildren()
-    runBlocking { delay(1000) }
-  }
-
   abstract fun <T> justEffect(value: T): SagaEffect<T>
   abstract fun <T : Any> fromEffect(vararg values: T): SagaEffect<T>
 
-  @ObsoleteCoroutinesApi
   fun test_takeEffect_shouldTakeCorrectActions(
     createTakeEffect: (
-      extractor: Function1<TakeAction, Int?>,
+      extractor: (IReduxAction) -> Int?,
       creator: Function1<Int, ISagaEffect<Any>>
     ) -> SagaEffect<Any>,
     actualValues: List<Int>
   ) {
     // Setup
-    val takeOutput = createTakeEffect(
-      { when (it) { is TakeAction.Action1 -> it.value } },
-      { v -> justEffect(v).mapSuspend { delay(1000); it } }
-    ).invoke(this, State()) { }
+    class TakeAction(val value: Int) : IReduxAction
 
-    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+    val takeOutput = createTakeEffect(
+      { when (it) { is TakeAction -> it.value; else -> null } },
+      { v -> justEffect(v).mapSuspend { delay(1000); it } }
+    ).invoke()
+
+    val finalValues = synchronizedList(arrayListOf<Int>())
     takeOutput.subscribe({ finalValues.add(it as Int) })
 
     // When
-    takeOutput.onAction(TakeAction.Action1(0))
-    takeOutput.onAction(TakeAction.Action1(1))
+    takeOutput.onAction(TakeAction(0))
+    takeOutput.onAction(TakeAction(1))
     takeOutput.onAction(DefaultReduxAction.Dummy)
-    takeOutput.onAction(TakeAction.Action1(2))
+    takeOutput.onAction(TakeAction(2))
     takeOutput.onAction(DefaultReduxAction.Dummy)
-    takeOutput.onAction(TakeAction.Action1(3))
+    takeOutput.onAction(TakeAction(3))
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
@@ -90,14 +67,14 @@ abstract class CommonSagaEffectTest : CoroutineScope {
   fun `Catch error effect should handle errors gracefully`() {
     // Setup
     val error = Exception("Oh no!")
-    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+    val finalValues = synchronizedList(arrayListOf<Int>())
 
     // When
     justEffect(1)
       .map { throw error; 1 }
       .delay(1000)
       .catchError { 100 }
-      .invoke(this, State()) { }
+      .invoke()
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -115,14 +92,14 @@ abstract class CommonSagaEffectTest : CoroutineScope {
   fun `Async catch error effect should handle errors gracefully`() {
     // Setup
     val error = Exception("Oh no!")
-    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+    val finalValues = synchronizedList(arrayListOf<Int>())
 
     // When
     justEffect(1)
       .map { throw error; 1 }
       .delay(1000)
       .catchAsync { this.async { 100 } }
-      .invoke(this, State()) {}
+      .invoke()
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -139,13 +116,13 @@ abstract class CommonSagaEffectTest : CoroutineScope {
   @Suppress("UNREACHABLE_CODE")
   fun `Compact map effect should unwrap nullable values`() {
     // Setup
-    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+    val finalValues = synchronizedList(arrayListOf<Int>())
 
     // When
     justEffect(1)
       .map { null }
       .compactMap()
-      .invoke(this, State()) {}
+      .invoke()
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -157,17 +134,16 @@ abstract class CommonSagaEffectTest : CoroutineScope {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
   fun `Filter effect should filter out unwanted values`() {
     // Setup
-    val finalValues = Collections.synchronizedList(arrayListOf<Int>())
+    val finalValues = synchronizedList(arrayListOf<Int>())
 
     // When
     fromEffect(0, 1, 2, 3)
       .filter { it % 2 == 0 }
       .delay(100)
       .cast<Int>()
-      .invoke(this, State()) { }
+      .invoke()
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -184,12 +160,12 @@ abstract class CommonSagaEffectTest : CoroutineScope {
   fun `Put effect should dispatch action`() {
     // Setup
     data class Action(private val value: Int) : IReduxAction
-    val dispatched = Collections.synchronizedList(arrayListOf<IReduxAction>())
+    val dispatched = synchronizedList(arrayListOf<IReduxAction>())
 
     justEffect(0)
       .map { it }
       .put { Action(it) }
-      .invoke(this, State()) { dispatched.add(it) }
+      .invoke(GlobalScope, {}) { dispatched.add(it) }
       .subscribe({})
 
     // When
@@ -213,7 +189,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
     justEffect(0)
       .mapSuspend { retries.incrementAndGet(); throw RuntimeException("Oh no!") }
       .retry(retryCount)
-      .invoke(this, State()) {}
+      .invoke()
       .subscribe({})
 
     runBlocking {
@@ -233,7 +209,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       .delay(500)
       .then(justEffect(2).map { it }) { a, b -> "$a$b" }
       .delay(1000)
-      .invoke(this, State()) { }
+      .invoke()
 
     // When && Then
     assertEquals(finalOutput.nextValue(this.timeout), "12")
@@ -246,7 +222,7 @@ abstract class CommonSagaEffectTest : CoroutineScope {
       .mapSuspend { delay(this@CommonSagaEffectTest.timeout); it }
       .timeout(1000)
       .catchSuspend { 100 }
-      .invoke(this, State()) { }
+      .invoke()
 
     // When && Then
     assertEquals(finalOutput.nextValue(this.timeout), 100)

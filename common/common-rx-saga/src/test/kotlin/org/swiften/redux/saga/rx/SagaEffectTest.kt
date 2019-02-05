@@ -7,6 +7,7 @@ package org.swiften.redux.saga.rx
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -26,7 +27,7 @@ import org.swiften.redux.saga.rx.SagaEffects.just
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
 import java.net.URL
-import java.util.Collections
+import java.util.Collections.synchronizedList
 
 /** Created by haipham on 2018/12/23 */
 class SagaEffectTest : CommonSagaEffectTest() {
@@ -34,7 +35,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
   @ExperimentalCoroutinesApi
   override fun <T : Any> fromEffect(vararg values: T) =
-    from(this.rxFlowable { values.forEach { this.send(it) } })
+    from(GlobalScope.rxFlowable { values.forEach { this.send(it) } })
 
   @Test
   @ObsoleteCoroutinesApi
@@ -53,13 +54,8 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `Select effect should extract some value from a state`() {
     // Setup
-    val sourceOutput1 = just(1)
-      .select<State, Int, Int, Int>({ 2 }, { a, b -> a + b })
-      .invoke(this, State()) { }
-
-    val sourceOutput2 = just(2)
-      .select<State, Int> { 4 }
-      .invoke(this, State()) { }
+    val sourceOutput1 = just(1).select<Any, Int, Int, Int>({ 2 }, { a, b -> a + b }).invoke()
+    val sourceOutput2 = just(2).select<State, Int> { 4 }.invoke(State())
 
     // When && Then
     assertEquals(sourceOutput1.nextValue(this.timeout), 3)
@@ -70,7 +66,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
   fun `Take latest should work in real life scenarios`() {
     // Setup
     data class Action(val query: String) : IReduxAction
-    val finalValues = Collections.synchronizedList(arrayListOf<Any>())
+    val finalValues = synchronizedList(arrayListOf<Any>())
 
     fun CoroutineScope.searchMusicStore(q: String) = this.async {
       val url = "https://itunes.apple.com/search?term=$q&limit=5&media=music"
@@ -84,7 +80,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
         .mapAsync { this.searchMusicStore(it) }
         .cast<Any>()
         .catchError {}
-    }.invoke(this, Unit) {}
+    }.invoke()
 
     sourceOutput.subscribe({ finalValues.add(it) })
 
