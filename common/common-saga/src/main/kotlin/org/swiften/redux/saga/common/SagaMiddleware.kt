@@ -31,7 +31,7 @@ internal class SagaMiddleware(private val effects: Collection<ISagaEffect<*>>) :
         override val coroutineContext = Dispatchers.Default + job
       }
 
-      val sagaInput = SagaInput(scope, p1.stateGetter, wrapper.dispatch)
+      val sagaInput = SagaInput(scope, p1.lastState, p1.dispatch)
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
       outputs.forEach { it.subscribe({}) }
 
@@ -50,5 +50,6 @@ internal class SagaMiddleware(private val effects: Collection<ISagaEffect<*>>) :
 }
 
 /** Create a [SagaMiddleware] with [effects] */
-fun createSagaMiddleware(effects: Collection<ISagaEffect<*>>): IMiddleware<Any> =
-  SagaMiddleware(effects)
+fun createSagaMiddleware(effects: Collection<ISagaEffect<*>>): IMiddleware<Any> {
+  return SagaMiddleware(effects)
+}

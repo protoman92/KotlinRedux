@@ -9,7 +9,7 @@ package org.swiften.redux.core
 /** Mock test class to provide some utilities */
 open class BaseMiddlewareTest {
   fun <GState> mockMiddlewareInput(state: GState): MiddlewareInput<GState> {
-    return MiddlewareInput({ state }, { _, _ -> ReduxSubscription("mock") {} })
+    return MiddlewareInput({}, { state }, { _, _ -> ReduxSubscription.EMPTY })
   }
 
   fun mockDispatchWrapper(dispatcher: IActionDispatcher = {}): DispatchWrapper {

@@ -19,11 +19,12 @@ typealias IMiddleware<GState> = (MiddlewareInput<GState>) -> DispatchMapper
 /**
  * Input for middlewares that includes some functionalities from [IReduxStore].
  * @param GState The global state type.
- * @param stateGetter See [IReduxStore.lastState].
+ * @param lastState See [IReduxStore.lastState].
  * @param subscriber See [IReduxStore.subscribe].
  */
 class MiddlewareInput<out GState>(
-  val stateGetter: IStateGetter<GState>,
+  val dispatch: IActionDispatcher,
+  val lastState: IStateGetter<GState>,
   val subscriber: IReduxSubscriber<GState>
 )
 
@@ -58,15 +59,31 @@ private class EnhancedReduxStore<GState>(
  */
 internal fun <GState> combineMiddlewares(
   middlewares: Collection<IMiddleware<GState>>
-): (IReduxStore<GState>) -> DispatchWrapper {
-  return fun(store): DispatchWrapper {
-    val input = MiddlewareInput(store.lastState, store.subscribe)
-    val rootWrapper = DispatchWrapper(DispatchWrapper.ROOT_WRAPPER, store.dispatch)
-    if (middlewares.isEmpty()) return rootWrapper
+): (IReduxStore<GState>) -> IActionDispatcher {
+  /**
+   * Use a lazy [IActionDispatcher] to ensure that a [MiddlewareInput] has access to the master
+   * [IActionDispatcher]. This is done so that invoking [IActionDispatcher] within an [IMiddleware]
+   * will send the [IReduxAction] into the pipeline from the top, sending it through all
+   * [DispatchWrapper]. The allows us to free ourselves from caring about the order of
+   * [middlewares] being applied.
+   */
+  class LazyDispatch : IActionDispatcher {
+    lateinit var dispatch: IActionDispatcher
+    override fun invoke(p1: IReduxAction) = this.dispatch(p1)
+  }
 
-    return middlewares.reduce { acc, middleware ->
-      { input -> { acc(input)(middleware(input)(it)) } }
-    }(input)(rootWrapper)
+  return fun(store): IActionDispatcher {
+    val lazyDispatch = LazyDispatch()
+    val input = MiddlewareInput(lazyDispatch, store.lastState, store.subscribe)
+    val rootWrapper = DispatchWrapper(DispatchWrapper.ROOT_WRAPPER, store.dispatch)
+
+    lazyDispatch.dispatch = if (middlewares.isEmpty()) rootWrapper else {
+      middlewares.reduce { acc, middleware ->
+        { input -> { acc(input)(middleware(input)(it)) } }
+      }(input)(rootWrapper)
+    }.dispatch
+
+    return lazyDispatch
   }
 }
 
@@ -79,8 +96,8 @@ internal fun <GState> combineMiddlewares(
 fun <GState> applyMiddlewares(
   middlewares: Collection<IMiddleware<GState>>
 ): (IReduxStore<GState>) -> IReduxStore<GState> = fun(store): IReduxStore<GState> {
-  val wrapper = combineMiddlewares(middlewares)(store)
-  return EnhancedReduxStore(store, wrapper.dispatch)
+  val wrappedDispatch = combineMiddlewares(middlewares)(store)
+  return EnhancedReduxStore(store, wrappedDispatch)
 }
 
 /**
@@ -90,6 +107,8 @@ fun <GState> applyMiddlewares(
  * @param middlewares The [IMiddleware] instances to be applied to an [IReduxStore].
  * @return Function that maps an [IReduxStore] to an [EnhancedReduxStore].
  */
-fun <GState> applyMiddlewares(vararg middlewares: IMiddleware<GState>): (IReduxStore<GState>) -> IReduxStore<GState> {
+fun <GState> applyMiddlewares(
+  vararg middlewares: IMiddleware<GState>
+): (IReduxStore<GState>) -> IReduxStore<GState> {
   return applyMiddlewares(middlewares.asList())
 }

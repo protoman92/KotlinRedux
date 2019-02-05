@@ -20,23 +20,17 @@ class MiddlewareTest : BaseMiddlewareTest() {
     val wrappedStore = applyMiddlewares<Int>(
       {
         { wrapper ->
-          DispatchWrapper("${wrapper.id}-$1") {
-            wrapper.dispatch(it); ordering.add(1)
-          }
+          DispatchWrapper("${wrapper.id}-$1") { wrapper.dispatch(it); ordering.add(1) }
         }
       },
       {
         { wrapper ->
-          DispatchWrapper("${wrapper.id}-$2") {
-            wrapper.dispatch(it); ordering.add(2)
-          }
+          DispatchWrapper("${wrapper.id}-$2") { wrapper.dispatch(it); ordering.add(2) }
         }
       },
       {
         { wrapper ->
-          DispatchWrapper("${wrapper.id}-$3") {
-            wrapper.dispatch(it); ordering.add(3)
-          }
+          DispatchWrapper("${wrapper.id}-$3") { wrapper.dispatch(it); ordering.add(3) }
         }
       }
     )(store)
@@ -48,17 +42,5 @@ class MiddlewareTest : BaseMiddlewareTest() {
 
     // Then
     assertEquals(ordering, arrayListOf(3, 2, 1, 3, 2, 1, 3, 2, 1))
-  }
-
-  @Test
-  fun `Applying middlewares with empty middleware list`() {
-    // Setup
-    val store = ThreadSafeStore(0) { a, _ -> a }
-
-    // When
-    val wrapper = combineMiddlewares<Int>(arrayListOf())(store)
-
-    // Then
-    assertEquals(wrapper.id, DispatchWrapper.ROOT_WRAPPER)
   }
 }

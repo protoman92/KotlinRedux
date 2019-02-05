@@ -13,12 +13,11 @@ import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.AndroidPropInjector
-import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.android.ui.lifecycle.injectActivityParcelable
+import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.async.createAsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
-import org.swiften.redux.core.createLoggingMiddleware
 import org.swiften.redux.core.createRouterMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
 
@@ -34,6 +33,7 @@ class GardenApplication : Application() {
     }
 
     val store = applyMiddlewares<Redux.State>(
+      createRouterMiddleware(Router(this)),
       createSagaMiddleware(
         arrayListOf(
           arrayListOf(Redux.Saga.CoreSaga.watchNetworkConnectivity(this)),
@@ -41,7 +41,6 @@ class GardenApplication : Application() {
           Redux.Saga.PlantSaga.allSagas(InjectorUtils.getPlantRepository(this))
         ).flatten()
       ),
-      createRouterMiddleware(Router(this)),
       createAsyncMiddleware()
     )(FinalStore(Redux.State(), Redux.Reducer))
 
