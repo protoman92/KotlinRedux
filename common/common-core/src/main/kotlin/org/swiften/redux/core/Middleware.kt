@@ -52,7 +52,7 @@ class DispatchWrapper(val id: String, val dispatch: IActionDispatcher) {
  * @param store An [IReduxStore] instance.
  * @param dispatch An overriding [IActionDispatcher] instance.
  */
-private class EnhancedReduxStore<GState>(
+class EnhancedReduxStore<GState>(
   private val store: IReduxStore<GState>,
   override val dispatch: (IReduxAction) -> Unit
 ) : IReduxStore<GState> by store
@@ -64,7 +64,7 @@ private class EnhancedReduxStore<GState>(
  * @param middlewares The [IMiddleware] instances to be applied to an [IReduxStore].
  * @return Function that maps [IReduxStore.dispatch] to a [DispatchMapper].
  */
-internal fun <GState> combineMiddlewares(
+fun <GState> combineMiddlewares(
   middlewares: Collection<IMiddleware<GState>>
 ): (IReduxStore<GState>) -> IActionDispatcher {
   /**
@@ -95,6 +95,18 @@ internal fun <GState> combineMiddlewares(
 }
 
 /**
+ * Convenience [combineMiddlewares] that takes varargs [middlewares].
+ * @param GState The global state type.
+ * @param middlewares The [IMiddleware] instances to be applied to an [IReduxStore].
+ * @return Function that maps an [IReduxStore] to an [IActionDispatcher].
+ */
+fun <GState> combineMiddlewares(
+  vararg middlewares: IMiddleware<GState>
+): (IReduxStore<GState>) -> IActionDispatcher {
+  return combineMiddlewares(middlewares.asList())
+}
+
+/**
  * Apply [middlewares] to a [IReduxStore] instance to get an enhanced [IReduxStore]
  * @param GState The global state type.
  * @param middlewares The [IMiddleware] instances to be applied to an [IReduxStore].
@@ -108,8 +120,7 @@ fun <GState> applyMiddlewares(
 }
 
 /**
- * Apply [middlewares] to a [IReduxStore] instance. This is a convenience method that uses
- * varargs.
+ * Convenience [applyMiddlewares] that takes varargs [middlewares].
  * @param GState The global state type.
  * @param middlewares The [IMiddleware] instances to be applied to an [IReduxStore].
  * @return Function that maps an [IReduxStore] to an [EnhancedReduxStore].

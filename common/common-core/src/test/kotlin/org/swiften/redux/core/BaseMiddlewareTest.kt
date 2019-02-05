@@ -12,7 +12,7 @@ open class BaseMiddlewareTest {
     return MiddlewareInput({}, { state }, { _, _ -> ReduxSubscription.EMPTY })
   }
 
-  fun mockDispatchWrapper(dispatcher: IActionDispatcher = {}): DispatchWrapper {
-    return DispatchWrapper(DispatchWrapper.ROOT_WRAPPER, dispatcher)
+  fun mockDispatchWrapper(dispatch: IActionDispatcher = {}): DispatchWrapper {
+    return DispatchWrapper(DispatchWrapper.ROOT_WRAPPER, dispatch)
   }
 }
