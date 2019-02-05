@@ -87,11 +87,22 @@ internal class ThunkMiddleware<GExt>(
  * @param GExt The external argument type.
  * @param external The external [GExt] argument.
  * @param context See [ThunkMiddleware.context].
- * @return An [ThunkMiddleware] instance.
+ * @return A [ThunkMiddleware] instance.
  */
-fun <GExt> createThunkMiddleware(
+internal fun <GExt> createThunkMiddleware(
   external: GExt,
   context: CoroutineContext = SupervisorJob()
 ): IMiddleware<Any> {
   return ThunkMiddleware(external, context)
+}
+
+/**
+ * Create a [ThunkMiddleware] with a default [CoroutineContext]. This is made public so that users
+ * of this [ThunkMiddleware] cannot share its [CoroutineContext] with other users.
+ * @param GExt The external argument type.
+ * @param external The external [GExt] argument.
+ * @return A [ThunkMiddleware] instance.
+ */
+fun <GExt> createThunkMiddleware(external: GExt): IMiddleware<Any> {
+  return createThunkMiddleware(external, SupervisorJob())
 }

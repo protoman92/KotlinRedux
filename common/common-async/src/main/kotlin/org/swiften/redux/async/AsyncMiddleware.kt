@@ -41,10 +41,19 @@ internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddlew
 }
 
 /**
- * Create a [AsyncMiddleware] with [context]
+ * Create a [AsyncMiddleware] with [context].
  * @param context See [AsyncMiddleware.context].
  * @return An [AsyncMiddleware] instance.
  */
-fun createAsyncMiddleware(context: CoroutineContext = SupervisorJob()): IMiddleware<Any> {
+internal fun createAsyncMiddleware(context: CoroutineContext = SupervisorJob()): IMiddleware<Any> {
   return AsyncMiddleware(context)
+}
+
+/**
+ * Create a [AsyncMiddleware] with a default [CoroutineContext]. This is made public so that users
+ * of this [AsyncMiddleware] cannot share its [CoroutineContext] with other users.
+ * @return A [AsyncMiddleware] instance.
+ */
+fun createAsyncMiddleware(): IMiddleware<Any> {
+  return createAsyncMiddleware(SupervisorJob())
 }
