@@ -78,6 +78,14 @@ project(':common:common-async') {
   }
 }
 
+project(':common:common-thunk') {
+  dependencies {
+    api project(':common:common-core')
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    testImplementation project (path: ":common:common-core", configuration: 'testArtifacts')
+  }
+}
+
 project(':common:common-saga') {
   dependencies {
     api project(':common:common-core')

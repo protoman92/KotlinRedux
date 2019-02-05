@@ -17,6 +17,7 @@
       <module fileurl="file://$PROJECT_DIR$/common/common-core/common-core.iml" filepath="$PROJECT_DIR$/common/common-core/common-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-rx-saga/common-rx-saga.iml" filepath="$PROJECT_DIR$/common/common-rx-saga/common-rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common-thunk/common-thunk.iml" filepath="$PROJECT_DIR$/common/common-thunk/common-thunk.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-ui/common-ui.iml" filepath="$PROJECT_DIR$/common/common-ui/common-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/redux-jvm.iml" filepath="$PROJECT_DIR$/redux-jvm.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample-android/sample-android.iml" filepath="$PROJECT_DIR$/sample-android/sample-android.iml" />

@@ -5,7 +5,6 @@
 
 package org.swiften.redux.async
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
@@ -23,7 +22,6 @@ import kotlin.coroutines.CoroutineContext
  * @param context A [CoroutineContext] instance.
  */
 internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddleware<Any> {
-  @ExperimentalCoroutinesApi
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       require(wrapper.id == DispatchWrapper.ROOT_WRAPPER) {
