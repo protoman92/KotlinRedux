@@ -23,7 +23,10 @@ import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapSuspend
 import org.swiften.redux.saga.common.put
+import org.swiften.redux.saga.rx.SagaEffects
 import org.swiften.redux.saga.rx.SagaEffects.just
+import org.swiften.redux.saga.rx.SagaEffects.select
+import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.select
 
@@ -71,7 +74,11 @@ object Redux {
     data class UpdateConnectivity(val isConnected: Boolean) : Action()
 
     data class AddPlantToGarden(val plantId: String) : Action()
+    object AddSelectedPlantToGargen : Action()
     data class SelectGrowZone(val zone: Int) : Action()
+    data class SelectPlantFromGarden(val index: Int) : Action()
+    data class SelectPlantFromPlantList(val index: Int) : Action()
+    data class ToggleGrowZone(val zone: Int) : Action()
     data class UpdatePlants(val plants: List<Plant>?) : Action()
     data class UpdateGardenPlantings(val gardenPlantings: List<GardenPlanting>?) : Action()
     data class UpdatePlantAndGardenPlantings(val data: List<PlantAndGardenPlantings>?) : Action()
@@ -87,9 +94,8 @@ object Redux {
     override fun invoke(p1: State, p2: IReduxAction): State {
       return when (p2) {
         is Action -> when (p2) {
-          is Action.UpdateConnectivity -> p1.copy(isConnected = p2.isConnected)
-
           is Action.SelectGrowZone -> p1.copy(selectedGrowZone = p2.zone)
+          is Action.UpdateConnectivity -> p1.copy(isConnected = p2.isConnected)
           is Action.UpdatePlants -> p1.copy(plants = p2.plants)
           is Action.UpdatePlantAndGardenPlantings -> p1.copy(plantAndGardenPlantings = p2.data)
           is Action.UpdateGardenPlantings -> p1.copy(gardenPlantings = p2.gardenPlantings)
@@ -119,12 +125,20 @@ object Redux {
     }
 
     object GardenPlantingSaga {
+      private fun addSelectedPlantToGarden(): SagaEffect<Any> {
+        return takeEveryAction<Action.AddSelectedPlantToGargen, Unit, Any>({ Unit }) {
+          SagaEffects.select<State, Redux.SelectedPlant?> { it.selectedPlant }
+            .map { it?.id ?: "" }
+            .put { Action.AddPlantToGarden(it) }
+        }
+      }
+
       /**
        * Every time [Action.AddPlantToGarden] is received, call
        * [GardenPlantingRepository.createGardenPlanting] to signal that the user wants to add
        * a [Plant] to the garden.
        */
-      private fun addGardenPlanting(api: GardenPlantingRepository): SagaEffect<Any> {
+      private fun addPlantToGarden(api: GardenPlantingRepository): SagaEffect<Any> {
         return takeLatestAction<Action.AddPlantToGarden, String, Any>({ it.plantId }) { plantId ->
           just(plantId)
             .mapSuspend { api.createGardenPlanting(it) }
@@ -150,6 +164,16 @@ object Redux {
         }
       }
 
+      private fun selectPlantFromGarden(): SagaEffect<Any> {
+        return takeEveryAction<Action.SelectPlantFromGarden, Int, Any>({ it.index }) { index ->
+          select<State, List<PlantAndGardenPlantings>?> { it.plantAndGardenPlantings }
+            .map { it?.elementAtOrNull(index) }
+            .map { it?.plant }
+            .map { it?.plantId ?: "" }
+            .put { Screen.GardenToPlantDetail(it) }
+        }
+      }
+
       /** Bridge to sync [GardenPlanting] using [GardenPlantingRepository.getGardenPlantings] */
       private fun syncGardenPlantings(api: GardenPlantingRepository): SagaEffect<Any> {
         return takeEveryData { api.getGardenPlantings() }.put { Action.UpdateGardenPlantings(it) }
@@ -166,14 +190,25 @@ object Redux {
       }
 
       fun allSagas(api: GardenPlantingRepository) = arrayListOf(
-        this.addGardenPlanting(api),
+        this.addPlantToGarden(api),
+        this.addSelectedPlantToGarden(),
         this.checkSelectedPlantStatus(api),
+        this.selectPlantFromGarden(),
         this.syncGardenPlantings(api),
         this.syncPlantAndGardenPlantings(api)
       )
     }
 
     object PlantSaga {
+      private fun selectPlantFromPlantList(): SagaEffect<Any> {
+        return takeEveryAction<Action.SelectPlantFromPlantList, Int, Any>({ it.index }) { index ->
+          select<State, List<Plant>?> { it.plants }
+            .map { it?.elementAtOrNull(index) }
+            .map { it?.plantId ?: "" }
+            .put { Screen.PlantListToPlantDetail(it) }
+        }
+      }
+
       /**
        * Bridge to sync all [Plant] using [PlantRepository.getPlants], but also pay attention to
        * [State.selectedGrowZone] and filter out [Plant] whose [Plant.growZoneNumber] matches
@@ -187,22 +222,32 @@ object Redux {
       }
 
       /**
-       * Every time [Action.SelectGrowZone] is received, sync [Plant] that matches
+       * Every time [Action.ToggleGrowZone] is received, sync [Plant] that matches
        * [Action.SelectGrowZone.zone].
        */
       private fun syncPlantsOnGrowZone(api: PlantRepository): SagaEffect<Any> {
-        return takeLatestAction<Action.SelectGrowZone, Int, Any>({ it.zone }) { growZone ->
-          if (growZone == NO_GROW_ZONE) {
+        return takeLatestAction<Action.SelectGrowZone, Int, Any>({ it.zone }) { zone ->
+          if (zone == NO_GROW_ZONE) {
             takeEveryData { api.getPlants() }
           } else {
-            takeEveryData { api.getPlantsWithGrowZoneNumber(growZone) }
+            takeEveryData { api.getPlantsWithGrowZoneNumber(zone) }
           }.put { Action.UpdatePlants(it) }
         }
       }
 
+      private fun toggleGrowZone(): SagaEffect<Any> {
+        return takeEveryAction<Action.ToggleGrowZone, Int, Any>({ it.zone }) { zone ->
+          select<State, Int> { it.selectedGrowZone }
+            .map { if (it == Redux.NO_GROW_ZONE) { zone } else { NO_GROW_ZONE } }
+            .put { Action.SelectGrowZone(it) }
+        }
+      }
+
       fun allSagas(api: PlantRepository) = arrayListOf(
+        this.selectPlantFromPlantList(),
         this.syncPlants(api),
-        this.syncPlantsOnGrowZone(api)
+        this.syncPlantsOnGrowZone(api),
+        this.toggleGrowZone()
       )
     }
   }

@@ -55,11 +55,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
         return (0 until state).map { it }
       }
 
-      override fun mapAction(
-        static: IActionDependency<Unit>,
-        state: Int,
-        outProps: Unit
-      ): ViewHolder.A {
+      override fun mapAction(static: IActionDependency<Unit>, outProps: Unit): ViewHolder.A {
         return ViewHolder.A()
       }
 

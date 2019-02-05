@@ -76,22 +76,21 @@ interface IStateMapper<GState : Any, OutProps, State> {
 }
 
 /**
- * Maps [IActionDispatcher] and [GState] to [Action] for a [IPropContainer]. Note that [Action]
- * can include external, non-Redux related dependencies provided by [GExt].
+ * Maps [IActionDispatcher] to [Action] for a [IPropContainer]. Note that [Action] can include
+ * external, non-Redux related dependencies provided by [GExt].
  *
  * For example, if the app wants to load an image into a view, it's probably not a good idea to
- * download that image and store in the [GState] to be mapped into [ReduxProps.state]. It is better
- * to inject an image downloader in [Action] using [GExt].
+ * download that image and store in the global state to be mapped into [ReduxProps.state]. It is
+ * better to inject an image downloader in [Action] using [GExt].
  *
  * The reason why [GExt] is used here instead of in [IStateMapper] is because [ReduxProps.state]
  * will be used for comparisons when determining if injection should occur. [ReduxProps.state]
  * should therefore be pure of external objects.
- * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
  * @param OutProps Property as defined by a view's parent.
  * @param Action See [ReduxProps.action].
  */
-interface IActionMapper<GState : Any, GExt : Any, OutProps, Action> {
+interface IActionMapper<GExt : Any, OutProps, Action> {
   /**
    * Map [IActionDispatcher] to [Action] using [GState], [GExt] and [OutProps]
    * @param static An [IActionDependency] instance.
@@ -99,7 +98,7 @@ interface IActionMapper<GState : Any, GExt : Any, OutProps, Action> {
    * @param outProps The [OutProps] instance.
    * @return An [Action] instance.
    */
-  fun mapAction(static: IActionDependency<GExt>, state: GState, outProps: OutProps): Action
+  fun mapAction(static: IActionDependency<GExt>, outProps: OutProps): Action
 }
 
 /**
@@ -119,7 +118,7 @@ interface IActionMapper<GState : Any, GExt : Any, OutProps, Action> {
  */
 interface IPropMapper<GState : Any, GExt : Any, OutProps, State, Action> :
   IStateMapper<GState, OutProps, State>,
-  IActionMapper<GState, GExt, OutProps, Action>
+  IActionMapper<GExt, OutProps, Action>
 
 /**
  * Inject state and actions into an [IPropContainer]. Aside from [GState], we can use [GExt] as a
@@ -201,7 +200,7 @@ open class PropInjector<GState : Any, GExt : Any>(
         previousState = next
 
         if (next != prev) {
-          val actions = mapper.mapAction(this, it, outProps)
+          val actions = mapper.mapAction(this, outProps)
           view.reduxProps = view.reduxProps.copy(state = next, action = actions)
         }
       }

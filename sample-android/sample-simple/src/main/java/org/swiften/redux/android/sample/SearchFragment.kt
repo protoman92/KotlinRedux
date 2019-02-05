@@ -49,11 +49,7 @@ class SearchFragment : Fragment(),
           ?: arrayListOf()
       }
 
-      override fun mapAction(
-        static: IActionDependency<Unit>,
-        state: MainRedux.State,
-        outProps: Unit
-      ): ViewHolder.A1 {
+      override fun mapAction(static: IActionDependency<Unit>, outProps: Unit): ViewHolder.A1 {
         return ViewHolder.A1 { static.dispatch(MainRedux.Screen.MusicDetail(it)) }
       }
 
@@ -100,11 +96,7 @@ class SearchFragment : Fragment(),
   }
 
   companion object : IPropMapper<MainRedux.State, Unit, Unit, S, A> {
-    override fun mapAction(
-      static: IActionDependency<Unit>,
-      state: MainRedux.State,
-      outProps: Unit
-    ): A {
+    override fun mapAction(static: IActionDependency<Unit>, outProps: Unit): A {
       return A { static.dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
     }
 

@@ -65,15 +65,9 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
         return S(state.plantAndGardenPlantings?.elementAtOrNull(outProps))
       }
 
-      override fun mapAction(
-        static: IActionDependency<IDependency>,
-        state: Redux.State,
-        outProps: Int
-      ): A {
+      override fun mapAction(static: IActionDependency<IDependency>, outProps: Int): A {
         return A(static.external.picasso) {
-          this.mapState(state, outProps).plantings?.plant?.plantId?.let {
-            static.dispatch(Redux.Screen.GardenToPlantDetail(it))
-          }
+          static.dispatch(Redux.Action.SelectPlantFromGarden(outProps))
         }
       }
     }

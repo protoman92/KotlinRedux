@@ -17,6 +17,7 @@ import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.async.createAsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
+import org.swiften.redux.core.createLoggingMiddleware
 import org.swiften.redux.core.createRouterMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
 
@@ -30,8 +31,8 @@ class MainApplication : Application() {
     val repository = MainRepository(api, JSONDecoder())
 
     val store = applyMiddlewares<MainRedux.State>(
-      createRouterMiddleware(MainRouter(this)),
       createSagaMiddleware(MainSaga.sagas(repository)),
+      createRouterMiddleware(MainRouter(this)),
       createAsyncMiddleware()
     )(FinalStore(MainRedux.State(), MainRedux.Reducer))
 

@@ -49,7 +49,7 @@ open class BaseLifecycleTest {
     IPropMapper<Int, Unit, Unit, Int, Unit> by TestLifecycleOwner {
     companion object : IPropMapper<Int, Unit, Unit, Int, Unit> {
       override fun mapState(state: Int, outProps: Unit) = state
-      override fun mapAction(static: IActionDependency<Unit>, state: Int, outProps: Unit) = Unit
+      override fun mapAction(static: IActionDependency<Unit>, outProps: Unit) = Unit
     }
 
     val registry = TestLifecycleRegistry(this)
@@ -73,7 +73,7 @@ open class BaseLifecycleTest {
       val lastState = this.lastState()
       val subscription = ReduxSubscription("$view") { view.afterPropInjectionEnds() }
       val state = mapper.mapState(lastState, outProps)
-      val action = mapper.mapAction(this, lastState, outProps)
+      val action = mapper.mapAction(this, outProps)
       view.beforePropInjectionStarts(StaticProps(this))
       view.reduxProps = ReduxProps(subscription, state, action)
       this.subscriptions.add(subscription)

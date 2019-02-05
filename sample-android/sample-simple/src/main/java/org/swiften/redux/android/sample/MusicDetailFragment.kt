@@ -26,19 +26,11 @@ class MusicDetailFragment : Fragment(),
   IPropContainer<MusicDetailFragment.S, MusicDetailFragment.A>,
   IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner() {
   class S(val track: MusicTrack?)
-  class A(val goToTrackInformation: () -> Unit)
+  class A(val previewTrack: () -> Unit)
 
   companion object : IPropMapper<MainRedux.State, Unit, Unit, S, A> {
-    override fun mapAction(
-      static: IActionDependency<Unit>,
-      state: MainRedux.State,
-      outProps: Unit
-    ): A {
-      return A {
-        this.mapState(state, outProps).track?.also {
-          static.dispatch(MainRedux.Screen.WebView(it.previewUrl))
-        }
-      }
+    override fun mapAction(static: IActionDependency<Unit>, outProps: Unit): A {
+      return A { static.dispatch(MainRedux.Action.PreviewTrack) }
     }
 
     override fun mapState(state: MainRedux.State, outProps: Unit) = S(state.currentSelectedTrack())
@@ -51,10 +43,6 @@ class MusicDetailFragment : Fragment(),
     }
   }
 
-  private val trackOpenListener = View.OnClickListener {
-    this.reduxProps.action?.also { a -> a.goToTrackInformation() }
-  }
-
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -62,6 +50,8 @@ class MusicDetailFragment : Fragment(),
   ): View? = inflater.inflate(R.layout.fragment_music_detail, container, false)
 
   override fun beforePropInjectionStarts(sp: StaticProps<MainRedux.State, Unit>) {
-    this.trackOpen.setOnClickListener(this.trackOpenListener)
+    this.trackOpen.setOnClickListener {
+      this.reduxProps.action?.also { a -> a.previewTrack() }
+    }
   }
 }

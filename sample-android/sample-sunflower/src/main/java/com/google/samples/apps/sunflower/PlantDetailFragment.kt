@@ -70,14 +70,8 @@ class PlantDetailFragment : Fragment(),
       } ?: S()
     }
 
-    override fun mapAction(
-      static: IActionDependency<IDependency>,
-      state: Redux.State,
-      outProps: Unit
-    ): A {
-      return A(static.external.picasso) { state.selectedPlant?.id?.also {
-        static.dispatch(Redux.Action.AddPlantToGarden(it))
-      } }
+    override fun mapAction(static: IActionDependency<IDependency>, outProps: Unit): A {
+      return A(static.external.picasso) { static.dispatch(Redux.Action.AddSelectedPlantToGargen) }
     }
   }
 

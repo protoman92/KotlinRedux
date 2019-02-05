@@ -10,10 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.DispatchMapper
 import org.swiften.redux.core.DispatchWrapper
 import org.swiften.redux.core.IMiddleware
+import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.MiddlewareInput
 
 /** Created by haipham on 2018/12/22 */

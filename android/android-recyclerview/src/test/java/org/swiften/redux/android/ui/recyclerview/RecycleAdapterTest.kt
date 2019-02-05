@@ -37,7 +37,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
     IPropLifecycleOwner<Int, Unit> by EmptyPropLifecycleOwner() {
     companion object : IPropMapper<Int, Unit, Int, Int, Unit> {
       override fun mapState(state: Int, outProps: Int) = state
-      override fun mapAction(static: IActionDependency<Unit>, state: Int, outProps: Int) = Unit
+      override fun mapAction(static: IActionDependency<Unit>, outProps: Int) = Unit
     }
 
     override var reduxProps by ObservableReduxProps<Int, Unit> { _, _ -> }

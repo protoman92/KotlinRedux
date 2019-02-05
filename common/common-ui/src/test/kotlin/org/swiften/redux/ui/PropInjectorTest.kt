@@ -75,7 +75,7 @@ open class PropInjectorTest {
 
     this.mapper = object : IPropMapper<S, Unit, Unit, S, A> {
       override fun mapState(state: S, outProps: Unit) = state
-      override fun mapAction(static: IActionDependency<Unit>, state: S, outProps: Unit) = A()
+      override fun mapAction(static: IActionDependency<Unit>, outProps: Unit) = A()
     }
   }
 

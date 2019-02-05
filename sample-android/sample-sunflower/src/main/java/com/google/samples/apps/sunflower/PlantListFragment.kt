@@ -48,18 +48,8 @@ class PlantListFragment : Fragment(),
       return S(plantCount = state.plants?.size ?: 0)
     }
 
-    override fun mapAction(
-      static: IActionDependency<IDependency>,
-      state: Redux.State,
-      outProps: Unit
-    ): A {
-      return A {
-        if (state.selectedGrowZone == Redux.NO_GROW_ZONE) {
-          static.dispatch(Redux.Action.SelectGrowZone(9))
-        } else {
-          static.dispatch(Redux.Action.SelectGrowZone(Redux.NO_GROW_ZONE))
-        }
-      }
+    override fun mapAction(static: IActionDependency<IDependency>, outProps: Unit): A {
+      return A { static.dispatch(Redux.Action.ToggleGrowZone(9)) }
     }
   }
 

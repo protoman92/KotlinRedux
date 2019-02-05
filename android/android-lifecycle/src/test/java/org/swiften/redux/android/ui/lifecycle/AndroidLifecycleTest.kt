@@ -138,7 +138,7 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
     val owner = TestLifecycleOwner()
 
     // When
-    injector.injectLifecycle(owner)
+    injector.injectLifecycle(owner, Unit, TestLifecycleOwner)
 
     // When && Then
     owner.registry.markState(Lifecycle.State.STARTED)

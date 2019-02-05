@@ -41,12 +41,7 @@ class GardenFragment : Fragment(),
   data class S(val gardenPlantingCount: Int)
 
   companion object : IPropMapper<Redux.State, IDependency, Unit, S, Unit> {
-    override fun mapAction(
-      static: IActionDependency<IDependency>,
-      state: Redux.State,
-      outProps: Unit
-    ) = Unit
-
+    override fun mapAction(static: IActionDependency<IDependency>, outProps: Unit) = Unit
     override fun mapState(state: Redux.State, outProps: Unit) = S(state.gardenPlantings?.size ?: 0)
   }
 

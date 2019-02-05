@@ -8,21 +8,27 @@ package org.swiften.redux.android.sample
 import kotlinx.coroutines.async
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.catchAsync
+import org.swiften.redux.saga.common.doOnValue
 import org.swiften.redux.saga.common.justThen
+import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapAsync
 import org.swiften.redux.saga.common.put
 import org.swiften.redux.saga.common.then
+import org.swiften.redux.saga.rx.SagaEffects
 import org.swiften.redux.saga.rx.SagaEffects.justPut
+import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.TakeEffectOptions
 
 /** Created by haipham on 2019/01/04 */
 object MainSaga {
   fun sagas(api: IMainRepository) = arrayListOf(
-    takeLatestAction<MainRedux.Action, String, Any>({ when (it) {
-      is MainRedux.Action.UpdateAutocompleteQuery -> it.query
-      else -> null
-    } }, TakeEffectOptions(500)) { autocompleteSaga(api, it) }
+    takeLatestAction<MainRedux.Action.UpdateAutocompleteQuery, String, Any>({ it.query },
+      TakeEffectOptions(500)) { autocompleteSaga(api, it) },
+
+    takeEveryAction<MainRedux.Action.PreviewTrack, Unit, Any>({ Unit }) {
+      this.previewSelectedTrack()
+    }
   )
 
   private fun autocompleteSaga(api: IMainRepository, query: String): SagaEffect<Any> {
@@ -32,5 +38,12 @@ object MainSaga {
       .catchAsync { this.async { api.createFakeResult() } }
       .put { MainRedux.Action.UpdateMusicResult(it) }
       .then(justPut(MainRedux.Action.UpdateLoadingResult(false)))
+  }
+
+  private fun previewSelectedTrack(): SagaEffect<Any> {
+    return SagaEffects.select<MainRedux.State, MusicTrack?> { it.currentSelectedTrack() }
+      .doOnValue { println("Redux $it") }
+      .map { it?.previewUrl ?: "" }
+      .put { MainRedux.Screen.WebView(it) }
   }
 }

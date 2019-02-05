@@ -48,15 +48,9 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>() {
     IDiffItemCallback<Plant> {
     override fun mapState(state: Redux.State, outProps: Unit) = state.plants ?: arrayListOf()
 
-    override fun mapAction(
-      static: IActionDependency<IDependency>,
-      state: Redux.State,
-      outProps: Unit
-    ): ViewHolder.A {
+    override fun mapAction(static: IActionDependency<IDependency>, outProps: Unit): ViewHolder.A {
       return ViewHolder.A (static.external.picasso) { index ->
-        state.plants?.elementAtOrNull(index)?.plantId?.also {
-          static.dispatch(Redux.Screen.PlantListToPlantDetail(it))
-        }
+        static.dispatch(Redux.Action.SelectPlantFromPlantList(index))
       }
     }
 

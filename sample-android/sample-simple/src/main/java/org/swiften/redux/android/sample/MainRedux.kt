@@ -27,6 +27,7 @@ object MainRedux {
     class UpdateAutocompleteQuery(val query: String?) : Action()
     class UpdateMusicResult(val result: MusicResult?) : Action()
     class UpdateLoadingResult(val loading: Boolean?) : Action()
+    object PreviewTrack : Action();
   }
 
   sealed class Screen : IRouterScreen {
@@ -36,20 +37,21 @@ object MainRedux {
   }
 
   object Reducer : IReducer<State> {
-    override operator fun invoke(previous: State, action: IReduxAction): State {
-      return when (action) {
-        is Action -> when (action) {
-          is Action.UpdateAutocompleteQuery -> previous.copy(autocompleteQuery = action.query)
-          is Action.UpdateMusicResult -> previous.copy(musicResult = action.result)
-          is Action.UpdateLoadingResult -> previous.copy(loadingMusic = action.loading)
+    override operator fun invoke(p1: State, p2: IReduxAction): State {
+      return when (p2) {
+        is Action -> when (p2) {
+          is Action.UpdateAutocompleteQuery -> p1.copy(autocompleteQuery = p2.query)
+          is Action.UpdateMusicResult -> p1.copy(musicResult = p2.result)
+          is Action.UpdateLoadingResult -> p1.copy(loadingMusic = p2.loading)
+          else -> p1
         }
 
-        is Screen -> when (action) {
-          is Screen.MusicDetail -> previous.copy(selectedResultIndex = action.index)
-          else -> previous
+        is Screen -> when (p2) {
+          is Screen.MusicDetail -> p1.copy(selectedResultIndex = p2.index)
+          else -> p1
         }
 
-        else -> return previous
+        else -> return p1
       }
     }
   }
