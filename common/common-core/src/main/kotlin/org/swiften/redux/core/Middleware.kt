@@ -17,8 +17,15 @@ typealias DispatchMapper = (DispatchWrapper) -> DispatchWrapper
 typealias IMiddleware<GState> = (MiddlewareInput<GState>) -> DispatchMapper
 
 /**
- * Input for middlewares that includes some functionalities from [IReduxStore].
+ * Input for middlewares that includes some functionalities from [IReduxStore]. Beware that
+ * [dispatch] represents the entire wrapper chain, so it may cause a recursion problem if we do
+ * something like this:
+ *
+ * if (action == Action.DUMMY) {
+ *   input.dispatch(Action.DUMMY)
+ * }
  * @param GState The global state type.
+ * @param dispatch See [IReduxStore.dispatch]
  * @param lastState See [IReduxStore.lastState].
  * @param subscriber See [IReduxStore.subscribe].
  */

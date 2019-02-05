@@ -7,32 +7,20 @@ package org.swiften.redux.core
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2018/12/16 */
 class MiddlewareTest : BaseMiddlewareTest() {
   @Test
-  @Suppress("NestedLambdaShadowedImplicitParameter")
   fun `Applying middlewares to a store should produce correct order`() {
     // Setup
     val store = ThreadSafeStore(0) { a, _ -> a }
     val ordering = arrayListOf<Int>()
 
     val wrappedStore = applyMiddlewares<Int>(
-      {
-        { wrapper ->
-          DispatchWrapper("${wrapper.id}-$1") { wrapper.dispatch(it); ordering.add(1) }
-        }
-      },
-      {
-        { wrapper ->
-          DispatchWrapper("${wrapper.id}-$2") { wrapper.dispatch(it); ordering.add(2) }
-        }
-      },
-      {
-        { wrapper ->
-          DispatchWrapper("${wrapper.id}-$3") { wrapper.dispatch(it); ordering.add(3) }
-        }
-      }
+      { { w -> DispatchWrapper("${w.id}-$1") { w.dispatch(it); ordering.add(1) } } },
+      { { w -> DispatchWrapper("${w.id}-$2") { w.dispatch(it); ordering.add(2) } } },
+      { { w -> DispatchWrapper("${w.id}-$3") { w.dispatch(it); ordering.add(3) } } }
     )(store)
 
     // When
@@ -42,5 +30,33 @@ class MiddlewareTest : BaseMiddlewareTest() {
 
     // Then
     assertEquals(ordering, arrayListOf(3, 2, 1, 3, 2, 1, 3, 2, 1))
+  }
+
+  @Test
+  fun `Middleware should has access to the entire dispatch chain`() {
+    // Setup
+    val store = ThreadSafeStore(0) { a, _ -> a }
+    class TriggerAction : IReduxAction
+    class RepeatAction : IReduxAction
+    val repeatCount = AtomicInteger()
+
+    val wrappedDispatch = applyMiddlewares<Int>(
+      { { w -> DispatchWrapper("${w.id}-$1") {
+        w.dispatch(it)
+
+        if (it is RepeatAction) repeatCount.incrementAndGet()
+      } } },
+      { i -> { w -> DispatchWrapper("${w.id}-$2") {
+        w.dispatch(it)
+
+        if (it is TriggerAction) i.dispatch(RepeatAction())
+      } } }
+    )(store)
+
+    // When && Then
+    wrappedDispatch.dispatch(DefaultReduxAction.Dummy)
+    assertEquals(repeatCount.get(), 0)
+    wrappedDispatch.dispatch(TriggerAction())
+    assertEquals(repeatCount.get(), 1)
   }
 }
