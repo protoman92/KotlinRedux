@@ -29,6 +29,8 @@ import org.swiften.redux.saga.rx.SagaEffects.select
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.select
+import org.swiften.redux.thunk.IReduxThunkAction
+import org.swiften.redux.thunk.ThunkFunction
 
 /** Created by haipham on 2019/01/16 */
 object Redux {
@@ -78,11 +80,23 @@ object Redux {
     data class SelectGrowZone(val zone: Int) : Action()
     data class SelectPlantFromGarden(val index: Int) : Action()
     data class SelectPlantFromPlantList(val index: Int) : Action()
-    data class ToggleGrowZone(val zone: Int) : Action()
     data class UpdatePlants(val plants: List<Plant>?) : Action()
     data class UpdateGardenPlantings(val gardenPlantings: List<GardenPlanting>?) : Action()
     data class UpdatePlantAndGardenPlantings(val data: List<PlantAndGardenPlantings>?) : Action()
     data class UpdateSelectedPlantStatus(val isPlanted: Boolean) : Action()
+  }
+
+  sealed class ThunkAction<GExt, Param>() : IReduxThunkAction<State, GExt, Param> {
+    data class ToggleGrowZone(val zone: Int) : ThunkAction<Any, Int>() {
+      override val params get() = this.zone
+
+      override val payload: ThunkFunction<State, Any> = { dispatch, getState, _ ->
+        val selectedZone = getState().selectedGrowZone
+        val newZone = if (selectedZone == NO_GROW_ZONE) this@ToggleGrowZone.zone else NO_GROW_ZONE
+        println("Redux NEW ZONE $newZone from $selectedZone")
+        dispatch(Action.SelectGrowZone(newZone))
+      }
+    }
   }
 
   sealed class Screen : IRouterScreen {
@@ -221,8 +235,16 @@ object Redux {
           }).put { Action.UpdatePlants(it) }
       }
 
+      private fun toggleGrowZone(): SagaEffect<Any> {
+        return takeEveryAction<ThunkAction.ToggleGrowZone, Int, Any>({ it.zone }) { zone ->
+          select<State, Int> { it.selectedGrowZone }
+            .map { if (it == Redux.NO_GROW_ZONE) { zone } else { NO_GROW_ZONE } }
+            .put { Action.SelectGrowZone(it) }
+        }
+      }
+
       /**
-       * Every time [Action.ToggleGrowZone] is received, sync [Plant] that matches
+       * Every time [Action.SelectGrowZone] is received, sync [Plant] that matches
        * [Action.SelectGrowZone.zone].
        */
       private fun syncPlantsOnGrowZone(api: PlantRepository): SagaEffect<Any> {
@@ -235,19 +257,11 @@ object Redux {
         }
       }
 
-      private fun toggleGrowZone(): SagaEffect<Any> {
-        return takeEveryAction<Action.ToggleGrowZone, Int, Any>({ it.zone }) { zone ->
-          select<State, Int> { it.selectedGrowZone }
-            .map { if (it == Redux.NO_GROW_ZONE) { zone } else { NO_GROW_ZONE } }
-            .put { Action.SelectGrowZone(it) }
-        }
-      }
-
       fun allSagas(api: PlantRepository) = arrayListOf(
+//        this.toggleGrowZone(),
         this.selectPlantFromPlantList(),
         this.syncPlants(api),
-        this.syncPlantsOnGrowZone(api),
-        this.toggleGrowZone()
+        this.syncPlantsOnGrowZone(api)
       )
     }
   }

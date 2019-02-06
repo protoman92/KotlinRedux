@@ -49,7 +49,7 @@ class PlantListFragment : Fragment(),
     }
 
     override fun mapAction(static: IActionDependency<IDependency>, outProps: Unit): A {
-      return A { static.dispatch(Redux.Action.ToggleGrowZone(9)) }
+      return A { static.dispatch(Redux.ThunkAction.ToggleGrowZone(9)) }
     }
   }
 

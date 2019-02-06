@@ -20,6 +20,7 @@ import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.core.createRouterMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
+import org.swiften.redux.thunk.createThunkMiddleware
 
 /** Created by haipham on 2019/01/17 */
 class GardenApplication : Application() {
@@ -41,6 +42,7 @@ class GardenApplication : Application() {
           Redux.Saga.PlantSaga.allSagas(InjectorUtils.getPlantRepository(this))
         ).flatten()
       ),
+      createThunkMiddleware(dependency),
       createAsyncMiddleware()
     )(FinalStore(Redux.State(), Redux.Reducer))
 

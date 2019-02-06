@@ -115,6 +115,7 @@ project(':common:common-all') {
   dependencies {
     api project(':common:common-core')
     api project(':common:common-async')
+    api project(':common:common-thunk')
     api project(':common:common-saga')
     api project(':common:common-rx-saga')
     api project(':common:common-ui')
