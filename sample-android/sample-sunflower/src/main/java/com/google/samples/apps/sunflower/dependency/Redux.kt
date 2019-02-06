@@ -93,7 +93,6 @@ object Redux {
       override val payload: ThunkFunction<State, Any> = { dispatch, getState, _ ->
         val selectedZone = getState().selectedGrowZone
         val newZone = if (selectedZone == NO_GROW_ZONE) this@ToggleGrowZone.zone else NO_GROW_ZONE
-        println("Redux NEW ZONE $newZone from $selectedZone")
         dispatch(Action.SelectGrowZone(newZone))
       }
     }
@@ -238,7 +237,7 @@ object Redux {
       private fun toggleGrowZone(): SagaEffect<Any> {
         return takeEveryAction<ThunkAction.ToggleGrowZone, Int, Any>({ it.zone }) { zone ->
           select<State, Int> { it.selectedGrowZone }
-            .map { if (it == Redux.NO_GROW_ZONE) { zone } else { NO_GROW_ZONE } }
+            .map { if (it == Redux.NO_GROW_ZONE) zone else NO_GROW_ZONE }
             .put { Action.SelectGrowZone(it) }
         }
       }
@@ -258,7 +257,6 @@ object Redux {
       }
 
       fun allSagas(api: PlantRepository) = arrayListOf(
-//        this.toggleGrowZone(),
         this.selectPlantFromPlantList(),
         this.syncPlants(api),
         this.syncPlantsOnGrowZone(api)

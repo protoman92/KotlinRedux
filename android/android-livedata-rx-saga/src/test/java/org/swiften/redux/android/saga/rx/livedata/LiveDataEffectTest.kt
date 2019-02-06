@@ -15,15 +15,20 @@ import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeEveryData
 import org.swiften.redux.saga.common.filter
 import org.swiften.redux.saga.common.mapAsync
 import java.util.Collections
 
 /** Created by haipham on 2019/01/17 */
+@Config(manifest = Config.NONE)
+@RunWith(RobolectricTestRunner::class)
 class LiveDataEffectTest {
   @get:Rule
-  var rule: TestRule = InstantTaskExecutorRule()
+  val rule: TestRule = InstantTaskExecutorRule()
 
   @Test
   fun test_takeEveryDataEffect_shouldStreamLiveData() {

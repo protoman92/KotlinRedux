@@ -12,6 +12,7 @@ project.ext {
   androidxCoreTest = "2.0.0"
   androidxJunit = "1.1.0"
   robolectric = "4.0.2"
+  rxAndroid = "2.1.0"
   testRunner = "1.1.0"
   espresso = "3.1.0"
 }

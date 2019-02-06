@@ -137,6 +137,7 @@ project(':android:android-livedata-rx-saga') {
     api project(':common:common-rx-saga')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid"
     testImplementation "androidx.arch.core:core-testing:$androidxCoreTest"
   }
 }
