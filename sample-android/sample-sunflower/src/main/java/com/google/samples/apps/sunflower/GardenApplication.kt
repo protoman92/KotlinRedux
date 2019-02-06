@@ -34,6 +34,7 @@ class GardenApplication : Application() {
     }
 
     val store = applyMiddlewares<Redux.State>(
+      createAsyncMiddleware(),
       createRouterMiddleware(Router(this)),
       createSagaMiddleware(
         arrayListOf(
@@ -42,8 +43,7 @@ class GardenApplication : Application() {
           Redux.Saga.PlantSaga.allSagas(InjectorUtils.getPlantRepository(this))
         ).flatten()
       ),
-      createThunkMiddleware(dependency),
-      createAsyncMiddleware()
+      createThunkMiddleware(dependency)
     )(FinalStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store, dependency)

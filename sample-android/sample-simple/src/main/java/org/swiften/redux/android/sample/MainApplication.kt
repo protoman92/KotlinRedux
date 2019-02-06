@@ -27,10 +27,10 @@ class MainApplication : Application() {
     val repository = MainRepository(api, JSONDecoder())
 
     val store = applyMiddlewares<MainRedux.State>(
+      createAsyncMiddleware(),
       createRouterMiddleware(MainRouter(this)),
       createSagaMiddleware(MainRedux.Saga.sagas(repository)),
-      createThunkMiddleware(Unit),
-      createAsyncMiddleware()
+      createThunkMiddleware(Unit)
     )(FinalStore(MainRedux.State(), MainRedux.Reducer))
 
     val injector = AndroidPropInjector(store, Unit)
