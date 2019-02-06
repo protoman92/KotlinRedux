@@ -15,7 +15,7 @@ object CommonEffects {
   /**
    * Create a [DelayEffect].
    * @param R The result emission type.
-   * @param millis The delay time in milliseconds.
+   * @param millis See [DelayEffect.millis].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
@@ -24,7 +24,7 @@ object CommonEffects {
   /**
    * Create a [CatchErrorEffect].
    * @param R The result emission type.
-   * @param catcher Function that catches [Throwable].
+   * @param catcher See [CatchErrorEffect.catcher].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
@@ -35,7 +35,7 @@ object CommonEffects {
   /**
    * Create a [SuspendCatchErrorEffect].
    * @param R The result emission type.
-   * @param catcher Function that catches [Throwable].
+   * @param catcher See [SuspendCatchErrorEffect.catcher].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
@@ -48,7 +48,7 @@ object CommonEffects {
   /**
    * Create an [AsyncCatchErrorEffect].
    * @param R The result emission type.
-   * @param catcher Function that catches [Throwable].
+   * @param catcher See [AsyncCatchErrorEffect.catcher].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
@@ -60,17 +60,18 @@ object CommonEffects {
   /**
    * Create a [DoOnValueEffect] instance.
    * @param R The result emission type.
-   * @param performer Function that performs side effects on [R].
+   * @param performer See [DoOnValueEffect.performer].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> doOnValue(performer: (R) -> Unit): ISagaEffectTransformer<R, R> =
-    { DoOnValueEffect(it, performer) }
+  fun <R> doOnValue(performer: (R) -> Unit): ISagaEffectTransformer<R, R> {
+    return { DoOnValueEffect(it, performer) }
+  }
 
   /**
    * Create a [FilterEffect].
    * @param R The result emission type.
-   * @param predicate Function that performs conditional checking on [R].
+   * @param predicate See [FilterEffect.predicate].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
@@ -81,7 +82,7 @@ object CommonEffects {
   /**
    * Create a [MapEffect].
    * @param R The result emission type.
-   * @param transformer Function that transforms [P] to [R].
+   * @param transformer See [MapEffect.transformer].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
@@ -92,7 +93,7 @@ object CommonEffects {
   /**
    * Create a [SuspendMapEffect].
    * @param R The result emission type.
-   * @param transformer Function that transforms [P] to [R].
+   * @param transformer See [SuspendMapEffect.transformer].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
@@ -104,7 +105,7 @@ object CommonEffects {
   /**
    * Create an [AsyncMapEffect].
    * @param R The result emission type.
-   * @param transformer Function that transforms [P] to [R].
+   * @param transformer See [AsyncMapEffect.transformer].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
@@ -124,7 +125,7 @@ object CommonEffects {
   /**
    * Create a [PutEffect].
    * @param P The source emission type.
-   * @param actionCreator Function that creates [IReduxAction] from [P].
+   * @param actionCreator See [PutEffect.actionCreator].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
@@ -135,7 +136,7 @@ object CommonEffects {
   /**
    * Create a [RetryEffect].
    * @param R The result emission type.
-   * @param times The number of times to retry for.
+   * @param times See [RetryEffect.times].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
@@ -148,9 +149,9 @@ object CommonEffects {
    * @param R The first source emission type.
    * @param R2 The second source emission type.
    * @param R3 The result emission type.
-   * @param source1 The first source [ISagaEffect].
-   * @param source2 The second source [ISagaEffect].
-   * @param combiner Function that combines [R] and [R2] to produce [R3].
+   * @param source1 See [ThenEffect.source1].
+   * @param source2 See [ThenEffect.source2].
+   * @param combiner See [ThenEffect.combiner].
    * @return A [ThenEffect] instance.
    */
   @JvmStatic
@@ -165,7 +166,7 @@ object CommonEffects {
   /**
    * Create a [TimeoutEffect].
    * @param R The result emission type.
-   * @param millis The timeout time in milliseconds.
+   * @param millis See [TimeoutEffect.millis].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic

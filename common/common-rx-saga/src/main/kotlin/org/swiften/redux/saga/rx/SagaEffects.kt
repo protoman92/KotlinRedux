@@ -16,51 +16,108 @@ import org.swiften.redux.saga.common.SagaEffect
 /** Created by haipham on 2019/01/13 */
 /** Top-level namespace for Rx-based [ISagaEffect] */
 object SagaEffects {
-  /** Create a [CallEffect] */
+  /**
+   * Create a [CallEffect].
+   * @param P The source emission type.
+   * @param R The result emission type.
+   * @param transformer See [CallEffect.transformer].
+   * @return An [ISagaEffectTransformer] instance.
+   */
   @JvmStatic
   fun <P, R> call(transformer: (P) -> Single<R>): ISagaEffectTransformer<P, R> {
     return { CallEffect(it, transformer) }
   }
 
-  /** Create a [FromEffect] */
+  /**
+   * Create a [FromEffect].
+   * @param R The result emission type.
+   * @param stream See [FromEffect.stream].
+   * @return A [SagaEffect] instance.
+   */
   @JvmStatic
   fun <R> from(stream: Flowable<R>): SagaEffect<R> = FromEffect(stream)
 
-  /** Create a [JustEffect] */
+  /**
+   * Create a [JustEffect].
+   * @param R The result emission type.
+   * @param value See [JustEffect.value].
+   * @return A [SagaEffect] instance.
+   */
   @JvmStatic
   fun <R> just(value: R): SagaEffect<R> = JustEffect(value)
 
-  /** Call [CommonEffects.put] with [SagaEffects.just] */
+  /**
+   * Call [CommonEffects.put] with [SagaEffects.just].
+   * @param P The source emission type.
+   * @param value See [JustEffect.value].
+   * @param actionCreator See [CommonEffects.put].
+   * @return A [SagaEffect] instance.
+   */
   @JvmStatic
   fun <P> put(value: P, actionCreator: (P) -> IReduxAction): SagaEffect<Any> {
     return CommonEffects.put(actionCreator)(this.just(value))
   }
 
-  /** Create a [JustPutEffect] */
+  /**
+   * Create a [JustPutEffect].
+   * @param action See [JustPutEffect.action].
+   * @return A [SagaEffect] instance.
+   */
   @JvmStatic
   fun justPut(action: IReduxAction): SagaEffect<Any> = JustPutEffect(action)
 
-  /** Create a [SelectEffect] */
+  /**
+   * Create a [SelectEffect].
+   * @param State The state type to select from.
+   * @param R The result emission type.
+   * @param cls See [SelectEffect.cls].
+   * @param selector See [SelectEffect.selector].
+   * @return A [SagaEffect] instance.
+   */
   @JvmStatic
   fun <State, R> select(cls: Class<State>, selector: (State) -> R): SagaEffect<R> {
     return SelectEffect(cls, selector)
   }
 
+  /**
+   * Create a [SelectEffect].
+   * @param State The state type to select from.
+   * @param R The result emission type.
+   * @param selector See [SelectEffect.selector].
+   * @return A [SagaEffect] instance.
+   */
   inline fun <reified State, R> select(noinline selector: (State) -> R): SagaEffect<R> {
     return this.select(State::class.java, selector)
   }
 
-  /** Create a [TakeEveryEffect] instance. */
+  /**
+   * Create a [TakeEveryEffect] instance.
+   * @param P The source emission type.
+   * @param R The result emission type.
+   * @param extractor See [TakeEffect.extractor].
+   * @param options See [TakeEffect.options].
+   * @param creator See [TakeEffect.creator].
+   * @return A [SagaEffect] instance.
+   */
   @JvmStatic
   fun <P, R> takeEvery(
-    extractor: Function1<IReduxAction, P?>,
+    extractor: (IReduxAction) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
-    creator: Function1<P, ISagaEffect<R>>
+    creator: (P) -> ISagaEffect<R>
   ): SagaEffect<R> {
     return TakeEveryEffect(extractor, options, creator)
   }
 
-  /** Convenience function to create [TakeEveryEffect] for a specific type of [IReduxAction] */
+  /**
+   * Convenience function to create [TakeEveryEffect] for a specific type of [IReduxAction].
+   * @param Action The [IReduxAction] type to check for.
+   * @param P The source emission type.
+   * @param R The result emission type.
+   * @param extractor See [TakeEffect.extractor].
+   * @param options See [TakeEffect.options].
+   * @param creator See [TakeEffect.creator].
+   * @return A [SagaEffect] instance.
+   */
   @JvmStatic
   inline fun <reified Action, P, R> takeEveryAction(
     crossinline extractor: Function1<Action, P?>,
@@ -73,7 +130,15 @@ object SagaEffects {
     )
   }
 
-  /** Create a [TakeLatestEffect] instance. */
+  /**
+   * Create a [TakeLatestEffect] instance.
+   * @param P The source emission type.
+   * @param R The result emission type.
+   * @param extractor See [TakeEffect.extractor].
+   * @param options See [TakeEffect.options].
+   * @param creator See [TakeEffect.creator].
+   * @return A [SagaEffect] instance.
+   */
   @JvmStatic
   fun <P, R> takeLatest(
     extractor: Function1<IReduxAction, P?>,
@@ -83,7 +148,16 @@ object SagaEffects {
     return TakeLatestEffect(extractor, options, creator)
   }
 
-  /** Convenience function to create [TakeLatestEffect] for a specific type of [IReduxAction] */
+  /**
+   * Convenience function to create [TakeLatestEffect] for a specific type of [IReduxAction].
+   * @param Action The [IReduxAction] type to check for.
+   * @param P The source emission type.
+   * @param R The result emission type.
+   * @param extractor See [TakeEffect.extractor].
+   * @param options See [TakeEffect.options].
+   * @param creator See [TakeEffect.creator].
+   * @return A [SagaEffect] instance.
+   */
   @JvmStatic
   inline fun <reified Action, P, R> takeLatestAction(
     crossinline extractor: Function1<Action, P?>,

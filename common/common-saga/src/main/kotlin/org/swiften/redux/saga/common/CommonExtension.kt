@@ -31,7 +31,7 @@ inline fun <reified R2> SagaEffect<*>.cast() = this.filter { it is R2 }.map { it
  * Catch [Throwable] from upstream with [catcher].
  * @receiver A [SagaEffect] instance.
  * @param R The result emission type.
- * @param catcher Function that catches [Throwable].
+ * @param catcher See [CatchErrorEffect.catcher].
  * @return A [SagaEffect] instance.
  */
 fun <R> SagaEffect<R>.catchError(catcher: (Throwable) -> R): SagaEffect<R> {
@@ -42,7 +42,7 @@ fun <R> SagaEffect<R>.catchError(catcher: (Throwable) -> R): SagaEffect<R> {
  * Invoke a [SuspendCatchErrorEffect] on [this].
  * @receiver A [SagaEffect] instance.
  * @param R The result emission type.
- * @param catcher Function that catches [Throwable].
+ * @param catcher See [SuspendCatchErrorEffect.catcher].
  * @return A [SagaEffect] instance.
  */
 fun <R> SagaEffect<R>.catchSuspend(catcher: suspend CoroutineScope.(Throwable) -> R): SagaEffect<R> {
@@ -53,7 +53,7 @@ fun <R> SagaEffect<R>.catchSuspend(catcher: suspend CoroutineScope.(Throwable) -
  * Invoke a [AsyncCatchErrorEffect] on [this].
  * @receiver A [SagaEffect] instance.
  * @param R The result emission type.
- * @param catcher Function that catches [Throwable].
+ * @param catcher See [AsyncCatchErrorEffect.catcher].
  * @return A [SagaEffect] instance.
  */
 fun <R> SagaEffect<R>.catchAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>): SagaEffect<R> {
@@ -64,7 +64,7 @@ fun <R> SagaEffect<R>.catchAsync(catcher: suspend CoroutineScope.(Throwable) -> 
  * Invoke a [DelayEffect] on [this].
  * @receiver A [SagaEffect] instance.
  * @param R The result emission type.
- * @param millis The delay time in milliseconds.
+ * @param millis See [DelayEffect.millis].
  * @return A [SagaEffect] instance.
  */
 fun <R> SagaEffect<R>.delay(millis: Long) = this.transform(CommonEffects.delay(millis))
@@ -73,7 +73,7 @@ fun <R> SagaEffect<R>.delay(millis: Long) = this.transform(CommonEffects.delay(m
  * Invoke a [DoOnValueEffect] on [this].
  * @receiver A [SagaEffect] instance.
  * @param R The result emission type.
- * @param performer Function that performs side effects on [R].
+ * @param performer See [DoOnValueEffect.performer].
  * @return A [SagaEffect] instance.*
  */
 fun <R> SagaEffect<R>.doOnValue(performer: (R) -> Unit): SagaEffect<R> {
@@ -84,7 +84,7 @@ fun <R> SagaEffect<R>.doOnValue(performer: (R) -> Unit): SagaEffect<R> {
  * Invoke a [FilterEffect] on [this].
  * @receiver A [SagaEffect] instance.
  * @param R The result emission type.
- * @param predicate Function that performs logic checks on [R].
+ * @param predicate See [FilterEffect.predicate].
  * @return A [SagaEffect] instance.
  */
 fun <R> SagaEffect<R>.filter(predicate: (R) -> Boolean): SagaEffect<R> {
@@ -96,7 +96,7 @@ fun <R> SagaEffect<R>.filter(predicate: (R) -> Boolean): SagaEffect<R> {
  * @receiver A [SagaEffect] instance.
  * @param R The source emission type.
  * @param R2 The result emission type.
- * @param transformer Function that transforms [R] to [R2].
+ * @param transformer See [MapEffect.transformer].
  * @return A [SagaEffect] instance.
  */
 fun <R, R2> SagaEffect<R>.map(transformer: (R) -> R2): SagaEffect<R2> {
@@ -108,7 +108,7 @@ fun <R, R2> SagaEffect<R>.map(transformer: (R) -> R2): SagaEffect<R2> {
  * @receiver A [SagaEffect] instance.
  * @param P The source emission type.
  * @param R The result emission type.
- * @param transformer Function that transforms [R] to [R2].
+ * @param transformer See [AsyncMapEffect.transformer].
  * @return A [SagaEffect] instance.
  */
 fun <P, R> SagaEffect<P>.mapAsync(transformer: suspend CoroutineScope.(P) -> Deferred<R>): SagaEffect<R> {
@@ -127,7 +127,7 @@ fun <R : Any> SagaEffect<R?>.compactMap() = this.transform<R>(CommonEffects.comp
  * Invoke a [PutEffect] on [this].
  * @receiver A [SagaEffect] instance.
  * @param P The source emission type.
- * @param actionCreator Function that creates [IReduxAction] from [P].
+ * @param actionCreator See [PutEffect.actionCreator].
  * @return A [SagaEffect] instance.
  */
 fun <P> SagaEffect<P>.put(actionCreator: (P) -> IReduxAction): SagaEffect<Any> {
@@ -138,7 +138,7 @@ fun <P> SagaEffect<P>.put(actionCreator: (P) -> IReduxAction): SagaEffect<Any> {
  * Invoke a [RetryEffect] on [this].
  * @receiver A [SagaEffect] instance.
  * @param R The result emission type.
- * @param times The number of times to retry.
+ * @param times See [RetryEffect.times].
  * @return A [SagaEffect] instance.
  */
 fun <R> SagaEffect<R>.retry(times: Long) = this.transform(CommonEffects.retry(times))
@@ -147,7 +147,7 @@ fun <R> SagaEffect<R>.retry(times: Long) = this.transform(CommonEffects.retry(ti
  * Invoke a [RetryEffect] on [this].
  * @receiver A [SagaEffect] instance.
  * @param R The result emission type.
- * @param times The number of times to retry.
+ * @param times See [RetryEffect.times].
  * @return A [SagaEffect] instance.
  */
 fun <R> SagaEffect<R>.retry(times: Int) = this.retry(times.toLong())
@@ -157,7 +157,7 @@ fun <R> SagaEffect<R>.retry(times: Int) = this.retry(times.toLong())
  * @receiver A [SagaEffect] instance.
  * @param P The source emission type.
  * @param R The result emission type.
- * @param transformer Function that transforms [R] to [R2].
+ * @param transformer See [SuspendMapEffect.transformer].
  * @return A [SagaEffect] instance.
  */
 fun <P, R> SagaEffect<P>.mapSuspend(transformer: suspend CoroutineScope.(P) -> R): SagaEffect<R> {
@@ -170,8 +170,8 @@ fun <P, R> SagaEffect<P>.mapSuspend(transformer: suspend CoroutineScope.(P) -> R
  * @param R The first source emission type.
  * @param R2 The second source emission type.
  * @param R3 The result emission type.
- * @param effect The [ISagaEffect] to perform after [this].
- * @param combiner Function that combines [R] and [R2] to produce [R3].
+ * @param effect See [ThenEffect.source2].
+ * @param combiner See [ThenEffect.combiner].
  * @return A [SagaEffect] instance.
  */
 fun <R, R2, R3> SagaEffect<R>.then(
@@ -186,7 +186,7 @@ fun <R, R2, R3> SagaEffect<R>.then(
  * @receiver A [SagaEffect] instance.
  * @param R The first source emission type.
  * @param R2 The result emission type.
- * @param effect The [ISagaEffect] to perform after [this].
+ * @param effect See [ThenEffect.source2].
  * @return A [SagaEffect] instance.
  */
 fun <R, R2> SagaEffect<R>.then(effect: ISagaEffect<R2>) = this.then(effect) { _, b -> b }
@@ -196,7 +196,7 @@ fun <R, R2> SagaEffect<R>.then(effect: ISagaEffect<R2>) = this.then(effect) { _,
  * @receiver A [SagaEffect] instance.
  * @param R The first source emission type.
  * @param R2 The result emission type.
- * @param value The value to emit after [this].
+ * @param value See [ThenEffect.source2].
  * @return A [SagaEffect] instance.
  */
 fun <R, R2> SagaEffect<R>.justThen(value: R2) = this.map { value }
@@ -205,7 +205,7 @@ fun <R, R2> SagaEffect<R>.justThen(value: R2) = this.map { value }
  * Invoke a [TimeoutEffect] on [this].
  * @receiver A [SagaEffect] instance.
  * @param R The result emission type.
- * @param millis The timeout time in milliseconds.
+ * @param millis See [TimeoutEffect.millis].
  * @return A [SagaEffect] instance.
  */
 fun <R> SagaEffect<R>.timeout(millis: Long) = this.transform(CommonEffects.timeout(millis))
