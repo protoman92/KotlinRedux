@@ -15,6 +15,7 @@ import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.core.createRouterMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
+import org.swiften.redux.thunk.createThunkMiddleware
 
 /** Created by haipham on 2018/12/19 */
 class MainApplication : Application() {
@@ -26,8 +27,9 @@ class MainApplication : Application() {
     val repository = MainRepository(api, JSONDecoder())
 
     val store = applyMiddlewares<MainRedux.State>(
-      createSagaMiddleware(MainRedux.Saga.sagas(repository)),
       createRouterMiddleware(MainRouter(this)),
+      createSagaMiddleware(MainRedux.Saga.sagas(repository)),
+      createThunkMiddleware(Unit),
       createAsyncMiddleware()
     )(FinalStore(MainRedux.State(), MainRedux.Reducer))
 

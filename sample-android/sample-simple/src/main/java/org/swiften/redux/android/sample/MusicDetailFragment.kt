@@ -30,7 +30,7 @@ class MusicDetailFragment : Fragment(),
 
   companion object : IPropMapper<MainRedux.State, Unit, Unit, S, A> {
     override fun mapAction(static: IActionDependency<Unit>, outProps: Unit): A {
-      return A { static.dispatch(MainRedux.Action.PreviewTrack) }
+      return A { static.dispatch(MainRedux.ThunkAction.PreviewTrack) }
     }
 
     override fun mapState(state: MainRedux.State, outProps: Unit) = S(state.currentSelectedTrack())
