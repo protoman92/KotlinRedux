@@ -16,15 +16,22 @@ import org.swiften.redux.saga.common.SagaInput
 /**
  * [TakeEffect] instances produces streams that filter [IReduxAction] with [extractor] and pluck out
  * the appropriate ones to perform additional work on with [creator].
+ * @param P The input value extracted from [IReduxAction].
+ * @param R The result emission type.
+ * @param extractor Function that extracts [P] from [IReduxAction].
+ * @param options A [TakeEffectOptions] instance.
+ * @param creator Function that creates [ISagaEffect] from [P].
  */
 internal abstract class TakeEffect<P, R>(
   private val extractor: Function1<IReduxAction, P?>,
   private val options: TakeEffectOptions,
-  private val creator: Function1<P, ISagaEffect<R>>
+  private val creator: (P) -> ISagaEffect<R>
 ) : SagaEffect<R>() {
   /**
    * Flatten an [ISagaOutput] that streams [ISagaOutput] to access the values streamed by
    * the inner [ISagaOutput].
+   * @param nested The nested [ISagaOutput] instance that emits [ISagaOutput].
+   * @return An [ISagaOutput] instance.
    */
   abstract fun flatten(nested: ISagaOutput<ISagaOutput<R>>): ISagaOutput<R>
 

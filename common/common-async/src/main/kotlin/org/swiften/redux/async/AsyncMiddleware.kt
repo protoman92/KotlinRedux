@@ -46,7 +46,7 @@ internal fun createAsyncMiddleware(context: CoroutineContext = SupervisorJob()):
 /**
  * Create a [AsyncMiddleware] with a default [CoroutineContext]. This is made public so that users
  * of this [AsyncMiddleware] cannot share its [CoroutineContext] with other users.
- * @return A [AsyncMiddleware] instance.
+ * @return An [AsyncMiddleware] instance.
  */
 fun createAsyncMiddleware(): IMiddleware<Any> {
   return createAsyncMiddleware(SupervisorJob())

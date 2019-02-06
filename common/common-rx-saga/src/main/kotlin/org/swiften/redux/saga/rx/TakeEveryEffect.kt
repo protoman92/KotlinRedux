@@ -13,6 +13,11 @@ import org.swiften.redux.saga.common.ISagaOutput
 /**
  * [TakeEffect] whose [SagaOutput] takes all [IReduxAction] that pass some conditions, then
  * flattens and emits all values. Contrast this with [TakeLatestEffect].
+ * @param P The input value extracted from [IReduxAction].
+ * @param R The result emission type.
+ * @param extractor Function that extracts [P] from [IReduxAction].
+ * @param options A [TakeEffectOptions] instance.
+ * @param creator Function that creates [ISagaEffect] from [P].
  */
 internal class TakeEveryEffect<P, R>(
   extractor: Function1<IReduxAction, P?>,

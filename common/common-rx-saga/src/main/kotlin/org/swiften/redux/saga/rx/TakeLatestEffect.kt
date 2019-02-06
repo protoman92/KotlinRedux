@@ -14,6 +14,11 @@ import org.swiften.redux.saga.common.ISagaOutput
  * [TakeEffect] whose output switches to the latest [IReduxAction] every time one arrives. This is
  * best used for cases whereby we are only interested in the latest value, such as in an
  * autocomplete search implementation. Contrast this with [TakeEveryEffect].
+ * @param P The input value extracted from [IReduxAction].
+ * @param R The result emission type.
+ * @param extractor Function that extracts [P] from [IReduxAction].
+ * @param options A [TakeEffectOptions] instance.
+ * @param creator Function that creates [ISagaEffect] from [P].
  */
 internal class TakeLatestEffect<P, R>(
   extractor: Function1<IReduxAction, P?>,

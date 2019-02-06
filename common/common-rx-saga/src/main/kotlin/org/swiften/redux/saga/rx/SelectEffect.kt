@@ -12,8 +12,11 @@ import org.swiften.redux.saga.common.SagaInput
 
 /** Created by haipham on 2019/01/01 */
 /**
- * [ISagaEffect] whose [SagaOutput] selects some value from an internal [State] using
- * [selector].
+ * [ISagaEffect] whose [SagaOutput] selects some value from an internal [State] using [selector].
+ * @param State The state type to select from.
+ * @param R The result emission type.
+ * @param cls The [Class] to [State].
+ * @param selector Function that selects [R] from [State].
  */
 internal class SelectEffect<State, R>(
   private val cls: Class<State>,
