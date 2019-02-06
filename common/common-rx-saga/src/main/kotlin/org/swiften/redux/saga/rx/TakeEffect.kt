@@ -29,10 +29,10 @@ internal abstract class TakeEffect<P, R>(
   abstract fun flatten(nested: ISagaOutput<ISagaOutput<R>>): ISagaOutput<R>
 
   override operator fun invoke(p1: SagaInput): ISagaOutput<R> {
-    val subject = PublishProcessor.create<P>()
+    val subject = PublishProcessor.create<P>().toSerialized()
 
     val nested = SagaOutput(p1.scope, subject) { p ->
-      this@TakeEffect.extractor(p)?.also { subject.offer(it) }
+      this@TakeEffect.extractor(p)?.also { subject.onNext(it) }
     }
 
     return this.flatten(nested

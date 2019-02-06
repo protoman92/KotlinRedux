@@ -21,13 +21,16 @@ import org.swiften.redux.saga.rx.SagaOutput
  */
 internal class TakeEveryEffect<R>(private val creator: () -> LiveData<R>) : SagaEffect<R>() {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
-    val stream = Observable.create<R> { emitter ->
-      val observer = Observer<R> { emitter.onNext(it) }
-      val data = this@TakeEveryEffect.creator()
-      data.observeForever(observer)
-      emitter.setCancellable { data.removeObserver(observer) }
-    }
+    val stream = Observable
+      .create<R> { emitter ->
+        val observer = Observer<R> { emitter.onNext(it) }
+        val data = this@TakeEveryEffect.creator()
+        data.observeForever(observer)
+        emitter.setCancellable { data.removeObserver(observer) }
+      }
+      .toFlowable(BackpressureStrategy.BUFFER)
+      .serialize()
 
-    return SagaOutput(p1.scope, stream.toFlowable(BackpressureStrategy.BUFFER)) { }
+    return SagaOutput(p1.scope, stream) { }
   }
 }
