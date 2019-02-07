@@ -49,7 +49,5 @@ internal class LoggingMiddleware<GState>(
  * @return A [LoggingMiddleware] instance.
  */
 fun <GState> createLoggingMiddleware(
-  logger: (GState, IReduxAction?) -> Unit = { s, a ->
-println("Redux: Last action $a, Last state $s")
-}
+  logger: (GState, IReduxAction?) -> Unit = { s, a -> println("Redux: action $a, state $s") }
 ): IMiddleware<GState> = LoggingMiddleware(logger)

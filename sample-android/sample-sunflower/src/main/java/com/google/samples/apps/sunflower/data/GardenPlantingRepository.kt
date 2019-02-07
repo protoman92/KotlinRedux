@@ -37,7 +37,7 @@ class GardenPlantingRepository private constructor(
     }
   }
 
-  fun getGardenPlantingForPlant(plantId: String): LiveData<GardenPlanting> {
+  fun getGardenPlantingForPlant(plantId: String): LiveData<GardenPlanting?> {
     return this.gardenPlantingDao.getGardenPlantingForPlant(plantId)
   }
 

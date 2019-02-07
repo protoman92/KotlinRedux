@@ -71,7 +71,9 @@ class PlantDetailFragment : Fragment(),
     }
 
     override fun mapAction(static: IActionDependency<IDependency>, outProps: Unit): A {
-      return A(static.external.picasso) { static.dispatch(Redux.Action.AddSelectedPlantToGargen) }
+      return A(static.external.picasso) {
+        static.dispatch(Redux.ThunkAction.AddSelectedPlantToGarden)
+      }
     }
   }
 

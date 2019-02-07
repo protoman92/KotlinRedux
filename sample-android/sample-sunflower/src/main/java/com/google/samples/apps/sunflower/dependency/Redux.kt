@@ -20,10 +20,11 @@ import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.common.catchError
+import org.swiften.redux.saga.common.compactMap
 import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapSuspend
 import org.swiften.redux.saga.common.put
-import org.swiften.redux.saga.rx.SagaEffects
 import org.swiften.redux.saga.rx.SagaEffects.just
 import org.swiften.redux.saga.rx.SagaEffects.select
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
@@ -76,7 +77,6 @@ object Redux {
     data class UpdateConnectivity(val isConnected: Boolean) : Action()
 
     data class AddPlantToGarden(val plantId: String) : Action()
-    object AddSelectedPlantToGargen : Action()
     data class SelectGrowZone(val zone: Int) : Action()
     data class SelectPlantFromGarden(val index: Int) : Action()
     data class SelectPlantFromPlantList(val index: Int) : Action()
@@ -87,6 +87,14 @@ object Redux {
   }
 
   sealed class ThunkAction<GExt, Param>() : IReduxThunkAction<State, GExt, Param> {
+    object AddSelectedPlantToGarden : ThunkAction<Any, Unit>() {
+      override val params get() = Unit
+
+      override val payload: ThunkFunction<State, Any> = { dispatch, getState, _ ->
+        getState().selectedPlant?.id?.also { dispatch(Action.AddPlantToGarden(it)) }
+      }
+    }
+
     data class ToggleGrowZone(val zone: Int) : ThunkAction<Any, Int>() {
       override val params get() = this.zone
 
@@ -138,14 +146,6 @@ object Redux {
     }
 
     object GardenPlantingSaga {
-      private fun addSelectedPlantToGarden(): SagaEffect<Any> {
-        return takeEveryAction<Action.AddSelectedPlantToGargen, Unit, Any>({ Unit }) {
-          SagaEffects.select<State, Redux.SelectedPlant?> { it.selectedPlant }
-            .map { it?.id ?: "" }
-            .put { Action.AddPlantToGarden(it) }
-        }
-      }
-
       /**
        * Every time [Action.AddPlantToGarden] is received, call
        * [GardenPlantingRepository.createGardenPlanting] to signal that the user wants to add
@@ -174,6 +174,7 @@ object Redux {
           takeEveryData { api.getGardenPlantingForPlant(plantId) }
             .map { it != null }
             .put { Action.UpdateSelectedPlantStatus(it) }
+            .catchError {}
         }
       }
 
@@ -182,7 +183,8 @@ object Redux {
           select<State, List<PlantAndGardenPlantings>?> { it.plantAndGardenPlantings }
             .map { it?.elementAtOrNull(index) }
             .map { it?.plant }
-            .map { it?.plantId ?: "" }
+            .map { it?.plantId }
+            .compactMap()
             .put { Screen.GardenToPlantDetail(it) }
         }
       }
@@ -204,7 +206,6 @@ object Redux {
 
       fun allSagas(api: GardenPlantingRepository) = arrayListOf(
         this.addPlantToGarden(api),
-        this.addSelectedPlantToGarden(),
         this.checkSelectedPlantStatus(api),
         this.selectPlantFromGarden(),
         this.syncGardenPlantings(api),
@@ -217,7 +218,8 @@ object Redux {
         return takeEveryAction<Action.SelectPlantFromPlantList, Int, Any>({ it.index }) { index ->
           select<State, List<Plant>?> { it.plants }
             .map { it?.elementAtOrNull(index) }
-            .map { it?.plantId ?: "" }
+            .map { it?.plantId }
+            .compactMap()
             .put { Screen.PlantListToPlantDetail(it) }
         }
       }
@@ -232,14 +234,6 @@ object Redux {
           .select<State, List<Plant>, Int, List<Plant>>({ it.selectedGrowZone }, { a, b ->
             if (b == NO_GROW_ZONE) a else a.filter { it.growZoneNumber == b }
           }).put { Action.UpdatePlants(it) }
-      }
-
-      private fun toggleGrowZone(): SagaEffect<Any> {
-        return takeEveryAction<ThunkAction.ToggleGrowZone, Int, Any>({ it.zone }) { zone ->
-          select<State, Int> { it.selectedGrowZone }
-            .map { if (it == Redux.NO_GROW_ZONE) zone else NO_GROW_ZONE }
-            .put { Action.SelectGrowZone(it) }
-        }
       }
 
       /**
