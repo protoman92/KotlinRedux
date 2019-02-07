@@ -102,7 +102,9 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   GExt : Any,
   LC : LifecycleOwner,
   LC : IPropContainer<S, A>,
-  LC : IPropLifecycleOwner<GState, GExt> {
+  LC : IPropLifecycleOwner<GState, GExt>,
+  S : Any,
+  A : Any {
   var subscription: IReduxSubscription? = null
 
   /**
@@ -159,6 +161,8 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   LC : LifecycleOwner,
   LC : IPropContainer<S, A>,
   LC : IPropLifecycleOwner<GState, GExt>,
-  LC : IPropMapper<GState, GExt, OP, S, A> {
+  LC : IPropMapper<GState, GExt, OP, S, A>,
+  S : Any,
+  A : Any {
   return this.injectLifecycle(lifecycleOwner, outProps, lifecycleOwner)
 }

@@ -38,17 +38,22 @@ interface IDiffItemCallback<T> {
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
  * @param VH The [RecyclerView.ViewHolder] instance.
- * @param VHS The [VH] state type. See [ReduxProps.state].
- * @param VHA The [VH] action type. See [ReduxProps.action].
+ * @param VHState The [VH] state type. See [ReduxProps.state].
+ * @param VHAction The [VH] action type. See [ReduxProps.action].
  * @param adapter The base [RecyclerView.Adapter] instance.
  * @param diffCallback A [DiffUtil.ItemCallback] instance.
  */
-abstract class ReduxListAdapter<GState, GExt, VH, VHS, VHA>(
+abstract class ReduxListAdapter<GState, GExt, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>,
-  diffCallback: DiffUtil.ItemCallback<VHS>
-) : ListAdapter<VHS, VH>(diffCallback),
+  diffCallback: DiffUtil.ItemCallback<VHState>
+) : ListAdapter<VHState, VH>(diffCallback),
   IPropLifecycleOwner<GState, GExt> by EmptyPropLifecycleOwner(),
-  IPropContainer<List<VHS>, VHA> where GState : Any, GExt : Any, VH : RecyclerView.ViewHolder {
+  IPropContainer<List<VHState>, VHAction> where
+  GState : Any,
+  GExt : Any,
+  VH : RecyclerView.ViewHolder,
+  VHState : Any,
+  VHAction : Any {
   internal lateinit var staticProps: StaticProps<GState, GExt>
 
   /**
@@ -62,7 +67,7 @@ abstract class ReduxListAdapter<GState, GExt, VH, VHS, VHA>(
    * [ReduxProps.action] instance must be non-null upon [onBindViewHolder]. As a result, we can
    * safely access [ReduxProps.action] in [onBindViewHolder].
    */
-  override var reduxProps by ObservableReduxProps<List<VHS>, VHA> { _, next ->
+  override var reduxProps by ObservableReduxProps<List<VHState>, VHAction> { _, next ->
     this.submitList(next.state ?: arrayListOf())
   }
 
@@ -129,7 +134,7 @@ abstract class ReduxListAdapter<GState, GExt, VH, VHS, VHA>(
  *
  * Since we do not call [IPropInjector.inject] directly into [VH], we cannot use
  * [IPropMapper.mapAction] on [VH] itself. As a result, we must pass down
- * [ReduxProps.action] from [ReduxListAdapter.reduxProps] into each [VH] instance. The [VHA] should
+ * [ReduxProps.action] from [ReduxListAdapter.reduxProps] into each [VH] instance. The [VHAction] should
  * contain actions that take at least one [Int] parameter, (e.g. (Int) -> Unit), so that we can use
  * [RecyclerView.ViewHolder.getLayoutPosition] to call them.
  *
@@ -138,24 +143,26 @@ abstract class ReduxListAdapter<GState, GExt, VH, VHS, VHA>(
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
  * @param VH The [RecyclerView.ViewHolder] instance.
- * @param VHS The [VH] state type. See [ReduxProps.state].
- * @param VHA The [VH] action type. See [ReduxProps.action].
+ * @param VHState The [VH] state type. See [ReduxProps.state].
+ * @param VHAction The [VH] action type. See [ReduxProps.action].
  * @param adapter The base [RecyclerView.Adapter] instance.
  * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
  * @param diffCallback A [DiffUtil.ItemCallback] instance.
  */
 @Suppress("UNCHECKED_CAST")
-fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter(
+fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiffedAdapter(
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GState, GExt, Unit, List<VHS>, VHA>,
-  diffCallback: DiffUtil.ItemCallback<VHS>
-): ReduxListAdapter<GState, GExt, VH, VHS, VHA> where
+  adapterMapper: IPropMapper<GState, GExt, Unit, List<VHState>, VHAction>,
+  diffCallback: DiffUtil.ItemCallback<VHState>
+): ReduxListAdapter<GState, GExt, VH, VHState, VHAction> where
   GState : Any,
   GExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHS, VHA>,
-  VH : IPropLifecycleOwner<GState, GExt> {
-  val listAdapter = object : ReduxListAdapter<GState, GExt, VH, VHS, VHA>(adapter, diffCallback) {
+  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropLifecycleOwner<GState, GExt>,
+  VHState : Any,
+  VHAction : Any {
+  val listAdapter = object : ReduxListAdapter<GState, GExt, VH, VHState, VHAction>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
       val subscribeId = "$holder${Date().time}"

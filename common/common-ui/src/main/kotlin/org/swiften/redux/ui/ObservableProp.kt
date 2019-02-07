@@ -18,10 +18,10 @@ import kotlin.reflect.KProperty
  * @param equalChecker Check equality for two [T] instances.
  * @param notifier Broadcast the latest [T] instance.
  */
-open class VetoableObservableProp<T : Any>(
+open class VetoableObservableProp<T>(
   private val equalChecker: (T?, T) -> Boolean = { a, b -> a == b },
   private val notifier: (T?, T) -> Unit
-) : ReadWriteProperty<Any?, T> {
+) : ReadWriteProperty<Any?, T> where T : Any {
   private lateinit var value: T
   private val lock by lazy { ReentrantReadWriteLock() }
 
@@ -41,7 +41,7 @@ open class VetoableObservableProp<T : Any>(
  * @param A See [ReduxProps.action].
  * @param notifier See [VetoableObservableProp.notifier].
  */
-class ObservableReduxProps<S, A>(
+class ObservableReduxProps<S : Any, A : Any>(
   notifier: (IVariableProps<S, A>?, IVariableProps<S, A>) -> Unit
 ) : ReadWriteProperty<Any?, ReduxProps<S, A>> by VetoableObservableProp({ a, b ->
   a?.state == b.state

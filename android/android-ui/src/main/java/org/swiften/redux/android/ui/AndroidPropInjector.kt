@@ -30,13 +30,15 @@ class AndroidPropInjector<GState, GExt>(
   external: GExt,
   private val runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner
 ) : PropInjector<GState, GExt>(store, external) where GState : Any, GExt : Any {
-  override fun <OutProps, View, State, Action> inject(
+  override fun <View, OutProps, State, Action> inject(
     view: View,
     outProps: OutProps,
     mapper: IPropMapper<GState, GExt, OutProps, State, Action>
   ): IReduxSubscription where
     View : IPropContainer<State, Action>,
-    View : IPropLifecycleOwner<GState, GExt> {
+    View : IPropLifecycleOwner<GState, GExt>,
+    State : Any,
+    Action : Any {
     return super.inject(object :
       IPropContainer<State, Action>,
       IPropLifecycleOwner<GState, GExt> {

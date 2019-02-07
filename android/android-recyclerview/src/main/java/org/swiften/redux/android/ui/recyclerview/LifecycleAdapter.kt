@@ -45,7 +45,9 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecy
   GExt : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GState, GExt> {
+  VH : IPropLifecycleOwner<GState, GExt>,
+  VHState : Any,
+  VHAction : Any {
   val wrappedAdapter = this.injectRecyclerAdapter(adapter, adapterMapper, vhMapper)
 
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
@@ -77,11 +79,13 @@ fun <GState, GExt, Adapter, VH, VHState, VHAction> IPropInjector<GState, GExt>.i
 ): RecyclerView.Adapter<VH> where
   GState : Any,
   GExt : Any,
+  Adapter : RecyclerView.Adapter<VH>,
+  Adapter : IStateMapper<GState, Unit, Int>,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
   VH : IPropLifecycleOwner<GState, GExt>,
-  Adapter : RecyclerView.Adapter<VH>,
-  Adapter : IStateMapper<GState, Unit, Int> {
+  VHState : Any,
+  VHAction : Any {
   return this.injectRecyclerAdapter(lifecycleOwner, adapter, adapter, vhMapper)
 }
 
@@ -109,7 +113,9 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiff
   GExt : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GState, GExt> {
+  VH : IPropLifecycleOwner<GState, GExt>,
+  VHState : Any,
+  VHAction : Any {
   val wrappedAdapter = this.injectDiffedAdapter(adapter, adapterMapper, diffCallback)
 
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
@@ -148,7 +154,9 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiff
   GExt : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GState, GExt> {
+  VH : IPropLifecycleOwner<GState, GExt>,
+  VHState : Any,
+  VHAction : Any {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, adapterMapper,
     object : DiffUtil.ItemCallback<VHState>() {
       override fun areItemsTheSame(oldItem: VHState, newItem: VHState): Boolean {
@@ -186,6 +194,8 @@ fun <GState, GExt, Mapper, VH, VHState, VHAction> IPropInjector<GState, GExt>.in
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
   VH : IPropLifecycleOwner<GState, GExt>,
+  VHState : Any,
+  VHAction : Any,
   Mapper : IPropMapper<GState, GExt, Unit, List<VHState>, VHAction>,
   Mapper : IDiffItemCallback<VHState> {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, mapper, mapper)
@@ -212,11 +222,13 @@ fun <GState, GExt, Adapter, VH, VHState, VHAction> IPropInjector<GState, GExt>.i
 ): ListAdapter<VHState, VH> where
   GState : Any,
   GExt : Any,
+  Adapter : RecyclerView.Adapter<VH>,
+  Adapter : IPropMapper<GState, GExt, Unit, List<VHState>, VHAction>,
+  Adapter : IDiffItemCallback<VHState>,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
   VH : IPropLifecycleOwner<GState, GExt>,
-  Adapter : RecyclerView.Adapter<VH>,
-  Adapter : IPropMapper<GState, GExt, Unit, List<VHState>, VHAction>,
-  Adapter : IDiffItemCallback<VHState> {
+  VHState : Any,
+  VHAction : Any {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, adapter)
 }

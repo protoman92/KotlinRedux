@@ -13,7 +13,7 @@ import org.swiften.redux.core.IReduxSubscription
  * @param State State type that contains view information.
  * @param Action Action type that handles view interactions.
  */
-interface IVariableProps<State, Action> {
+interface IVariableProps<State, Action> where State : Any, Action : Any {
   val state: State?
   val action: Action?
 }
@@ -24,9 +24,9 @@ interface IVariableProps<State, Action> {
  * @param GExt See [IPropInjector.external].
  * @param injector An [IPropInjector] instance.
  */
-data class StaticProps<GState : Any, GExt : Any>(
+data class StaticProps<GState, GExt>(
   val injector: IPropInjector<GState, GExt>
-)
+) where GState : Any, GExt : Any
 
 /**
  * Container for [s], [state] and [action].
@@ -40,4 +40,4 @@ data class ReduxProps<State, Action>(
   val s: IReduxSubscription,
   override val state: State?,
   override val action: Action?
-) : IVariableProps<State, Action>
+) : IVariableProps<State, Action> where State : Any, Action : Any
