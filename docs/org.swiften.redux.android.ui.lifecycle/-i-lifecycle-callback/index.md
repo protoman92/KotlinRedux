@@ -4,7 +4,7 @@
 
 `interface ILifecycleCallback` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidLifecycle.kt#L21)
 
-Callback for use with [LifecycleObserver](../-lifecycle-observer/index.md)
+Callback for use with [LifecycleObserver](#).
 
 ### Functions
 
@@ -17,4 +17,4 @@ Callback for use with [LifecycleObserver](../-lifecycle-observer/index.md)
 
 | Name | Summary |
 |---|---|
-| [LifecycleObserver](../-lifecycle-observer/index.md) | `open class LifecycleObserver : `[`ILifecycleCallback`](./index.md)<br>Use this [LifecycleObserver](../-lifecycle-observer/index.md) to unsubscribe from a [IReduxSubscription](../../org.swiften.redux.core/-i-redux-subscription/index.md) |
+| [ReduxLifecycleObserver](../-redux-lifecycle-observer/index.md) | `open class ReduxLifecycleObserver : `[`ILifecycleCallback`](./index.md)<br>Use this [LifecycleObserver](#) to unsubscribe from a [IReduxSubscription](../../org.swiften.redux.core/-i-redux-subscription/index.md). |

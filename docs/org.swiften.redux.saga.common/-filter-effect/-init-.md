@@ -2,7 +2,14 @@
 
 # &lt;init&gt;
 
-`FilterEffect(source: `[`ISagaEffect`](../-i-saga-effect.md)`<`[`R`](index.md#R)`>, selector: (`[`R`](index.md#R)`) -> `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)`)`
+`FilterEffect(source: `[`ISagaEffect`](../-i-saga-effect.md)`<`[`R`](index.md#R)`>, predicate: (`[`R`](index.md#R)`) -> `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)`)`
 
-[ISagaEffect](../-i-saga-effect.md) whose [ISagaOutput](../-i-saga-output/index.md) filters emissions with [selector](selector.md)
+[ISagaEffect](../-i-saga-effect.md) whose [ISagaOutput](../-i-saga-output/index.md) filters emissions with [predicate](predicate.md).
 
+### Parameters
+
+`R` - The result emission type.
+
+`source` - The source [ISagaEffect](../-i-saga-effect.md).
+
+`predicate` - Condition checker.

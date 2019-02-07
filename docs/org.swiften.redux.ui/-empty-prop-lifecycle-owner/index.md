@@ -2,7 +2,7 @@
 
 # EmptyPropLifecycleOwner
 
-`class EmptyPropLifecycleOwner<GState, GExt> : `[`IPropLifecycleOwner`](../-i-prop-lifecycle-owner/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L39)
+`class EmptyPropLifecycleOwner<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, GExt : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IPropLifecycleOwner`](../-i-prop-lifecycle-owner/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L42)
 
 Treat this as a delegate for [IPropLifecycleOwner](../-i-prop-lifecycle-owner/index.md) that does not hold any logic.
 
@@ -10,7 +10,7 @@ Treat this as a delegate for [IPropLifecycleOwner](../-i-prop-lifecycle-owner/in
 
 `GState` - The global state type.
 
-`GExt` - The global external argument.
+`GExt` - See [IPropInjector.external](../-i-action-dependency/external.md).
 
 ### Constructors
 

@@ -2,7 +2,18 @@
 
 # call
 
-`fun <P, R> call(transformer: (`[`P`](call.md#P)`) -> <ERROR CLASS><`[`R`](call.md#R)`>): `[`ISagaEffectTransformer`](../../org.swiften.redux.saga.common/-i-saga-effect-transformer.md)`<`[`P`](call.md#P)`, `[`R`](call.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaEffects.kt#L21)
+`fun <P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> call(transformer: (`[`P`](call.md#P)`) -> <ERROR CLASS><`[`R`](call.md#R)`>): `[`ISagaEffectTransformer`](../../org.swiften.redux.saga.common/-i-saga-effect-transformer.md)`<`[`P`](call.md#P)`, `[`R`](call.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaEffects.kt#L27)
 
-Create a [CallEffect](../-call-effect/index.md)
+Create a [CallEffect](../-call-effect/index.md).
+
+### Parameters
+
+`P` - The source emission type.
+
+`R` - The result emission type.
+
+`transformer` - See [CallEffect.transformer](../-call-effect/transformer.md).
+
+**Return**
+An [ISagaEffectTransformer](../../org.swiften.redux.saga.common/-i-saga-effect-transformer.md) instance.
 

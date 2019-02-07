@@ -2,7 +2,7 @@
 
 # AsyncMiddleware
 
-`internal class AsyncMiddleware : `[`IMiddleware`](../../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-async/src/main/kotlin/org/swiften/redux/async/AsyncMiddleware.kt#L25)
+`internal class AsyncMiddleware : `[`IMiddleware`](../../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-async/src/main/kotlin/org/swiften/redux/async/AsyncMiddleware.kt#L24)
 
 [IMiddleware](../../org.swiften.redux.core/-i-middleware.md) implementation that calls [DispatchWrapper.dispatch](../../org.swiften.redux.core/-dispatch-wrapper/dispatch.md) on another thread.
 

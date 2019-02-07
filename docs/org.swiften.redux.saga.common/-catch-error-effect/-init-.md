@@ -4,5 +4,12 @@
 
 `CatchErrorEffect(source: `[`ISagaEffect`](../-i-saga-effect.md)`<`[`R`](index.md#R)`>, catcher: (`[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)`) -> `[`R`](index.md#R)`)`
 
-[ISagaEffect](../-i-saga-effect.md) whose [ISagaOutput](../-i-saga-output/index.md) catches [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html) from upstream
+[ISagaEffect](../-i-saga-effect.md) whose [ISagaOutput](../-i-saga-output/index.md) catches [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html) from upstream.
 
+### Parameters
+
+`R` - The result emission type.
+
+`source` - The source [ISagaEffect](../-i-saga-effect.md).
+
+`catcher` - Function that catches error.

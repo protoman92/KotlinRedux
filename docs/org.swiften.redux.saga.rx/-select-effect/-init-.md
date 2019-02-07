@@ -4,6 +4,14 @@
 
 `SelectEffect(cls: `[`Class`](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html)`<`[`State`](index.md#State)`>, selector: (`[`State`](index.md#State)`) -> `[`R`](index.md#R)`)`
 
-[ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) whose [SagaOutput](../-saga-output/index.md) selects some value from an internal [State](index.md#State) using
-[selector](selector.md).
+[ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) whose [SagaOutput](../-saga-output/index.md) selects some value from an internal [State](index.md#State) using [selector](selector.md).
 
+### Parameters
+
+`State` - The state type to select from.
+
+`R` - The result emission type.
+
+`cls` - The [Class](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html) to [State](index.md#State).
+
+`selector` - Function that selects [R](index.md#R) from [State](index.md#State).

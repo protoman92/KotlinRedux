@@ -2,17 +2,13 @@
 
 # mapAction
 
-`abstract fun mapAction(static: `[`IActionDependency`](../-i-action-dependency/index.md)`<`[`GExt`](index.md#GExt)`>, state: `[`GState`](index.md#GState)`, outProps: `[`OutProps`](index.md#OutProps)`): `[`Action`](index.md#Action) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L99)
+`abstract fun mapAction(static: `[`IActionDependency`](../-i-action-dependency/index.md)`<`[`GExt`](index.md#GExt)`>, outProps: `[`OutProps`](index.md#OutProps)`): `[`Action`](index.md#Action) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L103)
 
-Map [IActionDispatcher](../../org.swiften.redux.core/-i-action-dispatcher.md) to [Action](index.md#Action) using [GState](index.md#GState), [GExt](index.md#GExt) and [OutProps](index.md#OutProps)
+Map [IActionDispatcher](../../org.swiften.redux.core/-i-action-dispatcher.md) to [Action](index.md#Action) using [GExt](index.md#GExt) and [OutProps](index.md#OutProps)
 
 ### Parameters
 
 `static` - An [IActionDependency](../-i-action-dependency/index.md) instance.
-
-`state` - The latest [GState](index.md#GState) instance.
-
-`ext` - The [GExt](index.md#GExt) instance.
 
 `outProps` - The [OutProps](index.md#OutProps) instance.
 

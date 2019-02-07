@@ -8,9 +8,9 @@ Use this to avoid lateinit modifiers for [ReduxProps](../-redux-props/index.md)
 
 ### Parameters
 
-`S` - See [VariableProps.state](../-variable-props/state.md).
+`S` - See [ReduxProps.state](../-redux-props/state.md).
 
-`A` - See [VariableProps.action](../-variable-props/action.md).
+`A` - See [ReduxProps.action](../-redux-props/action.md).
 
 `notifier` - See [VetoableObservableProp.notifier](../-vetoable-observable-prop/notifier.md).
 
@@ -18,4 +18,4 @@ Use this to avoid lateinit modifiers for [ReduxProps](../-redux-props/index.md)
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `ObservableReduxProps(notifier: (`[`IVariableProps`](../-i-variable-props/index.md)`<`[`S`](index.md#S)`, `[`A`](index.md#A)`>?, `[`IVariableProps`](../-i-variable-props/index.md)`<`[`S`](index.md#S)`, `[`A`](index.md#A)`>?) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`<br>Use this to avoid lateinit modifiers for [ReduxProps](../-redux-props/index.md) |
+| [&lt;init&gt;](-init-.md) | `ObservableReduxProps(notifier: (`[`IVariableProps`](../-i-variable-props/index.md)`<`[`S`](index.md#S)`, `[`A`](index.md#A)`>?, `[`IVariableProps`](../-i-variable-props/index.md)`<`[`S`](index.md#S)`, `[`A`](index.md#A)`>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`<br>Use this to avoid lateinit modifiers for [ReduxProps](../-redux-props/index.md) |

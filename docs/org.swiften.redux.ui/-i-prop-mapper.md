@@ -2,9 +2,9 @@
 
 # IPropMapper
 
-`interface IPropMapper<GState, GExt, OutProps, State, Action> : `[`IStateMapper`](-i-state-mapper/index.md)`<`[`GState`](-i-prop-mapper.md#GState)`, `[`OutProps`](-i-prop-mapper.md#OutProps)`, `[`State`](-i-prop-mapper.md#State)`>, `[`IActionMapper`](-i-action-mapper/index.md)`<`[`GState`](-i-prop-mapper.md#GState)`, `[`GExt`](-i-prop-mapper.md#GExt)`, `[`OutProps`](-i-prop-mapper.md#OutProps)`, `[`Action`](-i-prop-mapper.md#Action)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L117)
+`interface IPropMapper<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, GExt : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, OutProps, State, Action> : `[`IStateMapper`](-i-state-mapper/index.md)`<`[`GState`](-i-prop-mapper.md#GState)`, `[`OutProps`](-i-prop-mapper.md#OutProps)`, `[`State`](-i-prop-mapper.md#State)`>, `[`IActionMapper`](-i-action-mapper/index.md)`<`[`GExt`](-i-prop-mapper.md#GExt)`, `[`OutProps`](-i-prop-mapper.md#OutProps)`, `[`Action`](-i-prop-mapper.md#Action)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L121)
 
-Maps [GState](-i-prop-mapper.md#GState) to [State](-i-prop-mapper.md#State) and [Action](-i-prop-mapper.md#Action) for a [IPropContainer](-i-prop-container/index.md). [OutProps](-i-prop-mapper.md#OutProps) is the view's
+Maps [GState](-i-prop-mapper.md#GState) and [GExt](-i-prop-mapper.md#GExt) to [State](-i-prop-mapper.md#State) and [Action](-i-prop-mapper.md#Action) for a [IPropContainer](-i-prop-container/index.md). [OutProps](-i-prop-mapper.md#OutProps) is the view's
 immutable property as dictated by its parent.
 
 For example, a parent view, which contains a list of child views, wants to call
@@ -16,17 +16,17 @@ Generally, though, [OutProps](-i-prop-mapper.md#OutProps) tends to be [Unit](htt
 
 `GState` - The global state type.
 
-`GExt` - The global external argument.
+`GExt` - See [IPropInjector.external](-i-action-dependency/external.md).
 
 `OutProps` - Property as defined by a view's parent.
 
-`State` - The container state.
+`State` - See [ReduxProps.state](-redux-props/state.md).
 
-`Action` - The container action.
+`Action` - See [ReduxProps.action](-redux-props/action.md).
 
 ### Inherited Functions
 
 | Name | Summary |
 |---|---|
-| [mapAction](-i-action-mapper/map-action.md) | `abstract fun mapAction(static: `[`IActionDependency`](-i-action-dependency/index.md)`<`[`GExt`](-i-action-mapper/index.md#GExt)`>, state: `[`GState`](-i-action-mapper/index.md#GState)`, outProps: `[`OutProps`](-i-action-mapper/index.md#OutProps)`): `[`Action`](-i-action-mapper/index.md#Action)<br>Map [IActionDispatcher](../org.swiften.redux.core/-i-action-dispatcher.md) to [Action](-i-action-mapper/index.md#Action) using [GState](-i-action-mapper/index.md#GState), [GExt](-i-action-mapper/index.md#GExt) and [OutProps](-i-action-mapper/index.md#OutProps) |
+| [mapAction](-i-action-mapper/map-action.md) | `abstract fun mapAction(static: `[`IActionDependency`](-i-action-dependency/index.md)`<`[`GExt`](-i-action-mapper/index.md#GExt)`>, outProps: `[`OutProps`](-i-action-mapper/index.md#OutProps)`): `[`Action`](-i-action-mapper/index.md#Action)<br>Map [IActionDispatcher](../org.swiften.redux.core/-i-action-dispatcher.md) to [Action](-i-action-mapper/index.md#Action) using [GExt](-i-action-mapper/index.md#GExt) and [OutProps](-i-action-mapper/index.md#OutProps) |
 | [mapState](-i-state-mapper/map-state.md) | `abstract fun mapState(state: `[`GState`](-i-state-mapper/index.md#GState)`, outProps: `[`OutProps`](-i-state-mapper/index.md#OutProps)`): `[`State`](-i-state-mapper/index.md#State)<br>Map [GState](-i-state-mapper/index.md#GState) to [State](-i-state-mapper/index.md#State) using [OutProps](-i-state-mapper/index.md#OutProps) |

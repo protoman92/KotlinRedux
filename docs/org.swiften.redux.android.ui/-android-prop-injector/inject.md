@@ -2,7 +2,7 @@
 
 # inject
 
-`fun <OutProps, View, State, Action> inject(view: `[`View`](inject.md#View)`, outProps: `[`OutProps`](inject.md#OutProps)`, mapper: `[`IPropMapper`](../../org.swiften.redux.ui/-i-prop-mapper.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`, `[`OutProps`](inject.md#OutProps)`, `[`State`](inject.md#State)`, `[`Action`](inject.md#Action)`>): `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)` where View : `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<`[`State`](inject.md#State)`, `[`Action`](inject.md#Action)`>, View : `[`IPropLifecycleOwner`](../../org.swiften.redux.ui/-i-prop-lifecycle-owner/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-ui/src/main/java/org/swiften/redux/android/ui/AndroidPropInjector.kt#L28)
+`fun <OutProps, View, State, Action> inject(view: `[`View`](inject.md#View)`, outProps: `[`OutProps`](inject.md#OutProps)`, mapper: `[`IPropMapper`](../../org.swiften.redux.ui/-i-prop-mapper.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`, `[`OutProps`](inject.md#OutProps)`, `[`State`](inject.md#State)`, `[`Action`](inject.md#Action)`>): `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)` where View : `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<`[`State`](inject.md#State)`, `[`Action`](inject.md#Action)`>, View : `[`IPropLifecycleOwner`](../../org.swiften.redux.ui/-i-prop-lifecycle-owner/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-ui/src/main/java/org/swiften/redux/android/ui/AndroidPropInjector.kt#L33)
 
 Overrides [PropInjector.inject](../../org.swiften.redux.ui/-prop-injector/inject.md)
 
@@ -13,9 +13,9 @@ platform-specific methods can be defined for this purpose.
 
 `OutProps` - Property as defined by a view's parent.
 
-`State` - The container state.
+`State` - See [ReduxProps.state](../../org.swiften.redux.ui/-redux-props/state.md).
 
-`Action` - The container action.
+`Action` - See [ReduxProps.action](../../org.swiften.redux.ui/-redux-props/action.md).
 
 `view` - An [IPropContainer](../../org.swiften.redux.ui/-i-prop-container/index.md) instance.
 

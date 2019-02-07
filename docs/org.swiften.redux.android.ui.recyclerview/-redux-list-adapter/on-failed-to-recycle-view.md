@@ -2,4 +2,4 @@
 
 # onFailedToRecycleView
 
-`open fun onFailedToRecycleView(holder: `[`VH`](index.md#VH)`): <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/DiffedAdapter.kt#L64)
+`open fun onFailedToRecycleView(holder: `[`VH`](index.md#VH)`): <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/DiffedAdapter.kt#L85)

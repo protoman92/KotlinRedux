@@ -2,4 +2,4 @@
 
 # external
 
-`abstract val external: `[`GExt`](index.md#GExt) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L59)
+`abstract val external: `[`GExt`](index.md#GExt) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L62)

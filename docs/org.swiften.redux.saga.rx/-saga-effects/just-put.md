@@ -2,7 +2,14 @@
 
 # justPut
 
-`fun justPut(action: `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`): `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaEffects.kt#L41)
+`fun justPut(action: `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`): `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaEffects.kt#L68)
 
-Create a [JustPutEffect](../-just-put-effect/index.md)
+Create a [JustPutEffect](../-just-put-effect/index.md).
+
+### Parameters
+
+`action` - See [JustPutEffect.action](../-just-put-effect/action.md).
+
+**Return**
+A [SagaEffect](../../org.swiften.redux.saga.common/-saga-effect/index.md) instance.
 

@@ -10,4 +10,4 @@ Treat this as a delegate for [IPropLifecycleOwner](../-i-prop-lifecycle-owner/in
 
 `GState` - The global state type.
 
-`GExt` - The global external argument.
+`GExt` - See [IPropInjector.external](../-i-action-dependency/external.md).

@@ -2,4 +2,4 @@
 
 # reduxProps
 
-`abstract var reduxProps: `[`ReduxProps`](../-redux-props/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L50)
+`abstract var reduxProps: `[`ReduxProps`](../-redux-props/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L53)

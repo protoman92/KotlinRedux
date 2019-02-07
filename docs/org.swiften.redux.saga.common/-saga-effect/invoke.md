@@ -2,7 +2,7 @@
 
 # invoke
 
-`fun invoke(scope: <ERROR CLASS>, state: `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`): `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L188)
+`fun invoke(scope: <ERROR CLASS>, state: `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`): `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L189)
 
 Call [ISagaEffect](../-i-saga-effect.md) with convenience parameters for testing.
 
@@ -10,9 +10,27 @@ Call [ISagaEffect](../-i-saga-effect.md) with convenience parameters for testing
 
 `scope` - A [CoroutineScope](#) instance.
 
-`state` - See [SagaInput.stateGetter](../-saga-input/state-getter.md).
+`state` - See [SagaInput.lastState](../-saga-input/last-state.md).
 
 `dispatch` - See [SagaInput.dispatch](../-saga-input/dispatch.md).
+
+**Return**
+An [ISagaOutput](../-i-saga-output/index.md) instance.
+
+`fun invoke(state: `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`): `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L198)
+
+Call [ISagaEffect](../-i-saga-effect.md) with convenience parameters for testing.
+
+### Parameters
+
+`state` - See [SagaInput.lastState](../-saga-input/last-state.md).
+
+**Return**
+An [ISagaOutput](../-i-saga-output/index.md) instance.
+
+`fun invoke(): `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L204)
+
+Call [ISagaEffect](../-i-saga-effect.md) with convenience parameters for testing.
 
 **Return**
 An [ISagaOutput](../-i-saga-output/index.md) instance.

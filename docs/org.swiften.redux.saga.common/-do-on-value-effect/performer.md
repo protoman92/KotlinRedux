@@ -2,4 +2,7 @@
 
 # performer
 
-`private val performer: (`[`R`](index.md#R)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/DoOnValueEffect.kt#L15)
+`private val performer: (`[`R`](index.md#R)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/DoOnValueEffect.kt#L17)
+
+Function that performs side effects.
+

@@ -2,7 +2,10 @@
 
 # beforePropInjectionStarts
 
-`abstract fun beforePropInjectionStarts(sp: `[`StaticProps`](../-static-props/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L28)
+`abstract fun beforePropInjectionStarts(sp: `[`StaticProps`](../-static-props/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L31)
 
 This is called before [IPropInjector.inject](../-i-prop-injector/inject.md) is called.
 
+### Parameters
+
+`sp` - A [StaticProps](../-static-props/index.md) instance.

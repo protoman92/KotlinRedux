@@ -7,3 +7,10 @@
 [ISagaEffect](../-i-saga-effect.md) whose [ISagaOutput](../-i-saga-output/index.md) deposits some values emitted by [source](source.md) into a [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md)
 using [actionCreator](action-creator.md).
 
+### Parameters
+
+`P` - The source emission type.
+
+`source` - The source [ISagaEffect](../-i-saga-effect.md).
+
+`actionCreator` - Function that creates [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) from [P](index.md#P).

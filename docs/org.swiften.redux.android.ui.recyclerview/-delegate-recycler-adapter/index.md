@@ -2,21 +2,35 @@
 
 # DelegateRecyclerAdapter
 
-`abstract class DelegateRecyclerAdapter<GState, GExt, VH : `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<`[`VHState`](index.md#VHState)`, `[`VHAction`](index.md#VHAction)`>, VHState, VHAction>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L34)
+`abstract class DelegateRecyclerAdapter<GState, GExt, VH : `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<`[`VHState`](index.md#VHState)`, `[`VHAction`](index.md#VHAction)`>, VHState, VHAction>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L43)
 
-[RecyclerView.Adapter](#) that delegates method calls to another [RecyclerView.Adapter](#)
+[RecyclerView.Adapter](#) that delegates method calls to another [RecyclerView.Adapter](#).
+
+### Parameters
+
+`GState` - The global state type.
+
+`GExt` - See [IPropInjector.external](../../org.swiften.redux.ui/-i-action-dependency/external.md).
+
+`VH` - The [RecyclerView.ViewHolder](#) instance.
+
+`VHState` - The [VH](index.md#VH) state type. See [ReduxProps.state](../../org.swiften.redux.ui/-redux-props/state.md).
+
+`VHAction` - The [VH](index.md#VH) action type. See [ReduxProps.action](../../org.swiften.redux.ui/-redux-props/action.md).
+
+`adapter` - The base [RecyclerView.Adapter](#) instance.
 
 ### Constructors
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `DelegateRecyclerAdapter(adapter: <ERROR CLASS><`[`VH`](index.md#VH)`>)`<br>[RecyclerView.Adapter](#) that delegates method calls to another [RecyclerView.Adapter](#) |
+| [&lt;init&gt;](-init-.md) | `DelegateRecyclerAdapter(adapter: <ERROR CLASS><`[`VH`](index.md#VH)`>)`<br>[RecyclerView.Adapter](#) that delegates method calls to another [RecyclerView.Adapter](#). |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
-| [adapter](adapter.md) | `val adapter: <ERROR CLASS><`[`VH`](index.md#VH)`>` |
+| [adapter](adapter.md) | `val adapter: <ERROR CLASS><`[`VH`](index.md#VH)`>`<br>The base [RecyclerView.Adapter](#) instance. |
 | [composite](composite.md) | `val composite: `[`CompositeReduxSubscription`](../../org.swiften.redux.core/-composite-redux-subscription/index.md) |
 
 ### Functions

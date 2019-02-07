@@ -4,5 +4,10 @@
 
 `JustEffect(value: `[`R`](index.md#R)`)`
 
-[ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) whose [SagaOutput](../-saga-output/index.md) simply emits [value](value.md)
+[ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) whose [SagaOutput](../-saga-output/index.md) simply emits [value](value.md).
 
+### Parameters
+
+`R` - The result emission type.
+
+`value` - The [R](index.md#R) value to be emitted.

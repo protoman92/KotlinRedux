@@ -4,5 +4,8 @@
 
 `WatchConnectivityEffect(context: <ERROR CLASS>)`
 
-[ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) watches for network connectivity changes
+[ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) watches for network connectivity changes.
 
+### Parameters
+
+`context` - A [Context](#) instance.

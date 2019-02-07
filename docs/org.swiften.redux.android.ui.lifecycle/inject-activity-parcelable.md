@@ -2,8 +2,21 @@
 
 # injectActivityParcelable
 
-`inline fun <reified GState, GExt> `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-activity-parcelable.md#GState)`, `[`GExt`](inject-activity-parcelable.md#GExt)`>.injectActivityParcelable(application: <ERROR CLASS>, noinline inject: `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-activity-parcelable.md#GState)`, `[`GExt`](inject-activity-parcelable.md#GExt)`>.(<ERROR CLASS>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidActivity.kt#L97)
+`inline fun <reified GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, GExt : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-activity-parcelable.md#GState)`, `[`GExt`](inject-activity-parcelable.md#GExt)`>.injectActivityParcelable(application: <ERROR CLASS>, noinline inject: `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-activity-parcelable.md#GState)`, `[`GExt`](inject-activity-parcelable.md#GExt)`>.(<ERROR CLASS>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidActivity.kt#L128)
 
 Similar to [injectActivity](inject-activity.md), but provides default persistence for when [GState](inject-activity-parcelable.md#GState) is
-[Parcelable](#)
+[Parcelable](#).
+
+### Parameters
+
+`GState` - The global state type.
+
+`GExt` - See [IPropInjector.external](../org.swiften.redux.ui/-i-action-dependency/external.md).
+
+`application` - An [Application](#) instance.
+
+`inject` - Function that performs injections on [LifecycleOwner](#) instances passing through.
+
+**Return**
+An [Application.ActivityLifecycleCallbacks](#) instance.
 

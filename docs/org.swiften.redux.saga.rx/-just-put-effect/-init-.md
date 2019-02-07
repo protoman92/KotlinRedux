@@ -4,5 +4,8 @@
 
 `JustPutEffect(action: `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`)`
 
-[ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) whose [SagaOutput](../-saga-output/index.md) simply dispatches [action](action.md)
+[ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) whose [SagaOutput](../-saga-output/index.md) simply dispatches [action](action.md).
 
+### Parameters
+
+`action` - The [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) to be dispatched.

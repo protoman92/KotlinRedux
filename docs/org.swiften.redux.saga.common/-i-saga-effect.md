@@ -16,4 +16,4 @@ redux-saga for React.js, classes that implement [ISagaEffect](./-i-saga-effect.m
 
 | Name | Summary |
 |---|---|
-| [SagaEffect](-saga-effect/index.md) | `abstract class SagaEffect<R> : `[`ISagaEffect`](./-i-saga-effect.md)`<`[`R`](-saga-effect/index.md#R)`>`<br>Abstract class to allow better interfacing with Java. |
+| [SagaEffect](-saga-effect/index.md) | `abstract class SagaEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`ISagaEffect`](./-i-saga-effect.md)`<`[`R`](-saga-effect/index.md#R)`>`<br>Abstract class to allow better interfacing with Java. |

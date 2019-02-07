@@ -2,7 +2,16 @@
 
 # catchError
 
-`fun <R> catchError(catcher: (`[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)`) -> `[`R`](catch-error.md#R)`): `[`ISagaEffectTransformer`](../-i-saga-effect-transformer.md)`<`[`R`](catch-error.md#R)`, `[`R`](catch-error.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L26)
+`fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> catchError(catcher: (`[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)`) -> `[`R`](catch-error.md#R)`): `[`ISagaEffectTransformer`](../-i-saga-effect-transformer.md)`<`[`R`](catch-error.md#R)`, `[`R`](catch-error.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L33)
 
 Create a [CatchErrorEffect](../-catch-error-effect/index.md).
+
+### Parameters
+
+`R` - The result emission type.
+
+`catcher` - See [CatchErrorEffect.catcher](../-catch-error-effect/catcher.md).
+
+**Return**
+An [ISagaEffectTransformer](../-i-saga-effect-transformer.md) instance.
 

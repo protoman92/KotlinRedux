@@ -7,3 +7,12 @@
 [ISagaEffect](../-i-saga-effect.md) whose output performs some asynchronous work with [transformer](transformer.md), based on the
 emissions from another [source](source.md), and then emit the result.
 
+### Parameters
+
+`P` - The source emission type.
+
+`R` - The result emission type.
+
+`source` - The source [ISagaEffect](../-i-saga-effect.md).
+
+`transformer` - Function that transforms [P](index.md#P) to [R](index.md#R).

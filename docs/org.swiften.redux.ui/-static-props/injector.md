@@ -2,9 +2,7 @@
 
 # injector
 
-`val injector: `[`IPropInjector`](../-i-prop-injector/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L39)
+`val injector: `[`IPropInjector`](../-i-prop-injector/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L28)
 
-Overrides [IStaticProps.injector](../-i-static-props/injector.md)
-
-See [IStaticProps.injector](../-i-static-props/injector.md).
+An [IPropInjector](../-i-prop-injector/index.md) instance.
 

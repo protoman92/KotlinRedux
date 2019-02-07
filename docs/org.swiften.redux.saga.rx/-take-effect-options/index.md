@@ -2,7 +2,7 @@
 
 # TakeEffectOptions
 
-`data class TakeEffectOptions` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/RxSaga.kt#L109)
+`data class TakeEffectOptions` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/RxSaga.kt#L110)
 
 Options for [TakeEffect](../-take-effect/index.md)
 

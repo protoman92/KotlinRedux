@@ -12,6 +12,6 @@ also invokes [IPropLifecycleOwner.beforePropInjectionStarts](../-i-prop-lifecycl
 
 `GState` - The global state type.
 
-`GExt` - The global external argument.
+`GExt` - See [IPropInjector.external](../-i-action-dependency/external.md).
 
 `store` - An [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md) instance.

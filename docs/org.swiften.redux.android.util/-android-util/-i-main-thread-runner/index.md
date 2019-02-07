@@ -2,7 +2,7 @@
 
 # IMainThreadRunner
 
-`interface IMainThreadRunner` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-util/src/main/java/org/swiften/redux/android/util/AndroidUtil.kt#L25)
+`interface IMainThreadRunner` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-util/src/main/java/org/swiften/redux/android/util/AndroidUtil.kt#L28)
 
 [invoke](invoke.md) some tasks on the main thread.
 
@@ -16,4 +16,4 @@
 
 | Name | Summary |
 |---|---|
-| [MainThreadRunner](../-main-thread-runner/index.md) | `object MainThreadRunner : `[`IMainThreadRunner`](./index.md)<br>Default implementation for [IMainThreadRunner](./index.md) |
+| [MainThreadRunner](../-main-thread-runner/index.md) | `object MainThreadRunner : `[`IMainThreadRunner`](./index.md)<br>Default implementation for [IMainThreadRunner](./index.md). |

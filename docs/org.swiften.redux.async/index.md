@@ -12,4 +12,4 @@
 
 | Name | Summary |
 |---|---|
-| [createAsyncMiddleware](create-async-middleware.md) | `fun createAsyncMiddleware(context: <ERROR CLASS> = SupervisorJob()): `[`IMiddleware`](../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>`<br>Create a [AsyncMiddleware](-async-middleware/index.md) with [context](create-async-middleware.md#org.swiften.redux.async$createAsyncMiddleware()/context) |
+| [createAsyncMiddleware](create-async-middleware.md) | `internal fun createAsyncMiddleware(context: <ERROR CLASS> = SupervisorJob()): `[`IMiddleware`](../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>`<br>Create a [AsyncMiddleware](-async-middleware/index.md) with [context](create-async-middleware.md#org.swiften.redux.async$createAsyncMiddleware()/context). |

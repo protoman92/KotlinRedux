@@ -7,3 +7,16 @@
 [ISagaEffect](../-i-saga-effect.md) whose [ISagaOutput](../-i-saga-output/index.md) enforces ordering for two [ISagaOutput](../-i-saga-output/index.md) created by two other
 [ISagaEffect](../-i-saga-effect.md).
 
+### Parameters
+
+`R` - The first source emission type.
+
+`R2` - The second source emission type.
+
+`R3` - The result emission type.
+
+`source1` - The first source [ISagaEffect](../-i-saga-effect.md).
+
+`source2` - The second source [ISagaEffect](../-i-saga-effect.md).
+
+`combiner` - Function that combines [R](index.md#R) and [R2](index.md#R2) to produce [R3](index.md#R3).

@@ -15,6 +15,7 @@
 | [org.swiften.redux.core](org.swiften.redux.core/index.md) |  |
 | [org.swiften.redux.saga.common](org.swiften.redux.saga.common/index.md) |  |
 | [org.swiften.redux.saga.rx](org.swiften.redux.saga.rx/index.md) |  |
+| [org.swiften.redux.thunk](org.swiften.redux.thunk/index.md) |  |
 | [org.swiften.redux.ui](org.swiften.redux.ui/index.md) |  |
 
 ### Index

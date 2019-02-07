@@ -2,29 +2,26 @@
 
 # StaticProps
 
-`data class StaticProps<GState, GExt> : `[`IStaticProps`](../-i-static-props/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L38)
+`data class StaticProps<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, GExt : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L27)
 
-[IStaticProps](../-i-static-props/index.md) implementation.
+Container for an static dependencies.
 
 ### Parameters
 
 `GState` - The global state type.
 
-`GExt` - The global external argument.
+`GExt` - See [IPropInjector.external](../-i-action-dependency/external.md).
 
-`injector` - See [IStaticProps.injector](../-i-static-props/injector.md).
-
-`subscription` - See [IStaticProps.subscription](../-i-static-props/subscription.md).
+`injector` - An [IPropInjector](../-i-prop-injector/index.md) instance.
 
 ### Constructors
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `StaticProps(injector: `[`IPropInjector`](../-i-prop-injector/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>, subscription: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`)`<br>[IStaticProps](../-i-static-props/index.md) implementation. |
+| [&lt;init&gt;](-init-.md) | `StaticProps(injector: `[`IPropInjector`](../-i-prop-injector/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>)`<br>Container for an static dependencies. |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
-| [injector](injector.md) | `val injector: `[`IPropInjector`](../-i-prop-injector/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>`<br>See [IStaticProps.injector](../-i-static-props/injector.md). |
-| [subscription](subscription.md) | `val subscription: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)<br>See [IStaticProps.subscription](../-i-static-props/subscription.md). |
+| [injector](injector.md) | `val injector: `[`IPropInjector`](../-i-prop-injector/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>`<br>An [IPropInjector](../-i-prop-injector/index.md) instance. |

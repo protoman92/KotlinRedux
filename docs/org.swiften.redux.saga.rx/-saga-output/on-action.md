@@ -2,7 +2,7 @@
 
 # onAction
 
-`val onAction: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/RxSaga.kt#L25)
+`val onAction: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/RxSaga.kt#L22)
 
 Overrides [ISagaOutput.onAction](../../org.swiften.redux.saga.common/-i-saga-output/on-action.md)
 

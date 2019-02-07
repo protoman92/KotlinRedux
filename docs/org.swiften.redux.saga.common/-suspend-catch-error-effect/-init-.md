@@ -4,5 +4,12 @@
 
 `SuspendCatchErrorEffect(source: `[`ISagaEffect`](../-i-saga-effect.md)`<`[`R`](index.md#R)`>, catcher: suspend <ERROR CLASS>.(`[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)`) -> `[`R`](index.md#R)`)`
 
-Similar to [CatchErrorEffect](../-catch-error-effect/index.md), but handles suspending [catcher](catcher.md)
+Similar to [CatchErrorEffect](../-catch-error-effect/index.md), but handles suspending [catcher](catcher.md).
 
+### Parameters
+
+`R` - The result emission type.
+
+`source` - The source [ISagaEffect](../-i-saga-effect.md).
+
+`catcher` - Function that catches error.

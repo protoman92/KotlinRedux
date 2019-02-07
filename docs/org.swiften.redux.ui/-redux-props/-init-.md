@@ -2,16 +2,18 @@
 
 # &lt;init&gt;
 
-`ReduxProps(s: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`, v: `[`IVariableProps`](../-i-variable-props/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>?)`
+`ReduxProps(s: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`, state: `[`State`](index.md#State)`?, action: `[`Action`](index.md#Action)`?)`
 
-Container for [StaticProps](../-static-props/index.md) and [VariableProps](../-variable-props/index.md).
+Container for [s](s.md), [state](state.md) and [action](action.md).
 
 ### Parameters
 
-`State` - The state type.
+`State` - See [IVariableProps.state](../-i-variable-props/state.md).
 
-`Action` - The action type.
+`Action` - See [IVariableProps.action](../-i-variable-props/action.md).
 
 `s` - An [IReduxSubscription](../../org.swiften.redux.core/-i-redux-subscription/index.md) instance.
 
-`v` - An [IVariableProps](../-i-variable-props/index.md) instance.
+`state` - A [State](index.md#State) instance.
+
+`action` - An [Action](index.md#Action) instance.

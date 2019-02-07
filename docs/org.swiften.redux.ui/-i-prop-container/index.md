@@ -2,15 +2,15 @@
 
 # IPropContainer
 
-`interface IPropContainer<State, Action>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L49)
+`interface IPropContainer<State, Action>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L52)
 
 Represents a container for [ReduxProps](../-redux-props/index.md).
 
 ### Parameters
 
-`State` - The container state.
+`State` - See [ReduxProps.state](../-redux-props/state.md).
 
-`Action` - the container action.
+`Action` - See [ReduxProps.action](../-redux-props/action.md).
 
 ### Properties
 
@@ -28,4 +28,4 @@ Represents a container for [ReduxProps](../-redux-props/index.md).
 
 | Name | Summary |
 |---|---|
-| [ReduxListAdapter](../../org.swiften.redux.android.ui.recyclerview/-redux-list-adapter/index.md) | `abstract class ReduxListAdapter<GState, GExt, VH, S, A> : `[`IPropLifecycleOwner`](../-i-prop-lifecycle-owner/index.md)`<`[`GState`](../../org.swiften.redux.android.ui.recyclerview/-redux-list-adapter/index.md#GState)`, `[`GExt`](../../org.swiften.redux.android.ui.recyclerview/-redux-list-adapter/index.md#GExt)`>, `[`IPropContainer`](./index.md)`<`[`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)`<`[`S`](../../org.swiften.redux.android.ui.recyclerview/-redux-list-adapter/index.md#S)`>, `[`A`](../../org.swiften.redux.android.ui.recyclerview/-redux-list-adapter/index.md#A)`>`<br>Custom Redux-compatible [ListAdapter](#) implementation. This [ListAdapter](#) can receive [ReduxProps](../-redux-props/index.md) in order to call [ListAdapter.submitList](#). |
+| [ReduxListAdapter](../../org.swiften.redux.android.ui.recyclerview/-redux-list-adapter/index.md) | `abstract class ReduxListAdapter<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, GExt : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, VH, VHS, VHA> : `[`IPropLifecycleOwner`](../-i-prop-lifecycle-owner/index.md)`<`[`GState`](../../org.swiften.redux.android.ui.recyclerview/-redux-list-adapter/index.md#GState)`, `[`GExt`](../../org.swiften.redux.android.ui.recyclerview/-redux-list-adapter/index.md#GExt)`>, `[`IPropContainer`](./index.md)`<`[`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)`<`[`VHS`](../../org.swiften.redux.android.ui.recyclerview/-redux-list-adapter/index.md#VHS)`>, `[`VHA`](../../org.swiften.redux.android.ui.recyclerview/-redux-list-adapter/index.md#VHA)`>`<br>Custom Redux-compatible [ListAdapter](#) implementation. This [ListAdapter](#) can receive [ReduxProps](../-redux-props/index.md) in order to call [ListAdapter.submitList](#). |

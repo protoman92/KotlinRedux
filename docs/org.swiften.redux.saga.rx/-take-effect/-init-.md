@@ -7,3 +7,14 @@
 [TakeEffect](index.md) instances produces streams that filter [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) with [extractor](extractor.md) and pluck out
 the appropriate ones to perform additional work on with [creator](creator.md).
 
+### Parameters
+
+`P` - The input value extracted from [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md).
+
+`R` - The result emission type.
+
+`extractor` - Function that extracts [P](index.md#P) from [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md).
+
+`options` - A [TakeEffectOptions](../-take-effect-options/index.md) instance.
+
+`creator` - Function that creates [ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) from [P](index.md#P).

@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`SagaInput(scope: <ERROR CLASS> = GlobalScope, stateGetter: `[`IStateGetter`](../../org.swiften.redux.core/-i-state-getter.md)`<*>, dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`)`
+`SagaInput(scope: <ERROR CLASS> = GlobalScope, lastState: `[`IStateGetter`](../../org.swiften.redux.core/-i-state-getter.md)`<*>, dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`)`
 
 [SagaInput](index.md) for an [ISagaEffect](../-i-saga-effect.md), which exposes a [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md)'s internal functionalities.
 
@@ -10,6 +10,6 @@
 
 `scope` - A [CoroutineScope](#) instance.
 
-`stateGetter` - See [IReduxStore.lastState](../../org.swiften.redux.core/-i-state-getter-provider/last-state.md).
+`lastState` - See [IReduxStore.lastState](../../org.swiften.redux.core/-i-state-getter-provider/last-state.md).
 
 `dispatch` - See [IReduxStore.dispatch](../../org.swiften.redux.core/-i-dispatcher-provider/dispatch.md).

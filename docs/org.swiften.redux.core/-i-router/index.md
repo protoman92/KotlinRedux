@@ -26,4 +26,4 @@ Abstract the necessary work to navigate from one [Screen](index.md#Screen) to an
 
 | Name | Summary |
 |---|---|
-| [SingleActivityRouter](../../org.swiften.redux.android.router/-single-activity-router/index.md) | `internal class SingleActivityRouter<AT, Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IRouter`](./index.md)`<`[`Screen`](../../org.swiften.redux.android.router/-single-activity-router/index.md#Screen)`>`<br>[IRouter](./index.md) that works for a single [AppCompatActivity](#) and multiple [Fragment](#) |
+| [SingleActivityRouter](../../org.swiften.redux.android.router/-single-activity-router/index.md) | `internal class SingleActivityRouter<AT, Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IRouter`](./index.md)`<`[`Screen`](../../org.swiften.redux.android.router/-single-activity-router/index.md#Screen)`>`<br>[IRouter](./index.md) that works for a single [AppCompatActivity](#) and multiple [Fragment](#). |

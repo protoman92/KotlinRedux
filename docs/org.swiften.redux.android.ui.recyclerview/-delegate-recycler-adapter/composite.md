@@ -2,4 +2,4 @@
 
 # composite
 
-`protected val composite: `[`CompositeReduxSubscription`](../../org.swiften.redux.core/-composite-redux-subscription/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L39)
+`protected val composite: `[`CompositeReduxSubscription`](../../org.swiften.redux.core/-composite-redux-subscription/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L48)

@@ -2,16 +2,14 @@
 
 # &lt;init&gt;
 
-`StaticProps(injector: `[`IPropInjector`](../-i-prop-injector/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>, subscription: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`)`
+`StaticProps(injector: `[`IPropInjector`](../-i-prop-injector/index.md)`<`[`GState`](index.md#GState)`, `[`GExt`](index.md#GExt)`>)`
 
-[IStaticProps](../-i-static-props/index.md) implementation.
+Container for an static dependencies.
 
 ### Parameters
 
 `GState` - The global state type.
 
-`GExt` - The global external argument.
+`GExt` - See [IPropInjector.external](../-i-action-dependency/external.md).
 
-`injector` - See [IStaticProps.injector](../-i-static-props/injector.md).
-
-`subscription` - See [IStaticProps.subscription](../-i-static-props/subscription.md).
+`injector` - An [IPropInjector](../-i-prop-injector/index.md) instance.

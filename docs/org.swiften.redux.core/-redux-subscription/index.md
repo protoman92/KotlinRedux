@@ -39,4 +39,4 @@ from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md).
 | Name | Summary |
 |---|---|
 | [EMPTY](-e-m-p-t-y.md) | `val EMPTY: `[`ReduxSubscription`](./index.md)<br>Mock [ReduxSubscription](./index.md) that is used every time there is no meaningful subscription logic to be unsubscribed on. |
-| [EMPTY_ID](-e-m-p-t-y_-i-d.md) | `val EMPTY_ID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [EMPTY_ID](-e-m-p-t-y_-i-d.md) | `const val EMPTY_ID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |

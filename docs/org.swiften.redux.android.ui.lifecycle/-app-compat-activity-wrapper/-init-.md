@@ -4,5 +4,8 @@
 
 `AppCompatActivityWrapper(activity: <ERROR CLASS>)`
 
-Wrap an [AppCompatActivity](#) to implement [IAppCompatActivity](../-i-app-compat-activity/index.md)
+Wrap an [AppCompatActivity](#) to implement [IAppCompatActivity](../-i-app-compat-activity/index.md).
 
+### Parameters
+
+`activity` - An [AppCompatActivity](#) instance.

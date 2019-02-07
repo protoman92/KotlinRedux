@@ -2,7 +2,7 @@
 
 # context
 
-`private val context: <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-async/src/main/kotlin/org/swiften/redux/async/AsyncMiddleware.kt#L25)
+`private val context: <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-async/src/main/kotlin/org/swiften/redux/async/AsyncMiddleware.kt#L24)
 
 A [CoroutineContext](#) instance.
 

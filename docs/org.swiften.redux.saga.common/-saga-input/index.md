@@ -10,7 +10,7 @@
 
 `scope` - A [CoroutineScope](#) instance.
 
-`stateGetter` - See [IReduxStore.lastState](../../org.swiften.redux.core/-i-state-getter-provider/last-state.md).
+`lastState` - See [IReduxStore.lastState](../../org.swiften.redux.core/-i-state-getter-provider/last-state.md).
 
 `dispatch` - See [IReduxStore.dispatch](../../org.swiften.redux.core/-i-dispatcher-provider/dispatch.md).
 
@@ -18,12 +18,12 @@
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `SagaInput(scope: <ERROR CLASS> = GlobalScope, stateGetter: `[`IStateGetter`](../../org.swiften.redux.core/-i-state-getter.md)`<*>, dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`)`<br>[SagaInput](./index.md) for an [ISagaEffect](../-i-saga-effect.md), which exposes a [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md)'s internal functionalities. |
+| [&lt;init&gt;](-init-.md) | `SagaInput(scope: <ERROR CLASS> = GlobalScope, lastState: `[`IStateGetter`](../../org.swiften.redux.core/-i-state-getter.md)`<*>, dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`)`<br>[SagaInput](./index.md) for an [ISagaEffect](../-i-saga-effect.md), which exposes a [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md)'s internal functionalities. |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
 | [dispatch](dispatch.md) | `val dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)<br>See [IReduxStore.dispatch](../../org.swiften.redux.core/-i-dispatcher-provider/dispatch.md). |
+| [lastState](last-state.md) | `val lastState: `[`IStateGetter`](../../org.swiften.redux.core/-i-state-getter.md)`<*>`<br>See [IReduxStore.lastState](../../org.swiften.redux.core/-i-state-getter-provider/last-state.md). |
 | [scope](scope.md) | `val scope: <ERROR CLASS>`<br>A [CoroutineScope](#) instance. |
-| [stateGetter](state-getter.md) | `val stateGetter: `[`IStateGetter`](../../org.swiften.redux.core/-i-state-getter.md)`<*>`<br>See [IReduxStore.lastState](../../org.swiften.redux.core/-i-state-getter-provider/last-state.md). |
