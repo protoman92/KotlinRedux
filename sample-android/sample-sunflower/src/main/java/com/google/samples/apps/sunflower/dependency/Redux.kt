@@ -8,19 +8,20 @@ package com.google.samples.apps.sunflower.dependency
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.lifecycle.Transformations
 import com.google.samples.apps.sunflower.data.GardenPlanting
 import com.google.samples.apps.sunflower.data.GardenPlantingRepository
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.data.PlantRepository
 import kotlinx.android.parcel.Parcelize
+import org.swiften.kotlinfp.Option
 import org.swiften.redux.android.saga.rx.core.CoreAndroidEffects.watchConnectivity
 import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeEveryData
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.catchError
 import org.swiften.redux.saga.common.compactMap
 import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapSuspend
@@ -171,10 +172,10 @@ object Redux {
             is Screen.PlantListToPlantDetail -> it.plantId
           }
         }) { plantId ->
-          takeEveryData { api.getGardenPlantingForPlant(plantId) }
-            .map { it != null }
+          takeEveryData { Transformations
+            .map(api.getGardenPlantingForPlant(plantId)) { Option.wrap(it) } }
+            .map { it.value != null }
             .put { Action.UpdateSelectedPlantStatus(it) }
-            .catchError {}
         }
       }
 

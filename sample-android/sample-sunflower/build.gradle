@@ -35,6 +35,7 @@ allprojects {
   repositories {
     google()
     jcenter()
+    maven { url = "https://jitpack.io" }
     maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
   }
 }
@@ -92,6 +93,7 @@ dependencies {
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
 
   implementation project(':android:android-all')
+  implementation "com.github.protoman92:KotlinFP:master-SNAPSHOT"
 
   // Testing dependencies
   androidTestImplementation "androidx.arch.core:core-testing:$androidxCoreTest"

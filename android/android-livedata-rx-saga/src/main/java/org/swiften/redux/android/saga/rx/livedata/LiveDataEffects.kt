@@ -17,7 +17,7 @@ object LiveDataEffects {
    * @param creator See [TakeEveryEffect.creator].
    * @return A [SagaEffect] instance.
    */
-  fun <R> takeEveryData(creator: () -> LiveData<R>): SagaEffect<R> {
+  fun <R> takeEveryData(creator: () -> LiveData<R>): SagaEffect<R> where R : Any {
     return TakeEveryEffect(creator)
   }
 }

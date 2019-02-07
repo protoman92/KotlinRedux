@@ -24,7 +24,8 @@ import org.swiften.redux.saga.rx.SagaOutput
  * @param R The result emission type.
  * @param creator Function that create [LiveData].
  */
-internal class TakeEveryEffect<R>(private val creator: () -> LiveData<R>) : SagaEffect<R>() {
+internal class TakeEveryEffect<R>(private val creator: () -> LiveData<R>) : SagaEffect<R>()
+  where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
     val stream = Observable
       .create<R> { emitter ->
