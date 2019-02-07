@@ -71,7 +71,6 @@ internal class SingleActivityRouter<AT, Screen>(
  * Create a [SingleActivityRouter].
  * @param AT The [AppCompatActivity] type used by the [application].
  * @param Screen The [IRouterScreen] type used by the [application].
- * @param cls The [AT] [Class] instance.
  * @param application The main [Application] instance.
  * @param runner An [AndroidUtil.IMainThreadRunner] instance.
  * @param navigate Function that performs the navigation.
@@ -88,7 +87,6 @@ inline fun <reified AT, Screen> createSingleActivityRouter(
  * Create a [SingleActivityRouter] with the default [AndroidUtil.MainThreadRunner].
  * @param AT The [AppCompatActivity] type used by the [application].
  * @param Screen The [IRouterScreen] type used by the [application].
- * @param cls The [AT] [Class] instance.
  * @param application The main [Application] instance.
  * @param navigate Function that performs the navigation.
  * @return A [SingleActivityRouter] instance.

@@ -24,7 +24,10 @@ import kotlin.concurrent.write
  * @param GExt See [IPropInjector.external].
  */
 interface IPropLifecycleOwner<GState : Any, GExt : Any> {
-  /** This is called before [IPropInjector.inject] is called. */
+  /**
+   * This is called before [IPropInjector.inject] is called.
+   * @param sp A [StaticProps] instance.
+   */
   fun beforePropInjectionStarts(sp: StaticProps<GState, GExt>)
 
   /** This is called after [IReduxSubscription.unsubscribe] is called. */
@@ -92,9 +95,8 @@ interface IStateMapper<GState : Any, OutProps, State> {
  */
 interface IActionMapper<GExt : Any, OutProps, Action> {
   /**
-   * Map [IActionDispatcher] to [Action] using [GState], [GExt] and [OutProps]
+   * Map [IActionDispatcher] to [Action] using [GExt] and [OutProps]
    * @param static An [IActionDependency] instance.
-   * @param state The latest [GState] instance.
    * @param outProps The [OutProps] instance.
    * @return An [Action] instance.
    */
@@ -230,6 +232,7 @@ open class PropInjector<GState : Any, GExt : Any>(
  * Kotlin code, and catch [NullPointerException] to satisfy Java code. Also return the
  * [ReduxSubscription.id] that can be used to track and remove the relevant [ReduxSubscription]
  * from other containers.
+ * @receiver An [IPropContainer] instance.
  * @return The [IReduxSubscription.id].
  */
 fun IPropContainer<*, *>.unsubscribeSafely(): String? {

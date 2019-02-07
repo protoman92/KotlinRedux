@@ -23,25 +23,32 @@ import org.swiften.redux.ui.unsubscribeSafely
 import java.util.Date
 
 /** Created by haipham on 2019/01/24 */
-/** Callback for [DiffUtil.ItemCallback] since [DiffUtil.ItemCallback] is an abstract class */
+/** Callback for [DiffUtil.ItemCallback] since [DiffUtil.ItemCallback] is an abstract class. */
 interface IDiffItemCallback<T> {
-  /** @see [DiffUtil.ItemCallback.areItemsTheSame] */
+  /** @see [DiffUtil.ItemCallback.areItemsTheSame]. */
   fun areItemsTheSame(oldItem: T, newItem: T): Boolean
 
-  /** @see [DiffUtil.ItemCallback.areContentsTheSame] */
+  /** @see [DiffUtil.ItemCallback.areContentsTheSame]. */
   fun areContentsTheSame(oldItem: T, newItem: T): Boolean
 }
 
 /**
  * Custom Redux-compatible [ListAdapter] implementation. This [ListAdapter] can receive [ReduxProps]
  * in order to call [ListAdapter.submitList].
+ * @param GState The global state type.
+ * @param GExt See [IPropInjector.external].
+ * @param VH The [RecyclerView.ViewHolder] instance.
+ * @param VHS The [VH] state type. See [ReduxProps.state].
+ * @param VHA The [VH] action type. See [ReduxProps.action].
+ * @param adapter The base [RecyclerView.Adapter] instance.
+ * @param diffCallback A [DiffUtil.ItemCallback] instance.
  */
-abstract class ReduxListAdapter<GState, GExt, VH, S, A>(
+abstract class ReduxListAdapter<GState, GExt, VH, VHS, VHA>(
   private val adapter: RecyclerView.Adapter<VH>,
-  diffCallback: DiffUtil.ItemCallback<S>
-) : ListAdapter<S, VH>(diffCallback),
+  diffCallback: DiffUtil.ItemCallback<VHS>
+) : ListAdapter<VHS, VH>(diffCallback),
   IPropLifecycleOwner<GState, GExt> by EmptyPropLifecycleOwner(),
-  IPropContainer<List<S>, A> where GState : Any, GExt : Any, VH : RecyclerView.ViewHolder {
+  IPropContainer<List<VHS>, VHA> where GState : Any, GExt : Any, VH : RecyclerView.ViewHolder {
   internal lateinit var staticProps: StaticProps<GState, GExt>
 
   /**
@@ -55,7 +62,7 @@ abstract class ReduxListAdapter<GState, GExt, VH, S, A>(
    * [ReduxProps.action] instance must be non-null upon [onBindViewHolder]. As a result, we can
    * safely access [ReduxProps.action] in [onBindViewHolder].
    */
-  override var reduxProps by ObservableReduxProps<List<S>, A> { _, next ->
+  override var reduxProps by ObservableReduxProps<List<VHS>, VHA> { _, next ->
     this.submitList(next.state ?: arrayListOf())
   }
 
@@ -128,6 +135,14 @@ abstract class ReduxListAdapter<GState, GExt, VH, S, A>(
  *
  * Note that this does not support lifecycle handling, so we will need to manually set null via
  * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].
+ * @param GState The global state type.
+ * @param GExt See [IPropInjector.external].
+ * @param VH The [RecyclerView.ViewHolder] instance.
+ * @param VHS The [VH] state type. See [ReduxProps.state].
+ * @param VHA The [VH] action type. See [ReduxProps.action].
+ * @param adapter The base [RecyclerView.Adapter] instance.
+ * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
+ * @param diffCallback A [DiffUtil.ItemCallback] instance.
  */
 @Suppress("UNCHECKED_CAST")
 fun <GState, GExt, VH, VHS, VHA> IPropInjector<GState, GExt>.injectDiffedAdapter(

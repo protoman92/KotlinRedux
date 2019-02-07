@@ -10,9 +10,14 @@ import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.SagaEffect
 
 /** Created by haipham on 2019/01/21 */
-/** Core [ISagaEffect] for Android */
+/** Core [ISagaEffect] for Android. */
 object CoreAndroidEffects {
-  /** Create a [WatchConnectivityEffect] */
-  fun watchConnectivity(context: Context): SagaEffect<Boolean> =
-    WatchConnectivityEffect(context)
+  /**
+   * Create a [WatchConnectivityEffect].
+   * @param context A [Context] instance.
+   * @return A [SagaEffect] instance.
+   */
+  fun watchConnectivity(context: Context): SagaEffect<Boolean> {
+    return WatchConnectivityEffect(context)
+  }
 }

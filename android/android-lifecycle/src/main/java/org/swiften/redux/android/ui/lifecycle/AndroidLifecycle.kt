@@ -17,7 +17,7 @@ import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ReduxProps
 
 /** Created by haipham on 2018/12/17 */
-/** Callback for use with [LifecycleObserver] */
+/** Callback for use with [LifecycleObserver]. */
 interface ILifecycleCallback {
   /**
    * This method will be called when it is safe to perform lifecycle-aware tasks, such as
@@ -32,7 +32,11 @@ interface ILifecycleCallback {
   fun onSafeForEndingLifecycleAwareTasks()
 }
 
-/** Use this [LifecycleObserver] to unsubscribe from a [IReduxSubscription] */
+/**
+ * Use this [LifecycleObserver] to unsubscribe from a [IReduxSubscription].
+ * @param lifecycleOwner A [LifecycleOwner] instance.
+ * @param [callback] An [ILifecycleCallback] instance.
+ */
 @Suppress("unused")
 open class ReduxLifecycleObserver(
   private val lifecycleOwner: LifecycleOwner,
@@ -75,7 +79,20 @@ open class ReduxLifecycleObserver(
   override fun toString() = this.callback.toString()
 }
 
-/** Call [IPropInjector.inject] for [lifecycleOwner] */
+/**
+ * Call [IPropInjector.inject] for [lifecycleOwner].
+ * @receiver An [IPropInjector] instance.
+ * @param GState The global state type.
+ * @param GExt See [IPropInjector.external].
+ * @param LC [LifecycleOwner] type that also implements [IPropContainer].
+ * @param OP The out props type.
+ * @param S See [ReduxProps.state].
+ * @param A See [ReduxProps.action].
+ * @param lifecycleOwner A [LC] instance.
+ * @param outProps An [OP] instance.
+ * @param mapper An [IPropMapper] instance.
+ * @return The injected [LC] instance.
+ */
 fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   lifecycleOwner: LC,
   outProps: OP,
@@ -120,7 +137,19 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   return lifecycleOwner
 }
 
-/** Call [IPropInjector.inject] for [lifecycleOwner] but it also implements [IPropMapper] */
+/**
+ * Call [IPropInjector.inject] for [lifecycleOwner] but it also implements [IPropMapper].
+ * @receiver An [IPropInjector] instance.
+ * @param GState The global state type.
+ * @param GExt See [IPropInjector.external].
+ * @param LC [LifecycleOwner] type that also implements [IPropContainer].
+ * @param OP The out props type.
+ * @param S See [ReduxProps.state].
+ * @param A See [ReduxProps.action].
+ * @param lifecycleOwner A [LC] instance.
+ * @param outProps An [OP] instance.
+ * @return The injected [LC] instance.
+ */
 fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   lifecycleOwner: LC,
   outProps: OP

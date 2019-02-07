@@ -10,12 +10,28 @@ import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.then
 
 /** Created by haipham on 2019/01/26 */
-/** Invoke a [CallEffect] on [this] */
+/**
+ * Invoke a [CallEffect] on [this].
+ * @receiver A [SagaEffect] instance.
+ * @param P The source emission type.
+ * @param R The result emission type.
+ * @param transformer See [CallEffect.transformer].
+ * @return A [SagaEffect] instance.
+ */
 fun <P, R> SagaEffect<P>.call(transformer: (P) -> Single<R>): SagaEffect<R> where P : Any, R : Any {
   return this.transform(SagaEffects.call(transformer))
 }
 
-/** Invoke a [SelectEffect] on [this] and combine the emitted values with [combiner] */
+/**
+ * Invoke a [SelectEffect] on [this] and combine the emitted values with [combiner].
+ * @param State The state type to select from.
+ * @param R The source emission type.
+ * @param R2 The value type to be selected from [State].
+ * @param R3 The result emission type.
+ * @param selector See [SelectEffect.selector].
+ * @param combiner Function that combines [R] and [R2] to produce [R3].
+ * @return A [SagaEffect] instance.
+ */
 inline fun <reified State, R, R2, R3> SagaEffect<R>.select(
   noinline selector: (State) -> R2,
   noinline combiner: (R, R2) -> R3
@@ -23,7 +39,13 @@ inline fun <reified State, R, R2, R3> SagaEffect<R>.select(
   return this.then(SagaEffects.select(selector), combiner)
 }
 
-/** Invoke a [SelectEffect] but ignore emissions from [this] */
+/**
+ * Invoke a [SelectEffect] but ignore emissions from [this].
+ * @param State The state type to select from.
+ * @param R2 The result emission type.
+ * @param selector See [SelectEffect.selector].
+ * @return A [SagaEffect] instance.
+ */
 inline fun <reified State, R2> SagaEffect<*>.select(noinline selector: (State) -> R2):
   SagaEffect<R2> where R2 : Any {
   return this.then(SagaEffects.select(selector))

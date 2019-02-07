@@ -13,6 +13,7 @@ import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
+import org.swiften.redux.ui.ReduxProps
 import org.swiften.redux.ui.unsubscribeSafely
 import java.util.Date
 
@@ -30,7 +31,15 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
   override fun onBindViewHolder(holder: VH, position: Int) {}
 }
 
-/** [RecyclerView.Adapter] that delegates method calls to another [RecyclerView.Adapter] */
+/**
+ * [RecyclerView.Adapter] that delegates method calls to another [RecyclerView.Adapter].
+ * @param GState The global state type.
+ * @param GExt See [IPropInjector.external].
+ * @param VH The [RecyclerView.ViewHolder] instance.
+ * @param VHState The [VH] state type. See [ReduxProps.state].
+ * @param VHAction The [VH] action type. See [ReduxProps.action].
+ * @param adapter The base [RecyclerView.Adapter] instance.
+ */
 abstract class DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>
 ) : RecyclerView.Adapter<VH>() where
@@ -100,6 +109,17 @@ abstract class DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction>(
  * Inject props for a [RecyclerView.Adapter] with a compatible [VH]. Note that this does not
  * support lifecycle handling, so we will need to manually set null via [RecyclerView.setAdapter]
  * in order to invoke [RecyclerView.Adapter.onViewRecycled], e.g. on orientation change.
+ * @return An [IPropInjector] instance.
+ * @param GState The global state type.
+ * @param GExt See [IPropInjector.external].
+ * @param VH The [RecyclerView.ViewHolder] instance.
+ * @param VHState The [VH] state type. See [ReduxProps.state].
+ * @param VHAction The [VH] action type. See [ReduxProps.action].
+ * @param adapter The base [RecyclerView.Adapter] instance.
+ * @param adapterMapper An [IStateMapper] instance that calculates item count for
+ * [RecyclerView.Adapter.getItemCount].
+ * @param vhMapper An [IPropMapper] instance for [VH].
+ * @return A [DelegateRecyclerAdapter] instance.
  */
 fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecyclerAdapter(
   adapter: RecyclerView.Adapter<VH>,

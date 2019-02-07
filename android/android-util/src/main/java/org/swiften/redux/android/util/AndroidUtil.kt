@@ -11,7 +11,10 @@ import android.os.Looper
 /** Created by haipham on 2019/01/27 */
 /** Top level namespace for Android utilities */
 object AndroidUtil {
-  /** Invoke [runnable] on the main thread */
+  /**
+   * Invoke [runnable] on the main thread.
+   * @param runnable Function that performs some side effects.
+   */
   @JvmStatic
   internal fun runOnUIThread(runnable: () -> Unit) {
     if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -26,7 +29,7 @@ object AndroidUtil {
     operator fun invoke(runnable: () -> Unit)
   }
 
-  /** Default implementation for [IMainThreadRunner] */
+  /** Default implementation for [IMainThreadRunner]. */
   object MainThreadRunner : IMainThreadRunner {
     override fun invoke(runnable: () -> Unit) = runOnUIThread(runnable)
   }

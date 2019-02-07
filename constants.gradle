@@ -1,5 +1,5 @@
 project.ext {
-  kotlin = "1.3.11"
+  kotlin = "1.3.20"
   jvmTarget = "1.6"
   dokka = "0.9.17"
   dokkaOutputDir = "docs"

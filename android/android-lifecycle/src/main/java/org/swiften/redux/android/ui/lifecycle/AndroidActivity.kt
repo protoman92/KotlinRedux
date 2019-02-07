@@ -20,9 +20,23 @@ import java.io.Serializable
 import java.util.Date
 
 /** Created by haipham on 2018/12/17 */
-/** Handle saving/restoring [GState] instances. */
+/**
+ * Handle saving/restoring [GState] instances.
+ * @param GState The global state type.
+ */
 interface IBundleStateSaver<GState> {
+  /**
+   * Save [state] to [bundle].
+   * @param bundle A [Bundle] instance.
+   * @param state A [GState] instance.
+   */
   fun saveState(bundle: Bundle, state: GState)
+
+  /**
+   * Restore a [GState] from [bundle].
+   * @param bundle A [Bundle] instance.
+   * @return A [GState] instance.
+   */
   fun restoreState(bundle: Bundle): GState?
 }
 
@@ -34,6 +48,13 @@ interface IBundleStateSaver<GState> {
  * on the [AppCompatActivity] being created, and also call [injectFragment]. This is why
  * [inject] accepts [LifecycleOwner] as its only parameter so that it can handle both
  * [AppCompatActivity] and [Fragment].
+ * @receiver An [IPropInjector] instance.
+ * @param GState The global state type.
+ * @param GExt See [IPropInjector.external].
+ * @param application An [Application] instance.
+ * @param saver An [IBundleStateSaver] instance.
+ * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
+ * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
 fun <GState, GExt> IPropInjector<GState, GExt>.injectActivity(
   application: Application,
@@ -73,7 +94,12 @@ fun <GState, GExt> IPropInjector<GState, GExt>.injectActivity(
 
 /**
  * Similar to [injectActivity], but provides default persistence for when [GState] is
- * [Serializable]
+ * [Serializable].
+ * @param GState The global state type.
+ * @param GExt See [IPropInjector.external].
+ * @param application An [Application] instance.
+ * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
+ * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
 inline fun <reified GState, GExt> IPropInjector<GState, GExt>.injectActivitySerializable(
   application: Application,
@@ -92,7 +118,12 @@ inline fun <reified GState, GExt> IPropInjector<GState, GExt>.injectActivitySeri
 
 /**
  * Similar to [injectActivity], but provides default persistence for when [GState] is
- * [Parcelable]
+ * [Parcelable].
+ * @param GState The global state type.
+ * @param GExt See [IPropInjector.external].
+ * @param application An [Application] instance.
+ * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
+ * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
 inline fun <reified GState, GExt> IPropInjector<GState, GExt>.injectActivityParcelable(
   application: Application,

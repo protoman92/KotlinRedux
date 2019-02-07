@@ -23,7 +23,10 @@ import org.swiften.redux.saga.common.SagaInput
 import org.swiften.redux.saga.rx.SagaOutput
 
 /** Created by haipham on 2019/01/21/1/ */
-/** [ISagaEffect] whose [ISagaOutput] watches for network connectivity changes */
+/**
+ * [ISagaEffect] whose [ISagaOutput] watches for network connectivity changes.
+ * @param context A [Context] instance.
+ */
 internal class WatchConnectivityEffect(private val context: Context) : SagaEffect<Boolean>() {
   override fun invoke(p1: SagaInput): ISagaOutput<Boolean> {
     val stream = Observable.create<Boolean> { emitter ->

@@ -19,6 +19,11 @@ import org.swiften.redux.ui.StaticProps
 /**
  * [PropInjector] specifically for Android that calls [inject] on the main thread. We use
  * inheritance here to ensure [StaticProps.injector] is set with this class instance.
+ * @param GState The global state type.
+ * @param GExt See [PropInjector.external].
+ * @param store An [IReduxStore] instance.
+ * @param external See [PropInjector.external].
+ * @param runner An [AndroidUtil.IMainThreadRunner] instance.
  */
 class AndroidPropInjector<GState, GExt>(
   store: IReduxStore<GState>,
