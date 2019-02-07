@@ -18,7 +18,7 @@ import kotlinx.coroutines.Deferred
 internal class CatchErrorEffect<R>(
   private val source: ISagaEffect<R>,
   private val catcher: (Throwable) -> R
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).catchError(this.catcher)
 }
 
@@ -31,7 +31,7 @@ internal class CatchErrorEffect<R>(
 internal class SuspendCatchErrorEffect<R>(
   private val source: ISagaEffect<R>,
   private val catcher: suspend CoroutineScope.(Throwable) -> R
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).catchSuspend(this.catcher)
 }
 
@@ -44,6 +44,6 @@ internal class SuspendCatchErrorEffect<R>(
 internal class AsyncCatchErrorEffect<R>(
   private val source: ISagaEffect<R>,
   private val catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).catchAsync(this.catcher)
 }

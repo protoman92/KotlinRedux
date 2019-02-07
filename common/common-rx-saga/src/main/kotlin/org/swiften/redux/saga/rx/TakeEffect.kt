@@ -23,10 +23,10 @@ import org.swiften.redux.saga.common.SagaInput
  * @param creator Function that creates [ISagaEffect] from [P].
  */
 internal abstract class TakeEffect<P, R>(
-  private val extractor: Function1<IReduxAction, P?>,
+  private val extractor: (IReduxAction) -> P?,
   private val options: TakeEffectOptions,
   private val creator: (P) -> ISagaEffect<R>
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where P : Any, R : Any {
   /**
    * Flatten an [ISagaOutput] that streams [ISagaOutput] to access the values streamed by
    * the inner [ISagaOutput].

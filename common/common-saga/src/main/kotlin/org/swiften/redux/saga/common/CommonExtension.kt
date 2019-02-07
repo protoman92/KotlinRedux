@@ -11,21 +11,25 @@ import org.swiften.redux.core.IReduxAction
 
 /** Created by haipham on 2019/01/26/1 */
 /**
- * Cast the emission from the current [ISagaEffect] to [R2] if possible.
+ * Cast the emission from the current [ISagaEffect] to [R] if possible.
  * @receiver A [SagaEffect] instance.
- * @param R2 The result emission type.
- * @param cls The [Class] of [R2].
+ * @param R The result emission type.
+ * @param cls The [Class] of [R].
  * @return A [SagaEffect] instance.
  */
-fun <R2> SagaEffect<*>.cast(cls: Class<R2>) = this.filter { cls.isInstance(it) }.map { cls.cast(it) }
+fun <R> SagaEffect<*>.cast(cls: Class<R>): SagaEffect<R> where R : Any {
+  return this.filter { cls.isInstance(it) }.map { cls.cast(it) }
+}
 
 /**
- * Cast the emission from the current [ISagaEffect] to [R2] if possible.
+ * Cast the emission from the current [ISagaEffect] to [R] if possible.
  * @receiver A [SagaEffect] instance.
- * @param R2 The result emission type.
+ * @param R The result emission type.
  * @return A [SagaEffect] instance.
  */
-inline fun <reified R2> SagaEffect<*>.cast() = this.filter { it is R2 }.map { it as R2 }
+inline fun <reified R> SagaEffect<*>.cast(): SagaEffect<R> where R : Any {
+  return this.filter { it is R }.map { it as R }
+}
 
 /**
  * Catch [Throwable] from upstream with [catcher].
@@ -34,7 +38,7 @@ inline fun <reified R2> SagaEffect<*>.cast() = this.filter { it is R2 }.map { it
  * @param catcher See [CatchErrorEffect.catcher].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.catchError(catcher: (Throwable) -> R): SagaEffect<R> {
+fun <R> SagaEffect<R>.catchError(catcher: (Throwable) -> R): SagaEffect<R> where R : Any {
   return this.transform(CommonEffects.catchError(catcher))
 }
 
@@ -45,7 +49,8 @@ fun <R> SagaEffect<R>.catchError(catcher: (Throwable) -> R): SagaEffect<R> {
  * @param catcher See [SuspendCatchErrorEffect.catcher].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.catchSuspend(catcher: suspend CoroutineScope.(Throwable) -> R): SagaEffect<R> {
+fun <R> SagaEffect<R>.catchSuspend(catcher: suspend CoroutineScope.(Throwable) -> R):
+  SagaEffect<R> where R : Any {
   return this.transform(CommonEffects.catchErrorSuspend(catcher))
 }
 
@@ -56,7 +61,8 @@ fun <R> SagaEffect<R>.catchSuspend(catcher: suspend CoroutineScope.(Throwable) -
  * @param catcher See [AsyncCatchErrorEffect.catcher].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.catchAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>): SagaEffect<R> {
+fun <R> SagaEffect<R>.catchAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>):
+  SagaEffect<R> where R : Any {
   return this.transform(CommonEffects.catchErrorAsync(catcher))
 }
 
@@ -67,7 +73,9 @@ fun <R> SagaEffect<R>.catchAsync(catcher: suspend CoroutineScope.(Throwable) -> 
  * @param millis See [DelayEffect.millis].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.delay(millis: Long) = this.transform(CommonEffects.delay(millis))
+fun <R> SagaEffect<R>.delay(millis: Long): SagaEffect<R> where R : Any {
+  return this.transform(CommonEffects.delay(millis))
+}
 
 /**
  * Invoke a [DoOnValueEffect] on [this].
@@ -76,7 +84,7 @@ fun <R> SagaEffect<R>.delay(millis: Long) = this.transform(CommonEffects.delay(m
  * @param performer See [DoOnValueEffect.performer].
  * @return A [SagaEffect] instance.*
  */
-fun <R> SagaEffect<R>.doOnValue(performer: (R) -> Unit): SagaEffect<R> {
+fun <R> SagaEffect<R>.doOnValue(performer: (R) -> Unit): SagaEffect<R> where R : Any {
   return this.transform(CommonEffects.doOnValue(performer))
 }
 
@@ -87,19 +95,19 @@ fun <R> SagaEffect<R>.doOnValue(performer: (R) -> Unit): SagaEffect<R> {
  * @param predicate See [FilterEffect.predicate].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.filter(predicate: (R) -> Boolean): SagaEffect<R> {
+fun <R> SagaEffect<R>.filter(predicate: (R) -> Boolean): SagaEffect<R> where R : Any {
   return this.transform(CommonEffects.filter(predicate))
 }
 
 /**
  * Invoke a [MapEffect] on the current [ISagaEffect].
  * @receiver A [SagaEffect] instance.
- * @param R The source emission type.
- * @param R2 The result emission type.
+ * @param P The source emission type.
+ * @param R The result emission type.
  * @param transformer See [MapEffect.transformer].
  * @return A [SagaEffect] instance.
  */
-fun <R, R2> SagaEffect<R>.map(transformer: (R) -> R2): SagaEffect<R2> {
+fun <P, R> SagaEffect<P>.map(transformer: (P) -> R): SagaEffect<R> where P : Any, R : Any {
   return this.transform(CommonEffects.map(transformer))
 }
 
@@ -111,7 +119,8 @@ fun <R, R2> SagaEffect<R>.map(transformer: (R) -> R2): SagaEffect<R2> {
  * @param transformer See [AsyncMapEffect.transformer].
  * @return A [SagaEffect] instance.
  */
-fun <P, R> SagaEffect<P>.mapAsync(transformer: suspend CoroutineScope.(P) -> Deferred<R>): SagaEffect<R> {
+fun <P, R> SagaEffect<P>.mapAsync(transformer: suspend CoroutineScope.(P) -> Deferred<R>):
+  SagaEffect<R> where P : Any, R : Any {
   return this.transform(CommonEffects.mapAsync(transformer))
 }
 
@@ -119,9 +128,12 @@ fun <P, R> SagaEffect<P>.mapAsync(transformer: suspend CoroutineScope.(P) -> Def
  * Invoke a [CompactMapEffect] on [this].
  * @receiver A [SagaEffect] instance.
  * @param R The result emission type.
+ * @param transformer See [CompactMapEffect.transformer].
  * @return An [ISagaEffect] instance.
  */
-fun <R : Any> SagaEffect<R?>.compactMap() = this.transform<R>(CommonEffects.compactMap())
+fun <P, R> SagaEffect<P>.compactMap(transformer: (P) -> R?): SagaEffect<R> where P : Any, R : Any {
+  return this.transform(CommonEffects.compactMap(transformer))
+}
 
 /**
  * Invoke a [PutEffect] on [this].
@@ -130,7 +142,7 @@ fun <R : Any> SagaEffect<R?>.compactMap() = this.transform<R>(CommonEffects.comp
  * @param actionCreator See [PutEffect.actionCreator].
  * @return A [SagaEffect] instance.
  */
-fun <P> SagaEffect<P>.put(actionCreator: (P) -> IReduxAction): SagaEffect<Any> {
+fun <P> SagaEffect<P>.put(actionCreator: (P) -> IReduxAction): SagaEffect<Any> where P : Any {
   return this.transform(CommonEffects.put(actionCreator))
 }
 
@@ -141,7 +153,9 @@ fun <P> SagaEffect<P>.put(actionCreator: (P) -> IReduxAction): SagaEffect<Any> {
  * @param times See [RetryEffect.times].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.retry(times: Long) = this.transform(CommonEffects.retry(times))
+fun <R> SagaEffect<R>.retry(times: Long): SagaEffect<R> where R : Any {
+  return this.transform(CommonEffects.retry(times))
+}
 
 /**
  * Invoke a [RetryEffect] on [this].
@@ -150,7 +164,7 @@ fun <R> SagaEffect<R>.retry(times: Long) = this.transform(CommonEffects.retry(ti
  * @param times See [RetryEffect.times].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.retry(times: Int) = this.retry(times.toLong())
+fun <R> SagaEffect<R>.retry(times: Int) where R : Any = this.retry(times.toLong())
 
 /**
  * Invoke a [SuspendMapEffect] on [this].
@@ -160,7 +174,9 @@ fun <R> SagaEffect<R>.retry(times: Int) = this.retry(times.toLong())
  * @param transformer See [SuspendMapEffect.transformer].
  * @return A [SagaEffect] instance.
  */
-fun <P, R> SagaEffect<P>.mapSuspend(transformer: suspend CoroutineScope.(P) -> R): SagaEffect<R> {
+fun <P, R> SagaEffect<P>.mapSuspend(
+  transformer: suspend CoroutineScope.(P) -> R
+): SagaEffect<R> where P : Any, R : Any {
   return this.transform(CommonEffects.mapSuspend(transformer))
 }
 
@@ -177,7 +193,7 @@ fun <P, R> SagaEffect<P>.mapSuspend(transformer: suspend CoroutineScope.(P) -> R
 fun <R, R2, R3> SagaEffect<R>.then(
   effect: ISagaEffect<R2>,
   combiner: Function2<R, R2, R3>
-): SagaEffect<R3> {
+): SagaEffect<R3> where R : Any, R2 : Any, R3 : Any {
   return CommonEffects.then(this, effect, combiner)
 }
 
@@ -189,7 +205,9 @@ fun <R, R2, R3> SagaEffect<R>.then(
  * @param effect See [ThenEffect.source2].
  * @return A [SagaEffect] instance.
  */
-fun <R, R2> SagaEffect<R>.then(effect: ISagaEffect<R2>) = this.then(effect) { _, b -> b }
+fun <R, R2> SagaEffect<R>.then(effect: ISagaEffect<R2>): SagaEffect<R2> where R : Any, R2 : Any {
+  return this.then(effect) { _, b -> b }
+}
 
 /**
  * Invoke [then] with a single [value].
@@ -199,7 +217,7 @@ fun <R, R2> SagaEffect<R>.then(effect: ISagaEffect<R2>) = this.then(effect) { _,
  * @param value See [ThenEffect.source2].
  * @return A [SagaEffect] instance.
  */
-fun <R, R2> SagaEffect<R>.justThen(value: R2) = this.map { value }
+fun <R, R2> SagaEffect<R>.justThen(value: R2) where R : Any, R2 : Any = this.map { value }
 
 /**
  * Invoke a [TimeoutEffect] on [this].
@@ -208,4 +226,6 @@ fun <R, R2> SagaEffect<R>.justThen(value: R2) = this.map { value }
  * @param millis See [TimeoutEffect.millis].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.timeout(millis: Long) = this.transform(CommonEffects.timeout(millis))
+fun <R> SagaEffect<R>.timeout(millis: Long): SagaEffect<R> where R : Any {
+  return this.transform(CommonEffects.timeout(millis))
+}

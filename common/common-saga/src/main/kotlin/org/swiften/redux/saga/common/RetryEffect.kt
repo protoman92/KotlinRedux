@@ -15,6 +15,6 @@ package org.swiften.redux.saga.common
 internal class RetryEffect<R>(
   private val source: ISagaEffect<R>,
   private val times: Long
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).retry(this.times)
 }

@@ -22,7 +22,7 @@ import org.swiften.redux.saga.common.SagaInput
 internal class CallEffect<P, R>(
   private val source: ISagaEffect<P>,
   private val transformer: (P) -> Single<R>
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where P : Any, R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).flatMap {
     SagaOutput(p1.scope, this.transformer(it).toFlowable()) { }
   }

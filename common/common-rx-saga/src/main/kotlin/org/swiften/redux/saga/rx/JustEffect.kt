@@ -16,6 +16,6 @@ import org.swiften.redux.saga.common.SagaInput
  * @param R The result emission type.
  * @param value The [R] value to be emitted.
  */
-internal class JustEffect<R>(private val value: R) : SagaEffect<R>() {
+internal class JustEffect<R>(private val value: R) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput) = SagaOutput(p1.scope, just(this.value)) {}
 }

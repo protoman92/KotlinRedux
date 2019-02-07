@@ -11,7 +11,6 @@ import android.net.Uri
 import androidx.fragment.app.Fragment
 import org.swiften.redux.android.router.createSingleActivityRouter
 import org.swiften.redux.core.IRouter
-import org.swiften.redux.core.createRouterMiddleware
 
 /** Created by viethai.pham on 2019/02/04 */
 class MainRouter(application: Application) :
@@ -25,8 +24,6 @@ class MainRouter(application: Application) :
         activity.startActivity(browserIntent)
         null
       }
-
-      else -> null
     }
 
     f?.also {

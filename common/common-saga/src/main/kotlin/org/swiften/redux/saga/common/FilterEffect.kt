@@ -15,6 +15,6 @@ package org.swiften.redux.saga.common
 internal class FilterEffect<R>(
   private val source: ISagaEffect<R>,
   private val predicate: (R) -> Boolean
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).filter(this.predicate)
 }

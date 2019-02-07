@@ -15,11 +15,8 @@ import org.swiften.redux.saga.common.ISagaOutput
 import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/22 */
-/** Use this for [rxSingle] to avoid forcing [T] to be subtype of [Any] */
-internal data class Boxed<T>(val value: T)
-
 /** @see [ISagaOutput] */
-class SagaOutput<T>(
+class SagaOutput<T : Any>(
   private val scope: CoroutineScope,
   private val stream: Flowable<T>,
   override val onAction: IActionDispatcher
@@ -28,22 +25,26 @@ class SagaOutput<T>(
   private var onDispose: () -> Unit = { }
   private val disposable by lazy { CompositeDisposable() }
 
-  private fun <T2> with(newStream: Flowable<T2>): ISagaOutput<T2> {
+  private fun <T2> with(newStream: Flowable<T2>): ISagaOutput<T2> where T2 : Any {
     val result = SagaOutput(this.scope, newStream, this.onAction)
     result.source = this
     result.onDispose = { this.dispose() }
     return result
   }
 
-  override fun <T2> map(transform: (T) -> T2) = this.with(this.stream.map(transform))
+  override fun <T2> map(transform: (T) -> T2): ISagaOutput<T2> where T2 : Any {
+    return this.with(this.stream.map(transform))
+  }
 
-  override fun <T2> mapSuspend(transform: suspend CoroutineScope.(T) -> T2): ISagaOutput<T2> {
+  override fun <T2> mapSuspend(transform: suspend CoroutineScope.(T) -> T2): ISagaOutput<T2>
+    where T2 : Any {
     return this.with(this.stream.flatMap { v ->
-      this@SagaOutput.rxSingle { Boxed(transform(this, v)) }.map(Boxed<T2>::value).toFlowable()
+      this@SagaOutput.rxSingle { transform(this, v) }.toFlowable()
     })
   }
 
-  override fun <T2> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>): ISagaOutput<T2> {
+  override fun <T2> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>):
+    ISagaOutput<T2> where T2 : Any {
     return this.mapSuspend { transform(it).await() }
   }
 
@@ -51,11 +52,11 @@ class SagaOutput<T>(
     return this.with(this.stream.doOnNext(performer))
   }
 
-  override fun <T2> flatMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> {
+  override fun <T2> flatMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any {
     return this.with(this.stream.flatMap { (transform(it) as SagaOutput<T2>).stream })
   }
 
-  override fun <T2> switchMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> {
+  override fun <T2> switchMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any {
     return this.with(this.stream.switchMap { (transform(it) as SagaOutput<T2>).stream })
   }
 
@@ -79,7 +80,7 @@ class SagaOutput<T>(
 
   override fun catchSuspend(catcher: suspend CoroutineScope.(Throwable) -> T): ISagaOutput<T> {
     return this.with(this.stream.onErrorResumeNext { e: Throwable ->
-      this@SagaOutput.rxSingle { Boxed(catcher(this, e)) }.map { it.value }.toFlowable()
+      this@SagaOutput.rxSingle { catcher(this, e) }.toFlowable()
     })
   }
 

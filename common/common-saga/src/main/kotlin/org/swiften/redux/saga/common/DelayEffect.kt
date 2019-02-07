@@ -15,6 +15,6 @@ package org.swiften.redux.saga.common
 internal class DelayEffect<R>(
   private val source: ISagaEffect<R>,
   private val millis: Long
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).delay(this.millis)
 }

@@ -23,8 +23,8 @@ abstract class CommonSagaEffectTest {
   protected class State
 
   protected val timeout: Long = 10000
-  abstract fun <T> justEffect(value: T): SagaEffect<T>
-  abstract fun <T : Any> fromEffect(vararg values: T): SagaEffect<T>
+  abstract fun <T> justEffect(value: T): SagaEffect<T> where T : Any
+  abstract fun <T> fromEffect(vararg values: T): SagaEffect<T> where T : Any
 
   fun test_takeEffect_shouldTakeCorrectActions(
     createTakeEffect: (
@@ -120,8 +120,7 @@ abstract class CommonSagaEffectTest {
 
     // When
     justEffect(1)
-      .map { null }
-      .compactMap()
+      .compactMap { null }
       .invoke()
       .subscribe({ finalValues.add(it) })
 

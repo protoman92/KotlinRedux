@@ -181,11 +181,10 @@ object Redux {
 
       private fun selectPlantFromGarden(): SagaEffect<Any> {
         return takeEveryAction<Action.SelectPlantFromGarden, Int, Any>({ it.index }) { index ->
-          select<State, List<PlantAndGardenPlantings>?> { it.plantAndGardenPlantings }
-            .map { it?.elementAtOrNull(index) }
-            .map { it?.plant }
-            .map { it?.plantId }
-            .compactMap()
+          select<State, Option<List<PlantAndGardenPlantings>>> { Option.wrap(it.plantAndGardenPlantings) }
+            .compactMap { it.value?.elementAtOrNull(index) }
+            .map { it.plant }
+            .map { it.plantId }
             .put { Screen.GardenToPlantDetail(it) }
         }
       }
@@ -217,10 +216,9 @@ object Redux {
     object PlantSaga {
       private fun selectPlantFromPlantList(): SagaEffect<Any> {
         return takeEveryAction<Action.SelectPlantFromPlantList, Int, Any>({ it.index }) { index ->
-          select<State, List<Plant>?> { it.plants }
-            .map { it?.elementAtOrNull(index) }
-            .map { it?.plantId }
-            .compactMap()
+          select<State, Option<List<Plant>>> { Option.wrap(it.plants) }
+            .compactMap { it.value?.elementAtOrNull(index) }
+            .map { it.plantId }
             .put { Screen.PlantListToPlantDetail(it) }
         }
       }

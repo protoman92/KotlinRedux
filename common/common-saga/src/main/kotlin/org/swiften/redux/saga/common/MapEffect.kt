@@ -7,6 +7,7 @@ package org.swiften.redux.saga.common
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import org.swiften.redux.core.Boxed
 
 /** Created by haipham on 2018/12/23 */
 /**
@@ -20,7 +21,7 @@ import kotlinx.coroutines.Deferred
 internal class MapEffect<P, R>(
   private val source: ISagaEffect<P>,
   private val transformer: (P) -> R
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where P : Any, R : Any {
   override fun invoke(input: SagaInput) = this.source.invoke(input).map(this.transformer)
 }
 
@@ -34,7 +35,7 @@ internal class MapEffect<P, R>(
 internal class AsyncMapEffect<P, R>(
   private val source: ISagaEffect<P>,
   private val transformer: suspend CoroutineScope.(P) -> Deferred<R>
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where P : Any, R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).mapAsync(this.transformer)
 }
 
@@ -48,7 +49,7 @@ internal class AsyncMapEffect<P, R>(
 internal class SuspendMapEffect<P, R>(
   private val source: ISagaEffect<P>,
   private val transformer: suspend CoroutineScope.(P) -> R
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where P : Any, R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).mapSuspend(this.transformer)
 }
 
@@ -57,8 +58,14 @@ internal class SuspendMapEffect<P, R>(
  * @param R The result emission type.
  * @param source The source [ISagaEffect] instance.
  */
-internal class CompactMapEffect<R : Any>(private val source: ISagaEffect<R?>): SagaEffect<R>() {
+internal class CompactMapEffect<P, R>(
+  private val source: ISagaEffect<P>,
+  private val transformer: (P) -> R?
+): SagaEffect<R>() where P : Any, R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
-    return this.source.invoke(p1).filter { it != null }.map { it!! }
+    return this.source.invoke(p1)
+      .map { Boxed(this@CompactMapEffect.transformer(it)) }
+      .filter { it.value != null }
+      .map { it.value!! }
   }
 }

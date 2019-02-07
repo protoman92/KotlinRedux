@@ -19,7 +19,9 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> delay(millis: Long): ISagaEffectTransformer<R, R> = { DelayEffect(it, millis) }
+  fun <R> delay(millis: Long): ISagaEffectTransformer<R, R> where R : Any {
+    return { DelayEffect(it, millis) }
+  }
 
   /**
    * Create a [CatchErrorEffect].
@@ -28,7 +30,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> catchError(catcher: (Throwable) -> R): ISagaEffectTransformer<R, R> {
+  fun <R> catchError(catcher: (Throwable) -> R): ISagaEffectTransformer<R, R> where R : Any {
     return { CatchErrorEffect(it, catcher) }
   }
 
@@ -40,7 +42,7 @@ object CommonEffects {
    */
   @JvmStatic
   fun <R> catchErrorSuspend(catcher: suspend CoroutineScope.(Throwable) -> R):
-    ISagaEffectTransformer<R, R> {
+    ISagaEffectTransformer<R, R> where R : Any {
     return { SuspendCatchErrorEffect(it, catcher) }
   }
 
@@ -53,7 +55,7 @@ object CommonEffects {
    */
   @JvmStatic
   fun <R> catchErrorAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>):
-    ISagaEffectTransformer<R, R> {
+    ISagaEffectTransformer<R, R> where R : Any {
     return { AsyncCatchErrorEffect(it, catcher) }
   }
 
@@ -64,7 +66,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> doOnValue(performer: (R) -> Unit): ISagaEffectTransformer<R, R> {
+  fun <R> doOnValue(performer: (R) -> Unit): ISagaEffectTransformer<R, R> where R : Any {
     return { DoOnValueEffect(it, performer) }
   }
 
@@ -75,7 +77,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> filter(predicate: (R) -> Boolean): ISagaEffectTransformer<R, R> {
+  fun <R> filter(predicate: (R) -> Boolean): ISagaEffectTransformer<R, R> where R : Any {
     return { FilterEffect(it, predicate) }
   }
 
@@ -86,7 +88,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <P, R> map(transformer: (P) -> R): ISagaEffectTransformer<P, R> {
+  fun <P, R> map(transformer: (P) -> R): ISagaEffectTransformer<P, R> where P : Any, R : Any {
     return { MapEffect(it, transformer) }
   }
 
@@ -98,7 +100,7 @@ object CommonEffects {
    */
   @JvmStatic
   fun <P, R> mapSuspend(transformer: suspend CoroutineScope.(P) -> R):
-    ISagaEffectTransformer<P, R> {
+    ISagaEffectTransformer<P, R> where P : Any, R : Any {
     return { SuspendMapEffect(it, transformer) }
   }
 
@@ -110,17 +112,22 @@ object CommonEffects {
    */
   @JvmStatic
   fun <P, R> mapAsync(transformer: suspend CoroutineScope.(P) -> Deferred<R>):
-    ISagaEffectTransformer<P, R> {
+    ISagaEffectTransformer<P, R> where P : Any, R : Any {
     return { AsyncMapEffect(it, transformer) }
   }
 
   /**
    * Create a [CompactMapEffect].
+   * @param P The source emission type.
    * @param R The result emission type.
+   * @param transformer See [CompactMapEffect.transformer].
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R : Any> compactMap(): ISagaEffectTransformer<R?, R> = { CompactMapEffect(it) }
+  fun <P, R> compactMap(transformer: (P) -> R?): ISagaEffectTransformer<P, R>
+    where P : Any, R : Any {
+    return { CompactMapEffect(it, transformer) }
+  }
 
   /**
    * Create a [PutEffect].
@@ -129,7 +136,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <P> put(actionCreator: (P) -> IReduxAction): ISagaEffectTransformer<P, Any> {
+  fun <P> put(actionCreator: (P) -> IReduxAction): ISagaEffectTransformer<P, Any> where P : Any {
     return { PutEffect(it, actionCreator) }
   }
 
@@ -140,7 +147,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> retry(times: Long): ISagaEffectTransformer<R, R> {
+  fun <R> retry(times: Long): ISagaEffectTransformer<R, R> where R : Any {
     return { RetryEffect(it, times) }
   }
 
@@ -159,7 +166,7 @@ object CommonEffects {
     source1: ISagaEffect<R>,
     source2: ISagaEffect<R2>,
     combiner: Function2<R, R2, R3>
-  ): SagaEffect<R3> {
+  ): SagaEffect<R3> where R : Any, R2 : Any, R3 : Any {
     return ThenEffect(source1, source2, combiner)
   }
 
@@ -170,7 +177,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> timeout(millis: Long): ISagaEffectTransformer<R, R> {
+  fun <R> timeout(millis: Long): ISagaEffectTransformer<R, R> where R : Any {
     return { TimeoutEffect(it, millis) }
   }
 }

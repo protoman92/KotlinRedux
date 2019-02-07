@@ -15,6 +15,6 @@ package org.swiften.redux.saga.common
 internal class DoOnValueEffect<R>(
   private val source: ISagaEffect<R>,
   private val performer: (R) -> Unit
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).doOnValue(this.performer)
 }

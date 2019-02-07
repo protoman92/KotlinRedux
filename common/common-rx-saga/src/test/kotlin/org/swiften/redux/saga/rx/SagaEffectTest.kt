@@ -31,7 +31,7 @@ import java.util.Collections.synchronizedList
 
 /** Created by haipham on 2018/12/23 */
 class SagaEffectTest : CommonSagaEffectTest() {
-  override fun <T> justEffect(value: T) = just(value)
+  override fun <T> justEffect(value: T) where T : Any = just(value)
 
   @ExperimentalCoroutinesApi
   override fun <T : Any> fromEffect(vararg values: T) =

@@ -18,6 +18,6 @@ import org.swiften.redux.saga.common.SagaInput
  */
 internal class FromEffect<R>(
   private val stream: Flowable<R>
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput) = SagaOutput(p1.scope, this.stream) { }
 }

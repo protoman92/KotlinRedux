@@ -24,7 +24,8 @@ object SagaEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <P, R> call(transformer: (P) -> Single<R>): ISagaEffectTransformer<P, R> {
+  fun <P, R> call(transformer: (P) -> Single<R>): ISagaEffectTransformer<P, R>
+    where P : Any, R : Any {
     return { CallEffect(it, transformer) }
   }
 
@@ -35,7 +36,7 @@ object SagaEffects {
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <R> from(stream: Flowable<R>): SagaEffect<R> = FromEffect(stream)
+  fun <R> from(stream: Flowable<R>): SagaEffect<R> where R : Any = FromEffect(stream)
 
   /**
    * Create a [JustEffect].
@@ -44,7 +45,7 @@ object SagaEffects {
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <R> just(value: R): SagaEffect<R> = JustEffect(value)
+  fun <R> just(value: R): SagaEffect<R> where R : Any = JustEffect(value)
 
   /**
    * Call [CommonEffects.put] with [SagaEffects.just].
@@ -54,7 +55,7 @@ object SagaEffects {
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <P> put(value: P, actionCreator: (P) -> IReduxAction): SagaEffect<Any> {
+  fun <P> put(value: P, actionCreator: (P) -> IReduxAction): SagaEffect<Any> where P : Any {
     return CommonEffects.put(actionCreator)(this.just(value))
   }
 
@@ -75,7 +76,7 @@ object SagaEffects {
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <State, R> select(cls: Class<State>, selector: (State) -> R): SagaEffect<R> {
+  fun <State, R> select(cls: Class<State>, selector: (State) -> R): SagaEffect<R> where R : Any {
     return SelectEffect(cls, selector)
   }
 
@@ -86,7 +87,8 @@ object SagaEffects {
    * @param selector See [SelectEffect.selector].
    * @return A [SagaEffect] instance.
    */
-  inline fun <reified State, R> select(noinline selector: (State) -> R): SagaEffect<R> {
+  inline fun <reified State, R> select(noinline selector: (State) -> R):
+    SagaEffect<R> where R : Any {
     return this.select(State::class.java, selector)
   }
 
@@ -104,7 +106,7 @@ object SagaEffects {
     extractor: (IReduxAction) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
     creator: (P) -> ISagaEffect<R>
-  ): SagaEffect<R> {
+  ): SagaEffect<R> where P : Any, R : Any {
     return TakeEveryEffect(extractor, options, creator)
   }
 
@@ -123,7 +125,7 @@ object SagaEffects {
     crossinline extractor: Function1<Action, P?>,
     options: TakeEffectOptions = TakeEffectOptions(),
     noinline creator: Function1<P, ISagaEffect<R>>
-  ): SagaEffect<R> where Action : IReduxAction {
+  ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
     return this.takeEvery(
       { when (it) { is Action -> extractor(it); else -> null } },
       options, creator
@@ -144,7 +146,7 @@ object SagaEffects {
     extractor: Function1<IReduxAction, P?>,
     options: TakeEffectOptions = TakeEffectOptions(),
     creator: Function1<P, ISagaEffect<R>>
-  ): SagaEffect<R> {
+  ): SagaEffect<R> where P : Any, R : Any {
     return TakeLatestEffect(extractor, options, creator)
   }
 
@@ -163,7 +165,7 @@ object SagaEffects {
     crossinline extractor: Function1<Action, P?>,
     options: TakeEffectOptions = TakeEffectOptions(),
     noinline creator: Function1<P, ISagaEffect<R>>
-  ): SagaEffect<R> where Action : IReduxAction {
+  ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
     return this.takeLatest(
       { when (it) { is Action -> extractor(it); else -> null } }, options, creator
     )

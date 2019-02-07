@@ -46,7 +46,7 @@ class SagaInput(
  * emitted values.
  * @param T The emission value type.
  */
-interface ISagaOutput<T> {
+interface ISagaOutput<T : Any> {
   /** Trigger every time an [IReduxAction] arrives. */
   val onAction: IActionDispatcher
 
@@ -109,7 +109,7 @@ interface ISagaOutput<T> {
    * @param transform Function that maps from [T] to [T2].
    * @return An [ISagaOutput] instance.
    */
-  fun <T2> map(transform: (T) -> T2): ISagaOutput<T2>
+  fun <T2> map(transform: (T) -> T2): ISagaOutput<T2> where T2 : Any
 
   /**
    * Map emissions from [T] to [T2] with suspending [transform].
@@ -117,7 +117,7 @@ interface ISagaOutput<T> {
    * @param transform Function that maps from [T] to [T2] in a [CoroutineScope].
    * @return An [ISagaOutput] instance.
    */
-  fun <T2> mapSuspend(transform: suspend CoroutineScope.(T) -> T2): ISagaOutput<T2>
+  fun <T2> mapSuspend(transform: suspend CoroutineScope.(T) -> T2): ISagaOutput<T2> where T2 : Any
 
   /**
    * Map emissions from [T] to [T2] with async [transform].
@@ -126,6 +126,7 @@ interface ISagaOutput<T> {
    * @return An [ISagaOutput] instance.
    */
   fun <T2> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>): ISagaOutput<T2>
+    where T2 : Any
 
   /**
    * Flatten emissions from [ISagaOutput] produced by [transform].
@@ -133,7 +134,7 @@ interface ISagaOutput<T> {
    * @param transform Function that flat maps from [T] to [ISagaOutput] in a [CoroutineScope].
    * @return An [ISagaOutput] instance.
    */
-  fun <T2> flatMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2>
+  fun <T2> flatMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any
 
   /**
    * Retry [times] if a [Throwable] is encountered.
@@ -149,7 +150,7 @@ interface ISagaOutput<T> {
    * @param transform Function that switch maps from [T] to [ISagaOutput] in a [CoroutineScope].
    * @return An [ISagaOutput] instance.
    */
-  fun <T2> switchMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2>
+  fun <T2> switchMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any
 
   /**
    * Time out if no element is emitted within [millis].
@@ -177,7 +178,7 @@ interface ISagaOutput<T> {
  * Abstract class to allow better interfacing with Java.
  * @param R The type of emission value.
  */
-abstract class SagaEffect<R> : ISagaEffect<R> {
+abstract class SagaEffect<R : Any> : ISagaEffect<R> {
   /**
    * Call [ISagaEffect] with convenience parameters for testing.
    * @param scope A [CoroutineScope] instance.
@@ -208,5 +209,7 @@ abstract class SagaEffect<R> : ISagaEffect<R> {
    * @param transformer A [ISagaEffectTransformer] instance.
    * @return A [SagaEffect] instance.
    */
-  fun <R2> transform(transformer: ISagaEffectTransformer<R, R2>): SagaEffect<R2> = transformer(this)
+  fun <R2> transform(transformer: ISagaEffectTransformer<R, R2>): SagaEffect<R2> where R2 : Any {
+    return transformer(this)
+  }
 }

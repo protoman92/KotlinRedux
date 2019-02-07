@@ -21,7 +21,7 @@ import org.swiften.redux.saga.common.SagaInput
 internal class SelectEffect<State, R>(
   private val cls: Class<State>,
   private val selector: (State) -> R
-) : SagaEffect<R>() {
+) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
     val lastState = p1.lastState()
     require(this.cls.isInstance(lastState))

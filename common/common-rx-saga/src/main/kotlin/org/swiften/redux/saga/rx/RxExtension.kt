@@ -11,7 +11,7 @@ import org.swiften.redux.saga.common.then
 
 /** Created by haipham on 2019/01/26 */
 /** Invoke a [CallEffect] on [this] */
-fun <P, R> SagaEffect<P>.call(transformer: (P) -> Single<R>): SagaEffect<R> {
+fun <P, R> SagaEffect<P>.call(transformer: (P) -> Single<R>): SagaEffect<R> where P : Any, R : Any {
   return this.transform(SagaEffects.call(transformer))
 }
 
@@ -19,11 +19,12 @@ fun <P, R> SagaEffect<P>.call(transformer: (P) -> Single<R>): SagaEffect<R> {
 inline fun <reified State, R, R2, R3> SagaEffect<R>.select(
   noinline selector: (State) -> R2,
   noinline combiner: (R, R2) -> R3
-): SagaEffect<R3> {
+): SagaEffect<R3> where R : Any, R2 : Any, R3 : Any {
   return this.then(SagaEffects.select(selector), combiner)
 }
 
 /** Invoke a [SelectEffect] but ignore emissions from [this] */
-inline fun <reified State, R2> SagaEffect<*>.select(noinline selector: (State) -> R2): SagaEffect<R2> {
+inline fun <reified State, R2> SagaEffect<*>.select(noinline selector: (State) -> R2):
+  SagaEffect<R2> where R2 : Any {
   return this.then(SagaEffects.select(selector))
 }

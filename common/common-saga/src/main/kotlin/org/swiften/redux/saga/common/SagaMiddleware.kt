@@ -27,8 +27,7 @@ import kotlin.coroutines.CoroutineContext
 internal class SagaMiddleware(
   private val effects: Collection<ISagaEffect<*>>,
   private val context: CoroutineContext
-) :
-  IMiddleware<Any> {
+) : IMiddleware<Any> {
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       val scope = object : CoroutineScope {

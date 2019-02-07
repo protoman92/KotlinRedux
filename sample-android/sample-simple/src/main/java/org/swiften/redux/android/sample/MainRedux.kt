@@ -6,11 +6,13 @@
 package org.swiften.redux.android.sample
 
 import kotlinx.coroutines.async
+import org.swiften.kotlinfp.Option
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.catchAsync
+import org.swiften.redux.saga.common.compactMap
 import org.swiften.redux.saga.common.justThen
 import org.swiften.redux.saga.common.mapAsync
 import org.swiften.redux.saga.common.put
@@ -87,8 +89,9 @@ object MainRedux {
       ) { query ->
         justPut(Action.UpdateLoadingResult(true))
           .justThen(query)
-          .mapAsync { this.async { api.searchMusicStore(it) } }
-          .catchAsync { this.async { api.createFakeResult() } }
+          .mapAsync { this.async { Option.wrap(api.searchMusicStore(it)) } }
+          .catchAsync { this.async { Option.wrap(api.createFakeResult()) } }
+          .compactMap { it.value }
           .put { Action.UpdateMusicResult(it) }
           .then(SagaEffects.justPut(Action.UpdateLoadingResult(false)))
       }
