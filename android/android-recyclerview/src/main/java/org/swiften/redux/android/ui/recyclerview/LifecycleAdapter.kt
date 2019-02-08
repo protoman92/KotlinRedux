@@ -13,7 +13,6 @@ import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
-import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ReduxProps
@@ -44,8 +43,7 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecy
   GState : Any,
   GExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GState, GExt>,
+  VH : IPropContainer<GState, GExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   val wrappedAdapter = this.injectRecyclerAdapter(adapter, adapterMapper, vhMapper)
@@ -82,8 +80,7 @@ fun <GState, GExt, Adapter, VH, VHState, VHAction> IPropInjector<GState, GExt>.i
   Adapter : RecyclerView.Adapter<VH>,
   Adapter : IStateMapper<GState, Unit, Int>,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GState, GExt>,
+  VH : IPropContainer<GState, GExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   return this.injectRecyclerAdapter(lifecycleOwner, adapter, adapter, vhMapper)
@@ -112,8 +109,7 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiff
   GState : Any,
   GExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GState, GExt>,
+  VH : IPropContainer<GState, GExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   val wrappedAdapter = this.injectDiffedAdapter(adapter, adapterMapper, diffCallback)
@@ -153,8 +149,7 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiff
   GState : Any,
   GExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GState, GExt>,
+  VH : IPropContainer<GState, GExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, adapterMapper,
@@ -192,8 +187,7 @@ fun <GState, GExt, Mapper, VH, VHState, VHAction> IPropInjector<GState, GExt>.in
   GState : Any,
   GExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GState, GExt>,
+  VH : IPropContainer<GState, GExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any,
   Mapper : IPropMapper<GState, GExt, Unit, List<VHState>, VHAction>,
@@ -226,8 +220,7 @@ fun <GState, GExt, Adapter, VH, VHState, VHAction> IPropInjector<GState, GExt>.i
   Adapter : IPropMapper<GState, GExt, Unit, List<VHState>, VHAction>,
   Adapter : IDiffItemCallback<VHState>,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GState, GExt>,
+  VH : IPropContainer<GState, GExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, adapter)

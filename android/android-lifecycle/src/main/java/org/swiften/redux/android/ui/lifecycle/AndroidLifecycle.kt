@@ -101,8 +101,7 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   GState : Any,
   GExt : Any,
   LC : LifecycleOwner,
-  LC : IPropContainer<S, A>,
-  LC : IPropLifecycleOwner<GState, GExt>,
+  LC : IPropContainer<GState, GExt, S, A>,
   S : Any,
   A : Any {
   var subscription: IReduxSubscription? = null
@@ -115,9 +114,7 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
    */
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
-      subscription = inject(object :
-        IPropContainer<S, A> by lifecycleOwner,
-        IPropLifecycleOwner<GState, GExt> by lifecycleOwner {
+      subscription = inject(object : IPropContainer<GState, GExt, S, A> by lifecycleOwner {
         override var reduxProps: ReduxProps<S, A>
           get() = lifecycleOwner.reduxProps
 
@@ -159,8 +156,7 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   GState : Any,
   GExt : Any,
   LC : LifecycleOwner,
-  LC : IPropContainer<S, A>,
-  LC : IPropLifecycleOwner<GState, GExt>,
+  LC : IPropContainer<GState, GExt, S, A>,
   LC : IPropMapper<GState, GExt, OP, S, A>,
   S : Any,
   A : Any {

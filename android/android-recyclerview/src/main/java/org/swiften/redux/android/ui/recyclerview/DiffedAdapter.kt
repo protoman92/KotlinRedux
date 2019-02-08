@@ -48,7 +48,7 @@ abstract class ReduxListAdapter<GState, GExt, VH, VHState, VHAction>(
   diffCallback: DiffUtil.ItemCallback<VHState>
 ) : ListAdapter<VHState, VH>(diffCallback),
   IPropLifecycleOwner<GState, GExt> by EmptyPropLifecycleOwner(),
-  IPropContainer<List<VHState>, VHAction> where
+  IPropContainer<GState, GExt, List<VHState>, VHAction> where
   GState : Any,
   GExt : Any,
   VH : RecyclerView.ViewHolder,
@@ -158,8 +158,7 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiff
   GState : Any,
   GExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<GState, GExt>,
+  VH : IPropContainer<GState, GExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   val listAdapter = object : ReduxListAdapter<GState, GExt, VH, VHState, VHAction>(adapter, diffCallback) {

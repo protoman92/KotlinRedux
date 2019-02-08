@@ -55,7 +55,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<ViewHolder.S, ViewHolder.A>,
+    IPropContainer<Redux.State, IDependency, ViewHolder.S, ViewHolder.A>,
     IPropLifecycleOwner<Redux.State, IDependency> by EmptyPropLifecycleOwner() {
     data class S(val plantings: PlantAndGardenPlantings?)
     class A(override val picasso: Picasso, val goToPlantDetail: () -> Unit) : IPicassoProvider

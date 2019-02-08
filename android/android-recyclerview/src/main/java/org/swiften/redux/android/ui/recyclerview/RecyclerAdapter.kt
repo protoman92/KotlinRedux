@@ -43,8 +43,10 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
 abstract class DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>
 ) : RecyclerView.Adapter<VH>() where
+  GState : Any,
+  GExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropContainer<GState, GExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   protected val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
@@ -131,7 +133,7 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecy
   GState : Any,
   GExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropContainer<GState, GExt, VHState, VHAction>,
   VH : IPropLifecycleOwner<GState, GExt>,
   VHState : Any,
   VHAction : Any {

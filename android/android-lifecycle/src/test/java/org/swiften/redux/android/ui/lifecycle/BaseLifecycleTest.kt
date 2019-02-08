@@ -44,7 +44,7 @@ open class BaseLifecycleTest {
   }
 
   class TestLifecycleOwner : LifecycleOwner,
-    IPropContainer<Int, Unit>,
+    IPropContainer<Int, Unit, Int, Unit>,
     IPropLifecycleOwner<Int, Unit> by EmptyPropLifecycleOwner(),
     IPropMapper<Int, Unit, Unit, Int, Unit> by TestLifecycleOwner {
     companion object : IPropMapper<Int, Unit, Unit, Int, Unit> {
@@ -68,8 +68,7 @@ open class BaseLifecycleTest {
       outProps: OutProps,
       mapper: IPropMapper<Int, Unit, OutProps, State, Action>
     ): IReduxSubscription where
-      View : IPropContainer<State, Action>,
-      View : IPropLifecycleOwner<Int, Unit>,
+      View : IPropContainer<Int, Unit, State, Action>,
       State : Any,
       Action : Any {
       val lastState = this.lastState()

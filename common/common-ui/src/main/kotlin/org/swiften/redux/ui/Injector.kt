@@ -47,10 +47,13 @@ class EmptyPropLifecycleOwner<GState, GExt> : IPropLifecycleOwner<GState, GExt>
 
 /**
  * Represents a container for [ReduxProps].
+ * @param GState The global state type.
+ * @param GExt See [IPropInjector.external].
  * @param State See [ReduxProps.state].
  * @param Action See [ReduxProps.action].
  */
-interface IPropContainer<State, Action> where State : Any, Action : Any {
+interface IPropContainer<GState, GExt, State, Action> : IPropLifecycleOwner<GState, GExt>
+  where GState : Any, GExt : Any, State : Any, Action : Any {
   var reduxProps: ReduxProps<State, Action>
 }
 
@@ -150,8 +153,7 @@ interface IPropInjector<GState, GExt> :
     outProps: OutProps,
     mapper: IPropMapper<GState, GExt, OutProps, State, Action>
   ): IReduxSubscription where
-    View : IPropContainer<State, Action>,
-    View : IPropLifecycleOwner<GState, GExt>,
+    View : IPropContainer<GState, GExt, State, Action>,
     State : Any,
     Action : Any
 }
@@ -177,8 +179,7 @@ open class PropInjector<GState : Any, GExt : Any>(
     outProps: OutProps,
     mapper: IPropMapper<GState, GExt, OutProps, State, Action>
   ): IReduxSubscription where
-    View : IPropContainer<State, Action>,
-    View : IPropLifecycleOwner<GState, GExt>,
+    View : IPropContainer<GState, GExt, State, Action>,
     State : Any,
     Action : Any {
     /**
@@ -241,7 +242,7 @@ open class PropInjector<GState : Any, GExt : Any>(
  * @receiver An [IPropContainer] instance.
  * @return The [IReduxSubscription.id].
  */
-fun IPropContainer<*, *>.unsubscribeSafely(): String? {
+fun IPropContainer<*, *, *, *>.unsubscribeSafely(): String? {
   try {
     val subscription = this.reduxProps.s
     subscription.unsubscribe()

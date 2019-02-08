@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger
 @RunWith(RobolectricTestRunner::class)
 class RecycleAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Int, Unit>,
+    IPropContainer<Int, Unit, Int, Unit>,
     IPropLifecycleOwner<Int, Unit> by EmptyPropLifecycleOwner() {
     companion object : IPropMapper<Int, Unit, Int, Int, Unit> {
       override fun mapState(state: Int, outProps: Int) = state

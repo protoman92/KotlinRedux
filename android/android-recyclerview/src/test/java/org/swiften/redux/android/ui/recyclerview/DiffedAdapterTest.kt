@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger
 @RunWith(RobolectricTestRunner::class)
 class DiffedAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Int, ViewHolder.A>,
+    IPropContainer<Int, Unit, Int, ViewHolder.A>,
     IPropLifecycleOwner<Int, Unit> by EmptyPropLifecycleOwner() {
     class A
 

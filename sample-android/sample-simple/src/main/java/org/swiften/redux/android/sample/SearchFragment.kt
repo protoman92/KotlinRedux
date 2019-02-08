@@ -34,7 +34,7 @@ import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
-  IPropContainer<SearchFragment.S, SearchFragment.A>,
+  IPropContainer<MainRedux.State, Unit, SearchFragment.S, SearchFragment.A>,
   IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner() {
   data class S(val query: String?, val loading: Boolean?)
   class A(val updateQuery: (String?) -> Unit)
@@ -75,7 +75,7 @@ class SearchFragment : Fragment(),
     private val trackName: TextView,
     private val artistName: TextView
   ) : RecyclerView.ViewHolder(parent),
-    IPropContainer<ViewHolder.S1, ViewHolder.A1>,
+    IPropContainer<MainRedux.State, Unit, ViewHolder.S1, ViewHolder.A1>,
     IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner() {
     data class S1(val trackName: String? = null, val artistName: String? = null)
     data class A1(val goToMusicDetail: (Int) -> Unit)

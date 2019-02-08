@@ -38,7 +38,7 @@ import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 class PlantListFragment : Fragment(),
-  IPropContainer<PlantListFragment.S, PlantListFragment.A>,
+  IPropContainer<Redux.State, IDependency, PlantListFragment.S, PlantListFragment.A>,
   IPropLifecycleOwner<Redux.State, IDependency> by EmptyPropLifecycleOwner() {
   data class S(val plantCount: Int)
   class A(val updateGrowZone: () -> Unit)
