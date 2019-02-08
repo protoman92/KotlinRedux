@@ -86,24 +86,24 @@ open class ReduxLifecycleObserver(
  * @param GExt See [IPropInjector.external].
  * @param LC [LifecycleOwner] type that also implements [IPropContainer].
  * @param OP The out props type.
- * @param S See [ReduxProps.state].
- * @param A See [ReduxProps.action].
+ * @param State See [ReduxProps.state].
+ * @param Action See [ReduxProps.action].
  * @param lifecycleOwner A [LC] instance.
  * @param outProps An [OP] instance.
  * @param mapper An [IPropMapper] instance.
  * @return The injected [LC] instance.
  */
-fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
+fun <GState, GExt, LC, OP, State, Action> IPropInjector<GState, GExt>.injectLifecycle(
   lifecycleOwner: LC,
   outProps: OP,
-  mapper: IPropMapper<GState, GExt, OP, S, A>
+  mapper: IPropMapper<GState, GExt, OP, State, Action>
 ): LC where
   GState : Any,
   GExt : Any,
   LC : LifecycleOwner,
-  LC : IPropContainer<GState, GExt, S, A>,
-  S : Any,
-  A : Any {
+  LC : IPropContainer<GState, GExt, State, Action>,
+  State : Any,
+  Action : Any {
   var subscription: IReduxSubscription? = null
 
   /**
@@ -114,8 +114,8 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
    */
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
-      subscription = inject(object : IPropContainer<GState, GExt, S, A> by lifecycleOwner {
-        override var reduxProps: ReduxProps<S, A>
+      subscription = inject(object : IPropContainer<GState, GExt, State, Action> by lifecycleOwner {
+        override var reduxProps: ReduxProps<State, Action>
           get() = lifecycleOwner.reduxProps
 
           /**
@@ -134,31 +134,4 @@ fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
   })
 
   return lifecycleOwner
-}
-
-/**
- * Call [IPropInjector.inject] for [lifecycleOwner] but it also implements [IPropMapper].
- * @receiver An [IPropInjector] instance.
- * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
- * @param LC [LifecycleOwner] type that also implements [IPropContainer].
- * @param OP The out props type.
- * @param S See [ReduxProps.state].
- * @param A See [ReduxProps.action].
- * @param lifecycleOwner A [LC] instance.
- * @param outProps An [OP] instance.
- * @return The injected [LC] instance.
- */
-fun <GState, GExt, LC, OP, S, A> IPropInjector<GState, GExt>.injectLifecycle(
-  lifecycleOwner: LC,
-  outProps: OP
-): LC where
-  GState : Any,
-  GExt : Any,
-  LC : LifecycleOwner,
-  LC : IPropContainer<GState, GExt, S, A>,
-  LC : IPropMapper<GState, GExt, OP, S, A>,
-  S : Any,
-  A : Any {
-  return this.injectLifecycle(lifecycleOwner, outProps, lifecycleOwner)
 }

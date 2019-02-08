@@ -148,14 +148,11 @@ interface IPropInjector<GState, GExt> :
    * @param mapper An [IPropMapper] instance.
    * @return An [IReduxSubscription] instance.
    */
-  fun <View, OutProps, State, Action> inject(
-    view: View,
+  fun <OutProps, State, Action> inject(
+    view: IPropContainer<GState, GExt, State, Action>,
     outProps: OutProps,
     mapper: IPropMapper<GState, GExt, OutProps, State, Action>
-  ): IReduxSubscription where
-    View : IPropContainer<GState, GExt, State, Action>,
-    State : Any,
-    Action : Any
+  ): IReduxSubscription where State : Any, Action : Any
 }
 
 /**
@@ -174,14 +171,11 @@ open class PropInjector<GState : Any, GExt : Any>(
   IDispatcherProvider by store,
   IStateGetterProvider<GState> by store,
   IDeinitializerProvider by store {
-  override fun <View, OutProps, State, Action> inject(
-    view: View,
+  override fun <OutProps, State, Action> inject(
+    view: IPropContainer<GState, GExt, State, Action>,
     outProps: OutProps,
     mapper: IPropMapper<GState, GExt, OutProps, State, Action>
-  ): IReduxSubscription where
-    View : IPropContainer<GState, GExt, State, Action>,
-    State : Any,
-    Action : Any {
+  ): IReduxSubscription where State : Any, Action : Any {
     /**
      * It does not matter what the id is, as long as it is unique. This is because we will be
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep
