@@ -137,7 +137,7 @@ class SearchFragment : Fragment(),
     this.searchResult.also {
       it.setHasFixedSize(true)
       it.layoutManager = LinearLayoutManager(this.context)
-      it.adapter = sp.injector.injectDiffedAdapter(this, Adapter(), Adapter)
+      it.adapter = sp.injector.injectDiffedAdapter(this, Adapter(), Adapter, Adapter)
     }
   }
 }

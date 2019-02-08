@@ -63,11 +63,11 @@ class RecycleAdapterTest : BaseLifecycleTest() {
   fun `Injecting props for recycle adapter view holder should work`() {
     // Setup
     val injector = BaseLifecycleTest.TestInjector()
-    val lifecycleOwner = BaseLifecycleTest.TestLifecycleOwner()
+    val lc = BaseLifecycleTest.TestLifecycleOwner()
     val adapter = RecyclerAdapter()
 
     // When
-    val wrappedAdapter = injector.injectRecyclerAdapter(lifecycleOwner, adapter, ViewHolder)
+    val wrappedAdapter = injector.injectRecyclerAdapter(lc, adapter, RecyclerAdapter, ViewHolder)
 
     // When - adapter mapper
     /** Every time itemCount is accessed, the adapter's state mapper should be triggered */
@@ -95,10 +95,10 @@ class RecycleAdapterTest : BaseLifecycleTest() {
 
     // When - lifecycle ending
     /** When state is destroyed, all subscriptions should have been disposed of */
-    lifecycleOwner.registry.markState(Lifecycle.State.CREATED)
-    lifecycleOwner.registry.markState(Lifecycle.State.STARTED)
-    lifecycleOwner.registry.markState(Lifecycle.State.RESUMED)
-    lifecycleOwner.registry.markState(Lifecycle.State.DESTROYED)
+    lc.registry.markState(Lifecycle.State.CREATED)
+    lc.registry.markState(Lifecycle.State.STARTED)
+    lc.registry.markState(Lifecycle.State.RESUMED)
+    lc.registry.markState(Lifecycle.State.DESTROYED)
 
     // Then - lifecycle ending
     injector.subscriptions.forEach { assertTrue(it.isUnsubscribed()) }

@@ -78,11 +78,11 @@ class DiffedAdapterTest : BaseLifecycleTest() {
      * [ReduxListAdapter.submitList]. This allows us to specify how many [ViewHolder] to create.
      */
     val injector = BaseLifecycleTest.TestInjector { totalItemCount }
-    val lifecycleOwner = BaseLifecycleTest.TestLifecycleOwner()
+    val lc = BaseLifecycleTest.TestLifecycleOwner()
     val adapter = RecyclerAdapter()
 
     // When
-    val wrappedAdapter = injector.injectDiffedAdapter(lifecycleOwner, adapter)
+    val wrappedAdapter = injector.injectDiffedAdapter(lc, adapter, RecyclerAdapter, RecyclerAdapter)
 
     // Then - adapter injection
     assertEquals(injector.injectionCount, 1)
@@ -107,10 +107,10 @@ class DiffedAdapterTest : BaseLifecycleTest() {
 
     // When - lifecycle ending
     /** When state is destroyed, all subscriptions should have been disposed of */
-    lifecycleOwner.registry.markState(Lifecycle.State.CREATED)
-    lifecycleOwner.registry.markState(Lifecycle.State.STARTED)
-    lifecycleOwner.registry.markState(Lifecycle.State.RESUMED)
-    lifecycleOwner.registry.markState(Lifecycle.State.DESTROYED)
+    lc.registry.markState(Lifecycle.State.CREATED)
+    lc.registry.markState(Lifecycle.State.STARTED)
+    lc.registry.markState(Lifecycle.State.RESUMED)
+    lc.registry.markState(Lifecycle.State.DESTROYED)
 
     // Then - lifecycle ending
     injector.subscriptions.forEach { assertTrue(it.isUnsubscribed()) }

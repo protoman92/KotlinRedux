@@ -57,36 +57,6 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecy
 }
 
 /**
- * Same as [IPropInjector.injectRecyclerAdapter] but [Adapter] also implements [IStateMapper].
- * @receiver An [IPropInjector] instance.
- * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
- * @param Adapter The [RecyclerView.Adapter] type.
- * @param VH The [RecyclerView.ViewHolder] instance.
- * @param VHState The [VH] state type. See [ReduxProps.state].
- * @param VHAction The [VH] action type. See [ReduxProps.action].
- * @param lifecycleOwner A [LifecycleOwner] instance.
- * @param adapter The base [Adapter] instance.
- * @param vhMapper An [IPropMapper] instance for [VH].
- * @return A [RecyclerView.Adapter] instance.
- */
-fun <GState, GExt, Adapter, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecyclerAdapter(
-  lifecycleOwner: LifecycleOwner,
-  adapter: Adapter,
-  vhMapper: IPropMapper<GState, GExt, Int, VHState, VHAction>
-): RecyclerView.Adapter<VH> where
-  GState : Any,
-  GExt : Any,
-  Adapter : RecyclerView.Adapter<VH>,
-  Adapter : IStateMapper<GState, Unit, Int>,
-  VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GState, GExt, VHState, VHAction>,
-  VHState : Any,
-  VHAction : Any {
-  return this.injectRecyclerAdapter(lifecycleOwner, adapter, adapter, vhMapper)
-}
-
-/**
  * Perform [injectDiffedAdapter], but also handle lifecycle with [lifecycleOwner].
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
@@ -162,66 +132,4 @@ fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiff
         return diffCallback.areContentsTheSame(oldItem, newItem)
       }
     })
-}
-
-/**
- * Convenience [injectDiffedAdapter] for when [mapper] implements both [IPropMapper] and
- * [DiffUtil.ItemCallback].
- * @receiver An [IPropInjector] instance.
- * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
- * @param VH The [RecyclerView.ViewHolder] instance.
- * @param VHState The [VH] state type. See [ReduxProps.state].
- * @param VHAction The [VH] action type. See [ReduxProps.action].
- * @param lifecycleOwner A [LifecycleOwner] instance.
- * @param adapter The base [RecyclerView.Adapter] instance.
- * @param mapper An [IPropMapper] instance for [ReduxListAdapter] that also implements
- * [IDiffItemCallback].
- * @return A [ListAdapter] instance.
- */
-fun <GState, GExt, Mapper, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiffedAdapter(
-  lifecycleOwner: LifecycleOwner,
-  adapter: RecyclerView.Adapter<VH>,
-  mapper: Mapper
-): ListAdapter<VHState, VH> where
-  GState : Any,
-  GExt : Any,
-  VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GState, GExt, VHState, VHAction>,
-  VHState : Any,
-  VHAction : Any,
-  Mapper : IPropMapper<GState, GExt, Unit, List<VHState>, VHAction>,
-  Mapper : IDiffItemCallback<VHState> {
-  return this.injectDiffedAdapter(lifecycleOwner, adapter, mapper, mapper)
-}
-
-/**
- * Convenience [injectDiffedAdapter] for when [adapter] implements both [RecyclerView.Adapter],
- * [IPropMapper] and [DiffUtil.ItemCallback].
- * @receiver An [IPropInjector] instance.
- * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
- * @param Adapter The base [RecyclerView.Adapter] type.
- * @param VH The [RecyclerView.ViewHolder] instance.
- * @param VHState The [VH] state type. See [ReduxProps.state].
- * @param VHAction The [VH] action type. See [ReduxProps.action].
- * @param lifecycleOwner A [LifecycleOwner] instance.
- * @param adapter The base [Adapter] instance that also implements [IPropMapper] and
- * [IDiffItemCallback].
- * @return A [ListAdapter] instance.
- */
-fun <GState, GExt, Adapter, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiffedAdapter(
-  lifecycleOwner: LifecycleOwner,
-  adapter: Adapter
-): ListAdapter<VHState, VH> where
-  GState : Any,
-  GExt : Any,
-  Adapter : RecyclerView.Adapter<VH>,
-  Adapter : IPropMapper<GState, GExt, Unit, List<VHState>, VHAction>,
-  Adapter : IDiffItemCallback<VHState>,
-  VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GState, GExt, VHState, VHAction>,
-  VHState : Any,
-  VHAction : Any {
-  return this.injectDiffedAdapter(lifecycleOwner, adapter, adapter)
 }

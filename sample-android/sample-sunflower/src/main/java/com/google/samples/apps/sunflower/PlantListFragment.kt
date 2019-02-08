@@ -84,6 +84,7 @@ class PlantListFragment : Fragment(),
   }
 
   override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, IDependency>) {
-    this.plant_list.adapter = sp.injector.injectDiffedAdapter(this, PlantAdapter(), PlantAdapter)
+    this.plant_list.adapter = sp.injector
+      .injectDiffedAdapter(this, PlantAdapter(), PlantAdapter, PlantAdapter)
   }
 }
