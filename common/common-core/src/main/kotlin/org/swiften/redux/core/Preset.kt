@@ -12,7 +12,7 @@ sealed class DefaultReduxAction : IReduxAction {
   object Deinitialize : DefaultReduxAction()
 
   /** Replace the current [State] with [state] */
-  class ReplaceState<out State>(val state: State) : DefaultReduxAction()
+  data class ReplaceState<out State>(val state: State) : DefaultReduxAction()
 
   /** Replace the current [GState] with [fn] */
   class MapState<GState>(val fn: (GState) -> GState) : DefaultReduxAction()

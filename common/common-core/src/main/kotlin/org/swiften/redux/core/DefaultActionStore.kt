@@ -9,11 +9,17 @@ package org.swiften.redux.core
 /**
  * A [IReduxStore] that handles [DefaultReduxAction].
  * @param GState The global state type.
- * @param store An [IReduxStore] instance.
+ * @param state See [ThreadSafeStore.state].
+ * @param reducer See [ThreadSafeStore.reducer].
  */
-class DefaultActionStore<GState>(private val store: IReduxStore<GState>) :
-  IReduxStore<GState> by store {
-  override val reducer = ReduxReducerWrapper(this.store.reducer)
+class DefaultActionStore<GState>(state: GState, reducer: IReducer<GState>) : IReduxStore<GState> {
+  private val store: IReduxStore<GState>
+  init { this.store = ThreadSafeStore(state, ReduxReducerWrapper(reducer)) }
+
+  override val reducer get() = this.store.reducer
+  override val dispatch get() = this.store.dispatch
+  override val lastState get() = this.store.lastState
+  override val subscribe = this.store.subscribe
 
   override val deinitialize: IDeinitializer = {
     this.dispatch(DefaultReduxAction.Deinitialize)

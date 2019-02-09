@@ -11,11 +11,26 @@ import org.junit.Test
 /** Created by haipham on 2019/01/15 */
 class DefaultActionStoreTest : BaseStoreTest() {
   private var lastAction: IReduxAction? = null
+  private val defaultState = 0
 
   override fun createStore(): IReduxStore<Int> {
-    return DefaultActionStore(ThreadSafeStore(0) { p, a ->
-      this.lastAction = a; this.reducer()(p, a)
-    })
+    return DefaultActionStore(this.defaultState) { p, a ->
+      this.lastAction = a
+      this.reducer()(p, a)
+    }
+  }
+
+  @Test
+  fun test_dispatchingDefaultActions_shouldSendThemInPipeline() {
+    // Setup
+    val store = this.createStore()
+    val newState = this.defaultState + 1000
+
+    // When
+    store.dispatch(DefaultReduxAction.ReplaceState(newState))
+
+    // Then
+    assertEquals(store.lastState(), newState)
   }
 
   @Test
@@ -23,10 +38,10 @@ class DefaultActionStoreTest : BaseStoreTest() {
     // Setup
     val store = this.createStore()
 
-    // / When
+    // When
     store.deinitialize()
 
     // Then
-    assertEquals(lastAction, DefaultReduxAction.Deinitialize)
+    assertEquals(this.lastAction, DefaultReduxAction.Deinitialize)
   }
 }

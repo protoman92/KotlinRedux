@@ -16,7 +16,6 @@ class FinalStore<GState> private constructor(store: IReduxStore<GState>) :
   IReduxStore<GState> by store {
   constructor(state: GState, reducer: IReducer<GState>) :
     this(fun (): IReduxStore<GState> {
-      val rootStore = ThreadSafeStore(state, reducer)
-      return DefaultActionStore(rootStore)
+      return DefaultActionStore(state, reducer)
     }())
 }

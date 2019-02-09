@@ -60,7 +60,7 @@ class RouterMiddlewareTest : BaseMiddlewareTest() {
 
     val wrappedStore = applyMiddlewares<Int>(
       createRouterMiddleware(router)
-    )(DefaultActionStore(ThreadSafeStore(0) { a, _ -> a }))
+    )(DefaultActionStore(0) { a, _ -> a })
 
     // When
     wrappedStore.dispatch(DefaultReduxAction.Deinitialize)
