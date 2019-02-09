@@ -62,7 +62,7 @@ interface IPropContainer<GState, GExt, State, Action> : IPropLifecycleOwner<GSta
  * to [IDispatcherProvider.dispatch] and [external].
  * @param GExt See [IPropInjector.external].
  */
-interface IActionDependency<GExt> : IDispatcherProvider where GExt : Any {
+interface IActionDependency<out GExt> : IDispatcherProvider where GExt : Any {
   val external: GExt
 }
 
@@ -72,7 +72,7 @@ interface IActionDependency<GExt> : IDispatcherProvider where GExt : Any {
  * @param OutProps Property as defined by a view's parent.
  * @param State The container state.
  */
-interface IStateMapper<GState, OutProps, State> where GState : Any, State : Any {
+interface IStateMapper<in GState, in OutProps, out State> where GState : Any, State : Any {
   /**
    * Map [GState] to [State] using [OutProps]
    * @param state The latest [GState] instance.
@@ -97,7 +97,7 @@ interface IStateMapper<GState, OutProps, State> where GState : Any, State : Any 
  * @param OutProps Property as defined by a view's parent.
  * @param Action See [ReduxProps.action].
  */
-interface IActionMapper<GExt, OutProps, Action> where GExt : Any, Action : Any {
+interface IActionMapper<in GExt, in OutProps, out Action> where GExt : Any, Action : Any {
   /**
    * Map [IActionDispatcher] to [Action] using [GExt] and [OutProps]
    * @param static An [IActionDependency] instance.
@@ -122,7 +122,7 @@ interface IActionMapper<GExt, OutProps, Action> where GExt : Any, Action : Any {
  * @param State See [ReduxProps.state].
  * @param Action See [ReduxProps.action].
  */
-interface IPropMapper<GState, GExt, OutProps, State, Action> :
+interface IPropMapper<in GState, in GExt, in OutProps, out State, out Action> :
   IStateMapper<GState, OutProps, State>,
   IActionMapper<GExt, OutProps, Action>
   where GState : Any, GExt : Any, State : Any, Action : Any
@@ -190,7 +190,7 @@ open class PropInjector<GState : Any, GExt : Any>(
      * Since [IReduxStore.subscribe] has not been called yet, we pass in a placebo
      * [ReduxSubscription] which will later be replaced with the actual [IReduxSubscription].
      */
-    view.reduxProps = ReduxProps(ReduxSubscription(subscriberId) {}, null, null)
+    view.reduxProps = ReduxProps(ReduxSubscription.EMPTY, null, null)
     view.beforePropInjectionStarts(StaticProps(this))
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null

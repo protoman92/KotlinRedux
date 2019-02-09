@@ -46,7 +46,7 @@ class SagaInput(
  * emitted values.
  * @param T The emission value type.
  */
-interface ISagaOutput<T : Any> {
+interface ISagaOutput<T> where T : Any {
   /** Trigger every time an [IReduxAction] arrives. */
   val onAction: IActionDispatcher
 
@@ -178,7 +178,7 @@ interface ISagaOutput<T : Any> {
  * Abstract class to allow better interfacing with Java.
  * @param R The type of emission value.
  */
-abstract class SagaEffect<R : Any> : ISagaEffect<R> {
+abstract class SagaEffect<R> : ISagaEffect<R> where R : Any {
   /**
    * Call [ISagaEffect] with convenience parameters for testing.
    * @param scope A [CoroutineScope] instance.

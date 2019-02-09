@@ -13,7 +13,7 @@ import org.swiften.redux.core.IReduxSubscription
  * @param State State type that contains view information.
  * @param Action Action type that handles view interactions.
  */
-interface IVariableProps<State, Action> where State : Any, Action : Any {
+interface IVariableProps<out State, out Action> where State : Any, Action : Any {
   val state: State?
   val action: Action?
 }

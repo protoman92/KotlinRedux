@@ -52,7 +52,7 @@ interface IDispatcherProvider {
  * Represents an object that provides [IStateGetter].
  * @param GState The global state type.
  */
-interface IStateGetterProvider<GState> {
+interface IStateGetterProvider<out GState> {
   val lastState: IStateGetter<GState>
 }
 
@@ -65,7 +65,7 @@ interface IDeinitializerProvider {
  * Represents an object that provides [IReduxSubscriber].
  * @param GState The global state type.
  */
-interface IReduxSubscriberProvider<GState> {
+interface IReduxSubscriberProvider<out GState> {
   val subscribe: IReduxSubscriber<GState>
 }
 

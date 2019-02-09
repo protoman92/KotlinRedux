@@ -37,12 +37,12 @@ open class VetoableObservableProp<T>(
 
 /**
  * Use this to avoid lateinit modifiers for [ReduxProps]
- * @param S See [ReduxProps.state].
- * @param A See [ReduxProps.action].
+ * @param State See [ReduxProps.state].
+ * @param Action See [ReduxProps.action].
  * @param notifier See [VetoableObservableProp.notifier].
  */
-class ObservableReduxProps<S : Any, A : Any>(
-  notifier: (IVariableProps<S, A>?, IVariableProps<S, A>) -> Unit
-) : ReadWriteProperty<Any?, ReduxProps<S, A>> by VetoableObservableProp({ a, b ->
+class ObservableReduxProps<State : Any, Action : Any>(
+  notifier: (IVariableProps<State, Action>?, IVariableProps<State, Action>) -> Unit
+) : ReadWriteProperty<Any?, ReduxProps<State, Action>> by VetoableObservableProp({ a, b ->
   a?.state == b.state
 }, { prev, next -> notifier(prev, next) })
