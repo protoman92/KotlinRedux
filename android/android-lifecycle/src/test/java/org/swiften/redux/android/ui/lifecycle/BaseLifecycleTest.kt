@@ -58,8 +58,8 @@ open class BaseLifecycleTest {
 
     @Suppress("UNCHECKED_CAST")
     override fun <LState, OutProp, State, Action> inject(
-      view: IPropContainer<LState, OutProp, State, Action>,
       outProp: OutProp,
+      view: IPropContainer<LState, OutProp, State, Action>,
       mapper: IPropMapper<LState, OutProp, State, Action>
     ): IReduxSubscription where LState : Any, State : Any, Action : Any {
       val lastState = this.lastState()

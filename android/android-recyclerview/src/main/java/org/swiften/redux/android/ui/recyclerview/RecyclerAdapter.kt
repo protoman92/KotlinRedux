@@ -129,16 +129,16 @@ abstract class DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHA
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProp.state].
  * @param VHAction The [VH] action type. See [ReduxProp.action].
- * @param adapter The base [RecyclerView.Adapter] instance.
  * @param outProp An [OutProp] instance.
+ * @param adapter The base [RecyclerView.Adapter] instance.
  * @param adapterMapper An [IStateMapper] instance that calculates item count for
  * [RecyclerView.Adapter.getItemCount].
  * @param vhMapper An [IPropMapper] instance for [VH].
  * @return A [DelegateRecyclerAdapter] instance.
  */
 fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectRecyclerAdapter(
-  adapter: RecyclerView.Adapter<VH>,
   outProp: OutProp,
+  adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IStateMapper<LState, Unit, Int>,
   vhMapper: IPropMapper<LState, PositionProp<OutProp>, VHState, VHAction>
 ): DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHAction> where
@@ -155,7 +155,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
 
     override fun onBindViewHolder(holder: VH, position: Int) {
       val vhOutProp = PositionProp(outProp, position)
-      val subscription = this@injectRecyclerAdapter.inject(holder, vhOutProp, vhMapper)
+      val subscription = this@injectRecyclerAdapter.inject(vhOutProp, holder, vhMapper)
       this.composite.add(subscription)
     }
 

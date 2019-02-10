@@ -27,11 +27,11 @@ class AndroidPropInjector<GState>(
   private val runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner
 ) : PropInjector<GState>(store) where GState : Any {
   override fun <LState, OutProp, State, Action> inject(
-    view: IPropContainer<LState, OutProp, State, Action>,
     outProp: OutProp,
+    view: IPropContainer<LState, OutProp, State, Action>,
     mapper: IPropMapper<LState, OutProp, State, Action>
   ): IReduxSubscription where LState : Any, State : Any, Action : Any {
-    return super.inject(object : IPropContainer<LState, OutProp, State, Action> {
+    return super.inject(outProp, object : IPropContainer<LState, OutProp, State, Action> {
       override var reduxProp: ReduxProp<State, Action>
         get() = view.reduxProp
         set(value) { this@AndroidPropInjector.runner { view.reduxProp = value } }
@@ -45,6 +45,6 @@ class AndroidPropInjector<GState>(
       }
 
       override fun toString() = view.toString()
-    }, outProp, mapper)
+    }, mapper)
   }
 }

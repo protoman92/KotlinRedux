@@ -37,8 +37,8 @@ class MainApplication : Application() {
 
     injector.injectActivitySerializable(this) {
       when (it) {
-        is SearchFragment -> this.injectLifecycle(it, Unit, SearchFragment)
-        is MusicDetailFragment -> this.injectLifecycle(it, Unit, MusicDetailFragment)
+        is SearchFragment -> this.injectLifecycle(Unit, it, SearchFragment)
+        is MusicDetailFragment -> this.injectLifecycle(Unit, it, MusicDetailFragment)
       }
     }
   }

@@ -79,7 +79,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     val adapter = Adapter()
 
     // When
-    val wrappedAdapter = injector.injectDiffedAdapter(lc, adapter, Unit, Adapter, Adapter)
+    val wrappedAdapter = injector.injectDiffedAdapter(Unit, lc, adapter, Adapter, Adapter)
 
     // Then - adapter injection
     assertEquals(injector.injectionCount, 1)

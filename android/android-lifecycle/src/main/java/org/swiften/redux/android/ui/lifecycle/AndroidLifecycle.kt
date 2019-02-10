@@ -80,22 +80,22 @@ open class ReduxLifecycleObserver(
 }
 
 /**
- * Call [IPropInjector.inject] for [lcOwner].
+ * Call [IPropInjector.inject] for [lifecycleOwner].
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param LState The local state type that [GState] must extend from.
  * @param Owner [LifecycleOwner] type that also implements [IPropContainer].
- * @param OutProp Property as defined by [lcOwner]'s parent.
+ * @param OutProp Property as defined by [lifecycleOwner]'s parent.
  * @param State See [ReduxProp.state].
  * @param Action See [ReduxProp.action].
- * @param lcOwner A [Owner] instance.
  * @param outProp An [OutProp] instance.
+ * @param lifecycleOwner A [Owner] instance.
  * @param mapper An [IPropMapper] instance.
  * @return The injected [Owner] instance.
  */
 fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.injectLifecycle(
-  lcOwner: Owner,
   outProp: OutProp,
+  lifecycleOwner: Owner,
   mapper: IPropMapper<LState, OutProp, State, Action>
 ): Owner where
   GState : LState,
@@ -112,26 +112,27 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
    * [IPropLifecycleOwner.beforePropInjectionStarts]. To mirror this, unsubscription is done in
    * [ReduxLifecycleObserver.onStop] because said views are not destroyed yet.
    */
-  ReduxLifecycleObserver(lcOwner, object : ILifecycleCallback {
+  ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
-      subscription = inject(object : IPropContainer<LState, OutProp, State, Action> by lcOwner {
-        override var reduxProp: ReduxProp<State, Action>
-          get() = lcOwner.reduxProp
+      subscription = inject(outProp,
+        object : IPropContainer<LState, OutProp, State, Action> by lifecycleOwner {
+          override var reduxProp: ReduxProp<State, Action>
+            get() = lifecycleOwner.reduxProp
 
-          /**
-           * If [Lifecycle.getCurrentState] is [Lifecycle.State.DESTROYED], do not set
-           * [IPropContainer.reduxProp] since there's no point in doing so.
-           */
-          set(value) = lcOwner.lifecycle.currentState
-            .takeUnless { it == Lifecycle.State.DESTROYED }
-            .let { lcOwner.reduxProp = value }
+            /**
+             * If [Lifecycle.getCurrentState] is [Lifecycle.State.DESTROYED], do not set
+             * [IPropContainer.reduxProp] since there's no point in doing so.
+             */
+            set(value) = lifecycleOwner.lifecycle.currentState
+              .takeUnless { it == Lifecycle.State.DESTROYED }
+              .let { lifecycleOwner.reduxProp = value }
 
-        override fun toString() = lcOwner.toString()
-      }, outProp, mapper)
+          override fun toString() = lifecycleOwner.toString()
+        }, mapper)
     }
 
     override fun onSafeForEndingLifecycleAwareTasks() { subscription?.unsubscribe() }
   })
 
-  return lcOwner
+  return lifecycleOwner
 }

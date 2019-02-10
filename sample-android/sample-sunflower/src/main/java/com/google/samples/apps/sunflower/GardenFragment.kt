@@ -70,7 +70,7 @@ class GardenFragment : Fragment(),
 
   override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, IDependency>) {
     this.garden_list.adapter = GardenPlantingAdapter().let {
-      sp.injector.injectRecyclerAdapter(this, it, sp.outProp, it, GardenPlantingAdapter.ViewHolder)
+      sp.injector.injectRecyclerAdapter(sp.outProp, this, it, it, GardenPlantingAdapter.ViewHolder)
     }
   }
 }

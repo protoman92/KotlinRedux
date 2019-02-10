@@ -64,7 +64,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
     val adapter = Adapter()
 
     // When
-    val wrappedAdapter = injector.injectRecyclerAdapter(lc, adapter, Unit, Adapter, ViewHolder)
+    val wrappedAdapter = injector.injectRecyclerAdapter(Unit, lc, adapter, Adapter, ViewHolder)
 
     // When - adapter mapper
     /** Every time itemCount is accessed, the adapter's state mapper should be triggered */

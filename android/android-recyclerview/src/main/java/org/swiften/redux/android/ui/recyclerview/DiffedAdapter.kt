@@ -143,15 +143,15 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProp.state].
  * @param VHAction The [VH] action type. See [ReduxProp.action].
- * @param adapter The base [RecyclerView.Adapter] instance.
  * @param outProp An [OutProp] instance.
+ * @param adapter The base [RecyclerView.Adapter] instance.
  * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
  * @param diffCallback A [DiffUtil.ItemCallback] instance.
  */
 @Suppress("UNCHECKED_CAST")
 fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
-  adapter: RecyclerView.Adapter<VH>,
   outProp: OutProp,
+  adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IPropMapper<LState, OutProp, List<VHState>, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ): ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction> where
@@ -177,6 +177,6 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
     }
   }
 
-  this.inject(listAdapter, outProp, adapterMapper)
+  this.inject(outProp, listAdapter, adapterMapper)
   return listAdapter
 }

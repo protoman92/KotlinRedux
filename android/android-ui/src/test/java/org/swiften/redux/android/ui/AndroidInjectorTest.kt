@@ -81,7 +81,7 @@ class AndroidInjectorTest : PropInjectorTest() {
 
     runBlocking {
       // When
-      (0 until 5).forEach { GlobalScope.launch { injector.inject(view, Unit, mapper) } }
+      (0 until 5).forEach { GlobalScope.launch { injector.inject(Unit, view, mapper) } }
 
       delay(500)
 

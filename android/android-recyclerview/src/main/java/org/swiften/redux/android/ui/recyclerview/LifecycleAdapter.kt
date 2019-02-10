@@ -37,9 +37,9 @@ import org.swiften.redux.ui.unsubscribeSafely
  * @return A [RecyclerView.Adapter] instance.
  */
 fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectRecyclerAdapter(
+  outProp: OutProp,
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  outProp: OutProp,
   adapterMapper: IStateMapper<LState, Unit, Int>,
   vhMapper: IPropMapper<LState, PositionProp<OutProp>, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
@@ -49,7 +49,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   VH : IPropContainer<LState, PositionProp<OutProp>, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
-  val wrappedAdapter = this.injectRecyclerAdapter(adapter, outProp, adapterMapper, vhMapper)
+  val wrappedAdapter = this.injectRecyclerAdapter(outProp, adapter, adapterMapper, vhMapper)
 
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {}
@@ -68,17 +68,17 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProp.state].
  * @param VHAction The [VH] action type. See [ReduxProp.action].
+ * @param outProp An [OutProp] instance.
  * @param lifecycleOwner A [LifecycleOwner] instance.
  * @param adapter The base [RecyclerView.Adapter] instance.
- * @param outProp An [OutProp] instance.
  * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
  * @param diffCallback A [DiffUtil.ItemCallback] instance.
  * @return A [ListAdapter] instance.
  */
 fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
+  outProp: OutProp,
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  outProp: OutProp,
   adapterMapper: IPropMapper<LState, OutProp, List<VHState>, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
@@ -88,7 +88,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   VH : IPropContainer<LState, OutProp, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
-  val wrappedAdapter = this.injectDiffedAdapter(adapter, outProp, adapterMapper, diffCallback)
+  val wrappedAdapter = this.injectDiffedAdapter(outProp, adapter, adapterMapper, diffCallback)
 
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {}
@@ -111,17 +111,17 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProp.state].
  * @param VHAction The [VH] action type. See [ReduxProp.action].
+ * @param outProp An [OutProp] instance.
  * @param lifecycleOwner A [LifecycleOwner] instance.
  * @param adapter The base [RecyclerView.Adapter] instance.
- * @param outProp An [OutProp] instance.
  * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
  * @param diffCallback A [IDiffItemCallback] instance.
  * @return A [ListAdapter] instance.
  */
 fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
+  outProp: OutProp,
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  outProp: OutProp,
   adapterMapper: IPropMapper<LState, OutProp, List<VHState>, VHAction>,
   diffCallback: IDiffItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
@@ -131,7 +131,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   VH : IPropContainer<LState, OutProp, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
-  return this.injectDiffedAdapter(lifecycleOwner, adapter, outProp, adapterMapper,
+  return this.injectDiffedAdapter(outProp, lifecycleOwner, adapter, adapterMapper,
     object : DiffUtil.ItemCallback<VHState>() {
       override fun areItemsTheSame(oldItem: VHState, newItem: VHState): Boolean {
         return diffCallback.areItemsTheSame(oldItem, newItem)

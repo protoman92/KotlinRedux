@@ -50,9 +50,9 @@ class GardenApplication : Application() {
 
     injector.injectActivityParcelable(this) {
       when (it) {
-        is GardenFragment -> this.injectLifecycle(it, dependency, GardenFragment)
-        is PlantDetailFragment -> this.injectLifecycle(it, dependency, PlantDetailFragment)
-        is PlantListFragment -> this.injectLifecycle(it, dependency, PlantListFragment)
+        is GardenFragment -> this.injectLifecycle(dependency, it, GardenFragment)
+        is PlantDetailFragment -> this.injectLifecycle(dependency, it, PlantDetailFragment)
+        is PlantListFragment -> this.injectLifecycle(dependency, it, PlantListFragment)
         else -> Unit
       }
     }

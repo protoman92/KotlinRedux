@@ -121,14 +121,14 @@ interface IPropInjector<GState> :
    * @param OutProp Property as defined by [view]'s parent.
    * @param State See [ReduxProp.state].
    * @param Action See [ReduxProp.action].
-   * @param view An [IPropContainer] instance.
    * @param outProp An [OutProp] instance.
+   * @param view An [IPropContainer] instance.
    * @param mapper An [IPropMapper] instance.
    * @return An [IReduxSubscription] instance.
    */
   fun <LState, OutProp, State, Action> inject(
-    view: IPropContainer<LState, OutProp, State, Action>,
     outProp: OutProp,
+    view: IPropContainer<LState, OutProp, State, Action>,
     mapper: IPropMapper<LState, OutProp, State, Action>
   ): IReduxSubscription where LState : Any, State : Any, Action : Any
 }
@@ -148,8 +148,8 @@ open class PropInjector<GState : Any> protected constructor(
   IDeinitializerProvider by store {
   @Suppress("UNCHECKED_CAST")
   override fun <LState, OutProp, State, Action> inject(
-    view: IPropContainer<LState, OutProp, State, Action>,
     outProp: OutProp,
+    view: IPropContainer<LState, OutProp, State, Action>,
     mapper: IPropMapper<LState, OutProp, State, Action>
   ): IReduxSubscription where LState : Any, State : Any, Action : Any {
     /**
