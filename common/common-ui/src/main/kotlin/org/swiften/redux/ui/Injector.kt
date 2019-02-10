@@ -159,9 +159,13 @@ interface IPropInjector<GState, GExt> :
 }
 
 /**
- * A [IPropInjector] implementation that handles [inject] in a thread-safe manner. It
- * also invokes [IPropLifecycleOwner.beforePropInjectionStarts] and
- * [IPropLifecycleOwner.afterPropInjectionEnds] when appropriate.
+ * A [IPropInjector] implementation that handles [inject] in a thread-safe manner. It also invokes
+ * [IPropLifecycleOwner.beforePropInjectionStarts] and [IPropLifecycleOwner.afterPropInjectionEnds]
+ * when appropriate.
+ *
+ * It's not advisable to use this method directly to inject props if the app's platform requires
+ * dealing with lifecycles (e.g. Android). Separate lifecycle-handling extensions should be provided
+ * to handle such cases.
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
  * @param store An [IReduxStore] instance.

@@ -52,8 +52,8 @@ abstract class ReduxListAdapter<GState, GExt, LState, LExt, VH, VHState, VHActio
 ) : ListAdapter<VHState, VH>(diffCallback),
   IPropLifecycleOwner<LState, LExt> by EmptyPropLifecycleOwner(),
   IPropContainer<LState, LExt, List<VHState>, VHAction> where
-  GState : Any,
-  GExt : Any,
+  GState : LState,
+  GExt : LExt,
   LState : Any,
   LExt : Any,
   VH : RecyclerView.ViewHolder,
@@ -162,8 +162,8 @@ fun <GState, GExt, LState, LExt, VH, VHState, VHAction> IPropInjector<GState, GE
   adapterMapper: IPropMapper<LState, LExt, Unit, List<VHState>, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ): ReduxListAdapter<GState, GExt, LState, LExt, VH, VHState, VHAction> where
-  GState : Any,
-  GExt : Any,
+  GState : LState,
+  GExt : LExt,
   LState : Any,
   LExt : Any,
   VH : RecyclerView.ViewHolder,
