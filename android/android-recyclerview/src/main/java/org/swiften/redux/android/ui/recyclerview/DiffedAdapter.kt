@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.EmptyPropLifecycleOwner
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -37,24 +38,26 @@ interface IDiffItemCallback<T> {
  * in order to call [ListAdapter.submitList].
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
+ * @param LExt See [IActionDependency.external]. This parameter must be derivable from [GExt].
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProps.state].
  * @param VHAction The [VH] action type. See [ReduxProps.action].
  * @param adapter The base [RecyclerView.Adapter] instance.
  * @param diffCallback A [DiffUtil.ItemCallback] instance.
  */
-abstract class ReduxListAdapter<GState, GExt, VH, VHState, VHAction>(
+abstract class ReduxListAdapter<GState, GExt, LExt, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ) : ListAdapter<VHState, VH>(diffCallback),
-  IPropLifecycleOwner<GState, GExt> by EmptyPropLifecycleOwner(),
-  IPropContainer<GState, GExt, List<VHState>, VHAction> where
+  IPropLifecycleOwner<GState, LExt> by EmptyPropLifecycleOwner(),
+  IPropContainer<GState, LExt, List<VHState>, VHAction> where
   GState : Any,
   GExt : Any,
+  LExt : Any,
   VH : RecyclerView.ViewHolder,
   VHState : Any,
   VHAction : Any {
-  internal lateinit var staticProps: StaticProps<GState, GExt>
+  internal lateinit var staticProps: StaticProps<GState, LExt>
 
   /**
    * Since we will be manually injecting props into [VH] instances, we will need to collect their
@@ -71,7 +74,7 @@ abstract class ReduxListAdapter<GState, GExt, VH, VHState, VHAction>(
     this.submitList(next.state ?: arrayListOf())
   }
 
-  override fun beforePropInjectionStarts(sp: StaticProps<GState, GExt>) {
+  override fun beforePropInjectionStarts(sp: StaticProps<GState, LExt>) {
     this.staticProps = sp
   }
 
@@ -142,6 +145,7 @@ abstract class ReduxListAdapter<GState, GExt, VH, VHState, VHAction>(
  * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
+ * @param LExt See [IActionDependency.external]. This parameter must be derivable from [GExt].
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProps.state].
  * @param VHAction The [VH] action type. See [ReduxProps.action].
@@ -150,18 +154,19 @@ abstract class ReduxListAdapter<GState, GExt, VH, VHState, VHAction>(
  * @param diffCallback A [DiffUtil.ItemCallback] instance.
  */
 @Suppress("UNCHECKED_CAST")
-fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiffedAdapter(
+fun <GState, GExt, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiffedAdapter(
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GState, GExt, Unit, List<VHState>, VHAction>,
+  adapterMapper: IPropMapper<GState, LExt, Unit, List<VHState>, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
-): ReduxListAdapter<GState, GExt, VH, VHState, VHAction> where
+): ReduxListAdapter<GState, GExt, LExt, VH, VHState, VHAction> where
   GState : Any,
   GExt : Any,
+  LExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GState, GExt, VHState, VHAction>,
+  VH : IPropContainer<GState, LExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
-  val listAdapter = object : ReduxListAdapter<GState, GExt, VH, VHState, VHAction>(adapter, diffCallback) {
+  val listAdapter = object : ReduxListAdapter<GState, GExt, LExt, VH, VHState, VHAction>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
       val subscribeId = "$holder${Date().time}"

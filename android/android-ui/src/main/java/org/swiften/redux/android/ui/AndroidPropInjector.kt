@@ -30,21 +30,21 @@ class AndroidPropInjector<GState, GExt>(
   external: GExt,
   private val runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner
 ) : PropInjector<GState, GExt>(store, external) where GState : Any, GExt : Any {
-  override fun <OutProps, State, Action> inject(
-    view: IPropContainer<GState, GExt, State, Action>,
+  override fun <LExt, OutProps, State, Action> inject(
+    view: IPropContainer<GState, LExt, State, Action>,
     outProps: OutProps,
-    mapper: IPropMapper<GState, GExt, OutProps, State, Action>
-  ): IReduxSubscription where State : Any, Action : Any {
+    mapper: IPropMapper<GState, LExt, OutProps, State, Action>
+  ): IReduxSubscription where LExt : Any, State : Any, Action : Any {
     return super.inject(object :
-      IPropContainer<GState, GExt, State, Action>,
-      IPropLifecycleOwner<GState, GExt> {
+      IPropContainer<GState, LExt, State, Action>,
+      IPropLifecycleOwner<GState, LExt> {
       override var reduxProps: ReduxProps<State, Action>
         get() = view.reduxProps
         set(value) {
           this@AndroidPropInjector.runner { view.reduxProps = value }
         }
 
-      override fun beforePropInjectionStarts(sp: StaticProps<GState, GExt>) {
+      override fun beforePropInjectionStarts(sp: StaticProps<GState, LExt>) {
         this@AndroidPropInjector.runner { view.beforePropInjectionStarts(sp) }
       }
 

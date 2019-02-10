@@ -63,16 +63,17 @@ open class BaseLifecycleTest {
     val subscriptions = Collections.synchronizedList(arrayListOf<IReduxSubscription>())
     val injectionCount get() = this.subscriptions.size
 
-    override fun <OutProps, State, Action> inject(
-      view: IPropContainer<Int, Unit, State, Action>,
+    @Suppress("UNCHECKED_CAST")
+    override fun <LExt, OutProps, State, Action> inject(
+      view: IPropContainer<Int, LExt, State, Action>,
       outProps: OutProps,
-      mapper: IPropMapper<Int, Unit, OutProps, State, Action>
-    ): IReduxSubscription where State : Any, Action : Any {
+      mapper: IPropMapper<Int, LExt, OutProps, State, Action>
+    ): IReduxSubscription where LExt : Any, State : Any, Action : Any {
       val lastState = this.lastState()
       val subscription = ReduxSubscription("$view") { view.afterPropInjectionEnds() }
       val state = mapper.mapState(lastState, outProps)
-      val action = mapper.mapAction(this, outProps)
-      view.beforePropInjectionStarts(StaticProps(this))
+      val action = mapper.mapAction(this as IActionDependency<LExt>, outProps)
+      view.beforePropInjectionStarts(StaticProps(this as IPropInjector<Int, LExt>))
       view.reduxProps = ReduxProps(subscription, state, action)
       this.subscriptions.add(subscription)
       return subscription
