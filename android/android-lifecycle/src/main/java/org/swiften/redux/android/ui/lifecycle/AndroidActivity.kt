@@ -50,17 +50,16 @@ interface IBundleStateSaver<GState> {
  * [AppCompatActivity] and [Fragment].
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
  * @param application An [Application] instance.
  * @param saver An [IBundleStateSaver] instance.
  * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
  * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
-fun <GState, GExt> IPropInjector<GState, GExt>.injectActivity(
+fun <GState> IPropInjector<GState>.injectActivity(
   application: Application,
   saver: IBundleStateSaver<GState>,
-  inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
-): Application.ActivityLifecycleCallbacks where GState : Any, GExt : Any {
+  inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
+): Application.ActivityLifecycleCallbacks where GState : Any {
   val callback = object : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity?) {}
     override fun onActivityResumed(activity: Activity?) {}
@@ -96,15 +95,14 @@ fun <GState, GExt> IPropInjector<GState, GExt>.injectActivity(
  * Similar to [injectActivity], but provides default persistence for when [GState] is
  * [Serializable].
  * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
  * @param application An [Application] instance.
  * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
  * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
-inline fun <reified GState, GExt> IPropInjector<GState, GExt>.injectActivitySerializable(
+inline fun <reified GState> IPropInjector<GState>.injectActivitySerializable(
   application: Application,
-  noinline inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
-): Application.ActivityLifecycleCallbacks where GState : Any, GState : Serializable, GExt : Any {
+  noinline inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
+): Application.ActivityLifecycleCallbacks where GState : Any, GState : Serializable {
   val key = "REDUX_STATE_${Date().time}"
 
   return this.injectActivity(application, object : IBundleStateSaver<GState> {
@@ -120,15 +118,14 @@ inline fun <reified GState, GExt> IPropInjector<GState, GExt>.injectActivitySeri
  * Similar to [injectActivity], but provides default persistence for when [GState] is
  * [Parcelable].
  * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
  * @param application An [Application] instance.
  * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
  * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
-inline fun <reified GState, GExt> IPropInjector<GState, GExt>.injectActivityParcelable(
+inline fun <reified GState> IPropInjector<GState>.injectActivityParcelable(
   application: Application,
-  noinline inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
-): Application.ActivityLifecycleCallbacks where GState : Any, GState : Parcelable, GExt : Any {
+  noinline inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
+): Application.ActivityLifecycleCallbacks where GState : Any, GState : Parcelable {
   val key = "REDUX_STATE_${Date().time}"
 
   return this.injectActivity(application, object : IBundleStateSaver<GState> {

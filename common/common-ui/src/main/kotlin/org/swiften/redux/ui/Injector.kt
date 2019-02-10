@@ -21,15 +21,15 @@ import kotlin.concurrent.write
 /**
  * Handle lifecycles for a target of [IPropInjector].
  * @param LState The local state type that the global state must extend from.
- * @param LExt See [IActionDependency.external].
+ * @param OutProps Property as defined by a view's parent.
  */
-interface IPropLifecycleOwner<LState, LExt> where LState : Any, LExt : Any {
+interface IPropLifecycleOwner<LState, OutProps> where LState : Any {
   /**
    * This is called before [IPropInjector.inject] is called. Override the default implementation to
    * catch this event.
    * @param sp A [StaticProps] instance.
    */
-  fun beforePropInjectionStarts(sp: StaticProps<LState, LExt>) {}
+  fun beforePropInjectionStarts(sp: StaticProps<LState, OutProps>) {}
 
   /**
    * This is called after [IReduxSubscription.unsubscribe] is called. Override the default
@@ -41,23 +41,13 @@ interface IPropLifecycleOwner<LState, LExt> where LState : Any, LExt : Any {
 /**
  * Represents a container for [ReduxProps].
  * @param LState The local state type that the global state must extend from.
- * @param LExt See [IActionDependency.external].
+ * @param OutProps Property as defined by a view's parent.
  * @param State See [ReduxProps.state].
  * @param Action See [ReduxProps.action].
  */
-interface IPropContainer<LState, LExt, State, Action> : IPropLifecycleOwner<LState, LExt>
-  where LState : Any, LExt : Any, State : Any, Action : Any {
+interface IPropContainer<LState, OutProps, State, Action> : IPropLifecycleOwner<LState, OutProps>
+  where LState : Any, State : Any, Action : Any {
   var reduxProps: ReduxProps<State, Action>
-}
-
-/**
- * Represents static dependencies for [IActionMapper]. [IActionMapper.mapAction] will have access
- * to [IDispatcherProvider.dispatch] and [external].
- * @param LExt The local dependency required for [IActionMapper.mapAction]. This is not necessarily
- * the global dependency but a local dependency that the global dependency extends from.
- */
-interface IActionDependency<out LExt> : IDispatcherProvider where LExt : Any {
-  val external: LExt
 }
 
 /**
@@ -78,59 +68,49 @@ interface IStateMapper<in LState, in OutProps, out State> where LState : Any, St
 
 /**
  * Maps [IActionDispatcher] to [Action] for a [IPropContainer]. Note that [Action] can include
- * external, non-Redux related dependencies provided by [LExt].
+ * external, non-Redux related dependencies provided by [OutProps].
  *
  * For example, if the app wants to load an image into a view, it's probably not a good idea to
  * download that image and store in the global state to be mapped into [ReduxProps.state]. It is
- * better to inject an image downloader in [Action] using [LExt].
- *
- * The reason why [LExt] is used here instead of in [IStateMapper] is because [ReduxProps.state]
- * will be used for comparisons when determining if injection should occur. [ReduxProps.state]
- * should therefore be pure of external objects.
- * @param LExt See [IActionDependency.external].
+ * better to inject an image downloader in [Action] using [OutProps].
  * @param OutProps Property as defined by a view's parent.
  * @param Action See [ReduxProps.action].
  */
-interface IActionMapper<in LExt, in OutProps, out Action> where LExt : Any, Action : Any {
+interface IActionMapper<in OutProps, out Action> where Action : Any {
   /**
-   * Map [IActionDispatcher] to [Action] using [LExt] and [OutProps]
-   * @param static An [IActionDependency] instance.
+   * Map [IActionDispatcher] to [Action] using [OutProps].
+   * @param dispatch An [IActionDispatcher] instance.
    * @param outProps The [OutProps] instance.
    * @return An [Action] instance.
    */
-  fun mapAction(static: IActionDependency<LExt>, outProps: OutProps): Action
+  fun mapAction(dispatch: IActionDispatcher, outProps: OutProps): Action
 }
 
 /**
- * Maps [LState] and [LExt] to [State] and [Action] for a [IPropContainer]. [OutProps] is the view's
- * immutable property as dictated by its parent.
+ * Maps [LState] to [State] and [Action] for a [IPropContainer]. [OutProps] is the view's immutable
+ * property as dictated by its parent.
  *
  * For example, a parent view, which contains a list of child views, wants to call
- * [IPropInjector.inject] for said children. The [OutProps] generic for these children
- * should therefore be an [Int] that corresponds to their respective indexes in the parent.
- * Generally, though, [OutProps] tends to be [Unit].
- *
+ * [IPropInjector.inject] for said children. The [OutProps] generic for these children should
+ * therefore be an [Int] that corresponds to their respective indexes in the parent.
  * @param LState The local state type that the global state must extend from.
- * @param LExt See [IActionDependency.external].
  * @param OutProps Property as defined by a view's parent.
  * @param State See [ReduxProps.state].
  * @param Action See [ReduxProps.action].
  */
-interface IPropMapper<in LState, in LExt, in OutProps, out State, out Action> :
+interface IPropMapper<in LState, in OutProps, out State, out Action> :
   IStateMapper<LState, OutProps, State>,
-  IActionMapper<LExt, OutProps, Action>
-  where LState : Any, LExt : Any, State : Any, Action : Any
+  IActionMapper<OutProps, Action>
+  where LState : Any, State : Any, Action : Any
 
 /**
- * Inject state and actions into an [IPropContainer]. Aside from [GState], we can use [GExt] as a
- * container for non-Redux related dependencies, such as image-loading helpers.
+ * Inject state and actions into an [IPropContainer].
  * @param GState The global state type.
- * @param GExt The global dependency type.
  */
-interface IPropInjector<GState, GExt> :
-  IActionDependency<GExt>,
+interface IPropInjector<GState> :
+  IDispatcherProvider,
   IStateGetterProvider<GState>,
-  IDeinitializerProvider where GState : Any, GExt : Any {
+  IDeinitializerProvider where GState : Any {
   /**
    * Inject [State] and [Action] into [view].
    *
@@ -138,8 +118,7 @@ interface IPropInjector<GState, GExt> :
    * dealing with lifecycles (e.g. Android). Separate lifecycle-handling extensions should be
    * provided to handle such cases.
    * @param LState The local state type that [GState] must extend from.
-   * @param LExt See [IActionDependency.external]. [GExt] must extend from this parameter.
-   * @param OutProps Property as defined by a view's parent.
+   * @param OutProps Property as defined by [view]'s parent.
    * @param State See [ReduxProps.state].
    * @param Action See [ReduxProps.action].
    * @param view An [IPropContainer] instance.
@@ -147,11 +126,11 @@ interface IPropInjector<GState, GExt> :
    * @param mapper An [IPropMapper] instance.
    * @return An [IReduxSubscription] instance.
    */
-  fun <LState, LExt, OutProps, State, Action> inject(
-    view: IPropContainer<LState, LExt, State, Action>,
+  fun <LState, OutProps, State, Action> inject(
+    view: IPropContainer<LState, OutProps, State, Action>,
     outProps: OutProps,
-    mapper: IPropMapper<LState, LExt, OutProps, State, Action>
-  ): IReduxSubscription where LState : Any, LExt : Any, State : Any, Action : Any
+    mapper: IPropMapper<LState, OutProps, State, Action>
+  ): IReduxSubscription where LState : Any, State : Any, Action : Any
 }
 
 /**
@@ -159,23 +138,20 @@ interface IPropInjector<GState, GExt> :
  * [IPropLifecycleOwner.beforePropInjectionStarts] and [IPropLifecycleOwner.afterPropInjectionEnds]
  * when appropriate.
  * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
  * @param store An [IReduxStore] instance.
  */
-open class PropInjector<GState : Any, GExt : Any> protected constructor(
-  private val store: IReduxStore<GState>,
-  override val external: GExt
-) :
-  IPropInjector<GState, GExt>,
+open class PropInjector<GState : Any> protected constructor(
+  private val store: IReduxStore<GState>
+) : IPropInjector<GState>,
   IDispatcherProvider by store,
   IStateGetterProvider<GState> by store,
   IDeinitializerProvider by store {
   @Suppress("UNCHECKED_CAST")
-  override fun <LState, LExt, OutProps, State, Action> inject(
-    view: IPropContainer<LState, LExt, State, Action>,
+  override fun <LState, OutProps, State, Action> inject(
+    view: IPropContainer<LState, OutProps, State, Action>,
     outProps: OutProps,
-    mapper: IPropMapper<LState, LExt, OutProps, State, Action>
-  ): IReduxSubscription where LState : Any, LExt : Any, State : Any, Action : Any {
+    mapper: IPropMapper<LState, OutProps, State, Action>
+  ): IReduxSubscription where LState : Any, State : Any, Action : Any {
     /**
      * It does not matter what the id is, as long as it is unique. This is because we will be
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep
@@ -191,7 +167,7 @@ open class PropInjector<GState : Any, GExt : Any> protected constructor(
      * [ReduxSubscription] which will later be replaced with the actual [IReduxSubscription].
      */
     view.reduxProps = ReduxProps(ReduxSubscription.EMPTY, null, null)
-    view.beforePropInjectionStarts(StaticProps(this as IPropInjector<LState, LExt>))
+    view.beforePropInjectionStarts(StaticProps(this as IPropInjector<LState>, outProps))
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
 
@@ -203,7 +179,7 @@ open class PropInjector<GState : Any, GExt : Any> protected constructor(
         previousState = next
 
         if (next != prev) {
-          val actions = mapper.mapAction(this as IActionDependency<LExt>, outProps)
+          val actions = mapper.mapAction(this@PropInjector.dispatch, outProps)
           view.reduxProps = view.reduxProps.copy(state = next, action = actions)
         }
       }

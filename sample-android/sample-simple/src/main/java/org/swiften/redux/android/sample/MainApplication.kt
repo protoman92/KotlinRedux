@@ -33,7 +33,7 @@ class MainApplication : Application() {
       createThunkMiddleware(Unit)
     )(FinalStore(MainRedux.State(), MainRedux.Reducer))
 
-    val injector = AndroidPropInjector(store, Unit)
+    val injector = AndroidPropInjector(store)
 
     injector.injectActivitySerializable(this) {
       when (it) {

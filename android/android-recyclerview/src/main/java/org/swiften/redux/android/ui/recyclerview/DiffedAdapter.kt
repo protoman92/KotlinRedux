@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropMapper
@@ -35,28 +34,25 @@ interface IDiffItemCallback<T> {
  * Custom Redux-compatible [ListAdapter] implementation. This [ListAdapter] can receive [ReduxProps]
  * in order to call [ListAdapter.submitList].
  * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
  * @param LState The local state type that [GState] must extend from.
- * @param LExt See [IActionDependency.external]. [GExt] must extend from this parameter.
+ * @param OutProps Property as defined by [this]'s parent.
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProps.state].
  * @param VHAction The [VH] action type. See [ReduxProps.action].
  * @param adapter The base [RecyclerView.Adapter] instance.
  * @param diffCallback A [DiffUtil.ItemCallback] instance.
  */
-abstract class ReduxListAdapter<GState, GExt, LState, LExt, VH, VHState, VHAction>(
+abstract class ReduxListAdapter<GState, LState, OutProps, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ) : ListAdapter<VHState, VH>(diffCallback),
-  IPropContainer<LState, LExt, List<VHState>, VHAction> where
+  IPropContainer<LState, OutProps, List<VHState>, VHAction> where
   GState : LState,
-  GExt : LExt,
   LState : Any,
-  LExt : Any,
   VH : RecyclerView.ViewHolder,
   VHState : Any,
   VHAction : Any {
-  internal lateinit var staticProps: StaticProps<LState, LExt>
+  internal lateinit var staticProps: StaticProps<LState, OutProps>
 
   /**
    * Since we will be manually injecting props into [VH] instances, we will need to collect their
@@ -73,7 +69,7 @@ abstract class ReduxListAdapter<GState, GExt, LState, LExt, VH, VHState, VHActio
     this.submitList(next.state ?: arrayListOf())
   }
 
-  override fun beforePropInjectionStarts(sp: StaticProps<LState, LExt>) {
+  override fun beforePropInjectionStarts(sp: StaticProps<LState, OutProps>) {
     this.staticProps = sp
   }
 
@@ -136,38 +132,36 @@ abstract class ReduxListAdapter<GState, GExt, LState, LExt, VH, VHState, VHActio
  *
  * Since we do not call [IPropInjector.inject] directly into [VH], we cannot use
  * [IPropMapper.mapAction] on [VH] itself. As a result, we must pass down
- * [ReduxProps.action] from [ReduxListAdapter.reduxProps] into each [VH] instance. The [VHAction] should
- * contain actions that take at least one [Int] parameter, (e.g. (Int) -> Unit), so that we can use
- * [RecyclerView.ViewHolder.getLayoutPosition] to call them.
+ * [ReduxProps.action] from [ReduxListAdapter.reduxProps] into each [VH] instance. The [VHAction]
+ * should contain actions that take at least one [Int] parameter, (e.g. (Int) -> Unit), so that we
+ * can use [RecyclerView.ViewHolder.getLayoutPosition] to call them.
  *
  * Note that this does not support lifecycle handling, so we will need to manually set null via
  * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].
  * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
- * @param LState The local state type that [GState] must extend from.
- * @param LExt See [IActionDependency.external]. [GExt] must extend from this parameter.
+ * @param OutProps Property as defined by [adapter]'s parent.
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProps.state].
  * @param VHAction The [VH] action type. See [ReduxProps.action].
  * @param adapter The base [RecyclerView.Adapter] instance.
+ * @param outProps An [OutProps] instance.
  * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
  * @param diffCallback A [DiffUtil.ItemCallback] instance.
  */
 @Suppress("UNCHECKED_CAST")
-fun <GState, GExt, LState, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiffedAdapter(
+fun <GState, LState, OutProps, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<LState, LExt, Unit, List<VHState>, VHAction>,
+  outProps: OutProps,
+  adapterMapper: IPropMapper<LState, OutProps, List<VHState>, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
-): ReduxListAdapter<GState, GExt, LState, LExt, VH, VHState, VHAction> where
+): ReduxListAdapter<GState, LState, OutProps, VH, VHState, VHAction> where
   GState : LState,
-  GExt : LExt,
   LState : Any,
-  LExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, LExt, VHState, VHAction>,
+  VH : IPropContainer<LState, OutProps, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
-  val listAdapter = object : ReduxListAdapter<GState, GExt, LState, LExt, VH, VHState, VHAction>(adapter, diffCallback) {
+  val listAdapter = object : ReduxListAdapter<GState, LState, OutProps, VH, VHState, VHAction>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
       val subscribeId = "$holder${Date().time}"
@@ -183,6 +177,6 @@ fun <GState, GExt, LState, LExt, VH, VHState, VHAction> IPropInjector<GState, GE
     }
   }
 
-  this.inject(listAdapter, Unit, adapterMapper)
+  this.inject(listAdapter, outProps, adapterMapper)
   return listAdapter
 }

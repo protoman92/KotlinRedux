@@ -20,13 +20,14 @@ interface IVariableProps<out State, out Action> where State : Any, Action : Any 
 
 /**
  * Container for an static dependencies.
- * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
+ * @param LState The local state type that the global state must extend from.
+ * @param OutProps See [IPropInjector.external].
  * @param injector An [IPropInjector] instance.
  */
-data class StaticProps<GState, GExt>(
-  val injector: IPropInjector<GState, GExt>
-) where GState : Any, GExt : Any
+data class StaticProps<LState, OutProps>(
+  val injector: IPropInjector<LState>,
+  val outProps: OutProps
+) where LState : Any
 
 /**
  * Container for [s], [state] and [action].

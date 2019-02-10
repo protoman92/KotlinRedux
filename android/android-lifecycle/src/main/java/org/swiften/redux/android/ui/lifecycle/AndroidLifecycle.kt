@@ -10,7 +10,6 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.core.IReduxSubscription
-import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -81,32 +80,28 @@ open class ReduxLifecycleObserver(
 }
 
 /**
- * Call [IPropInjector.inject] for [lifecycleOwner].
+ * Call [IPropInjector.inject] for [lcOwner].
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
  * @param LState The local state type that [GState] must extend from.
- * @param LExt See [IActionDependency.external]. [GExt] must extend from this parameter.
- * @param LC [LifecycleOwner] type that also implements [IPropContainer].
- * @param OP The out props type.
+ * @param Owner [LifecycleOwner] type that also implements [IPropContainer].
+ * @param OutProps Property as defined by [lcOwner]'s parent.
  * @param State See [ReduxProps.state].
  * @param Action See [ReduxProps.action].
- * @param lifecycleOwner A [LC] instance.
- * @param outProps An [OP] instance.
+ * @param lcOwner A [Owner] instance.
+ * @param outProps An [OutProps] instance.
  * @param mapper An [IPropMapper] instance.
- * @return The injected [LC] instance.
+ * @return The injected [Owner] instance.
  */
-fun <GState, GExt, LState, LExt, LC, OP, State, Action> IPropInjector<GState, GExt>.injectLifecycle(
-  lifecycleOwner: LC,
-  outProps: OP,
-  mapper: IPropMapper<LState, LExt, OP, State, Action>
-): LC where
+fun <GState, LState, Owner, OutProps, State, Action> IPropInjector<GState>.injectLifecycle(
+  lcOwner: Owner,
+  outProps: OutProps,
+  mapper: IPropMapper<LState, OutProps, State, Action>
+): Owner where
   GState : LState,
-  GExt : LExt,
   LState : Any,
-  LExt : Any,
-  LC : LifecycleOwner,
-  LC : IPropContainer<LState, LExt, State, Action>,
+  Owner : LifecycleOwner,
+  Owner : IPropContainer<LState, OutProps, State, Action>,
   State : Any,
   Action : Any {
   var subscription: IReduxSubscription? = null
@@ -114,29 +109,29 @@ fun <GState, GExt, LState, LExt, LC, OP, State, Action> IPropInjector<GState, GE
   /**
    * We perform [IPropInjector.inject] in [ReduxLifecycleObserver.onStart] because by then
    * the views would have been initialized, and thus can be accessed in
-   * [IPropLifecycleOwner.beforePropInjectionStarts]. To mirror this, unsubscription is done
-   * in [ReduxLifecycleObserver.onStop] because said views are not destroyed yet.
+   * [IPropLifecycleOwner.beforePropInjectionStarts]. To mirror this, unsubscription is done in
+   * [ReduxLifecycleObserver.onStop] because said views are not destroyed yet.
    */
-  ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
+  ReduxLifecycleObserver(lcOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
-      subscription = inject(object : IPropContainer<LState, LExt, State, Action> by lifecycleOwner {
+      subscription = inject(object : IPropContainer<LState, OutProps, State, Action> by lcOwner {
         override var reduxProps: ReduxProps<State, Action>
-          get() = lifecycleOwner.reduxProps
+          get() = lcOwner.reduxProps
 
           /**
            * If [Lifecycle.getCurrentState] is [Lifecycle.State.DESTROYED], do not set
            * [IPropContainer.reduxProps] since there's no point in doing so.
            */
-          set(value) = lifecycleOwner.lifecycle.currentState
+          set(value) = lcOwner.lifecycle.currentState
             .takeUnless { it == Lifecycle.State.DESTROYED }
-            .let { lifecycleOwner.reduxProps = value }
+            .let { lcOwner.reduxProps = value }
 
-        override fun toString() = lifecycleOwner.toString()
+        override fun toString() = lcOwner.toString()
       }, outProps, mapper)
     }
 
     override fun onSafeForEndingLifecycleAwareTasks() { subscription?.unsubscribe() }
   })
 
-  return lifecycleOwner
+  return lcOwner
 }

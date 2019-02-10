@@ -9,6 +9,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
@@ -25,10 +26,9 @@ open class PropInjectorTest {
     data class SetQuery(val query: String) : Action()
   }
 
-  class TestInjector<GState, GExt>(
-    store: IReduxStore<GState>,
-    external: GExt
-  ) : PropInjector<GState, GExt>(store, external) where GState : Any, GExt : Any
+  class TestInjector<GState>(
+    store: IReduxStore<GState>
+  ) : PropInjector<GState>(store) where GState : Any
 
   class StoreWrapper(private val store: IReduxStore<S>) : IReduxStore<S> by store {
     val unsubscribeCount = AtomicInteger()
@@ -63,7 +63,7 @@ open class PropInjectorTest {
   }
 
   protected lateinit var store: StoreWrapper
-  protected lateinit var mapper: IPropMapper<S, Unit, Unit, S, A>
+  protected lateinit var mapper: IPropMapper<S, Unit, S, A>
 
   @Before
   open fun beforeMethod() {
@@ -78,14 +78,14 @@ open class PropInjectorTest {
 
     this.store = StoreWrapper(store)
 
-    this.mapper = object : IPropMapper<S, Unit, Unit, S, A> {
+    this.mapper = object : IPropMapper<S, Unit, S, A> {
       override fun mapState(state: S, outProps: Unit) = state
-      override fun mapAction(static: IActionDependency<Unit>, outProps: Unit) = A()
+      override fun mapAction(dispatch: IActionDispatcher, outProps: Unit) = A()
     }
   }
 
-  open fun createInjector(store: IReduxStore<S>): IPropInjector<S, Unit> {
-    return TestInjector(store, Unit)
+  open fun createInjector(store: IReduxStore<S>): IPropInjector<S> {
+    return TestInjector(store)
   }
 
   @Test

@@ -46,13 +46,13 @@ class GardenApplication : Application() {
       createThunkMiddleware(dependency)
     )(FinalStore(Redux.State(), Redux.Reducer))
 
-    val injector = AndroidPropInjector(store, dependency)
+    val injector = AndroidPropInjector(store)
 
     injector.injectActivityParcelable(this) {
       when (it) {
-        is GardenFragment -> this.injectLifecycle(it, Unit, GardenFragment)
-        is PlantDetailFragment -> this.injectLifecycle(it, Unit, PlantDetailFragment)
-        is PlantListFragment -> this.injectLifecycle(it, Unit, PlantListFragment)
+        is GardenFragment -> this.injectLifecycle(it, dependency, GardenFragment)
+        is PlantDetailFragment -> this.injectLifecycle(it, dependency, PlantDetailFragment)
+        is PlantListFragment -> this.injectLifecycle(it, dependency, PlantListFragment)
         else -> Unit
       }
     }

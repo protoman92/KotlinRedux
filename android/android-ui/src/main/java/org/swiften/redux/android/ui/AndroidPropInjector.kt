@@ -19,29 +19,27 @@ import org.swiften.redux.ui.StaticProps
  * [PropInjector] specifically for Android that calls [inject] on the main thread. We use
  * inheritance here to ensure [StaticProps.injector] is set with this class instance.
  * @param GState The global state type.
- * @param GExt See [PropInjector.external].
  * @param store An [IReduxStore] instance.
  * @param external See [PropInjector.external].
  * @param runner An [AndroidUtil.IMainThreadRunner] instance.
  */
-class AndroidPropInjector<GState, GExt>(
+class AndroidPropInjector<GState>(
   store: IReduxStore<GState>,
-  external: GExt,
   private val runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner
-) : PropInjector<GState, GExt>(store, external) where GState : Any, GExt : Any {
-  override fun <LState, LExt, OutProps, State, Action> inject(
-    view: IPropContainer<LState, LExt, State, Action>,
+) : PropInjector<GState>(store) where GState : Any {
+  override fun <LState, OutProps, State, Action> inject(
+    view: IPropContainer<LState, OutProps, State, Action>,
     outProps: OutProps,
-    mapper: IPropMapper<LState, LExt, OutProps, State, Action>
-  ): IReduxSubscription where LState : Any, LExt : Any, State : Any, Action : Any {
-    return super.inject(object : IPropContainer<LState, LExt, State, Action> {
+    mapper: IPropMapper<LState, OutProps, State, Action>
+  ): IReduxSubscription where LState : Any, State : Any, Action : Any {
+    return super.inject(object : IPropContainer<LState, OutProps, State, Action> {
       override var reduxProps: ReduxProps<State, Action>
         get() = view.reduxProps
         set(value) {
           this@AndroidPropInjector.runner { view.reduxProps = value }
         }
 
-      override fun beforePropInjectionStarts(sp: StaticProps<LState, LExt>) {
+      override fun beforePropInjectionStarts(sp: StaticProps<LState, OutProps>) {
         this@AndroidPropInjector.runner { view.beforePropInjectionStarts(sp) }
       }
 

@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
-import org.swiften.redux.ui.IActionDependency
+import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
@@ -44,15 +44,15 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     }
   }
 
-  class RecyclerAdapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IPropMapper<Int, Unit, Unit, List<Int>, ViewHolder.A> by RecyclerAdapter,
-    IDiffItemCallback<Int> by RecyclerAdapter {
-    companion object : IPropMapper<Int, Unit, Unit, List<Int>, ViewHolder.A>, IDiffItemCallback<Int> {
+  class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
+    IPropMapper<Int, Unit, List<Int>, ViewHolder.A> by Adapter,
+    IDiffItemCallback<Int> by Adapter {
+    companion object : IPropMapper<Int, Unit, List<Int>, ViewHolder.A>, IDiffItemCallback<Int> {
       override fun mapState(state: Int, outProps: Unit): List<Int> {
         return (0 until state).map { it }
       }
 
-      override fun mapAction(static: IActionDependency<Unit>, outProps: Unit): ViewHolder.A {
+      override fun mapAction(dispatch: IActionDispatcher, outProps: Unit): ViewHolder.A {
         return ViewHolder.A()
       }
 
@@ -76,10 +76,10 @@ class DiffedAdapterTest : BaseLifecycleTest() {
      */
     val injector = BaseLifecycleTest.TestInjector { totalItemCount }
     val lc = BaseLifecycleTest.TestLifecycleOwner()
-    val adapter = RecyclerAdapter()
+    val adapter = Adapter()
 
     // When
-    val wrappedAdapter = injector.injectDiffedAdapter(lc, adapter, RecyclerAdapter, RecyclerAdapter)
+    val wrappedAdapter = injector.injectDiffedAdapter(lc, adapter, Unit, Adapter, Adapter)
 
     // Then - adapter injection
     assertEquals(injector.injectionCount, 1)

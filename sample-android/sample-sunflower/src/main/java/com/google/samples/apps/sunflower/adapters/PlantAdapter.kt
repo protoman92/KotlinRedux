@@ -31,7 +31,7 @@ import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.ui.IActionDependency
+import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
@@ -43,13 +43,15 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>() {
   interface IDependency : IPicassoProvider
 
   companion object :
-    IPropMapper<Redux.State, IDependency, Unit, List<Plant>, ViewHolder.A>,
+    IPropMapper<Redux.State, IDependency, List<Plant>, ViewHolder.A>,
     IDiffItemCallback<Plant> {
-    override fun mapState(state: Redux.State, outProps: Unit) = state.plants ?: arrayListOf()
+    override fun mapState(state: Redux.State, outProps: IDependency): List<Plant> {
+      return state.plants ?: arrayListOf()
+    }
 
-    override fun mapAction(static: IActionDependency<IDependency>, outProps: Unit): ViewHolder.A {
-      return ViewHolder.A(static.external.picasso) { index ->
-        static.dispatch(Redux.Action.SelectPlantFromPlantList(index))
+    override fun mapAction(dispatch: IActionDispatcher, outProps: IDependency): ViewHolder.A {
+      return ViewHolder.A(outProps.picasso) { index ->
+        dispatch(Redux.Action.SelectPlantFromPlantList(index))
       }
     }
 
