@@ -14,11 +14,9 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
-import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ReduxProps
@@ -45,7 +43,6 @@ open class BaseLifecycleTest {
 
   class TestLifecycleOwner : LifecycleOwner,
     IPropContainer<Int, Unit, Int, Unit>,
-    IPropLifecycleOwner<Int, Unit> by EmptyPropLifecycleOwner(),
     IPropMapper<Int, Unit, Unit, Int, Unit> by TestLifecycleOwner {
     companion object : IPropMapper<Int, Unit, Unit, Int, Unit> {
       override fun mapState(state: Int, outProps: Unit) = state

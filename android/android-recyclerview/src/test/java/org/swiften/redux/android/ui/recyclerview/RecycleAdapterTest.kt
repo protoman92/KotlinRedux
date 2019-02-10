@@ -19,13 +19,12 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
-import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
-import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.StaticProps
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/02/02 */
@@ -33,8 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger
 @RunWith(RobolectricTestRunner::class)
 class RecycleAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Int, Unit, Int, Unit>,
-    IPropLifecycleOwner<Int, Unit> by EmptyPropLifecycleOwner() {
+    IPropContainer<Int, Unit, Int, Unit> {
     companion object : IPropMapper<Int, Unit, Int, Int, Unit> {
       override fun mapState(state: Int, outProps: Int) = state
       override fun mapAction(static: IActionDependency<Unit>, outProps: Int) = Unit

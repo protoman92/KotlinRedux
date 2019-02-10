@@ -29,10 +29,8 @@ import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
-import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ObservableReduxProps
@@ -56,8 +54,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Redux.State, IDependency, ViewHolder.S, ViewHolder.A>,
-    IPropLifecycleOwner<Redux.State, IDependency> by EmptyPropLifecycleOwner() {
+    IPropContainer<Redux.State, IDependency, ViewHolder.S, ViewHolder.A> {
     data class S(val plantings: PlantAndGardenPlantings?)
     class A(override val picasso: Picasso, val goToPlantDetail: () -> Unit) : IPicassoProvider
 

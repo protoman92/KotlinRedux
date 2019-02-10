@@ -13,18 +13,15 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_music_detail.artistName
 import kotlinx.android.synthetic.main.fragment_music_detail.trackName
 import kotlinx.android.synthetic.main.fragment_music_detail.trackOpen
-import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
-import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2019/01/12 */
 class MusicDetailFragment : Fragment(),
-  IPropContainer<MainRedux.State, Unit, MusicDetailFragment.S, MusicDetailFragment.A>,
-  IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner() {
+  IPropContainer<MainRedux.State, Unit, MusicDetailFragment.S, MusicDetailFragment.A> {
   class S(val track: MusicTrack?)
   class A(val previewTrack: () -> Unit)
 

@@ -24,18 +24,15 @@ import kotlinx.android.synthetic.main.view_search_result.view.trackName
 import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
-import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
-import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
-  IPropContainer<MainRedux.State, Unit, SearchFragment.S, SearchFragment.A>,
-  IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner() {
+  IPropContainer<MainRedux.State, Unit, SearchFragment.S, SearchFragment.A> {
   data class S(val query: String?, val loading: Boolean?)
   class A(val updateQuery: (String?) -> Unit)
 
@@ -75,8 +72,7 @@ class SearchFragment : Fragment(),
     private val trackName: TextView,
     private val artistName: TextView
   ) : RecyclerView.ViewHolder(parent),
-    IPropContainer<MainRedux.State, Unit, ViewHolder.S1, ViewHolder.A1>,
-    IPropLifecycleOwner<MainRedux.State, Unit> by EmptyPropLifecycleOwner() {
+    IPropContainer<MainRedux.State, Unit, ViewHolder.S1, ViewHolder.A1> {
     data class S1(val trackName: String? = null, val artistName: String? = null)
     data class A1(val goToMusicDetail: (Int) -> Unit)
 

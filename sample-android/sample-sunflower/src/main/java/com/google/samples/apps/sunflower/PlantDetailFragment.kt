@@ -44,10 +44,8 @@ import kotlinx.android.synthetic.main.fragment_plant_detail.fab
 import kotlinx.android.synthetic.main.fragment_plant_detail.plant_detail
 import kotlinx.android.synthetic.main.fragment_plant_detail.plant_watering
 import kotlinx.android.synthetic.main.fragment_plant_detail.toolbar_layout
-import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
-import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
@@ -57,8 +55,7 @@ import org.swiften.redux.ui.StaticProps
  */
 @SuppressLint("RestrictedApi")
 class PlantDetailFragment : Fragment(),
-  IPropContainer<Redux.State, PlantDetailFragment.IDependency, PlantDetailFragment.S, PlantDetailFragment.A>,
-  IPropLifecycleOwner<Redux.State, PlantDetailFragment.IDependency> by EmptyPropLifecycleOwner() {
+  IPropContainer<Redux.State, PlantDetailFragment.IDependency, PlantDetailFragment.S, PlantDetailFragment.A> {
   interface IDependency : IPicassoProvider
 
   data class S(val plant: Plant? = null, val isPlanted: Boolean? = null)

@@ -26,17 +26,14 @@ import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_garden.empty_garden
 import kotlinx.android.synthetic.main.fragment_garden.garden_list
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapter
-import org.swiften.redux.ui.EmptyPropLifecycleOwner
 import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
-import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 class GardenFragment : Fragment(),
-  IPropContainer<Redux.State, GardenFragment.IDependency, GardenFragment.S, Unit>,
-  IPropLifecycleOwner<Redux.State, GardenFragment.IDependency> by EmptyPropLifecycleOwner() {
+  IPropContainer<Redux.State, GardenFragment.IDependency, GardenFragment.S, Unit> {
   interface IDependency : GardenPlantingAdapter.IDependency
 
   data class S(val gardenPlantingCount: Int)
