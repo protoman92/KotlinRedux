@@ -28,6 +28,7 @@ import com.google.samples.apps.sunflower.dependency.IPicassoProvider
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
+import org.swiften.redux.android.ui.recyclerview.PositionProps
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
@@ -54,18 +55,18 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Redux.State, Pair<IDependency, Int>, ViewHolder.S, ViewHolder.A> {
+    IPropContainer<Redux.State, PositionProps<IDependency>, ViewHolder.S, ViewHolder.A> {
     data class S(val plantings: PlantAndGardenPlantings?)
     class A(override val picasso: Picasso, val goToPlantDetail: () -> Unit) : IPicassoProvider
 
-    companion object : IPropMapper<Redux.State, Pair<IDependency, Int>, S, A> {
-      override fun mapState(state: Redux.State, outProps: Pair<IDependency, Int>): S {
-        return S(state.plantAndGardenPlantings?.elementAtOrNull(outProps.second))
+    companion object : IPropMapper<Redux.State, PositionProps<IDependency>, S, A> {
+      override fun mapState(state: Redux.State, outProps: PositionProps<IDependency>): S {
+        return S(state.plantAndGardenPlantings?.elementAtOrNull(outProps.position))
       }
 
-      override fun mapAction(dispatch: IActionDispatcher, outProps: Pair<IDependency, Int>): A {
-        return A(outProps.first.picasso) {
-          dispatch(Redux.Action.SelectPlantFromGarden(outProps.second))
+      override fun mapAction(dispatch: IActionDispatcher, outProps: PositionProps<IDependency>): A {
+        return A(outProps.external.picasso) {
+          dispatch(Redux.Action.SelectPlantFromGarden(outProps.position))
         }
       }
     }
@@ -104,7 +105,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
     private val plantDate: TextView = this.itemView.findViewById(R.id.plant_date)
     private val waterDate: TextView = this.itemView.findViewById(R.id.water_date)
 
-    override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, Pair<IDependency, Int>>) {
+    override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, PositionProps<IDependency>>) {
       this.itemView.setOnClickListener {
         this@ViewHolder.reduxProps.action?.goToPlantDetail?.invoke()
       }
