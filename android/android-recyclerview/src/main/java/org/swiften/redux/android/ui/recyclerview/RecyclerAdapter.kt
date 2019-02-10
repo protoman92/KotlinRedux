@@ -8,6 +8,7 @@ package org.swiften.redux.android.ui.recyclerview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.core.CompositeReduxSubscription
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -35,18 +36,20 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
  * [RecyclerView.Adapter] that delegates method calls to another [RecyclerView.Adapter].
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
+ * @param LExt See [IActionDependency.external]. This parameter must be derivable from [GExt].
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProps.state].
  * @param VHAction The [VH] action type. See [ReduxProps.action].
  * @param adapter The base [RecyclerView.Adapter] instance.
  */
-abstract class DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction>(
+abstract class DelegateRecyclerAdapter<GState, GExt, LExt, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>
 ) : RecyclerView.Adapter<VH>() where
   GState : Any,
   GExt : Any,
+  LExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GState, GExt, VHState, VHAction>,
+  VH : IPropContainer<GState, LExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   protected val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
@@ -116,6 +119,7 @@ abstract class DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction>(
  * @return An [IPropInjector] instance.
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
+ * @param LExt See [IActionDependency.external]. This parameter must be derivable from [GExt].
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProps.state].
  * @param VHAction The [VH] action type. See [ReduxProps.action].
@@ -125,19 +129,20 @@ abstract class DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction>(
  * @param vhMapper An [IPropMapper] instance for [VH].
  * @return A [DelegateRecyclerAdapter] instance.
  */
-fun <GState, GExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecyclerAdapter(
+fun <GState, GExt, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecyclerAdapter(
   adapter: RecyclerView.Adapter<VH>,
   adapterMapper: IStateMapper<GState, Unit, Int>,
-  vhMapper: IPropMapper<GState, GExt, Int, VHState, VHAction>
-): DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction> where
+  vhMapper: IPropMapper<GState, LExt, Int, VHState, VHAction>
+): DelegateRecyclerAdapter<GState, GExt, LExt, VH, VHState, VHAction> where
   GState : Any,
   GExt : Any,
+  LExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GState, GExt, VHState, VHAction>,
-  VH : IPropLifecycleOwner<GState, GExt>,
+  VH : IPropContainer<GState, LExt, VHState, VHAction>,
+  VH : IPropLifecycleOwner<GState, LExt>,
   VHState : Any,
   VHAction : Any {
-  return object : DelegateRecyclerAdapter<GState, GExt, VH, VHState, VHAction>(adapter) {
+  return object : DelegateRecyclerAdapter<GState, GExt, LExt, VH, VHState, VHAction>(adapter) {
     override fun getItemCount(): Int {
       return adapterMapper.mapState(this@injectRecyclerAdapter.lastState(), Unit)
     }

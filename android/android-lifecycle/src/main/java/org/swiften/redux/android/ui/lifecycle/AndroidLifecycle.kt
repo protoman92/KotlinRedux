@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.core.IReduxSubscription
+import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -84,6 +85,7 @@ open class ReduxLifecycleObserver(
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
+ * @param LExt See [IActionDependency.external]. This parameter must be derivable from [GExt].
  * @param LC [LifecycleOwner] type that also implements [IPropContainer].
  * @param OP The out props type.
  * @param State See [ReduxProps.state].
@@ -93,15 +95,16 @@ open class ReduxLifecycleObserver(
  * @param mapper An [IPropMapper] instance.
  * @return The injected [LC] instance.
  */
-fun <GState, GExt, LC, OP, State, Action> IPropInjector<GState, GExt>.injectLifecycle(
+fun <GState, GExt, LExt, LC, OP, State, Action> IPropInjector<GState, GExt>.injectLifecycle(
   lifecycleOwner: LC,
   outProps: OP,
-  mapper: IPropMapper<GState, GExt, OP, State, Action>
+  mapper: IPropMapper<GState, LExt, OP, State, Action>
 ): LC where
   GState : Any,
   GExt : Any,
   LC : LifecycleOwner,
-  LC : IPropContainer<GState, GExt, State, Action>,
+  LC : IPropContainer<GState, LExt, State, Action>,
+  LExt : Any,
   State : Any,
   Action : Any {
   var subscription: IReduxSubscription? = null
@@ -114,7 +117,7 @@ fun <GState, GExt, LC, OP, State, Action> IPropInjector<GState, GExt>.injectLife
    */
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
-      subscription = inject(object : IPropContainer<GState, GExt, State, Action> by lifecycleOwner {
+      subscription = inject(object : IPropContainer<GState, LExt, State, Action> by lifecycleOwner {
         override var reduxProps: ReduxProps<State, Action>
           get() = lifecycleOwner.reduxProps
 
