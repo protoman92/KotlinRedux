@@ -44,18 +44,18 @@ open class PropInjectorTest {
   }
 
   internal class View : IPropContainer<S, Unit, S, A> {
-    override var reduxProps by ObservableReduxProps<S, A> { prev, next ->
+    override var reduxProp by ObservableReduxProp<S, A> { prev, next ->
       this.propCallback?.invoke(prev, next)
-      this.propsInjectionCount.incrementAndGet()
+      this.propInjectionCount.incrementAndGet()
     }
 
-    var propCallback: ((IVariableProps<S, A>?, IVariableProps<S, A>) -> Unit)? = null
-    val propsInjectionCount = AtomicInteger()
+    var propCallback: ((IVariableProp<S, A>?, IVariableProp<S, A>) -> Unit)? = null
+    val propInjectionCount = AtomicInteger()
     val beforeInjectionCount = AtomicInteger()
     val afterInjectionCount = AtomicInteger()
 
-    override fun beforePropInjectionStarts(sp: StaticProps<S, Unit>) {
-      assertNotNull(this.reduxProps)
+    override fun beforePropInjectionStarts(sp: StaticProp<S, Unit>) {
+      assertNotNull(this.reduxProp)
       this.beforeInjectionCount.incrementAndGet()
     }
 
@@ -79,8 +79,8 @@ open class PropInjectorTest {
     this.store = StoreWrapper(store)
 
     this.mapper = object : IPropMapper<S, Unit, S, A> {
-      override fun mapState(state: S, outProps: Unit) = state
-      override fun mapAction(dispatch: IActionDispatcher, outProps: Unit) = A()
+      override fun mapState(state: S, outProp: Unit) = state
+      override fun mapAction(dispatch: IActionDispatcher, outProp: Unit) = A()
     }
   }
 
@@ -89,7 +89,7 @@ open class PropInjectorTest {
   }
 
   @Test
-  fun `Injecting same state props - should not trigger set event`() {
+  fun `Injecting same state prop - should not trigger set event`() {
     // Setup
     val injector = this.createInjector(this.store)
     val view = View()
@@ -108,7 +108,7 @@ open class PropInjectorTest {
 
     // Then
     assertEquals(this.store.unsubscribeCount.get(), 1)
-    assertEquals(view.propsInjectionCount.get(), 6)
+    assertEquals(view.propInjectionCount.get(), 6)
     assertEquals(view.beforeInjectionCount.get(), 2)
     assertEquals(view.afterInjectionCount.get(), 1)
 

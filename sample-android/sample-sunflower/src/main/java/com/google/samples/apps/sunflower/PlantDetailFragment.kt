@@ -47,8 +47,8 @@ import kotlinx.android.synthetic.main.fragment_plant_detail.toolbar_layout
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.ObservableReduxProps
-import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.ObservableReduxProp
+import org.swiften.redux.ui.StaticProp
 
 /**
  * A fragment representing a single Plant detail screen.
@@ -62,18 +62,18 @@ class PlantDetailFragment : Fragment(),
   class A(override val picasso: Picasso, val addPlantToGarden: () -> Unit) : IPicassoProvider
 
   companion object : IPropMapper<Redux.State, IDependency, S, A> {
-    override fun mapState(state: Redux.State, outProps: IDependency): S {
+    override fun mapState(state: Redux.State, outProp: IDependency): S {
       return state.selectedPlant?.let {
         S(it.id.let { id -> state.plants?.find { p -> p.plantId == id } }, it.isPlanted)
       } ?: S()
     }
 
-    override fun mapAction(dispatch: IActionDispatcher, outProps: IDependency): A {
-      return A(outProps.picasso) { dispatch(Redux.ThunkAction.AddSelectedPlantToGarden) }
+    override fun mapAction(dispatch: IActionDispatcher, outProp: IDependency): A {
+      return A(outProp.picasso) { dispatch(Redux.ThunkAction.AddSelectedPlantToGarden) }
     }
   }
 
-  override var reduxProps by ObservableReduxProps<S, A> { _, next ->
+  override var reduxProp by ObservableReduxProp<S, A> { _, next ->
     next.state?.plant?.also { p ->
       this.shareText = this.getString(R.string.share_text_plant, p.name)
       this.plant_watering.text = this.context?.let { this.bindWateringText(it, p.wateringInterval) }
@@ -134,9 +134,9 @@ class PlantDetailFragment : Fragment(),
     }
   }
 
-  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, IDependency>) {
+  override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, IDependency>) {
     this.fab.setOnClickListener {
-      this.reduxProps.action?.addPlantToGarden?.invoke()
+      this.reduxProp.action?.addPlantToGarden?.invoke()
       Snackbar.make(it, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()
     }
   }

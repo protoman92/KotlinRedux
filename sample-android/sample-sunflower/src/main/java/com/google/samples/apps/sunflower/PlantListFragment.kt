@@ -31,8 +31,8 @@ import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.ObservableReduxProps
-import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.ObservableReduxProp
+import org.swiften.redux.ui.StaticProp
 
 class PlantListFragment : Fragment(),
   IPropContainer<Redux.State, PlantListFragment.IDependency, PlantListFragment.S, PlantListFragment.A> {
@@ -42,16 +42,16 @@ class PlantListFragment : Fragment(),
   class A(val updateGrowZone: () -> Unit)
 
   companion object : IPropMapper<Redux.State, IDependency, S, A> {
-    override fun mapState(state: Redux.State, outProps: IDependency): S {
+    override fun mapState(state: Redux.State, outProp: IDependency): S {
       return S(plantCount = state.plants?.size ?: 0)
     }
 
-    override fun mapAction(dispatch: IActionDispatcher, outProps: IDependency): A {
+    override fun mapAction(dispatch: IActionDispatcher, outProp: IDependency): A {
       return A { dispatch(Redux.ThunkAction.ToggleGrowZone(9)) }
     }
   }
 
-  override var reduxProps by ObservableReduxProps<S, A> { prev, next ->
+  override var reduxProp by ObservableReduxProp<S, A> { prev, next ->
     if (next.state?.plantCount != prev?.state?.plantCount) {
       this.plant_list.adapter?.notifyDataSetChanged()
     }
@@ -74,15 +74,15 @@ class PlantListFragment : Fragment(),
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
       R.id.filter_zone -> {
-        this.reduxProps.action?.updateGrowZone?.invoke()
+        this.reduxProp.action?.updateGrowZone?.invoke()
         true
       }
       else -> super.onOptionsItemSelected(item)
     }
   }
 
-  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, IDependency>) {
+  override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, IDependency>) {
     this.plant_list.adapter = sp.injector
-      .injectDiffedAdapter(this, PlantAdapter(), sp.outProps, PlantAdapter, PlantAdapter)
+      .injectDiffedAdapter(this, PlantAdapter(), sp.outProp, PlantAdapter, PlantAdapter)
   }
 }

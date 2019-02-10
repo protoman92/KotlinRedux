@@ -23,7 +23,7 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
-import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.ObservableReduxProp
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/02/02 */
@@ -31,13 +31,13 @@ import java.util.concurrent.atomic.AtomicInteger
 @RunWith(RobolectricTestRunner::class)
 class RecycleAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Int, PositionProps<Unit>, Int, Unit> {
-    companion object : IPropMapper<Int, PositionProps<Unit>, Int, Unit> {
-      override fun mapState(state: Int, outProps: PositionProps<Unit>) = state
-      override fun mapAction(dispatch: IActionDispatcher, outProps: PositionProps<Unit>) = Unit
+    IPropContainer<Int, PositionProp<Unit>, Int, Unit> {
+    companion object : IPropMapper<Int, PositionProp<Unit>, Int, Unit> {
+      override fun mapState(state: Int, outProp: PositionProp<Unit>) = state
+      override fun mapAction(dispatch: IActionDispatcher, outProp: PositionProp<Unit>) = Unit
     }
 
-    override var reduxProps by ObservableReduxProps<Int, Unit> { _, _ -> }
+    override var reduxProp by ObservableReduxProp<Int, Unit> { _, _ -> }
   }
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
@@ -45,7 +45,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
     companion object : IStateMapper<Int, Unit, Int> {
       val mapCount = AtomicInteger()
 
-      override fun mapState(state: Int, outProps: Unit): Int {
+      override fun mapState(state: Int, outProp: Unit): Int {
         this.mapCount.incrementAndGet()
         return state
       }
@@ -57,7 +57,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
   }
 
   @Test
-  fun `Injecting props for recycle adapter view holder should work`() {
+  fun `Injecting prop for recycle adapter view holder should work`() {
     // Setup
     val injector = BaseLifecycleTest.TestInjector()
     val lc = BaseLifecycleTest.TestLifecycleOwner()

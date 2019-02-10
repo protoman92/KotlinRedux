@@ -15,7 +15,7 @@ import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
-import org.swiften.redux.ui.ReduxProps
+import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.unsubscribeSafely
 
 /** Created by haipham on 2019/01/24 */
@@ -24,32 +24,32 @@ import org.swiften.redux.ui.unsubscribeSafely
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param LState The local state type that [GState] must extend from.
- * @param OutProps Property as defined by [lifecycleOwner]'s parent.
+ * @param OutProp Property as defined by [lifecycleOwner]'s parent.
  * @param VH The [RecyclerView.ViewHolder] instance.
- * @param VHState The [VH] state type. See [ReduxProps.state].
- * @param VHAction The [VH] action type. See [ReduxProps.action].
+ * @param VHState The [VH] state type. See [ReduxProp.state].
+ * @param VHAction The [VH] action type. See [ReduxProp.action].
  * @param lifecycleOwner A [LifecycleOwner] instance.
  * @param adapter The base [RecyclerView.Adapter] instance.
- * @param outProps An [OutProps] instance.
+ * @param outProp An [OutProp] instance.
  * @param adapterMapper An [IStateMapper] instance that calculates item count for
  * [RecyclerView.Adapter.getItemCount].
  * @param vhMapper An [IPropMapper] instance for [VH].
  * @return A [RecyclerView.Adapter] instance.
  */
-fun <GState, LState, OutProps, VH, VHState, VHAction> IPropInjector<GState>.injectRecyclerAdapter(
+fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectRecyclerAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  outProps: OutProps,
+  outProp: OutProp,
   adapterMapper: IStateMapper<LState, Unit, Int>,
-  vhMapper: IPropMapper<LState, PositionProps<OutProps>, VHState, VHAction>
+  vhMapper: IPropMapper<LState, PositionProp<OutProp>, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, PositionProps<OutProps>, VHState, VHAction>,
+  VH : IPropContainer<LState, PositionProp<OutProp>, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
-  val wrappedAdapter = this.injectRecyclerAdapter(adapter, outProps, adapterMapper, vhMapper)
+  val wrappedAdapter = this.injectRecyclerAdapter(adapter, outProp, adapterMapper, vhMapper)
 
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {}
@@ -65,31 +65,31 @@ fun <GState, LState, OutProps, VH, VHState, VHAction> IPropInjector<GState>.inje
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
  * @param LState The local state type that [GState] must extend from.
- * @param OutProps Property as defined by [lifecycleOwner]'s parent.
+ * @param OutProp Property as defined by [lifecycleOwner]'s parent.
  * @param VH The [RecyclerView.ViewHolder] instance.
- * @param VHState The [VH] state type. See [ReduxProps.state].
- * @param VHAction The [VH] action type. See [ReduxProps.action].
+ * @param VHState The [VH] state type. See [ReduxProp.state].
+ * @param VHAction The [VH] action type. See [ReduxProp.action].
  * @param lifecycleOwner A [LifecycleOwner] instance.
  * @param adapter The base [RecyclerView.Adapter] instance.
- * @param outProps An [OutProps] instance.
+ * @param outProp An [OutProp] instance.
  * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
  * @param diffCallback A [DiffUtil.ItemCallback] instance.
  * @return A [ListAdapter] instance.
  */
-fun <GState, LState, OutProps, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
+fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  outProps: OutProps,
-  adapterMapper: IPropMapper<LState, OutProps, List<VHState>, VHAction>,
+  outProp: OutProp,
+  adapterMapper: IPropMapper<LState, OutProp, List<VHState>, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, OutProps, VHState, VHAction>,
+  VH : IPropContainer<LState, OutProp, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
-  val wrappedAdapter = this.injectDiffedAdapter(adapter, outProps, adapterMapper, diffCallback)
+  val wrappedAdapter = this.injectDiffedAdapter(adapter, outProp, adapterMapper, diffCallback)
 
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {}
@@ -108,31 +108,31 @@ fun <GState, LState, OutProps, VH, VHState, VHAction> IPropInjector<GState>.inje
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param LState The local state type that [GState] must extend from.
- * @param OutProps Property as defined by [lifecycleOwner]'s parent.
+ * @param OutProp Property as defined by [lifecycleOwner]'s parent.
  * @param VH The [RecyclerView.ViewHolder] instance.
- * @param VHState The [VH] state type. See [ReduxProps.state].
- * @param VHAction The [VH] action type. See [ReduxProps.action].
+ * @param VHState The [VH] state type. See [ReduxProp.state].
+ * @param VHAction The [VH] action type. See [ReduxProp.action].
  * @param lifecycleOwner A [LifecycleOwner] instance.
  * @param adapter The base [RecyclerView.Adapter] instance.
- * @param outProps An [OutProps] instance.
+ * @param outProp An [OutProp] instance.
  * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
  * @param diffCallback A [IDiffItemCallback] instance.
  * @return A [ListAdapter] instance.
  */
-fun <GState, LState, OutProps, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
+fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  outProps: OutProps,
-  adapterMapper: IPropMapper<LState, OutProps, List<VHState>, VHAction>,
+  outProp: OutProp,
+  adapterMapper: IPropMapper<LState, OutProp, List<VHState>, VHAction>,
   diffCallback: IDiffItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, OutProps, VHState, VHAction>,
+  VH : IPropContainer<LState, OutProp, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
-  return this.injectDiffedAdapter(lifecycleOwner, adapter, outProps, adapterMapper,
+  return this.injectDiffedAdapter(lifecycleOwner, adapter, outProp, adapterMapper,
     object : DiffUtil.ItemCallback<VHState>() {
       override fun areItemsTheSame(oldItem: VHState, newItem: VHState): Boolean {
         return diffCallback.areItemsTheSame(oldItem, newItem)

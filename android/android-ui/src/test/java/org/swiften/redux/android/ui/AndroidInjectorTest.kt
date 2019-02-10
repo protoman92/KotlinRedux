@@ -18,8 +18,8 @@ import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.PropInjectorTest
-import org.swiften.redux.ui.ReduxProps
-import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.ReduxProp
+import org.swiften.redux.ui.StaticProp
 import org.swiften.redux.ui.VetoableObservableProp
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -51,16 +51,16 @@ class AndroidInjectorTest : PropInjectorTest() {
      * happens. By returning false we can compare the actual [Runner.runCount] with the number
      * of times prop injection happens.
      */
-    override var reduxProps by VetoableObservableProp<ReduxProps<S, A>>(
+    override var reduxProp by VetoableObservableProp<ReduxProp<S, A>>(
       { _, _ -> false }
-    ) { _, _ -> this.propsInjectionCount.incrementAndGet() }
+    ) { _, _ -> this.propInjectionCount.incrementAndGet() }
 
-    val propsInjectionCount = AtomicInteger()
+    val propInjectionCount = AtomicInteger()
     val beforeInjectionCount = AtomicInteger()
     val afterInjectionCount = AtomicInteger()
 
-    override fun beforePropInjectionStarts(sp: StaticProps<S, Unit>) {
-      assertNotNull(this.reduxProps)
+    override fun beforePropInjectionStarts(sp: StaticProp<S, Unit>) {
+      assertNotNull(this.reduxProp)
       this.beforeInjectionCount.incrementAndGet()
     }
 
@@ -73,7 +73,7 @@ class AndroidInjectorTest : PropInjectorTest() {
 
   @Test
   @Suppress("ForEachParameterNotUsed")
-  fun `Injecting props with Android injector should set props on main thread`() {
+  fun `Injecting prop with Android injector should set prop on main thread`() {
     // Setup
     val injector = this.createInjector(this.store)
     val view = AndroidView()
@@ -88,7 +88,7 @@ class AndroidInjectorTest : PropInjectorTest() {
       // Then
       /** By now, [runner] should have been called upon as many times as specified */
       assertEquals(this@AndroidInjectorTest.runner.runCount,
-        view.propsInjectionCount.get() +
+        view.propInjectionCount.get() +
           view.beforeInjectionCount.get() +
           view.afterInjectionCount.get()
       )

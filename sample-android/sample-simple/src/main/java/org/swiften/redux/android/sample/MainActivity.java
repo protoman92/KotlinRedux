@@ -12,13 +12,13 @@ import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.redux.ui.IPropContainer;
-import org.swiften.redux.ui.ReduxProps;
-import org.swiften.redux.ui.StaticProps;
+import org.swiften.redux.ui.ReduxProp;
+import org.swiften.redux.ui.StaticProp;
 
 /** Created by haipham on 2018/12/19 */
 public final class MainActivity extends AppCompatActivity implements
   IPropContainer<MainRedux.State, Unit, Unit, Unit> {
-  private ReduxProps<Unit, Unit> reduxProps;
+  private ReduxProp<Unit, Unit> reduxProp;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,17 +35,17 @@ public final class MainActivity extends AppCompatActivity implements
 
   @NonNull
   @Override
-  public ReduxProps<Unit, Unit> getReduxProps() {
-    return this.reduxProps;
+  public ReduxProp<Unit, Unit> getReduxProp() {
+    return this.reduxProp;
   }
 
   @Override
-  public void setReduxProps(@Nullable ReduxProps<Unit, Unit> reduxProps) {
-    this.reduxProps = reduxProps;
+  public void setReduxProp(@Nullable ReduxProp<Unit, Unit> reduxProp) {
+    this.reduxProp = reduxProp;
   }
 
   @Override
-  public void beforePropInjectionStarts(@NotNull StaticProps<MainRedux.State, Unit> sp) { }
+  public void beforePropInjectionStarts(@NotNull StaticProp<MainRedux.State, Unit> sp) { }
 
   @Override
   public void afterPropInjectionEnds() { }

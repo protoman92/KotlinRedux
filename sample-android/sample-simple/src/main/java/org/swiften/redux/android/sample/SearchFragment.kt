@@ -27,8 +27,8 @@ import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.ObservableReduxProps
-import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.ObservableReduxProp
+import org.swiften.redux.ui.StaticProp
 
 /** Created by haipham on 2018/12/20 */
 class SearchFragment : Fragment(),
@@ -40,13 +40,13 @@ class SearchFragment : Fragment(),
     companion object :
       IPropMapper<MainRedux.State, Unit, List<ViewHolder.S1>, ViewHolder.A1>,
       IDiffItemCallback<ViewHolder.S1> {
-      override fun mapState(state: MainRedux.State, outProps: Unit): List<ViewHolder.S1> {
+      override fun mapState(state: MainRedux.State, outProp: Unit): List<ViewHolder.S1> {
         return state.musicResult?.results
           ?.map { ViewHolder.S1(it.trackName, it.artistName) }
           ?: arrayListOf()
       }
 
-      override fun mapAction(dispatch: IActionDispatcher, outProps: Unit): ViewHolder.A1 {
+      override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): ViewHolder.A1 {
         return ViewHolder.A1 { dispatch(MainRedux.Screen.MusicDetail(it)) }
       }
 
@@ -79,11 +79,11 @@ class SearchFragment : Fragment(),
     init {
       this.parent.setOnClickListener {
         val index = this.layoutPosition
-        this.reduxProps.action?.also { a -> a.goToMusicDetail(index) }
+        this.reduxProp.action?.also { a -> a.goToMusicDetail(index) }
       }
     }
 
-    override var reduxProps by ObservableReduxProps<S1, A1> { _, next ->
+    override var reduxProp by ObservableReduxProp<S1, A1> { _, next ->
       next.state?.also {
         this.trackName.text = it.trackName
         this.artistName.text = it.artistName
@@ -92,16 +92,16 @@ class SearchFragment : Fragment(),
   }
 
   companion object : IPropMapper<MainRedux.State, Unit, S, A> {
-    override fun mapAction(dispatch: IActionDispatcher, outProps: Unit): A {
+    override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): A {
       return A { dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
     }
 
-    override fun mapState(state: MainRedux.State, outProps: Unit): S {
+    override fun mapState(state: MainRedux.State, outProp: Unit): S {
       return S(state.autocompleteQuery, state.loadingMusic)
     }
   }
 
-  override var reduxProps by ObservableReduxProps<S, A> { _, next ->
+  override var reduxProp by ObservableReduxProp<S, A> { _, next ->
     if (next.state?.loading == true) {
       this.backgroundDim.visibility = View.VISIBLE
       this.progressBar.visibility = View.VISIBLE
@@ -117,7 +117,7 @@ class SearchFragment : Fragment(),
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable?) {
-      this@SearchFragment.reduxProps.action?.also { it.updateQuery(s?.toString()) }
+      this@SearchFragment.reduxProp.action?.also { it.updateQuery(s?.toString()) }
     }
   }
 
@@ -127,7 +127,7 @@ class SearchFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
-  override fun beforePropInjectionStarts(sp: StaticProps<MainRedux.State, Unit>) {
+  override fun beforePropInjectionStarts(sp: StaticProp<MainRedux.State, Unit>) {
     this.querySearch.also { it.addTextChangedListener(this.querySearchWatcher) }
 
     this.searchResult.also {

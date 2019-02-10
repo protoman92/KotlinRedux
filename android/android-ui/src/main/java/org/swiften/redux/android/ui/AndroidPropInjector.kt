@@ -11,13 +11,13 @@ import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.PropInjector
-import org.swiften.redux.ui.ReduxProps
-import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.ReduxProp
+import org.swiften.redux.ui.StaticProp
 
 /** Created by haipham on 2018/12/17 */
 /**
  * [PropInjector] specifically for Android that calls [inject] on the main thread. We use
- * inheritance here to ensure [StaticProps.injector] is set with this class instance.
+ * inheritance here to ensure [StaticProp.injector] is set with this class instance.
  * @param GState The global state type.
  * @param store An [IReduxStore] instance.
  * @param external See [PropInjector.external].
@@ -27,19 +27,17 @@ class AndroidPropInjector<GState>(
   store: IReduxStore<GState>,
   private val runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner
 ) : PropInjector<GState>(store) where GState : Any {
-  override fun <LState, OutProps, State, Action> inject(
-    view: IPropContainer<LState, OutProps, State, Action>,
-    outProps: OutProps,
-    mapper: IPropMapper<LState, OutProps, State, Action>
+  override fun <LState, OutProp, State, Action> inject(
+    view: IPropContainer<LState, OutProp, State, Action>,
+    outProp: OutProp,
+    mapper: IPropMapper<LState, OutProp, State, Action>
   ): IReduxSubscription where LState : Any, State : Any, Action : Any {
-    return super.inject(object : IPropContainer<LState, OutProps, State, Action> {
-      override var reduxProps: ReduxProps<State, Action>
-        get() = view.reduxProps
-        set(value) {
-          this@AndroidPropInjector.runner { view.reduxProps = value }
-        }
+    return super.inject(object : IPropContainer<LState, OutProp, State, Action> {
+      override var reduxProp: ReduxProp<State, Action>
+        get() = view.reduxProp
+        set(value) { this@AndroidPropInjector.runner { view.reduxProp = value } }
 
-      override fun beforePropInjectionStarts(sp: StaticProps<LState, OutProps>) {
+      override fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>) {
         this@AndroidPropInjector.runner { view.beforePropInjectionStarts(sp) }
       }
 
@@ -48,6 +46,6 @@ class AndroidPropInjector<GState>(
       }
 
       override fun toString() = view.toString()
-    }, outProps, mapper)
+    }, outProp, mapper)
   }
 }

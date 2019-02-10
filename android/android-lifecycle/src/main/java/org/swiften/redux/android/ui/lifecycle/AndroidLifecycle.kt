@@ -14,7 +14,7 @@ import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.ReduxProps
+import org.swiften.redux.ui.ReduxProp
 
 /** Created by haipham on 2018/12/17 */
 /** Callback for use with [LifecycleObserver]. */
@@ -85,23 +85,23 @@ open class ReduxLifecycleObserver(
  * @param GState The global state type.
  * @param LState The local state type that [GState] must extend from.
  * @param Owner [LifecycleOwner] type that also implements [IPropContainer].
- * @param OutProps Property as defined by [lcOwner]'s parent.
- * @param State See [ReduxProps.state].
- * @param Action See [ReduxProps.action].
+ * @param OutProp Property as defined by [lcOwner]'s parent.
+ * @param State See [ReduxProp.state].
+ * @param Action See [ReduxProp.action].
  * @param lcOwner A [Owner] instance.
- * @param outProps An [OutProps] instance.
+ * @param outProp An [OutProp] instance.
  * @param mapper An [IPropMapper] instance.
  * @return The injected [Owner] instance.
  */
-fun <GState, LState, Owner, OutProps, State, Action> IPropInjector<GState>.injectLifecycle(
+fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.injectLifecycle(
   lcOwner: Owner,
-  outProps: OutProps,
-  mapper: IPropMapper<LState, OutProps, State, Action>
+  outProp: OutProp,
+  mapper: IPropMapper<LState, OutProp, State, Action>
 ): Owner where
   GState : LState,
   LState : Any,
   Owner : LifecycleOwner,
-  Owner : IPropContainer<LState, OutProps, State, Action>,
+  Owner : IPropContainer<LState, OutProp, State, Action>,
   State : Any,
   Action : Any {
   var subscription: IReduxSubscription? = null
@@ -114,20 +114,20 @@ fun <GState, LState, Owner, OutProps, State, Action> IPropInjector<GState>.injec
    */
   ReduxLifecycleObserver(lcOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
-      subscription = inject(object : IPropContainer<LState, OutProps, State, Action> by lcOwner {
-        override var reduxProps: ReduxProps<State, Action>
-          get() = lcOwner.reduxProps
+      subscription = inject(object : IPropContainer<LState, OutProp, State, Action> by lcOwner {
+        override var reduxProp: ReduxProp<State, Action>
+          get() = lcOwner.reduxProp
 
           /**
            * If [Lifecycle.getCurrentState] is [Lifecycle.State.DESTROYED], do not set
-           * [IPropContainer.reduxProps] since there's no point in doing so.
+           * [IPropContainer.reduxProp] since there's no point in doing so.
            */
           set(value) = lcOwner.lifecycle.currentState
             .takeUnless { it == Lifecycle.State.DESTROYED }
-            .let { lcOwner.reduxProps = value }
+            .let { lcOwner.reduxProp = value }
 
         override fun toString() = lcOwner.toString()
-      }, outProps, mapper)
+      }, outProp, mapper)
     }
 
     override fun onSafeForEndingLifecycleAwareTasks() { subscription?.unsubscribe() }

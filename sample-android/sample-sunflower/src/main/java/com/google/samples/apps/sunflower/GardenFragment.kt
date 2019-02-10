@@ -29,8 +29,8 @@ import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.ObservableReduxProps
-import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.ObservableReduxProp
+import org.swiften.redux.ui.StaticProp
 
 class GardenFragment : Fragment(),
   IPropContainer<Redux.State, GardenFragment.IDependency, GardenFragment.S, Unit> {
@@ -39,14 +39,14 @@ class GardenFragment : Fragment(),
   data class S(val gardenPlantingCount: Int)
 
   companion object : IPropMapper<Redux.State, IDependency, S, Unit> {
-    override fun mapAction(dispatch: IActionDispatcher, outProps: IDependency) = Unit
+    override fun mapAction(dispatch: IActionDispatcher, outProp: IDependency) = Unit
 
-    override fun mapState(state: Redux.State, outProps: IDependency): S {
+    override fun mapState(state: Redux.State, outProp: IDependency): S {
       return S(state.gardenPlantings?.size ?: 0)
     }
   }
 
-  override var reduxProps by ObservableReduxProps<S, Unit> { prev, next ->
+  override var reduxProp by ObservableReduxProp<S, Unit> { prev, next ->
     next.state?.also {
       if (it.gardenPlantingCount == 0) {
         this.garden_list.visibility = View.GONE
@@ -68,9 +68,9 @@ class GardenFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_garden, container, false)
 
-  override fun beforePropInjectionStarts(sp: StaticProps<Redux.State, IDependency>) {
+  override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, IDependency>) {
     this.garden_list.adapter = GardenPlantingAdapter().let {
-      sp.injector.injectRecyclerAdapter(this, it, sp.outProps, it, GardenPlantingAdapter.ViewHolder)
+      sp.injector.injectRecyclerAdapter(this, it, sp.outProp, it, GardenPlantingAdapter.ViewHolder)
     }
   }
 }

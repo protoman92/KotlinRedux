@@ -13,7 +13,7 @@ import org.swiften.redux.core.IReduxSubscription
  * @param State State type that contains view information.
  * @param Action Action type that handles view interactions.
  */
-interface IVariableProps<out State, out Action> where State : Any, Action : Any {
+interface IVariableProp<out State, out Action> where State : Any, Action : Any {
   val state: State?
   val action: Action?
 }
@@ -21,24 +21,24 @@ interface IVariableProps<out State, out Action> where State : Any, Action : Any 
 /**
  * Container for an static dependencies.
  * @param LState The local state type that the global state must extend from.
- * @param OutProps See [IPropInjector.external].
+ * @param OutProp See [IPropInjector.external].
  * @param injector An [IPropInjector] instance.
  */
-data class StaticProps<LState, OutProps>(
+data class StaticProp<LState, OutProp>(
   val injector: IPropInjector<LState>,
-  val outProps: OutProps
+  val outProp: OutProp
 ) where LState : Any
 
 /**
  * Container for [s], [state] and [action].
- * @param State See [IVariableProps.state].
- * @param Action See [IVariableProps.action].
+ * @param State See [IVariableProp.state].
+ * @param Action See [IVariableProp.action].
  * @param s An [IReduxSubscription] instance.
  * @param state A [State] instance.
  * @param action An [Action] instance.
  */
-data class ReduxProps<State, Action>(
+data class ReduxProp<State, Action>(
   val s: IReduxSubscription,
   override val state: State?,
   override val action: Action?
-) : IVariableProps<State, Action> where State : Any, Action : Any
+) : IVariableProp<State, Action> where State : Any, Action : Any

@@ -16,8 +16,8 @@ import kotlinx.android.synthetic.main.fragment_music_detail.trackOpen
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.ObservableReduxProps
-import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.ObservableReduxProp
+import org.swiften.redux.ui.StaticProp
 
 /** Created by haipham on 2019/01/12 */
 class MusicDetailFragment : Fragment(),
@@ -26,14 +26,14 @@ class MusicDetailFragment : Fragment(),
   class A(val previewTrack: () -> Unit)
 
   companion object : IPropMapper<MainRedux.State, Unit, S, A> {
-    override fun mapAction(dispatch: IActionDispatcher, outProps: Unit): A {
+    override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): A {
       return A { dispatch(MainRedux.ThunkAction.PreviewTrack) }
     }
 
-    override fun mapState(state: MainRedux.State, outProps: Unit) = S(state.currentSelectedTrack())
+    override fun mapState(state: MainRedux.State, outProp: Unit) = S(state.currentSelectedTrack())
   }
 
-  override var reduxProps by ObservableReduxProps<S, A> { _, next ->
+  override var reduxProp by ObservableReduxProp<S, A> { _, next ->
     next.state?.track?.also {
       this.trackName.text = it.trackName
       this.artistName.text = it.artistName
@@ -46,9 +46,9 @@ class MusicDetailFragment : Fragment(),
     savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_music_detail, container, false)
 
-  override fun beforePropInjectionStarts(sp: StaticProps<MainRedux.State, Unit>) {
+  override fun beforePropInjectionStarts(sp: StaticProp<MainRedux.State, Unit>) {
     this.trackOpen.setOnClickListener {
-      this.reduxProps.action?.also { a -> a.previewTrack() }
+      this.reduxProp.action?.also { a -> a.previewTrack() }
     }
   }
 }

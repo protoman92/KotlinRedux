@@ -22,8 +22,8 @@ import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.ObservableReduxProps
-import org.swiften.redux.ui.StaticProps
+import org.swiften.redux.ui.ObservableReduxProp
+import org.swiften.redux.ui.StaticProp
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/02/03 */
@@ -36,8 +36,8 @@ class DiffedAdapterTest : BaseLifecycleTest() {
 
     val afterInjection = AtomicInteger()
 
-    override var reduxProps by ObservableReduxProps<Int, A> { _, _ -> }
-    override fun beforePropInjectionStarts(sp: StaticProps<Int, Unit>) {}
+    override var reduxProp by ObservableReduxProp<Int, A> { _, _ -> }
+    override fun beforePropInjectionStarts(sp: StaticProp<Int, Unit>) {}
 
     override fun afterPropInjectionEnds() {
       this.afterInjection.incrementAndGet()
@@ -48,11 +48,11 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     IPropMapper<Int, Unit, List<Int>, ViewHolder.A> by Adapter,
     IDiffItemCallback<Int> by Adapter {
     companion object : IPropMapper<Int, Unit, List<Int>, ViewHolder.A>, IDiffItemCallback<Int> {
-      override fun mapState(state: Int, outProps: Unit): List<Int> {
+      override fun mapState(state: Int, outProp: Unit): List<Int> {
         return (0 until state).map { it }
       }
 
-      override fun mapAction(dispatch: IActionDispatcher, outProps: Unit): ViewHolder.A {
+      override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): ViewHolder.A {
         return ViewHolder.A()
       }
 
@@ -66,7 +66,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
   }
 
   @Test
-  fun `Injecting props for diffed adapter should work`() {
+  fun `Injecting prop for diffed adapter should work`() {
     // Setup
     val totalItemCount = 3
 
@@ -93,13 +93,13 @@ class DiffedAdapterTest : BaseLifecycleTest() {
       val viewHolder = wrappedAdapter.onCreateViewHolder(viewGroup, 0)
       viewHolders.add(viewHolder)
 
-      /** No injections here, just manually setting of props, so injection count remains the same */
+      /** No injections here, just manually setting of prop, so injection count remains the same */
       wrappedAdapter.onBindViewHolder(viewHolder, i)
     }
 
     // Then - view holder injection
     assertEquals(injector.injectionCount, 1)
-    viewHolders.forEach { assertFalse(it.reduxProps.s.isUnsubscribed()) }
+    viewHolders.forEach { assertFalse(it.reduxProp.s.isUnsubscribed()) }
     injector.subscriptions.forEach { assertFalse(it.isUnsubscribed()) }
 
     // When - lifecycle ending
@@ -113,7 +113,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     injector.subscriptions.forEach { assertTrue(it.isUnsubscribed()) }
 
     viewHolders.forEach {
-      assertTrue(it.reduxProps.s.isUnsubscribed())
+      assertTrue(it.reduxProp.s.isUnsubscribed())
       assertEquals(it.afterInjection.get(), 1)
     }
   }

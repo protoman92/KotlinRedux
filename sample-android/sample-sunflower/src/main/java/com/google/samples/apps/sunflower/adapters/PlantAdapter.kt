@@ -34,7 +34,7 @@ import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.ObservableReduxProps
+import org.swiften.redux.ui.ObservableReduxProp
 
 /**
  * Adapter for the [RecyclerView] in [PlantListFragment].
@@ -45,12 +45,12 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>() {
   companion object :
     IPropMapper<Redux.State, IDependency, List<Plant>, ViewHolder.A>,
     IDiffItemCallback<Plant> {
-    override fun mapState(state: Redux.State, outProps: IDependency): List<Plant> {
+    override fun mapState(state: Redux.State, outProp: IDependency): List<Plant> {
       return state.plants ?: arrayListOf()
     }
 
-    override fun mapAction(dispatch: IActionDispatcher, outProps: IDependency): ViewHolder.A {
-      return ViewHolder.A(outProps.picasso) { index ->
+    override fun mapAction(dispatch: IActionDispatcher, outProp: IDependency): ViewHolder.A {
+      return ViewHolder.A(outProp.picasso) { index ->
         dispatch(Redux.Action.SelectPlantFromPlantList(index))
       }
     }
@@ -78,11 +78,11 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>() {
 
     init {
       this.itemView.setOnClickListener {
-        this@ViewHolder.reduxProps.action?.goToPlantDetail?.invoke(this.layoutPosition)
+        this@ViewHolder.reduxProp.action?.goToPlantDetail?.invoke(this.layoutPosition)
       }
     }
 
-    override var reduxProps by ObservableReduxProps<Plant, A> { _, next ->
+    override var reduxProp by ObservableReduxProp<Plant, A> { _, next ->
       next.state?.also { state ->
         this.title.text = state.name
 

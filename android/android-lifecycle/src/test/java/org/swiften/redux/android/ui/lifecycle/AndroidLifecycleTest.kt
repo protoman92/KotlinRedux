@@ -148,7 +148,7 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
   }
 
   @Test
-  fun `Injecting fragment props should manage fragment callbacks correctly`() {
+  fun `Injecting fragment prop should manage fragment callbacks correctly`() {
     // Setup
     val injector = TestInjector()
     val activity = TestActivity()
