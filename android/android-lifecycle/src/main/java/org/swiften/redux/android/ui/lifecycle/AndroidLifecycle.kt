@@ -85,7 +85,8 @@ open class ReduxLifecycleObserver(
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
- * @param LExt See [IActionDependency.external]. This parameter must be derivable from [GExt].
+ * @param LState The local state type that [GState] must extend from.
+ * @param LExt See [IActionDependency.external]. [GExt] must extend from this parameter.
  * @param LC [LifecycleOwner] type that also implements [IPropContainer].
  * @param OP The out props type.
  * @param State See [ReduxProps.state].
@@ -95,16 +96,17 @@ open class ReduxLifecycleObserver(
  * @param mapper An [IPropMapper] instance.
  * @return The injected [LC] instance.
  */
-fun <GState, GExt, LExt, LC, OP, State, Action> IPropInjector<GState, GExt>.injectLifecycle(
+fun <GState, GExt, LState, LExt, LC, OP, State, Action> IPropInjector<GState, GExt>.injectLifecycle(
   lifecycleOwner: LC,
   outProps: OP,
-  mapper: IPropMapper<GState, LExt, OP, State, Action>
+  mapper: IPropMapper<LState, LExt, OP, State, Action>
 ): LC where
   GState : Any,
   GExt : Any,
-  LC : LifecycleOwner,
-  LC : IPropContainer<GState, LExt, State, Action>,
+  LState : Any,
   LExt : Any,
+  LC : LifecycleOwner,
+  LC : IPropContainer<LState, LExt, State, Action>,
   State : Any,
   Action : Any {
   var subscription: IReduxSubscription? = null
@@ -117,7 +119,7 @@ fun <GState, GExt, LExt, LC, OP, State, Action> IPropInjector<GState, GExt>.inje
    */
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
-      subscription = inject(object : IPropContainer<GState, LExt, State, Action> by lifecycleOwner {
+      subscription = inject(object : IPropContainer<LState, LExt, State, Action> by lifecycleOwner {
         override var reduxProps: ReduxProps<State, Action>
           get() = lifecycleOwner.reduxProps
 
