@@ -163,7 +163,7 @@ interface IPropInjector<GState, GExt> :
  * @param GExt See [IPropInjector.external].
  * @param store An [IReduxStore] instance.
  */
-open class PropInjector<GState : Any, GExt : Any>(
+open class PropInjector<GState : Any, GExt : Any> protected constructor(
   private val store: IReduxStore<GState>,
   override val external: GExt
 ) :

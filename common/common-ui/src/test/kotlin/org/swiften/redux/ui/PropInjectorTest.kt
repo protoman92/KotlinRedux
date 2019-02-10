@@ -25,6 +25,11 @@ open class PropInjectorTest {
     data class SetQuery(val query: String) : Action()
   }
 
+  class TestInjector<GState, GExt>(
+    store: IReduxStore<GState>,
+    external: GExt
+  ) : PropInjector<GState, GExt>(store, external) where GState : Any, GExt : Any
+
   class StoreWrapper(private val store: IReduxStore<S>) : IReduxStore<S> by store {
     val unsubscribeCount = AtomicInteger()
 
@@ -79,7 +84,9 @@ open class PropInjectorTest {
     }
   }
 
-  open fun createInjector(store: IReduxStore<S>): IPropInjector<S, Unit> = PropInjector(store, Unit)
+  open fun createInjector(store: IReduxStore<S>): IPropInjector<S, Unit> {
+    return TestInjector(store, Unit)
+  }
 
   @Test
   fun `Injecting same state props - should not trigger set event`() {
