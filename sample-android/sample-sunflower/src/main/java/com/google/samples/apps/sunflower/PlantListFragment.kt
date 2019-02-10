@@ -30,7 +30,6 @@ import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
 import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
-import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps

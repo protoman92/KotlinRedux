@@ -61,7 +61,7 @@ internal class SuspendMapEffect<P, R>(
 internal class CompactMapEffect<P, R>(
   private val source: ISagaEffect<P>,
   private val transformer: (P) -> R?
-): SagaEffect<R>() where P : Any, R : Any {
+) : SagaEffect<R>() where P : Any, R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
     return this.source.invoke(p1)
       .map { Boxed(this@CompactMapEffect.transformer(it)) }

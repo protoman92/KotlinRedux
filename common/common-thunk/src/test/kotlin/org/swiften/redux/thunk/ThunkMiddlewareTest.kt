@@ -72,7 +72,7 @@ class ThunkMiddlewareTest : BaseMiddlewareTest() {
 
       override fun hashCode() = this.params.hashCode()
 
-      override fun equals(other: Any?) = when(other) {
+      override fun equals(other: Any?) = when (other) {
         is ThunkAction -> other.params == this.params
         else -> false
       }

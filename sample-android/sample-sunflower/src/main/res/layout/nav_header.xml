@@ -17,13 +17,15 @@
 
 <FrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="@dimen/navigation_drawer_header_height"
   android:background="?attr/colorPrimaryDark"
   android:gravity="bottom"
   android:orientation="vertical"
   android:padding="@dimen/navigation_drawer_header_padding"
-  android:theme="@style/ThemeOverlay.AppCompat.Dark">
+  android:theme="@style/ThemeOverlay.AppCompat.Dark"
+  tools:ignore="Overdraw">
 
   <!-- TODO: add actual logo once available -->
   <ImageView

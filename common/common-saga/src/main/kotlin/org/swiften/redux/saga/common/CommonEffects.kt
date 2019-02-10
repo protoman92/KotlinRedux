@@ -46,7 +46,6 @@ object CommonEffects {
     return { SuspendCatchErrorEffect(it, catcher) }
   }
 
-
   /**
    * Create an [AsyncCatchErrorEffect].
    * @param R The result emission type.

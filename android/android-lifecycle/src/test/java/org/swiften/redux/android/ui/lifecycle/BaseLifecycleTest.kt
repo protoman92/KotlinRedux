@@ -21,7 +21,7 @@ import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.ReduxProps
 import org.swiften.redux.ui.StaticProps
-import java.util.Collections
+import java.util.Collections.synchronizedList
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by viethai.pham on 2019/01/28 */
@@ -56,8 +56,8 @@ open class BaseLifecycleTest {
 
   class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IPropInjector<Int, Unit> {
     override val external = Unit
-    val dispatched = Collections.synchronizedList(mutableListOf<IReduxAction>())
-    val subscriptions = Collections.synchronizedList(arrayListOf<IReduxSubscription>())
+    val dispatched: MutableList<IReduxAction> = synchronizedList(mutableListOf())
+    val subscriptions: MutableList<IReduxSubscription> = synchronizedList(mutableListOf())
     val injectionCount get() = this.subscriptions.size
 
     @Suppress("UNCHECKED_CAST")

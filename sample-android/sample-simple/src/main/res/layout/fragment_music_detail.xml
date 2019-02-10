@@ -6,11 +6,13 @@
 
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@android:color/white"
   android:clickable="true"
-  android:focusable="true">
+  android:focusable="true"
+  tools:ignore="Overdraw">
 
   <TextView
     android:id="@+id/trackName"

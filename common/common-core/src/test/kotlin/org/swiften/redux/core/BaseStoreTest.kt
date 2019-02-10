@@ -7,11 +7,11 @@ package org.swiften.redux.core
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
@@ -72,7 +72,7 @@ abstract class BaseStoreTest : CoroutineScope {
   fun test_dispatchingAction_shouldResultInCorrectState() {
     val store = this.createStore()
     var currentState = 0
-    val allDispatches = arrayListOf<Deferred<Unit>>()
+    val allDispatches = arrayListOf<Job>()
 
     for (i in 0 until 100) {
       // Setup
@@ -87,7 +87,7 @@ abstract class BaseStoreTest : CoroutineScope {
       // When
       // Dispatch actions on multiple coroutines to check thread safety.
       allDispatches.addAll(actions.map { a ->
-        GlobalScope.async(start = CoroutineStart.LAZY) { store.dispatch(a) }
+        GlobalScope.launch(start = CoroutineStart.LAZY) { store.dispatch(a) }
       })
     }
 

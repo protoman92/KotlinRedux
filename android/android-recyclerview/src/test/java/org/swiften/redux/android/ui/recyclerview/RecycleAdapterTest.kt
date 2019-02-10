@@ -24,7 +24,6 @@ import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ObservableReduxProps
-import org.swiften.redux.ui.StaticProps
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/02/02 */

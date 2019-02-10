@@ -87,7 +87,7 @@ object Redux {
     data class UpdateSelectedPlantStatus(val isPlanted: Boolean) : Action()
   }
 
-  sealed class ThunkAction<GExt, Param>() : IReduxThunkAction<State, GExt, Param> {
+  sealed class ThunkAction<GExt, Param> : IReduxThunkAction<State, GExt, Param> {
     object AddSelectedPlantToGarden : ThunkAction<Any, Unit>() {
       override val params get() = Unit
 
