@@ -139,8 +139,11 @@ interface IPropInjector<GState, GExt> :
   IStateGetterProvider<GState>,
   IDeinitializerProvider where GState : Any, GExt : Any {
   /**
-   * Inject [State] and [Action] into [view]. This method does not handle lifecycles, so
-   * platform-specific methods can be defined for this purpose.
+   * Inject [State] and [Action] into [view].
+   *
+   * It's not advisable to use this method directly to inject props if the app's platform requires
+   * dealing with lifecycles (e.g. Android). Separate lifecycle-handling extensions should be
+   * provided to handle such cases.
    * @param LState The local state type that [GState] must extend from.
    * @param LExt See [IActionDependency.external]. [GExt] must extend from this parameter.
    * @param OutProps Property as defined by a view's parent.
@@ -162,10 +165,6 @@ interface IPropInjector<GState, GExt> :
  * A [IPropInjector] implementation that handles [inject] in a thread-safe manner. It also invokes
  * [IPropLifecycleOwner.beforePropInjectionStarts] and [IPropLifecycleOwner.afterPropInjectionEnds]
  * when appropriate.
- *
- * It's not advisable to use this method directly to inject props if the app's platform requires
- * dealing with lifecycles (e.g. Android). Separate lifecycle-handling extensions should be provided
- * to handle such cases.
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
  * @param store An [IReduxStore] instance.

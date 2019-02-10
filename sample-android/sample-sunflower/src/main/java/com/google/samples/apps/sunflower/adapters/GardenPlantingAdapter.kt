@@ -24,7 +24,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
-import com.google.samples.apps.sunflower.dependency.IDependency
 import com.google.samples.apps.sunflower.dependency.IPicassoProvider
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
@@ -43,6 +42,8 @@ import java.util.Locale
 
 class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.ViewHolder>(),
   IStateMapper<Redux.State, Unit, Int> by GardenPlantingAdapter {
+  interface IDependency : IPicassoProvider
+
   companion object : IStateMapper<Redux.State, Unit, Int> {
     override fun mapState(state: Redux.State, outProps: Unit): Int {
       return state.plantAndGardenPlantings?.size ?: 0
