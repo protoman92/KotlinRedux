@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.PlantListFragment
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
-import com.google.samples.apps.sunflower.dependency.IDependency
 import com.google.samples.apps.sunflower.dependency.IPicassoProvider
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
@@ -43,6 +42,8 @@ import org.swiften.redux.ui.ObservableReduxProps
  * Adapter for the [RecyclerView] in [PlantListFragment].
  */
 class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>() {
+  interface IDependency : IPicassoProvider
+
   companion object :
     IPropMapper<Redux.State, IDependency, Unit, List<Plant>, ViewHolder.A>,
     IDiffItemCallback<Plant> {

@@ -22,7 +22,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
-import com.google.samples.apps.sunflower.dependency.IDependency
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_garden.empty_garden
 import kotlinx.android.synthetic.main.fragment_garden.garden_list
@@ -36,8 +35,10 @@ import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 class GardenFragment : Fragment(),
-  IPropContainer<Redux.State, IDependency, GardenFragment.S, Unit>,
-  IPropLifecycleOwner<Redux.State, IDependency> by EmptyPropLifecycleOwner() {
+  IPropContainer<Redux.State, GardenFragment.IDependency, GardenFragment.S, Unit>,
+  IPropLifecycleOwner<Redux.State, GardenFragment.IDependency> by EmptyPropLifecycleOwner() {
+  interface IDependency : GardenPlantingAdapter.IDependency
+
   data class S(val gardenPlantingCount: Int)
 
   companion object : IPropMapper<Redux.State, IDependency, Unit, S, Unit> {

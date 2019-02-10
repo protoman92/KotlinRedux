@@ -35,7 +35,6 @@ import androidx.core.text.italic
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.samples.apps.sunflower.data.Plant
-import com.google.samples.apps.sunflower.dependency.IDependency
 import com.google.samples.apps.sunflower.dependency.IPicassoProvider
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.LARGE_IMAGE_DIMEN
@@ -58,8 +57,10 @@ import org.swiften.redux.ui.StaticProps
  */
 @SuppressLint("RestrictedApi")
 class PlantDetailFragment : Fragment(),
-  IPropContainer<Redux.State, IDependency, PlantDetailFragment.S, PlantDetailFragment.A>,
-  IPropLifecycleOwner<Redux.State, IDependency> by EmptyPropLifecycleOwner() {
+  IPropContainer<Redux.State, PlantDetailFragment.IDependency, PlantDetailFragment.S, PlantDetailFragment.A>,
+  IPropLifecycleOwner<Redux.State, PlantDetailFragment.IDependency> by EmptyPropLifecycleOwner() {
+  interface IDependency : IPicassoProvider
+
   data class S(val plant: Plant? = null, val isPlanted: Boolean? = null)
   class A(override val picasso: Picasso, val addPlantToGarden: () -> Unit) : IPicassoProvider
 

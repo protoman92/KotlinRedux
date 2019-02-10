@@ -25,7 +25,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
-import com.google.samples.apps.sunflower.dependency.IDependency
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
@@ -38,8 +37,10 @@ import org.swiften.redux.ui.ObservableReduxProps
 import org.swiften.redux.ui.StaticProps
 
 class PlantListFragment : Fragment(),
-  IPropContainer<Redux.State, IDependency, PlantListFragment.S, PlantListFragment.A>,
-  IPropLifecycleOwner<Redux.State, IDependency> by EmptyPropLifecycleOwner() {
+  IPropContainer<Redux.State, PlantListFragment.IDependency, PlantListFragment.S, PlantListFragment.A>,
+  IPropLifecycleOwner<Redux.State, PlantListFragment.IDependency> by EmptyPropLifecycleOwner() {
+  interface IDependency : PlantAdapter.IDependency
+
   data class S(val plantCount: Int)
   class A(val updateGrowZone: () -> Unit)
 
