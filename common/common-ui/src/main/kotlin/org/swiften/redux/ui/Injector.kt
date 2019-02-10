@@ -20,15 +20,15 @@ import kotlin.concurrent.write
 /** Created by haipham on 2018/12/16 */
 /**
  * Handle lifecycles for a target of [IPropInjector].
- * @param GState The global state type.
+ * @param LState The local state type that the global state must extend from.
  * @param LExt See [IActionDependency.external].
  */
-interface IPropLifecycleOwner<GState, LExt> where GState : Any, LExt : Any {
+interface IPropLifecycleOwner<LState, LExt> where LState : Any, LExt : Any {
   /**
    * This is called before [IPropInjector.inject] is called.
    * @param sp A [StaticProps] instance.
    */
-  fun beforePropInjectionStarts(sp: StaticProps<GState, LExt>)
+  fun beforePropInjectionStarts(sp: StaticProps<LState, LExt>)
 
   /** This is called after [IReduxSubscription.unsubscribe] is called. */
   fun afterPropInjectionEnds()
@@ -36,24 +36,24 @@ interface IPropLifecycleOwner<GState, LExt> where GState : Any, LExt : Any {
 
 /**
  * Treat this as a delegate for [IPropLifecycleOwner] that does not hold any logic.
- * @param GState The global state type.
+ * @param LState The local state type that the global state must extend from.
  * @param LExt See [IActionDependency.external].
  */
-class EmptyPropLifecycleOwner<GState, LExt> : IPropLifecycleOwner<GState, LExt>
-  where GState : Any, LExt : Any {
-  override fun beforePropInjectionStarts(sp: StaticProps<GState, LExt>) {}
+class EmptyPropLifecycleOwner<LState, LExt> : IPropLifecycleOwner<LState, LExt>
+  where LState : Any, LExt : Any {
+  override fun beforePropInjectionStarts(sp: StaticProps<LState, LExt>) {}
   override fun afterPropInjectionEnds() {}
 }
 
 /**
  * Represents a container for [ReduxProps].
- * @param GState The global state type.
+ * @param LState The local state type that the global state must extend from.
  * @param LExt See [IActionDependency.external].
  * @param State See [ReduxProps.state].
  * @param Action See [ReduxProps.action].
  */
-interface IPropContainer<GState, LExt, State, Action> : IPropLifecycleOwner<GState, LExt>
-  where GState : Any, LExt : Any, State : Any, Action : Any {
+interface IPropContainer<LState, LExt, State, Action> : IPropLifecycleOwner<LState, LExt>
+  where LState : Any, LExt : Any, State : Any, Action : Any {
   var reduxProps: ReduxProps<State, Action>
 }
 
@@ -61,26 +61,26 @@ interface IPropContainer<GState, LExt, State, Action> : IPropLifecycleOwner<GSta
  * Represents static dependencies for [IActionMapper]. [IActionMapper.mapAction] will have access
  * to [IDispatcherProvider.dispatch] and [external].
  * @param LExt The local dependency required for [IActionMapper.mapAction]. This is not necessarily
- * the global dependency but a local dependency that is derivable from the global dependency.
+ * the global dependency but a local dependency that the global dependency extends from.
  */
 interface IActionDependency<out LExt> : IDispatcherProvider where LExt : Any {
   val external: LExt
 }
 
 /**
- * Maps [GState] to [State] for a [IPropContainer].
- * @param GState The global state type.
+ * Maps [LState] to [State] for a [IPropContainer].
+ * @param LState The local state type that the global state must extend from.
  * @param OutProps Property as defined by a view's parent.
  * @param State The container state.
  */
-interface IStateMapper<in GState, in OutProps, out State> where GState : Any, State : Any {
+interface IStateMapper<in LState, in OutProps, out State> where LState : Any, State : Any {
   /**
-   * Map [GState] to [State] using [OutProps]
-   * @param state The latest [GState] instance.
+   * Map [LState] to [State] using [OutProps]
+   * @param state The latest [LState] instance.
    * @param outProps The [OutProps] instance.
    * @return A [State] instance.
    */
-  fun mapState(state: GState, outProps: OutProps): State
+  fun mapState(state: LState, outProps: OutProps): State
 }
 
 /**
@@ -109,7 +109,7 @@ interface IActionMapper<in LExt, in OutProps, out Action> where LExt : Any, Acti
 }
 
 /**
- * Maps [GState] and [LExt] to [State] and [Action] for a [IPropContainer]. [OutProps] is the view's
+ * Maps [LState] and [LExt] to [State] and [Action] for a [IPropContainer]. [OutProps] is the view's
  * immutable property as dictated by its parent.
  *
  * For example, a parent view, which contains a list of child views, wants to call
@@ -117,16 +117,16 @@ interface IActionMapper<in LExt, in OutProps, out Action> where LExt : Any, Acti
  * should therefore be an [Int] that corresponds to their respective indexes in the parent.
  * Generally, though, [OutProps] tends to be [Unit].
  *
- * @param GState The global state type.
- * @param LExt See [IPropInjector.external].
+ * @param LState The local state type that the global state must extend from.
+ * @param LExt See [IActionDependency.external].
  * @param OutProps Property as defined by a view's parent.
  * @param State See [ReduxProps.state].
  * @param Action See [ReduxProps.action].
  */
-interface IPropMapper<in GState, in LExt, in OutProps, out State, out Action> :
-  IStateMapper<GState, OutProps, State>,
+interface IPropMapper<in LState, in LExt, in OutProps, out State, out Action> :
+  IStateMapper<LState, OutProps, State>,
   IActionMapper<LExt, OutProps, Action>
-  where GState : Any, LExt : Any, State : Any, Action : Any
+  where LState : Any, LExt : Any, State : Any, Action : Any
 
 /**
  * Inject state and actions into an [IPropContainer]. Aside from [GState], we can use [GExt] as a
@@ -141,7 +141,8 @@ interface IPropInjector<GState, GExt> :
   /**
    * Inject [State] and [Action] into [view]. This method does not handle lifecycles, so
    * platform-specific methods can be defined for this purpose.
-   * @param LExt See [IActionDependency.external]. This parameter must be derivable from [GExt].
+   * @param LState The local state type that [GState] must extend from.
+   * @param LExt See [IActionDependency.external]. [GExt] must extend from this parameter.
    * @param OutProps Property as defined by a view's parent.
    * @param State See [ReduxProps.state].
    * @param Action See [ReduxProps.action].
@@ -150,11 +151,11 @@ interface IPropInjector<GState, GExt> :
    * @param mapper An [IPropMapper] instance.
    * @return An [IReduxSubscription] instance.
    */
-  fun <LExt, OutProps, State, Action> inject(
-    view: IPropContainer<GState, LExt, State, Action>,
+  fun <LState, LExt, OutProps, State, Action> inject(
+    view: IPropContainer<LState, LExt, State, Action>,
     outProps: OutProps,
-    mapper: IPropMapper<GState, LExt, OutProps, State, Action>
-  ): IReduxSubscription where LExt : Any, State : Any, Action : Any
+    mapper: IPropMapper<LState, LExt, OutProps, State, Action>
+  ): IReduxSubscription where LState : Any, LExt : Any, State : Any, Action : Any
 }
 
 /**
@@ -174,11 +175,11 @@ open class PropInjector<GState : Any, GExt : Any> protected constructor(
   IStateGetterProvider<GState> by store,
   IDeinitializerProvider by store {
   @Suppress("UNCHECKED_CAST")
-  override fun <LExt, OutProps, State, Action> inject(
-    view: IPropContainer<GState, LExt, State, Action>,
+  override fun <LState, LExt, OutProps, State, Action> inject(
+    view: IPropContainer<LState, LExt, State, Action>,
     outProps: OutProps,
-    mapper: IPropMapper<GState, LExt, OutProps, State, Action>
-  ): IReduxSubscription where LExt : Any, State : Any, Action : Any {
+    mapper: IPropMapper<LState, LExt, OutProps, State, Action>
+  ): IReduxSubscription where LState : Any, LExt : Any, State : Any, Action : Any {
     /**
      * It does not matter what the id is, as long as it is unique. This is because we will be
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep
@@ -194,12 +195,12 @@ open class PropInjector<GState : Any, GExt : Any> protected constructor(
      * [ReduxSubscription] which will later be replaced with the actual [IReduxSubscription].
      */
     view.reduxProps = ReduxProps(ReduxSubscription.EMPTY, null, null)
-    view.beforePropInjectionStarts(StaticProps(this as IPropInjector<GState, LExt>))
+    view.beforePropInjectionStarts(StaticProps(this as IPropInjector<LState, LExt>))
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
 
     val onStateUpdate: (GState) -> Unit = {
-      val next = mapper.mapState(it, outProps)
+      val next = mapper.mapState(it as LState, outProps)
       val prev = lock.read { previousState }
 
       lock.write {

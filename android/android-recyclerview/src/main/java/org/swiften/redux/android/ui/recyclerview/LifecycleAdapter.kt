@@ -25,7 +25,8 @@ import org.swiften.redux.ui.unsubscribeSafely
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
- * @param LExt See [IActionDependency.external]. This parameter must be derivable from [GExt].
+ * @param LState The local state type that [GState] must extend from.
+ * @param LExt See [IActionDependency.external]. [GExt] must extend from this parameter.
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProps.state].
  * @param VHAction The [VH] action type. See [ReduxProps.action].
@@ -36,17 +37,18 @@ import org.swiften.redux.ui.unsubscribeSafely
  * @param vhMapper An [IPropMapper] instance for [VH].
  * @return A [RecyclerView.Adapter] instance.
  */
-fun <GState, GExt, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecyclerAdapter(
+fun <GState, GExt, LState, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectRecyclerAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IStateMapper<GState, Unit, Int>,
-  vhMapper: IPropMapper<GState, LExt, Int, VHState, VHAction>
+  adapterMapper: IStateMapper<LState, Unit, Int>,
+  vhMapper: IPropMapper<LState, LExt, Int, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
   GState : Any,
   GExt : Any,
+  LState : Any,
   LExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GState, LExt, VHState, VHAction>,
+  VH : IPropContainer<LState, LExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   val wrappedAdapter = this.injectRecyclerAdapter(adapter, adapterMapper, vhMapper)
@@ -64,7 +66,8 @@ fun <GState, GExt, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.inje
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
- * @param LExt See [IActionDependency.external]. This parameter must be derivable from [GExt].
+ * @param LState The local state type that [GState] must extend from.
+ * @param LExt See [IActionDependency.external]. [GExt] must extend from this parameter.
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProps.state].
  * @param VHAction The [VH] action type. See [ReduxProps.action].
@@ -74,17 +77,18 @@ fun <GState, GExt, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.inje
  * @param diffCallback A [DiffUtil.ItemCallback] instance.
  * @return A [ListAdapter] instance.
  */
-fun <GState, GExt, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiffedAdapter(
+fun <GState, GExt, LState, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GState, LExt, Unit, List<VHState>, VHAction>,
+  adapterMapper: IPropMapper<LState, LExt, Unit, List<VHState>, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
   GState : Any,
   GExt : Any,
+  LState : Any,
   LExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GState, LExt, VHState, VHAction>,
+  VH : IPropContainer<LState, LExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   val wrappedAdapter = this.injectDiffedAdapter(adapter, adapterMapper, diffCallback)
@@ -106,7 +110,8 @@ fun <GState, GExt, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.inje
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param GExt See [IPropInjector.external].
- * @param LExt See [IActionDependency.external]. This parameter must be derivable from [GExt].
+ * @param LState The local state type that [GState] must extend from.
+ * @param LExt See [IActionDependency.external]. [GExt] must extend from this parameter.
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProps.state].
  * @param VHAction The [VH] action type. See [ReduxProps.action].
@@ -116,17 +121,18 @@ fun <GState, GExt, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.inje
  * @param diffCallback A [IDiffItemCallback] instance.
  * @return A [ListAdapter] instance.
  */
-fun <GState, GExt, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiffedAdapter(
+fun <GState, GExt, LState, LExt, VH, VHState, VHAction> IPropInjector<GState, GExt>.injectDiffedAdapter(
   lifecycleOwner: LifecycleOwner,
   adapter: RecyclerView.Adapter<VH>,
-  adapterMapper: IPropMapper<GState, LExt, Unit, List<VHState>, VHAction>,
+  adapterMapper: IPropMapper<LState, LExt, Unit, List<VHState>, VHAction>,
   diffCallback: IDiffItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
   GState : Any,
   GExt : Any,
+  LState : Any,
   LExt : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<GState, LExt, VHState, VHAction>,
+  VH : IPropContainer<LState, LExt, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   return this.injectDiffedAdapter(lifecycleOwner, adapter, adapterMapper,
