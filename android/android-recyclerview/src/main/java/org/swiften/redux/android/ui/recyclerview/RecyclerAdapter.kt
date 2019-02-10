@@ -42,7 +42,7 @@ class PositionProp<OutProp>(val external: OutProp, val position: Int)
  * [RecyclerView.Adapter] that delegates method calls to another [RecyclerView.Adapter].
  * @param GState The global state type.
  * @param LState The local state type that [GState] must extend from.
- * @param OutProp Property as defined by [lifecycleOwner]'s parent.
+ * @param OutProp Property as defined by [adapter]'s parent.
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProp.state].
  * @param VHAction The [VH] action type. See [ReduxProp.action].

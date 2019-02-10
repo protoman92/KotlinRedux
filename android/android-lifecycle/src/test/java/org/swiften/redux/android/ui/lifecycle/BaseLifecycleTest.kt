@@ -10,7 +10,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDeinitializer
-import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.ReduxSubscription
@@ -54,7 +53,6 @@ open class BaseLifecycleTest {
   }
 
   class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IPropInjector<Int> {
-    val dispatched: MutableList<IReduxAction> = synchronizedList(mutableListOf())
     val subscriptions: MutableList<IReduxSubscription> = synchronizedList(mutableListOf())
     val injectionCount get() = this.subscriptions.size
 
@@ -74,7 +72,7 @@ open class BaseLifecycleTest {
       return subscription
     }
 
-    override val dispatch: IActionDispatcher = { this.dispatched.add(it) }
+    override val dispatch: IActionDispatcher = {}
     override val deinitialize: IDeinitializer = {}
   }
 }

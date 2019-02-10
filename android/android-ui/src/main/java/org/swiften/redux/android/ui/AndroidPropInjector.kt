@@ -20,7 +20,6 @@ import org.swiften.redux.ui.StaticProp
  * inheritance here to ensure [StaticProp.injector] is set with this class instance.
  * @param GState The global state type.
  * @param store An [IReduxStore] instance.
- * @param external See [PropInjector.external].
  * @param runner An [AndroidUtil.IMainThreadRunner] instance.
  */
 class AndroidPropInjector<GState>(

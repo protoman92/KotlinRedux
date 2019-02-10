@@ -63,7 +63,6 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
  * Perform [injectDiffedAdapter], but also handle lifecycle with [lifecycleOwner].
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
  * @param LState The local state type that [GState] must extend from.
  * @param OutProp Property as defined by [lifecycleOwner]'s parent.
  * @param VH The [RecyclerView.ViewHolder] instance.

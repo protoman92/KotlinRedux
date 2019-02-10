@@ -21,7 +21,6 @@ interface IVariableProp<out State, out Action> where State : Any, Action : Any {
 /**
  * Container for an static dependencies.
  * @param LState The local state type that the global state must extend from.
- * @param OutProp See [IPropInjector.external].
  * @param injector An [IPropInjector] instance.
  */
 data class StaticProp<LState, OutProp>(
