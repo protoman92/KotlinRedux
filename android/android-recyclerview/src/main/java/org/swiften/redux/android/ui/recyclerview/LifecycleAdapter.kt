@@ -43,8 +43,8 @@ fun <GState, GExt, LState, LExt, VH, VHState, VHAction> IPropInjector<GState, GE
   adapterMapper: IStateMapper<LState, Unit, Int>,
   vhMapper: IPropMapper<LState, LExt, Int, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
-  GState : Any,
-  GExt : Any,
+  GState : LState,
+  GExt : LExt,
   LState : Any,
   LExt : Any,
   VH : RecyclerView.ViewHolder,
@@ -83,8 +83,8 @@ fun <GState, GExt, LState, LExt, VH, VHState, VHAction> IPropInjector<GState, GE
   adapterMapper: IPropMapper<LState, LExt, Unit, List<VHState>, VHAction>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
-  GState : Any,
-  GExt : Any,
+  GState : LState,
+  GExt : LExt,
   LState : Any,
   LExt : Any,
   VH : RecyclerView.ViewHolder,
@@ -127,8 +127,8 @@ fun <GState, GExt, LState, LExt, VH, VHState, VHAction> IPropInjector<GState, GE
   adapterMapper: IPropMapper<LState, LExt, Unit, List<VHState>, VHAction>,
   diffCallback: IDiffItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
-  GState : Any,
-  GExt : Any,
+  GState : LState,
+  GExt : LExt,
   LState : Any,
   LExt : Any,
   VH : RecyclerView.ViewHolder,

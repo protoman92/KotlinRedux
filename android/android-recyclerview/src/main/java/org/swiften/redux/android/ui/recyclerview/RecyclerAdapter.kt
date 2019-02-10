@@ -45,8 +45,8 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
 abstract class DelegateRecyclerAdapter<GState, GExt, LState, LExt, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>
 ) : RecyclerView.Adapter<VH>() where
-  GState : Any,
-  GExt : Any,
+  GState : LState,
+  GExt : LExt,
   LState : Any,
   LExt : Any,
   VH : RecyclerView.ViewHolder,
@@ -136,8 +136,8 @@ fun <GState, GExt, LState, LExt, VH, VHState, VHAction> IPropInjector<GState, GE
   adapterMapper: IStateMapper<LState, Unit, Int>,
   vhMapper: IPropMapper<LState, LExt, Int, VHState, VHAction>
 ): DelegateRecyclerAdapter<GState, GExt, LState, LExt, VH, VHState, VHAction> where
-  GState : Any,
-  GExt : Any,
+  GState : LState,
+  GExt : LExt,
   LState : Any,
   LExt : Any,
   VH : RecyclerView.ViewHolder,
@@ -145,9 +145,8 @@ fun <GState, GExt, LState, LExt, VH, VHState, VHAction> IPropInjector<GState, GE
   VHState : Any,
   VHAction : Any {
   return object : DelegateRecyclerAdapter<GState, GExt, LState, LExt, VH, VHState, VHAction>(adapter) {
-    @Suppress("UNCHECKED_CAST")
     override fun getItemCount(): Int {
-      return adapterMapper.mapState(this@injectRecyclerAdapter.lastState() as LState, Unit)
+      return adapterMapper.mapState(this@injectRecyclerAdapter.lastState(), Unit)
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {

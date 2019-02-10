@@ -101,8 +101,8 @@ fun <GState, GExt, LState, LExt, LC, OP, State, Action> IPropInjector<GState, GE
   outProps: OP,
   mapper: IPropMapper<LState, LExt, OP, State, Action>
 ): LC where
-  GState : Any,
-  GExt : Any,
+  GState : LState,
+  GExt : LExt,
   LState : Any,
   LExt : Any,
   LC : LifecycleOwner,
