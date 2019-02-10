@@ -67,8 +67,8 @@ class AndroidInjectorTest : PropInjectorTest() {
     override fun afterPropInjectionEnds() { this.afterInjectionCount.incrementAndGet() }
   }
 
-  override fun createInjector(store: IReduxStore<S>): IPropInjector<S, Unit> {
-    return AndroidPropInjector(store, Unit, this.runner)
+  override fun createInjector(store: IReduxStore<S>): IPropInjector<S> {
+    return AndroidPropInjector(store, this.runner)
   }
 
   @Test

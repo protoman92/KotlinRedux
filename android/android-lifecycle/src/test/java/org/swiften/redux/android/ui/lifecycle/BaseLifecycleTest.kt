@@ -14,7 +14,6 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.IActionDependency
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropMapper
@@ -43,10 +42,10 @@ open class BaseLifecycleTest {
 
   class TestLifecycleOwner : LifecycleOwner,
     IPropContainer<Int, Unit, Int, Unit>,
-    IPropMapper<Int, Unit, Unit, Int, Unit> by TestLifecycleOwner {
-    companion object : IPropMapper<Int, Unit, Unit, Int, Unit> {
+    IPropMapper<Int, Unit, Int, Unit> by TestLifecycleOwner {
+    companion object : IPropMapper<Int, Unit, Int, Unit> {
       override fun mapState(state: Int, outProps: Unit) = state
-      override fun mapAction(static: IActionDependency<Unit>, outProps: Unit) = Unit
+      override fun mapAction(dispatch: IActionDispatcher, outProps: Unit) = Unit
     }
 
     val registry = TestLifecycleRegistry(this)
@@ -54,23 +53,22 @@ open class BaseLifecycleTest {
     override fun getLifecycle(): Lifecycle = this.registry
   }
 
-  class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IPropInjector<Int, Unit> {
-    override val external = Unit
+  class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IPropInjector<Int> {
     val dispatched: MutableList<IReduxAction> = synchronizedList(mutableListOf())
     val subscriptions: MutableList<IReduxSubscription> = synchronizedList(mutableListOf())
     val injectionCount get() = this.subscriptions.size
 
     @Suppress("UNCHECKED_CAST")
-    override fun <LState, LExt, OutProps, State, Action> inject(
-      view: IPropContainer<LState, LExt, State, Action>,
+    override fun <LState, OutProps, State, Action> inject(
+      view: IPropContainer<LState, OutProps, State, Action>,
       outProps: OutProps,
-      mapper: IPropMapper<LState, LExt, OutProps, State, Action>
-    ): IReduxSubscription where LState : Any, LExt : Any, State : Any, Action : Any {
+      mapper: IPropMapper<LState, OutProps, State, Action>
+    ): IReduxSubscription where LState : Any, State : Any, Action : Any {
       val lastState = this.lastState()
       val subscription = ReduxSubscription("$view") { view.afterPropInjectionEnds() }
       val state = mapper.mapState(lastState as LState, outProps)
-      val action = mapper.mapAction(this as IActionDependency<LExt>, outProps)
-      view.beforePropInjectionStarts(StaticProps(this as IPropInjector<LState, LExt>))
+      val action = mapper.mapAction(this.dispatch, outProps)
+      view.beforePropInjectionStarts(StaticProps(this as IPropInjector<LState>, outProps))
       view.reduxProps = ReduxProps(subscription, state, action)
       this.subscriptions.add(subscription)
       return subscription

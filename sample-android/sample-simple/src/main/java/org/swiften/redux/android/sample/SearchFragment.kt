@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.view_search_result.view.trackName
 import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
-import org.swiften.redux.ui.IActionDependency
+import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
@@ -38,7 +38,7 @@ class SearchFragment : Fragment(),
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>() {
     companion object :
-      IPropMapper<MainRedux.State, Unit, Unit, List<ViewHolder.S1>, ViewHolder.A1>,
+      IPropMapper<MainRedux.State, Unit, List<ViewHolder.S1>, ViewHolder.A1>,
       IDiffItemCallback<ViewHolder.S1> {
       override fun mapState(state: MainRedux.State, outProps: Unit): List<ViewHolder.S1> {
         return state.musicResult?.results
@@ -46,8 +46,8 @@ class SearchFragment : Fragment(),
           ?: arrayListOf()
       }
 
-      override fun mapAction(static: IActionDependency<Unit>, outProps: Unit): ViewHolder.A1 {
-        return ViewHolder.A1 { static.dispatch(MainRedux.Screen.MusicDetail(it)) }
+      override fun mapAction(dispatch: IActionDispatcher, outProps: Unit): ViewHolder.A1 {
+        return ViewHolder.A1 { dispatch(MainRedux.Screen.MusicDetail(it)) }
       }
 
       override fun areItemsTheSame(oldItem: ViewHolder.S1, newItem: ViewHolder.S1): Boolean {
@@ -91,9 +91,9 @@ class SearchFragment : Fragment(),
     }
   }
 
-  companion object : IPropMapper<MainRedux.State, Unit, Unit, S, A> {
-    override fun mapAction(static: IActionDependency<Unit>, outProps: Unit): A {
-      return A { static.dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
+  companion object : IPropMapper<MainRedux.State, Unit, S, A> {
+    override fun mapAction(dispatch: IActionDispatcher, outProps: Unit): A {
+      return A { dispatch(MainRedux.Action.UpdateAutocompleteQuery(it)) }
     }
 
     override fun mapState(state: MainRedux.State, outProps: Unit): S {
@@ -133,7 +133,7 @@ class SearchFragment : Fragment(),
     this.searchResult.also {
       it.setHasFixedSize(true)
       it.layoutManager = LinearLayoutManager(this.context)
-      it.adapter = sp.injector.injectDiffedAdapter(this, Adapter(), Adapter, Adapter)
+      it.adapter = sp.injector.injectDiffedAdapter(this, Adapter(), Unit, Adapter, Adapter)
     }
   }
 }

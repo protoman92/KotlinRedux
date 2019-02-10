@@ -32,14 +32,13 @@ class AppCompatActivityWrapper(private val activity: AppCompatActivity) : IAppCo
  * session automatically disposes of itself when [ReduxLifecycleObserver.onDestroy] is called.
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
  * @param activity An [IAppCompatActivity] instance.
  * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
  */
-internal fun <GState, GExt> IPropInjector<GState, GExt>.injectFragment(
+internal fun <GState> IPropInjector<GState>.injectFragment(
   activity: IAppCompatActivity,
-  inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
-) where GState : Any, GExt : Any {
+  inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
+) where GState : Any {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
       inject(this@injectFragment, f)
@@ -65,13 +64,12 @@ internal fun <GState, GExt> IPropInjector<GState, GExt>.injectFragment(
 /**
  * Call [injectFragment] with an [AppCompatActivity].
  * @param GState The global state type.
- * @param GExt See [IPropInjector.external].
  * @param activity An [AppCompatActivity] instance.
  * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
  */
-internal fun <GState, GExt> IPropInjector<GState, GExt>.injectFragment(
+internal fun <GState> IPropInjector<GState>.injectFragment(
   activity: AppCompatActivity,
-  inject: IPropInjector<GState, GExt>.(LifecycleOwner) -> Unit
-) where GState : Any, GExt : Any {
+  inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
+) where GState : Any {
   return this.injectFragment(AppCompatActivityWrapper(activity), inject)
 }

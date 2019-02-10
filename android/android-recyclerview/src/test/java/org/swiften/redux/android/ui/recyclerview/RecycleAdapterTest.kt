@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
-import org.swiften.redux.ui.IActionDependency
+import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
@@ -31,17 +31,17 @@ import java.util.concurrent.atomic.AtomicInteger
 @RunWith(RobolectricTestRunner::class)
 class RecycleAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Int, Unit, Int, Unit> {
-    companion object : IPropMapper<Int, Unit, Int, Int, Unit> {
-      override fun mapState(state: Int, outProps: Int) = state
-      override fun mapAction(static: IActionDependency<Unit>, outProps: Int) = Unit
+    IPropContainer<Int, Pair<Unit, Int>, Int, Unit> {
+    companion object : IPropMapper<Int, Pair<Unit, Int>, Int, Unit> {
+      override fun mapState(state: Int, outProps: Pair<Unit, Int>) = state
+      override fun mapAction(dispatch: IActionDispatcher, outProps: Pair<Unit, Int>) = Unit
     }
 
     override var reduxProps by ObservableReduxProps<Int, Unit> { _, _ -> }
   }
 
-  class RecyclerAdapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IStateMapper<Int, Unit, Int> by RecyclerAdapter {
+  class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
+    IStateMapper<Int, Unit, Int> by Adapter {
     companion object : IStateMapper<Int, Unit, Int> {
       val mapCount = AtomicInteger()
 
@@ -61,10 +61,10 @@ class RecycleAdapterTest : BaseLifecycleTest() {
     // Setup
     val injector = BaseLifecycleTest.TestInjector()
     val lc = BaseLifecycleTest.TestLifecycleOwner()
-    val adapter = RecyclerAdapter()
+    val adapter = Adapter()
 
     // When
-    val wrappedAdapter = injector.injectRecyclerAdapter(lc, adapter, RecyclerAdapter, ViewHolder)
+    val wrappedAdapter = injector.injectRecyclerAdapter(lc, adapter, Unit, Adapter, ViewHolder)
 
     // When - adapter mapper
     /** Every time itemCount is accessed, the adapter's state mapper should be triggered */
@@ -73,7 +73,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
     wrappedAdapter.itemCount
 
     // Then - adapter mapper
-    assertEquals(RecyclerAdapter.mapCount.get(), 3)
+    assertEquals(Adapter.mapCount.get(), 3)
 
     // When - view holder injection
     val viewGroup = LinearLayout(InstrumentationRegistry.getInstrumentation().context)

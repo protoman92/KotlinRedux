@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_music_detail.artistName
 import kotlinx.android.synthetic.main.fragment_music_detail.trackName
 import kotlinx.android.synthetic.main.fragment_music_detail.trackOpen
-import org.swiften.redux.ui.IActionDependency
+import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
@@ -25,9 +25,9 @@ class MusicDetailFragment : Fragment(),
   class S(val track: MusicTrack?)
   class A(val previewTrack: () -> Unit)
 
-  companion object : IPropMapper<MainRedux.State, Unit, Unit, S, A> {
-    override fun mapAction(static: IActionDependency<Unit>, outProps: Unit): A {
-      return A { static.dispatch(MainRedux.ThunkAction.PreviewTrack) }
+  companion object : IPropMapper<MainRedux.State, Unit, S, A> {
+    override fun mapAction(dispatch: IActionDispatcher, outProps: Unit): A {
+      return A { dispatch(MainRedux.ThunkAction.PreviewTrack) }
     }
 
     override fun mapState(state: MainRedux.State, outProps: Unit) = S(state.currentSelectedTrack())

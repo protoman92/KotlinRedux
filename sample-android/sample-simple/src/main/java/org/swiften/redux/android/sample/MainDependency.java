@@ -6,14 +6,13 @@
 package org.swiften.redux.android.sample;
 
 import androidx.annotation.NonNull;
-import kotlin.Unit;
 import org.swiften.redux.ui.IPropInjector;
 
 /** Created by haipham on 2018/12/19 */
 public final class MainDependency {
-  @NonNull final IPropInjector<MainRedux.State, Unit> injector;
+  @NonNull final IPropInjector<MainRedux.State> injector;
 
-  MainDependency(@NonNull IPropInjector<MainRedux.State, Unit> injector) {
+  MainDependency(@NonNull IPropInjector<MainRedux.State> injector) {
     this.injector = injector;
   }
 }

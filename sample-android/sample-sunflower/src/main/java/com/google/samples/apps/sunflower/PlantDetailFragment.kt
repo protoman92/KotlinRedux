@@ -44,7 +44,7 @@ import kotlinx.android.synthetic.main.fragment_plant_detail.fab
 import kotlinx.android.synthetic.main.fragment_plant_detail.plant_detail
 import kotlinx.android.synthetic.main.fragment_plant_detail.plant_watering
 import kotlinx.android.synthetic.main.fragment_plant_detail.toolbar_layout
-import org.swiften.redux.ui.IActionDependency
+import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProps
@@ -61,17 +61,15 @@ class PlantDetailFragment : Fragment(),
   data class S(val plant: Plant? = null, val isPlanted: Boolean? = null)
   class A(override val picasso: Picasso, val addPlantToGarden: () -> Unit) : IPicassoProvider
 
-  companion object : IPropMapper<Redux.State, IDependency, Unit, S, A> {
-    override fun mapState(state: Redux.State, outProps: Unit): S {
+  companion object : IPropMapper<Redux.State, IDependency, S, A> {
+    override fun mapState(state: Redux.State, outProps: IDependency): S {
       return state.selectedPlant?.let {
         S(it.id.let { id -> state.plants?.find { p -> p.plantId == id } }, it.isPlanted)
       } ?: S()
     }
 
-    override fun mapAction(static: IActionDependency<IDependency>, outProps: Unit): A {
-      return A(static.external.picasso) {
-        static.dispatch(Redux.ThunkAction.AddSelectedPlantToGarden)
-      }
+    override fun mapAction(dispatch: IActionDispatcher, outProps: IDependency): A {
+      return A(outProps.picasso) { dispatch(Redux.ThunkAction.AddSelectedPlantToGarden) }
     }
   }
 
