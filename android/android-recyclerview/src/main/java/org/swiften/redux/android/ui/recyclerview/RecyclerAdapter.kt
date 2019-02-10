@@ -31,6 +31,14 @@ abstract class ReduxRecyclerViewAdapter<VH : RecyclerView.ViewHolder> : Recycler
 }
 
 /**
+ * Use this as container for outer props for [DelegateRecyclerAdapter] view holder.
+ * @param OutProps The main external props.
+ * @param external An [OutProps] instance.
+ * @param position The view holder's position.
+ */
+class PositionProps<OutProps>(val external: OutProps, val position: Int)
+
+/**
  * [RecyclerView.Adapter] that delegates method calls to another [RecyclerView.Adapter].
  * @param GState The global state type.
  * @param LState The local state type that [GState] must extend from.
@@ -46,7 +54,7 @@ abstract class DelegateRecyclerAdapter<GState, LState, OutProps, VH, VHState, VH
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, Pair<OutProps, Int>, VHState, VHAction>,
+  VH : IPropContainer<LState, PositionProps<OutProps>, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   protected val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
@@ -133,12 +141,12 @@ fun <GState, LState, OutProps, VH, VHState, VHAction> IPropInjector<GState>.inje
   adapter: RecyclerView.Adapter<VH>,
   outProps: OutProps,
   adapterMapper: IStateMapper<LState, Unit, Int>,
-  vhMapper: IPropMapper<LState, Pair<OutProps, Int>, VHState, VHAction>
+  vhMapper: IPropMapper<LState, PositionProps<OutProps>, VHState, VHAction>
 ): DelegateRecyclerAdapter<GState, LState, OutProps, VH, VHState, VHAction> where
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, Pair<OutProps, Int>, VHState, VHAction>,
+  VH : IPropContainer<LState, PositionProps<OutProps>, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   return object : DelegateRecyclerAdapter<GState, LState, OutProps, VH, VHState, VHAction>(adapter) {
@@ -147,7 +155,8 @@ fun <GState, LState, OutProps, VH, VHState, VHAction> IPropInjector<GState>.inje
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-      val subscription = this@injectRecyclerAdapter.inject(holder, outProps to position, vhMapper)
+      val vhOutProps = PositionProps(outProps, position)
+      val subscription = this@injectRecyclerAdapter.inject(holder, vhOutProps, vhMapper)
       this.composite.add(subscription)
     }
 

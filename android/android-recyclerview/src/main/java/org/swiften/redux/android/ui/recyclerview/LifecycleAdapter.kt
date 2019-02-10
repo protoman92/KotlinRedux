@@ -41,12 +41,12 @@ fun <GState, LState, OutProps, VH, VHState, VHAction> IPropInjector<GState>.inje
   adapter: RecyclerView.Adapter<VH>,
   outProps: OutProps,
   adapterMapper: IStateMapper<LState, Unit, Int>,
-  vhMapper: IPropMapper<LState, Pair<OutProps, Int>, VHState, VHAction>
+  vhMapper: IPropMapper<LState, PositionProps<OutProps>, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, Pair<OutProps, Int>, VHState, VHAction>,
+  VH : IPropContainer<LState, PositionProps<OutProps>, VHState, VHAction>,
   VHState : Any,
   VHAction : Any {
   val wrappedAdapter = this.injectRecyclerAdapter(adapter, outProps, adapterMapper, vhMapper)

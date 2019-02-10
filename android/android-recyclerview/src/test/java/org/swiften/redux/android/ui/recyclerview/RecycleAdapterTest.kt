@@ -31,10 +31,10 @@ import java.util.concurrent.atomic.AtomicInteger
 @RunWith(RobolectricTestRunner::class)
 class RecycleAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Int, Pair<Unit, Int>, Int, Unit> {
-    companion object : IPropMapper<Int, Pair<Unit, Int>, Int, Unit> {
-      override fun mapState(state: Int, outProps: Pair<Unit, Int>) = state
-      override fun mapAction(dispatch: IActionDispatcher, outProps: Pair<Unit, Int>) = Unit
+    IPropContainer<Int, PositionProps<Unit>, Int, Unit> {
+    companion object : IPropMapper<Int, PositionProps<Unit>, Int, Unit> {
+      override fun mapState(state: Int, outProps: PositionProps<Unit>) = state
+      override fun mapAction(dispatch: IActionDispatcher, outProps: PositionProps<Unit>) = Unit
     }
 
     override var reduxProps by ObservableReduxProps<Int, Unit> { _, _ -> }
