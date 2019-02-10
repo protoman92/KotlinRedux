@@ -2,16 +2,14 @@
 
 # &lt;init&gt;
 
-`PropInjector(store: `[`IReduxStore`](../../org.swiften.redux.core/-i-redux-store.md)`<`[`GState`](index.md#GState)`>, external: `[`GExt`](index.md#GExt)`)`
+`protected PropInjector(store: `[`IReduxStore`](../../org.swiften.redux.core/-i-redux-store.md)`<`[`GState`](index.md#GState)`>)`
 
-A [IPropInjector](../-i-prop-injector/index.md) implementation that handles [inject](inject.md) in a thread-safe manner. It
-also invokes [IPropLifecycleOwner.beforePropInjectionStarts](../-i-prop-lifecycle-owner/before-prop-injection-starts.md) and
-[IPropLifecycleOwner.afterPropInjectionEnds](../-i-prop-lifecycle-owner/after-prop-injection-ends.md) when appropriate.
+A [IPropInjector](../-i-prop-injector/index.md) implementation that handles [inject](inject.md) in a thread-safe manner. It also invokes
+[IPropLifecycleOwner.beforePropInjectionStarts](../-i-prop-lifecycle-owner/before-prop-injection-starts.md) and [IPropLifecycleOwner.afterPropInjectionEnds](../-i-prop-lifecycle-owner/after-prop-injection-ends.md)
+when appropriate.
 
 ### Parameters
 
 `GState` - The global state type.
-
-`GExt` - See [IPropInjector.external](../-i-action-dependency/external.md).
 
 `store` - An [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md) instance.

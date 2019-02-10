@@ -214,7 +214,7 @@ open class PropInjector<GState : Any> protected constructor(
  */
 fun IPropContainer<*, *, *, *>.unsubscribeSafely(): String? {
   try {
-    val subscription = this.reduxProp.s
+    val subscription = this.reduxProp.subscription
     subscription.unsubscribe()
     return subscription.id
   } catch (e: UninitializedPropertyAccessException) {

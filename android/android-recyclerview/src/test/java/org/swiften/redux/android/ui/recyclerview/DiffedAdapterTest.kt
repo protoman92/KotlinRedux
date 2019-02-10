@@ -99,7 +99,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
 
     // Then - view holder injection
     assertEquals(injector.injectionCount, 1)
-    viewHolders.forEach { assertFalse(it.reduxProp.s.isUnsubscribed()) }
+    viewHolders.forEach { assertFalse(it.reduxProp.subscription.isUnsubscribed()) }
     injector.subscriptions.forEach { assertFalse(it.isUnsubscribed()) }
 
     // When - lifecycle ending
@@ -113,7 +113,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     injector.subscriptions.forEach { assertTrue(it.isUnsubscribed()) }
 
     viewHolders.forEach {
-      assertTrue(it.reduxProp.s.isUnsubscribed())
+      assertTrue(it.reduxProp.subscription.isUnsubscribed())
       assertEquals(it.afterInjection.get(), 1)
     }
   }

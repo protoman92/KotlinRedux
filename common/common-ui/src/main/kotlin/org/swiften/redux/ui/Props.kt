@@ -19,7 +19,7 @@ interface IVariableProp<out State, out Action> where State : Any, Action : Any {
 }
 
 /**
- * Container for an static dependencies.
+ * Container for static dependencies.
  * @param LState The local state type that the global state must extend from.
  * @param injector An [IPropInjector] instance.
  */
@@ -29,15 +29,15 @@ data class StaticProp<LState, OutProp>(
 ) where LState : Any
 
 /**
- * Container for [s], [state] and [action].
+ * Container for [subscription], [state] and [action].
  * @param State See [IVariableProp.state].
  * @param Action See [IVariableProp.action].
- * @param s An [IReduxSubscription] instance.
+ * @param subscription An [IReduxSubscription] instance.
  * @param state A [State] instance.
  * @param action An [Action] instance.
  */
 data class ReduxProp<State, Action>(
-  val s: IReduxSubscription,
+  val subscription: IReduxSubscription,
   override val state: State?,
   override val action: Action?
 ) : IVariableProp<State, Action> where State : Any, Action : Any

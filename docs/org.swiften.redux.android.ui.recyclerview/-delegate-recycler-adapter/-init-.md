@@ -10,12 +10,14 @@
 
 `GState` - The global state type.
 
-`GExt` - See [IPropInjector.external](../../org.swiften.redux.ui/-i-action-dependency/external.md).
+`LState` - The local state type that [GState](index.md#GState) must extend from.
+
+`OutProp` - Property as defined by [adapter](adapter.md)'s parent.
 
 `VH` - The [RecyclerView.ViewHolder](#) instance.
 
-`VHState` - The [VH](index.md#VH) state type. See [ReduxProps.state](../../org.swiften.redux.ui/-redux-props/state.md).
+`VHState` - The [VH](index.md#VH) state type. See [ReduxProp.state](../../org.swiften.redux.ui/-redux-prop/state.md).
 
-`VHAction` - The [VH](index.md#VH) action type. See [ReduxProps.action](../../org.swiften.redux.ui/-redux-props/action.md).
+`VHAction` - The [VH](index.md#VH) action type. See [ReduxProp.action](../../org.swiften.redux.ui/-redux-prop/action.md).
 
 `adapter` - The base [RecyclerView.Adapter](#) instance.

@@ -2,8 +2,8 @@
 
 # vhSubscription
 
-`val vhSubscription: `[`CompositeReduxSubscription`](../../org.swiften.redux.core/-composite-redux-subscription/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/DiffedAdapter.kt#L58)
+`val vhSubscription: `[`CompositeReduxSubscription`](../../org.swiften.redux.core/-composite-redux-subscription/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/DiffedAdapter.kt#L61)
 
-Since we will be manually injecting props into [VH](index.md#VH) instances, we will need to collect their
+Since we will be manually injecting prop into [VH](index.md#VH) instances, we will need to collect their
 [ReduxSubscription](../../org.swiften.redux.core/-redux-subscription/index.md) here.
 

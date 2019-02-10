@@ -2,15 +2,15 @@
 
 # mapState
 
-`abstract fun mapState(state: `[`GState`](index.md#GState)`, outProps: `[`OutProps`](index.md#OutProps)`): `[`State`](index.md#State) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L78)
+`abstract fun mapState(state: `[`LState`](index.md#LState)`, outProp: `[`OutProp`](index.md#OutProp)`): `[`State`](index.md#State) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L66)
 
-Map [GState](index.md#GState) to [State](index.md#State) using [OutProps](index.md#OutProps)
+Map [LState](index.md#LState) to [State](index.md#State) using [OutProp](index.md#OutProp)
 
 ### Parameters
 
-`state` - The latest [GState](index.md#GState) instance.
+`state` - The latest [LState](index.md#LState) instance.
 
-`outProps` - The [OutProps](index.md#OutProps) instance.
+`outProp` - The [OutProp](index.md#OutProp) instance.
 
 **Return**
 A [State](index.md#State) instance.

@@ -1,4 +1,4 @@
-[docs](../../index.md) / [org.swiften.redux.ui](../index.md) / [IVariableProps](index.md) / [state](./state.md)
+[docs](../../index.md) / [org.swiften.redux.ui](../index.md) / [IVariableProp](index.md) / [state](./state.md)
 
 # state
 

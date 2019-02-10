@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`DefaultActionStore(store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>)`
+`DefaultActionStore(state: `[`GState`](index.md#GState)`, reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`>)`
 
 A [IReduxStore](../-i-redux-store.md) that handles [DefaultReduxAction](../-default-redux-action/index.md).
 
@@ -10,4 +10,6 @@ A [IReduxStore](../-i-redux-store.md) that handles [DefaultReduxAction](../-defa
 
 `GState` - The global state type.
 
-`store` - An [IReduxStore](../-i-redux-store.md) instance.
+`state` - See [ThreadSafeStore.state](../-thread-safe-store/state.md).
+
+`reducer` - See [ThreadSafeStore.reducer](../-thread-safe-store/reducer.md).

@@ -2,7 +2,7 @@
 
 # DelegateRecyclerAdapter
 
-`abstract class DelegateRecyclerAdapter<GState, GExt, VH : `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<`[`VHState`](index.md#VHState)`, `[`VHAction`](index.md#VHAction)`>, VHState, VHAction>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L43)
+`abstract class DelegateRecyclerAdapter<GState : `[`LState`](index.md#LState)`, LState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, OutProp, VH : `[`IPropContainer`](../../org.swiften.redux.ui/-i-prop-container/index.md)`<`[`LState`](index.md#LState)`, `[`PositionProp`](../-position-prop/index.md)`<`[`OutProp`](index.md#OutProp)`>, `[`VHState`](index.md#VHState)`, `[`VHAction`](index.md#VHAction)`>, VHState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, VHAction : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L51)
 
 [RecyclerView.Adapter](#) that delegates method calls to another [RecyclerView.Adapter](#).
 
@@ -10,13 +10,15 @@
 
 `GState` - The global state type.
 
-`GExt` - See [IPropInjector.external](../../org.swiften.redux.ui/-i-action-dependency/external.md).
+`LState` - The local state type that [GState](index.md#GState) must extend from.
+
+`OutProp` - Property as defined by [adapter](adapter.md)'s parent.
 
 `VH` - The [RecyclerView.ViewHolder](#) instance.
 
-`VHState` - The [VH](index.md#VH) state type. See [ReduxProps.state](../../org.swiften.redux.ui/-redux-props/state.md).
+`VHState` - The [VH](index.md#VH) state type. See [ReduxProp.state](../../org.swiften.redux.ui/-redux-prop/state.md).
 
-`VHAction` - The [VH](index.md#VH) action type. See [ReduxProps.action](../../org.swiften.redux.ui/-redux-props/action.md).
+`VHAction` - The [VH](index.md#VH) action type. See [ReduxProp.action](../../org.swiften.redux.ui/-redux-prop/action.md).
 
 `adapter` - The base [RecyclerView.Adapter](#) instance.
 
@@ -49,4 +51,4 @@
 | [registerAdapterDataObserver](register-adapter-data-observer.md) | `open fun registerAdapterDataObserver(observer: <ERROR CLASS>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
 | [setHasStableIds](set-has-stable-ids.md) | `open fun setHasStableIds(hasStableIds: `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
 | [unregisterAdapterDataObserver](unregister-adapter-data-observer.md) | `open fun unregisterAdapterDataObserver(observer: <ERROR CLASS>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
-| [unsubscribeSafely](unsubscribe-safely.md) | `internal fun unsubscribeSafely(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Since we will be performing [IPropInjector.inject](../../org.swiften.redux.ui/-i-prop-injector/inject.md) for [VH](index.md#VH) instances, we will be be using [CompositeReduxSubscription.add](../../org.swiften.redux.core/-composite-redux-subscription/add.md) a lot every time [RecyclerView.Adapter.onBindViewHolder](#) is called. As a result, calling this method will ensure proper deinitialization. |
+| [unsubscribeSafely](unsubscribe-safely.md) | `internal fun unsubscribeSafely(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Since we will be performing [IPropInjector.inject](../../org.swiften.redux.ui/-i-prop-injector/inject.md) for [VH](index.md#VH) instances, we will be using [CompositeReduxSubscription.add](../../org.swiften.redux.core/-composite-redux-subscription/add.md) a lot every time [RecyclerView.Adapter.onBindViewHolder](#) is called. As a result, calling this method will ensure proper deinitialization. |

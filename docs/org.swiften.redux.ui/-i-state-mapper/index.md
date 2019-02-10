@@ -2,15 +2,15 @@
 
 # IStateMapper
 
-`interface IStateMapper<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, OutProps, State>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L71)
+`interface IStateMapper<in LState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, in OutProp, out State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L59)
 
-Maps [GState](index.md#GState) to [State](index.md#State) for a [IPropContainer](../-i-prop-container/index.md).
+Maps [LState](index.md#LState) to [State](index.md#State) for a [IPropContainer](../-i-prop-container/index.md).
 
 ### Parameters
 
-`GState` - The global state type.
+`LState` - The local state type that the global state must extend from.
 
-`OutProps` - Property as defined by a view's parent.
+`OutProp` - Property as defined by a view's parent.
 
 `State` - The container state.
 
@@ -18,10 +18,10 @@ Maps [GState](index.md#GState) to [State](index.md#State) for a [IPropContainer]
 
 | Name | Summary |
 |---|---|
-| [mapState](map-state.md) | `abstract fun mapState(state: `[`GState`](index.md#GState)`, outProps: `[`OutProps`](index.md#OutProps)`): `[`State`](index.md#State)<br>Map [GState](index.md#GState) to [State](index.md#State) using [OutProps](index.md#OutProps) |
+| [mapState](map-state.md) | `abstract fun mapState(state: `[`LState`](index.md#LState)`, outProp: `[`OutProp`](index.md#OutProp)`): `[`State`](index.md#State)<br>Map [LState](index.md#LState) to [State](index.md#State) using [OutProp](index.md#OutProp) |
 
 ### Inheritors
 
 | Name | Summary |
 |---|---|
-| [IPropMapper](../-i-prop-mapper.md) | `interface IPropMapper<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, GExt : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, OutProps, State, Action> : `[`IStateMapper`](./index.md)`<`[`GState`](../-i-prop-mapper.md#GState)`, `[`OutProps`](../-i-prop-mapper.md#OutProps)`, `[`State`](../-i-prop-mapper.md#State)`>, `[`IActionMapper`](../-i-action-mapper/index.md)`<`[`GExt`](../-i-prop-mapper.md#GExt)`, `[`OutProps`](../-i-prop-mapper.md#OutProps)`, `[`Action`](../-i-prop-mapper.md#Action)`>`<br>Maps [GState](../-i-prop-mapper.md#GState) and [GExt](../-i-prop-mapper.md#GExt) to [State](../-i-prop-mapper.md#State) and [Action](../-i-prop-mapper.md#Action) for a [IPropContainer](../-i-prop-container/index.md). [OutProps](../-i-prop-mapper.md#OutProps) is the view's immutable property as dictated by its parent. |
+| [IPropMapper](../-i-prop-mapper.md) | `interface IPropMapper<in LState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, in OutProp, out State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, out Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IStateMapper`](./index.md)`<`[`LState`](../-i-prop-mapper.md#LState)`, `[`OutProp`](../-i-prop-mapper.md#OutProp)`, `[`State`](../-i-prop-mapper.md#State)`>, `[`IActionMapper`](../-i-action-mapper/index.md)`<`[`OutProp`](../-i-prop-mapper.md#OutProp)`, `[`Action`](../-i-prop-mapper.md#Action)`>`<br>Maps [LState](../-i-prop-mapper.md#LState) to [State](../-i-prop-mapper.md#State) and [Action](../-i-prop-mapper.md#Action) for a [IPropContainer](../-i-prop-container/index.md). [OutProp](../-i-prop-mapper.md#OutProp) is the view's immutable property as dictated by its parent. |

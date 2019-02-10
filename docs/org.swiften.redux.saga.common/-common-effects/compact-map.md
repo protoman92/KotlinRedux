@@ -2,7 +2,7 @@
 
 # compactMap
 
-`fun <P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> compactMap(transformer: (`[`P`](compact-map.md#P)`) -> `[`R`](compact-map.md#R)`?): `[`ISagaEffectTransformer`](../-i-saga-effect-transformer.md)`<`[`P`](compact-map.md#P)`, `[`R`](compact-map.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L127)
+`fun <P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> compactMap(transformer: (`[`P`](compact-map.md#P)`) -> `[`R`](compact-map.md#R)`?): `[`ISagaEffectTransformer`](../-i-saga-effect-transformer.md)`<`[`P`](compact-map.md#P)`, `[`R`](compact-map.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L126)
 
 Create a [CompactMapEffect](../-compact-map-effect/index.md).
 

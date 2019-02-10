@@ -2,22 +2,24 @@
 
 # &lt;init&gt;
 
-`ReduxListAdapter(adapter: <ERROR CLASS><`[`VH`](index.md#VH)`>, diffCallback: <ERROR CLASS><`[`VHS`](index.md#VHS)`>)`
+`ReduxListAdapter(adapter: <ERROR CLASS><`[`VH`](index.md#VH)`>, diffCallback: <ERROR CLASS><`[`VHState`](index.md#VHState)`>)`
 
-Custom Redux-compatible [ListAdapter](#) implementation. This [ListAdapter](#) can receive [ReduxProps](../../org.swiften.redux.ui/-redux-props/index.md)
+Custom Redux-compatible [ListAdapter](#) implementation. This [ListAdapter](#) can receive [ReduxProp](../../org.swiften.redux.ui/-redux-prop/index.md)
 in order to call [ListAdapter.submitList](#).
 
 ### Parameters
 
 `GState` - The global state type.
 
-`GExt` - See [IPropInjector.external](../../org.swiften.redux.ui/-i-action-dependency/external.md).
+`LState` - The local state type that [GState](index.md#GState) must extend from.
+
+`OutProp` - Property as defined by [this](#)'s parent.
 
 `VH` - The [RecyclerView.ViewHolder](#) instance.
 
-`VHS` - The [VH](index.md#VH) state type. See [ReduxProps.state](../../org.swiften.redux.ui/-redux-props/state.md).
+`VHState` - The [VH](index.md#VH) state type. See [ReduxProp.state](../../org.swiften.redux.ui/-redux-prop/state.md).
 
-`VHA` - The [VH](index.md#VH) action type. See [ReduxProps.action](../../org.swiften.redux.ui/-redux-props/action.md).
+`VHAction` - The [VH](index.md#VH) action type. See [ReduxProp.action](../../org.swiften.redux.ui/-redux-prop/action.md).
 
 `adapter` - The base [RecyclerView.Adapter](#) instance.
 
