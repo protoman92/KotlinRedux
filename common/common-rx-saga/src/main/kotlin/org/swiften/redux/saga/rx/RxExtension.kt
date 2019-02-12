@@ -7,7 +7,7 @@ package org.swiften.redux.saga.rx
 
 import io.reactivex.Single
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.then
+import org.swiften.redux.saga.common.thenSwitchToEffect
 
 /** Created by haipham on 2019/01/26 */
 /**
@@ -36,7 +36,7 @@ inline fun <reified State, R, R2, R3> SagaEffect<R>.selectFromState(
   noinline selector: (State) -> R2,
   noinline combiner: (R, R2) -> R3
 ): SagaEffect<R3> where R : Any, R2 : Any, R3 : Any {
-  return this.then(SagaEffects.selectFromState(selector), combiner)
+  return this.thenSwitchToEffect(SagaEffects.selectFromState(selector), combiner)
 }
 
 /**
@@ -48,5 +48,5 @@ inline fun <reified State, R, R2, R3> SagaEffect<R>.selectFromState(
  */
 inline fun <reified State, R2> SagaEffect<*>.selectFromState(noinline selector: (State) -> R2):
   SagaEffect<R2> where R2 : Any {
-  return this.then(SagaEffects.selectFromState(selector))
+  return this.thenSwitchToEffect(SagaEffects.selectFromState(selector))
 }

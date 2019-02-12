@@ -72,7 +72,7 @@ abstract class CommonSagaEffectTest {
     // When
     justEffect(1)
       .map { throw error; 1 }
-      .delay(1000)
+      .delayUpstreamValue(1000)
       .catchError { 100 }
       .invoke()
       .subscribe({ finalValues.add(it) })
@@ -97,7 +97,7 @@ abstract class CommonSagaEffectTest {
     // When
     justEffect(1)
       .map { throw error; 1 }
-      .delay(1000)
+      .delayUpstreamValue(1000)
       .catchAsync { this.async { 100 } }
       .invoke()
       .subscribe({ finalValues.add(it) })
@@ -140,8 +140,8 @@ abstract class CommonSagaEffectTest {
     // When
     fromEffect(0, 1, 2, 3)
       .filter { it % 2 == 0 }
-      .delay(100)
-      .cast<Int>()
+      .delayUpstreamValue(100)
+      .castValue<Int>()
       .invoke()
       .subscribe({ finalValues.add(it) })
 
@@ -164,7 +164,7 @@ abstract class CommonSagaEffectTest {
     // When
     fromEffect(0, 1, 2, 3)
       .filter { false }
-      .ifEmpty { defaultValue }
+      .ifEmptyThenReturnValue { defaultValue }
       .invoke()
       .subscribe({ finalValues.add(it) })
 
@@ -210,7 +210,7 @@ abstract class CommonSagaEffectTest {
     // When
     justEffect(0)
       .mapSuspend { retries.incrementAndGet(); throw RuntimeException("Oh no!") }
-      .retry(retryCount)
+      .retryMultipleTimes(retryCount)
       .invoke()
       .subscribe({})
 
@@ -228,9 +228,9 @@ abstract class CommonSagaEffectTest {
   fun `Then effect should enforce ordering`() {
     // Setup
     val finalOutput = justEffect(1)
-      .delay(500)
-      .then(justEffect(2).map { it }) { a, b -> "$a$b" }
-      .delay(1000)
+      .delayUpstreamValue(500)
+      .thenSwitchToEffect(justEffect(2).map { it }) { a, b -> "$a$b" }
+      .delayUpstreamValue(1000)
       .invoke()
 
     // When && Then
@@ -242,7 +242,7 @@ abstract class CommonSagaEffectTest {
     // Setup
     val finalOutput = justEffect(1)
       .mapSuspend { delay(this@CommonSagaEffectTest.timeout); it }
-      .timeout(1000)
+      .timeoutUntilFailure(1000)
       .catchSuspend { 100 }
       .invoke()
 

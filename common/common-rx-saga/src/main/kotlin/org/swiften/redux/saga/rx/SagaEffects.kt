@@ -60,14 +60,6 @@ object SagaEffects {
   }
 
   /**
-   * Create a [JustPutEffect].
-   * @param action See [JustPutEffect.action].
-   * @return A [SagaEffect] instance.
-   */
-  @JvmStatic
-  fun justPutInStore(action: IReduxAction): SagaEffect<Any> = JustPutEffect(action)
-
-  /**
    * Create a [SelectEffect].
    * @param State The state type to select from.
    * @param R The result emission type.

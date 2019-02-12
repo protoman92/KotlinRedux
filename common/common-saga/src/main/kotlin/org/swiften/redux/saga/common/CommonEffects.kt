@@ -19,7 +19,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> delay(millis: Long): ISagaEffectTransformer<R, R> where R : Any {
+  fun <R> delayUpstreamValue(millis: Long): ISagaEffectTransformer<R, R> where R : Any {
     return { DelayEffect(it, millis) }
   }
 
@@ -87,7 +87,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> ifEmpty(defaultValue: () -> R): ISagaEffectTransformer<R, R> where R : Any {
+  fun <R> ifEmptyThenReturnValue(defaultValue: () -> R): ISagaEffectTransformer<R, R> where R : Any {
     return { IfEmptyEffect(it, defaultValue) }
   }
 
@@ -157,7 +157,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> retry(times: Long): ISagaEffectTransformer<R, R> where R : Any {
+  fun <R> retryMultipleTimes(times: Long): ISagaEffectTransformer<R, R> where R : Any {
     return { RetryEffect(it, times) }
   }
 
@@ -187,7 +187,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> timeout(millis: Long): ISagaEffectTransformer<R, R> where R : Any {
+  fun <R> timeoutUntilFailure(millis: Long): ISagaEffectTransformer<R, R> where R : Any {
     return { TimeoutEffect(it, millis) }
   }
 }

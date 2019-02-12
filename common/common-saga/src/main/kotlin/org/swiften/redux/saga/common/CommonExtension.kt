@@ -17,7 +17,7 @@ import org.swiften.redux.core.IReduxAction
  * @param cls The [Class] of [R].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<*>.cast(cls: Class<R>): SagaEffect<R> where R : Any {
+fun <R> SagaEffect<*>.castValue(cls: Class<R>): SagaEffect<R> where R : Any {
   return this.filter { cls.isInstance(it) }.map { cls.cast(it) }
 }
 
@@ -27,7 +27,7 @@ fun <R> SagaEffect<*>.cast(cls: Class<R>): SagaEffect<R> where R : Any {
  * @param R The result emission type.
  * @return A [SagaEffect] instance.
  */
-inline fun <reified R> SagaEffect<*>.cast(): SagaEffect<R> where R : Any {
+inline fun <reified R> SagaEffect<*>.castValue(): SagaEffect<R> where R : Any {
   return this.filter { it is R }.map { it as R }
 }
 
@@ -73,8 +73,8 @@ fun <R> SagaEffect<R>.catchAsync(catcher: suspend CoroutineScope.(Throwable) -> 
  * @param millis See [DelayEffect.millis].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.delay(millis: Long): SagaEffect<R> where R : Any {
-  return this.transform(CommonEffects.delay(millis))
+fun <R> SagaEffect<R>.delayUpstreamValue(millis: Long): SagaEffect<R> where R : Any {
+  return this.transform(CommonEffects.delayUpstreamValue(millis))
 }
 
 /**
@@ -106,8 +106,8 @@ fun <R> SagaEffect<R>.filter(predicate: (R) -> Boolean): SagaEffect<R> where R :
  * @param defaultValue See [IfEmptyEffect.defaultValue].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.ifEmpty(defaultValue: () -> R): SagaEffect<R> where R : Any {
-  return CommonEffects.ifEmpty(defaultValue)(this)
+fun <R> SagaEffect<R>.ifEmptyThenReturnValue(defaultValue: () -> R): SagaEffect<R> where R : Any {
+  return CommonEffects.ifEmptyThenReturnValue(defaultValue)(this)
 }
 
 /**
@@ -164,8 +164,8 @@ fun <P> SagaEffect<P>.putInStore(actionCreator: (P) -> IReduxAction): SagaEffect
  * @param times See [RetryEffect.times].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.retry(times: Long): SagaEffect<R> where R : Any {
-  return this.transform(CommonEffects.retry(times))
+fun <R> SagaEffect<R>.retryMultipleTimes(times: Long): SagaEffect<R> where R : Any {
+  return this.transform(CommonEffects.retryMultipleTimes(times))
 }
 
 /**
@@ -175,7 +175,7 @@ fun <R> SagaEffect<R>.retry(times: Long): SagaEffect<R> where R : Any {
  * @param times See [RetryEffect.times].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.retry(times: Int) where R : Any = this.retry(times.toLong())
+fun <R> SagaEffect<R>.retryMultipleTimes(times: Int) where R : Any = this.retryMultipleTimes(times.toLong())
 
 /**
  * Invoke a [SuspendMapEffect] on [this].
@@ -201,7 +201,7 @@ fun <P, R> SagaEffect<P>.mapSuspend(
  * @param combiner See [ThenEffect.combiner].
  * @return A [SagaEffect] instance.
  */
-fun <R, R2, R3> SagaEffect<R>.then(
+fun <R, R2, R3> SagaEffect<R>.thenSwitchToEffect(
   effect: ISagaEffect<R2>,
   combiner: Function2<R, R2, R3>
 ): SagaEffect<R3> where R : Any, R2 : Any, R3 : Any {
@@ -216,19 +216,19 @@ fun <R, R2, R3> SagaEffect<R>.then(
  * @param effect See [ThenEffect.source2].
  * @return A [SagaEffect] instance.
  */
-fun <R, R2> SagaEffect<R>.then(effect: ISagaEffect<R2>): SagaEffect<R2> where R : Any, R2 : Any {
-  return this.then(effect) { _, b -> b }
+fun <R, R2> SagaEffect<R>.thenSwitchToEffect(effect: ISagaEffect<R2>): SagaEffect<R2> where R : Any, R2 : Any {
+  return this.thenSwitchToEffect(effect) { _, b -> b }
 }
 
 /**
- * Invoke [then] with a single [value].
+ * Invoke [thenSwitchToEffect] with a single [value].
  * @receiver A [SagaEffect] instance.
  * @param R The first source emission type.
  * @param R2 The result emission type.
  * @param value See [ThenEffect.source2].
  * @return A [SagaEffect] instance.
  */
-fun <R, R2> SagaEffect<R>.justThen(value: R2) where R : Any, R2 : Any = this.map { value }
+fun <R, R2> SagaEffect<R>.thenSwitchToValue(value: R2) where R : Any, R2 : Any = this.map { value }
 
 /**
  * Invoke a [TimeoutEffect] on [this].
@@ -237,6 +237,6 @@ fun <R, R2> SagaEffect<R>.justThen(value: R2) where R : Any, R2 : Any = this.map
  * @param millis See [TimeoutEffect.millis].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.timeout(millis: Long): SagaEffect<R> where R : Any {
-  return this.transform(CommonEffects.timeout(millis))
+fun <R> SagaEffect<R>.timeoutUntilFailure(millis: Long): SagaEffect<R> where R : Any {
+  return this.transform(CommonEffects.timeoutUntilFailure(millis))
 }
