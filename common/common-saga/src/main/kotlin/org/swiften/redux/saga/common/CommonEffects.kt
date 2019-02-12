@@ -81,6 +81,17 @@ object CommonEffects {
   }
 
   /**
+   * Create a [IfEmptyEffect].
+   * @param R The result emission type.
+   * @param defaultValue See [IfEmptyEffect.defaultValue].
+   * @return An [ISagaEffectTransformer] instance.
+   */
+  @JvmStatic
+  fun <R> ifEmpty(defaultValue: () -> R): ISagaEffectTransformer<R, R> where R : Any {
+    return { IfEmptyEffect(it, defaultValue) }
+  }
+
+  /**
    * Create a [MapEffect].
    * @param R The result emission type.
    * @param transformer See [MapEffect.transformer].

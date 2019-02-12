@@ -100,6 +100,17 @@ fun <R> SagaEffect<R>.filter(predicate: (R) -> Boolean): SagaEffect<R> where R :
 }
 
 /**
+ * Invoke a [IfEmptyEffect] on [this].
+ * @receiver A [SagaEffect] instance.
+ * @param R The result emission type.
+ * @param defaultValue See [IfEmptyEffect.defaultValue].
+ * @return A [SagaEffect] instance.
+ */
+fun <R> SagaEffect<R>.ifEmpty(defaultValue: () -> R): SagaEffect<R> where R : Any {
+  return CommonEffects.ifEmpty(defaultValue)(this)
+}
+
+/**
  * Invoke a [MapEffect] on the current [ISagaEffect].
  * @receiver A [SagaEffect] instance.
  * @param P The source emission type.

@@ -104,6 +104,13 @@ interface ISagaOutput<T> where T : Any {
   fun filter(predicate: (T) -> Boolean): ISagaOutput<T>
 
   /**
+   * Emit [defaultValue] if the stream is empty.
+   * @param defaultValue Function that creates [T] to emit when stream is empty.
+   * @return An [ISagaOutput] instance.
+   */
+  fun ifEmpty(defaultValue: () -> T): ISagaOutput<T>
+
+  /**
    * Map emissions from [T] to [T2] with [transform].
    * @param T2 The type of emission of the resulting [ISagaOutput].
    * @param transform Function that maps from [T] to [T2].

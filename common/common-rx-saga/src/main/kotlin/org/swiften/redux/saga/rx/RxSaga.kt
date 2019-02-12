@@ -92,7 +92,12 @@ class SagaOutput<T : Any>(
     this.disposable.clear(); this.onDispose()
   }
 
+  override fun ifEmpty(defaultValue: () -> T): ISagaOutput<T> {
+    return this.with(this.stream.defaultIfEmpty(defaultValue()))
+  }
+
   override fun retry(times: Long) = this.with(this.stream.retry(times))
+
   override fun timeout(millis: Long) = this.with(this.stream.timeout(millis, TimeUnit.MILLISECONDS))
 
   override fun nextValue(timeoutMillis: Long) = try {
