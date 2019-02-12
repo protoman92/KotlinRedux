@@ -22,15 +22,15 @@ import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.compactMap
+import org.swiften.redux.saga.common.mapIgnoringNull
 import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapSuspend
-import org.swiften.redux.saga.common.put
+import org.swiften.redux.saga.common.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.just
-import org.swiften.redux.saga.rx.SagaEffects.select
+import org.swiften.redux.saga.rx.SagaEffects.selectFromState
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
-import org.swiften.redux.saga.rx.select
+import org.swiften.redux.saga.rx.selectFromState
 import org.swiften.redux.thunk.IReduxThunkAction
 import org.swiften.redux.thunk.ThunkFunction
 
@@ -142,7 +142,7 @@ object Redux {
   object Saga {
     object CoreSaga {
       fun watchNetworkConnectivity(context: Context): SagaEffect<Any> {
-        return watchConnectivity(context).put { Action.UpdateConnectivity(it) }
+        return watchConnectivity(context).putInStore { Action.UpdateConnectivity(it) }
       }
     }
 
@@ -156,7 +156,7 @@ object Redux {
         return takeLatestAction<Action.AddPlantToGarden, String, Any>({ it.plantId }) { plantId ->
           just(plantId)
             .mapSuspend { api.createGardenPlanting(it) }
-            .put { Action.UpdateSelectedPlantStatus(true) }
+            .putInStore { Action.UpdateSelectedPlantStatus(true) }
         }
       }
 
@@ -175,23 +175,23 @@ object Redux {
           takeEveryData { Transformations
             .map(api.getGardenPlantingForPlant(plantId)) { Option.wrap(it) } }
             .map { it.value != null }
-            .put { Action.UpdateSelectedPlantStatus(it) }
+            .putInStore { Action.UpdateSelectedPlantStatus(it) }
         }
       }
 
       private fun selectPlantFromGarden(): SagaEffect<Any> {
         return takeEveryAction<Action.SelectPlantFromGarden, Int, Any>({ it.index }) { index ->
-          select<State, Option<List<PlantAndGardenPlantings>>> { Option.wrap(it.plantAndGardenPlantings) }
-            .compactMap { it.value?.elementAtOrNull(index) }
+          selectFromState<State, Option<List<PlantAndGardenPlantings>>> { Option.wrap(it.plantAndGardenPlantings) }
+            .mapIgnoringNull { it.value?.elementAtOrNull(index) }
             .map { it.plant }
             .map { it.plantId }
-            .put { Screen.GardenToPlantDetail(it) }
+            .putInStore { Screen.GardenToPlantDetail(it) }
         }
       }
 
       /** Bridge to sync [GardenPlanting] using [GardenPlantingRepository.getGardenPlantings] */
       private fun syncGardenPlantings(api: GardenPlantingRepository): SagaEffect<Any> {
-        return takeEveryData { api.getGardenPlantings() }.put { Action.UpdateGardenPlantings(it) }
+        return takeEveryData { api.getGardenPlantings() }.putInStore { Action.UpdateGardenPlantings(it) }
       }
 
       /**
@@ -201,7 +201,7 @@ object Redux {
       private fun syncPlantAndGardenPlantings(api: GardenPlantingRepository): SagaEffect<Any> {
         return takeEveryData { api.getPlantAndGardenPlantings() }
           .map { p -> p.filter { it.gardenPlantings.isNotEmpty() } }
-          .put { Action.UpdatePlantAndGardenPlantings(it) }
+          .putInStore { Action.UpdatePlantAndGardenPlantings(it) }
       }
 
       fun allSagas(api: GardenPlantingRepository) = arrayListOf(
@@ -216,10 +216,10 @@ object Redux {
     object PlantSaga {
       private fun selectPlantFromPlantList(): SagaEffect<Any> {
         return takeEveryAction<Action.SelectPlantFromPlantList, Int, Any>({ it.index }) { index ->
-          select<State, Option<List<Plant>>> { Option.wrap(it.plants) }
-            .compactMap { it.value?.elementAtOrNull(index) }
+          selectFromState<State, Option<List<Plant>>> { Option.wrap(it.plants) }
+            .mapIgnoringNull { it.value?.elementAtOrNull(index) }
             .map { it.plantId }
-            .put { Screen.PlantListToPlantDetail(it) }
+            .putInStore { Screen.PlantListToPlantDetail(it) }
         }
       }
 
@@ -230,9 +230,9 @@ object Redux {
        */
       private fun syncPlants(api: PlantRepository): SagaEffect<Any> {
         return takeEveryData { api.getPlants() }
-          .select<State, List<Plant>, Int, List<Plant>>({ it.selectedGrowZone }, { a, b ->
+          .selectFromState<State, List<Plant>, Int, List<Plant>>({ it.selectedGrowZone }, { a, b ->
             if (b == NO_GROW_ZONE) a else a.filter { it.growZoneNumber == b }
-          }).put { Action.UpdatePlants(it) }
+          }).putInStore { Action.UpdatePlants(it) }
       }
 
       /**
@@ -245,7 +245,7 @@ object Redux {
             takeEveryData { api.getPlants() }
           } else {
             takeEveryData { api.getPlantsWithGrowZoneNumber(zone) }
-          }.put { Action.UpdatePlants(it) }
+          }.putInStore { Action.UpdatePlants(it) }
         }
       }
 

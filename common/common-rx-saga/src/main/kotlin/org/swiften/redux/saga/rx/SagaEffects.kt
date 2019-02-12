@@ -24,7 +24,7 @@ object SagaEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <P, R> call(transformer: (P) -> Single<R>): ISagaEffectTransformer<P, R>
+  fun <P, R> mapSingle(transformer: (P) -> Single<R>): ISagaEffectTransformer<P, R>
     where P : Any, R : Any {
     return { CallEffect(it, transformer) }
   }
@@ -48,15 +48,15 @@ object SagaEffects {
   fun <R> just(value: R): SagaEffect<R> where R : Any = JustEffect(value)
 
   /**
-   * Call [CommonEffects.put] with [SagaEffects.just].
+   * Call [CommonEffects.putInStore] with [SagaEffects.just].
    * @param P The source emission type.
    * @param value See [JustEffect.value].
-   * @param actionCreator See [CommonEffects.put].
+   * @param actionCreator See [CommonEffects.putInStore].
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <P> put(value: P, actionCreator: (P) -> IReduxAction): SagaEffect<Any> where P : Any {
-    return CommonEffects.put(actionCreator)(this.just(value))
+  fun <P> putInStore(value: P, actionCreator: (P) -> IReduxAction): SagaEffect<Any> where P : Any {
+    return CommonEffects.putInStore(actionCreator)(this.just(value))
   }
 
   /**
@@ -65,7 +65,7 @@ object SagaEffects {
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun justPut(action: IReduxAction): SagaEffect<Any> = JustPutEffect(action)
+  fun justPutInStore(action: IReduxAction): SagaEffect<Any> = JustPutEffect(action)
 
   /**
    * Create a [SelectEffect].
@@ -76,7 +76,7 @@ object SagaEffects {
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <State, R> select(cls: Class<State>, selector: (State) -> R): SagaEffect<R> where R : Any {
+  fun <State, R> selectFromState(cls: Class<State>, selector: (State) -> R): SagaEffect<R> where R : Any {
     return SelectEffect(cls, selector)
   }
 
@@ -87,9 +87,9 @@ object SagaEffects {
    * @param selector See [SelectEffect.selector].
    * @return A [SagaEffect] instance.
    */
-  inline fun <reified State, R> select(noinline selector: (State) -> R):
+  inline fun <reified State, R> selectFromState(noinline selector: (State) -> R):
     SagaEffect<R> where R : Any {
-    return this.select(State::class.java, selector)
+    return this.selectFromState(State::class.java, selector)
   }
 
   /**

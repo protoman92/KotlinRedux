@@ -15,7 +15,7 @@ import org.swiften.redux.saga.common.ISagaOutput
 import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/22 */
-/** @see [ISagaOutput] */
+/** @see [ISagaOutput]. */
 class SagaOutput<T : Any>(
   private val scope: CoroutineScope,
   private val stream: Flowable<T>,
@@ -111,5 +111,8 @@ class SagaOutput<T : Any>(
   }
 }
 
-/** Options for [TakeEffect] */
+/**
+ * Options for [TakeEffect].
+ * @param debounceMillis Debounce time for [TakeEffect] stream.
+ */
 data class TakeEffectOptions(internal val debounceMillis: Long = 0)

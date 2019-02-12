@@ -142,8 +142,8 @@ fun <P, R> SagaEffect<P>.mapAsync(transformer: suspend CoroutineScope.(P) -> Def
  * @param transformer See [CompactMapEffect.transformer].
  * @return An [ISagaEffect] instance.
  */
-fun <P, R> SagaEffect<P>.compactMap(transformer: (P) -> R?): SagaEffect<R> where P : Any, R : Any {
-  return this.transform(CommonEffects.compactMap(transformer))
+fun <P, R> SagaEffect<P>.mapIgnoringNull(transformer: (P) -> R?): SagaEffect<R> where P : Any, R : Any {
+  return this.transform(CommonEffects.mapIgnoringNull(transformer))
 }
 
 /**
@@ -153,8 +153,8 @@ fun <P, R> SagaEffect<P>.compactMap(transformer: (P) -> R?): SagaEffect<R> where
  * @param actionCreator See [PutEffect.actionCreator].
  * @return A [SagaEffect] instance.
  */
-fun <P> SagaEffect<P>.put(actionCreator: (P) -> IReduxAction): SagaEffect<Any> where P : Any {
-  return this.transform(CommonEffects.put(actionCreator))
+fun <P> SagaEffect<P>.putInStore(actionCreator: (P) -> IReduxAction): SagaEffect<Any> where P : Any {
+  return this.transform(CommonEffects.putInStore(actionCreator))
 }
 
 /**

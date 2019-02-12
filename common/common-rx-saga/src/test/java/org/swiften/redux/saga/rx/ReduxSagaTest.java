@@ -13,7 +13,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.swiften.redux.saga.common.CommonEffects.map;
 import static org.swiften.redux.saga.common.CommonEffects.retry;
-import static org.swiften.redux.saga.rx.SagaEffects.call;
+import static org.swiften.redux.saga.rx.SagaEffects.mapSingle;
 import static org.swiften.redux.saga.rx.SagaEffects.just;
 
 /**
@@ -25,7 +25,7 @@ public final class ReduxSagaTest {
     // Setup
     Object value = just(1)
       .transform(map(i -> i * 2))
-      .transform(call(i -> Single.just(i * 3)))
+      .transform(mapSingle(i -> Single.just(i * 3)))
       .transform(retry(3))
       .invoke(GlobalScope.INSTANCE, 0, a -> Unit.INSTANCE)
       .nextValue(1000);

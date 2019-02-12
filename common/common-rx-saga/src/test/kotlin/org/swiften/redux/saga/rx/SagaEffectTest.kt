@@ -54,8 +54,8 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `Select effect should extract some value from a state`() {
     // Setup
-    val sourceOutput1 = just(1).select<Any, Int, Int, Int>({ 2 }, { a, b -> a + b }).invoke()
-    val sourceOutput2 = just(2).select<State, Int> { 4 }.invoke(State())
+    val sourceOutput1 = just(1).selectFromState<Any, Int, Int, Int>({ 2 }, { a, b -> a + b }).invoke()
+    val sourceOutput2 = just(2).selectFromState<State, Int> { 4 }.invoke(State())
 
     // When && Then
     assertEquals(sourceOutput1.nextValue(this.timeout), 3)

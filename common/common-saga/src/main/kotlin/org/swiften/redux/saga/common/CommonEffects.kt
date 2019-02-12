@@ -134,7 +134,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <P, R> compactMap(transformer: (P) -> R?): ISagaEffectTransformer<P, R>
+  fun <P, R> mapIgnoringNull(transformer: (P) -> R?): ISagaEffectTransformer<P, R>
     where P : Any, R : Any {
     return { CompactMapEffect(it, transformer) }
   }
@@ -146,7 +146,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <P> put(actionCreator: (P) -> IReduxAction): ISagaEffectTransformer<P, Any> where P : Any {
+  fun <P> putInStore(actionCreator: (P) -> IReduxAction): ISagaEffectTransformer<P, Any> where P : Any {
     return { PutEffect(it, actionCreator) }
   }
 

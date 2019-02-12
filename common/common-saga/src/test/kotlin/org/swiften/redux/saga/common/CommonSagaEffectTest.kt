@@ -120,7 +120,7 @@ abstract class CommonSagaEffectTest {
 
     // When
     justEffect(1)
-      .compactMap { null }
+      .mapIgnoringNull { null }
       .invoke()
       .subscribe({ finalValues.add(it) })
 
@@ -186,7 +186,7 @@ abstract class CommonSagaEffectTest {
 
     justEffect(0)
       .map { it }
-      .put { Action(it) }
+      .putInStore { Action(it) }
       .invoke(GlobalScope, {}) { dispatched.add(it) }
       .subscribe({})
 

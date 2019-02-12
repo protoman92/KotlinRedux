@@ -18,8 +18,8 @@ import org.swiften.redux.saga.common.then
  * @param transformer See [CallEffect.transformer].
  * @return A [SagaEffect] instance.
  */
-fun <P, R> SagaEffect<P>.call(transformer: (P) -> Single<R>): SagaEffect<R> where P : Any, R : Any {
-  return this.transform(SagaEffects.call(transformer))
+fun <P, R> SagaEffect<P>.mapSingle(transformer: (P) -> Single<R>): SagaEffect<R> where P : Any, R : Any {
+  return this.transform(SagaEffects.mapSingle(transformer))
 }
 
 /**
@@ -32,11 +32,11 @@ fun <P, R> SagaEffect<P>.call(transformer: (P) -> Single<R>): SagaEffect<R> wher
  * @param combiner Function that combines [R] and [R2] to produce [R3].
  * @return A [SagaEffect] instance.
  */
-inline fun <reified State, R, R2, R3> SagaEffect<R>.select(
+inline fun <reified State, R, R2, R3> SagaEffect<R>.selectFromState(
   noinline selector: (State) -> R2,
   noinline combiner: (R, R2) -> R3
 ): SagaEffect<R3> where R : Any, R2 : Any, R3 : Any {
-  return this.then(SagaEffects.select(selector), combiner)
+  return this.then(SagaEffects.selectFromState(selector), combiner)
 }
 
 /**
@@ -46,7 +46,7 @@ inline fun <reified State, R, R2, R3> SagaEffect<R>.select(
  * @param selector See [SelectEffect.selector].
  * @return A [SagaEffect] instance.
  */
-inline fun <reified State, R2> SagaEffect<*>.select(noinline selector: (State) -> R2):
+inline fun <reified State, R2> SagaEffect<*>.selectFromState(noinline selector: (State) -> R2):
   SagaEffect<R2> where R2 : Any {
-  return this.then(SagaEffects.select(selector))
+  return this.then(SagaEffects.selectFromState(selector))
 }
