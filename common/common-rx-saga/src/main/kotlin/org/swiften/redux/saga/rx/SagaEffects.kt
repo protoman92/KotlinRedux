@@ -61,6 +61,16 @@ object SagaEffects {
   }
 
   /**
+   * Call [putInStore] with [action].
+   * @param action An [IReduxAction] instance.
+   * @return A [SagaEffect] instance.
+   */
+  @JvmStatic
+  fun putInStore(action: IReduxAction): ISagaEffect<Any> {
+    return this.putInStore(Unit) { action }
+  }
+
+  /**
    * Create a [SelectEffect].
    * @param State The state type to select from.
    * @param R The result emission type.
