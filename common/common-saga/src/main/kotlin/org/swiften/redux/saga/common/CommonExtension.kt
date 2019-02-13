@@ -106,8 +106,8 @@ fun <R> SagaEffect<R>.filter(predicate: (R) -> Boolean): SagaEffect<R> where R :
  * @param defaultValue See [IfEmptyEffect.defaultValue].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.ifEmptyThenReturnValue(defaultValue: R): SagaEffect<R> where R : Any {
-  return CommonEffects.ifEmptyThenReturnValue(defaultValue)(this)
+fun <R> SagaEffect<R>.ifEmptyThenReturn(defaultValue: R): SagaEffect<R> where R : Any {
+  return CommonEffects.ifEmptyThenReturn(defaultValue)(this)
 }
 
 /**
@@ -120,6 +120,19 @@ fun <R> SagaEffect<R>.ifEmptyThenReturnValue(defaultValue: R): SagaEffect<R> whe
  */
 fun <P, R> SagaEffect<P>.map(transformer: (P) -> R): SagaEffect<R> where P : Any, R : Any {
   return this.transform(CommonEffects.map(transformer))
+}
+
+/**
+ * Invoke a [SuspendMapEffect] on [this].
+ * @receiver See [SuspendMapEffect.source].
+ * @param P The source emission type.
+ * @param R The result emission type.
+ * @param transformer See [SuspendMapEffect.transformer].
+ * @return A [SagaEffect] instance.
+ */
+fun <P, R> SagaEffect<P>.mapSuspend(transformer: suspend CoroutineScope.(P) -> R):
+  SagaEffect<R> where P : Any, R : Any {
+  return this.transform(CommonEffects.mapSuspend(transformer))
 }
 
 /**
@@ -142,7 +155,8 @@ fun <P, R> SagaEffect<P>.mapAsync(transformer: suspend CoroutineScope.(P) -> Def
  * @param transformer See [CompactMapEffect.transformer].
  * @return An [ISagaEffect] instance.
  */
-fun <P, R> SagaEffect<P>.mapIgnoringNull(transformer: (P) -> R?): SagaEffect<R> where P : Any, R : Any {
+fun <P, R> SagaEffect<P>.mapIgnoringNull(transformer: (P) -> R?):
+  SagaEffect<R> where P : Any, R : Any {
   return this.transform(CommonEffects.mapIgnoringNull(transformer))
 }
 
@@ -153,7 +167,8 @@ fun <P, R> SagaEffect<P>.mapIgnoringNull(transformer: (P) -> R?): SagaEffect<R> 
  * @param actionCreator See [PutEffect.actionCreator].
  * @return A [SagaEffect] instance.
  */
-fun <P> SagaEffect<P>.putInStore(actionCreator: (P) -> IReduxAction): SagaEffect<Any> where P : Any {
+fun <P> SagaEffect<P>.putInStore(actionCreator: (P) -> IReduxAction):
+  SagaEffect<Any> where P : Any {
   return this.transform(CommonEffects.putInStore(actionCreator))
 }
 
@@ -175,20 +190,8 @@ fun <R> SagaEffect<R>.retryMultipleTimes(times: Long): SagaEffect<R> where R : A
  * @param times See [RetryEffect.times].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.retryMultipleTimes(times: Int) where R : Any = this.retryMultipleTimes(times.toLong())
-
-/**
- * Invoke a [SuspendMapEffect] on [this].
- * @receiver See [SuspendMapEffect.source].
- * @param P The source emission type.
- * @param R The result emission type.
- * @param transformer See [SuspendMapEffect.transformer].
- * @return A [SagaEffect] instance.
- */
-fun <P, R> SagaEffect<P>.mapSuspend(
-  transformer: suspend CoroutineScope.(P) -> R
-): SagaEffect<R> where P : Any, R : Any {
-  return this.transform(CommonEffects.mapSuspend(transformer))
+fun <R> SagaEffect<R>.retryMultipleTimes(times: Int): SagaEffect<R> where R : Any {
+  return this.retryMultipleTimes(times.toLong())
 }
 
 /**
@@ -201,11 +204,11 @@ fun <P, R> SagaEffect<P>.mapSuspend(
  * @param combiner See [ThenEffect.combiner].
  * @return A [SagaEffect] instance.
  */
-fun <R, R2, R3> SagaEffect<R>.thenSwitchToEffect(
+fun <R, R2, R3> SagaEffect<R>.thenSwitchTo(
   effect: ISagaEffect<R2>,
   combiner: Function2<R, R2, R3>
 ): SagaEffect<R3> where R : Any, R2 : Any, R3 : Any {
-  return CommonEffects.then(effect, combiner)(this)
+  return CommonEffects.thenSwitchTo(effect, combiner)(this)
 }
 
 /**
@@ -216,8 +219,23 @@ fun <R, R2, R3> SagaEffect<R>.thenSwitchToEffect(
  * @param effect See [ThenEffect.source2].
  * @return A [SagaEffect] instance.
  */
-fun <R, R2> SagaEffect<R>.thenSwitchToEffect(effect: ISagaEffect<R2>): SagaEffect<R2> where R : Any, R2 : Any {
-  return this.thenSwitchToEffect(effect) { _, b -> b }
+fun <R, R2> SagaEffect<R>.thenSwitchTo(effect: ISagaEffect<R2>):
+  SagaEffect<R2> where R : Any, R2 : Any {
+  return this.thenSwitchTo(effect) { _, b -> b }
+}
+
+/**
+ * Invoke a [ThenEffect] but ignore emissions from [effect]. This is useful in cases such as setting
+ * loading flag before a remote API call.
+ * @receiver See [ThenEffect.source1].
+ * @param R The first source emission type.
+ * @param R2 The result emission type.
+ * @param effect See [ThenEffect.source2].
+ * @return A [SagaEffect] instance.
+ */
+fun <R, R2> SagaEffect<R>.thenMightAsWell(effect: ISagaEffect<R2>):
+  SagaEffect<R> where R : Any, R2 : Any {
+  return this.thenSwitchTo(effect) { a, _ -> a }
 }
 
 /**
@@ -228,12 +246,13 @@ fun <R, R2> SagaEffect<R>.thenSwitchToEffect(effect: ISagaEffect<R2>): SagaEffec
  * @param effect See [ForceThenEffect.source2].
  * @return A [SagaEffect] instance.
  */
-fun <R, R2> SagaEffect<R>.thenNoMatterWhat(effect: ISagaEffect<R2>): SagaEffect<R2> where R : Any, R2 : Any {
+fun <R, R2> SagaEffect<R>.thenNoMatterWhat(effect: ISagaEffect<R2>):
+  SagaEffect<R2> where R : Any, R2 : Any {
   return CommonEffects.thenNoMatterWhat<R, R2>(effect)(this)
 }
 
 /**
- * Invoke [thenSwitchToEffect] with a single [value].
+ * Invoke [thenSwitchTo] with a single [value].
  * @receiver See [ThenEffect.source1].
  * @param R The first source emission type.
  * @param R2 The result emission type.

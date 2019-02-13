@@ -87,7 +87,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> ifEmptyThenReturnValue(defaultValue: R): ISagaEffectTransformer<R, R> where R : Any {
+  fun <R> ifEmptyThenReturn(defaultValue: R): ISagaEffectTransformer<R, R> where R : Any {
     return { IfEmptyEffect(it, defaultValue) }
   }
 
@@ -134,8 +134,8 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <P, R> mapIgnoringNull(transformer: (P) -> R?): ISagaEffectTransformer<P, R>
-    where P : Any, R : Any {
+  fun <P, R> mapIgnoringNull(transformer: (P) -> R?):
+    ISagaEffectTransformer<P, R> where P : Any, R : Any {
     return { CompactMapEffect(it, transformer) }
   }
 
@@ -146,7 +146,8 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <P> putInStore(actionCreator: (P) -> IReduxAction): ISagaEffectTransformer<P, Any> where P : Any {
+  fun <P> putInStore(actionCreator: (P) -> IReduxAction):
+    ISagaEffectTransformer<P, Any> where P : Any {
     return { PutEffect(it, actionCreator) }
   }
 
@@ -162,7 +163,7 @@ object CommonEffects {
   }
 
   /**
-   * Create a [ThenEffect] on [source1] and [source2].
+   * Create a [ThenEffect] instance.
    * @param R The first source emission type.
    * @param R2 The second source emission type.
    * @param R3 The result emission type.
@@ -171,7 +172,7 @@ object CommonEffects {
    * @return A [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R, R2, R3> then(source2: ISagaEffect<R2>, combiner: Function2<R, R2, R3>):
+  fun <R, R2, R3> thenSwitchTo(source2: ISagaEffect<R2>, combiner: Function2<R, R2, R3>):
     ISagaEffectTransformer<R, R3> where R : Any, R2 : Any, R3 : Any {
     return { ThenEffect(it, source2, combiner) }
   }

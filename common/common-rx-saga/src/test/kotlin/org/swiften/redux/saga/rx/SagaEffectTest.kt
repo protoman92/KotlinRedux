@@ -23,6 +23,7 @@ import org.swiften.redux.saga.common.catchError
 import org.swiften.redux.saga.common.filter
 import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapAsync
+import org.swiften.redux.saga.common.thenMightAsWell
 import org.swiften.redux.saga.rx.SagaEffects.from
 import org.swiften.redux.saga.rx.SagaEffects.just
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
@@ -69,6 +70,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     data class Action(val value: Int) : IReduxAction
     val finalValues = synchronizedList(arrayListOf<Int>())
     val defaultValue = -1
+    val ignoredValue = -2
     val error = "Error!"
     val allActionValues = (0 until 100)
     val correctValues = allActionValues.map { defaultValue }
@@ -78,6 +80,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
         .filter { it % 3 == 0 }
         .map { if (it % 2 == 0) throw Exception(error) else it }
         .thenNoMatterWhat(defaultValue)
+        .thenMightAsWell(justEffect(ignoredValue))
     }.invoke()
 
     sourceOutput.subscribe({ finalValues.add(it) })

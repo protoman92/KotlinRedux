@@ -15,7 +15,7 @@ import org.swiften.redux.saga.common.catchAsync
 import org.swiften.redux.saga.common.mapAsync
 import org.swiften.redux.saga.common.mapIgnoringNull
 import org.swiften.redux.saga.common.putInStore
-import org.swiften.redux.saga.common.thenSwitchToEffect
+import org.swiften.redux.saga.common.thenSwitchTo
 import org.swiften.redux.saga.common.thenSwitchToValue
 import org.swiften.redux.saga.rx.SagaEffects.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
@@ -92,7 +92,7 @@ object MainRedux {
           .catchAsync { this.async { Option.wrap(api.createFakeResult()) } }
           .mapIgnoringNull { it.value }
           .putInStore { Action.UpdateMusicResult(it) }
-          .thenSwitchToEffect(putInStore(false) { Action.UpdateLoadingResult(it) })
+          .thenSwitchTo(putInStore(false) { Action.UpdateLoadingResult(it) })
       }
     }
   }

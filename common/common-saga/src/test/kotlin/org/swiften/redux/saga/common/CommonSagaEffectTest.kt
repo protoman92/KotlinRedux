@@ -164,7 +164,7 @@ abstract class CommonSagaEffectTest {
     // When
     fromEffect(0, 1, 2, 3)
       .filter { false }
-      .ifEmptyThenReturnValue(defaultValue)
+      .ifEmptyThenReturn(defaultValue)
       .invoke()
       .subscribe({ finalValues.add(it) })
 
@@ -227,14 +227,25 @@ abstract class CommonSagaEffectTest {
   @Test
   fun `Then effect should enforce ordering`() {
     // Setup
-    val finalOutput = justEffect(1)
-      .delayUpstreamValue(500)
-      .thenSwitchToEffect(justEffect(2).map { it }) { a, b -> "$a$b" }
-      .delayUpstreamValue(1000)
-      .invoke()
+    val finalValues = synchronizedList(arrayListOf<String>())
 
-    // When && Then
-    assertEquals(finalOutput.nextValue(this.timeout), "12")
+    // When
+    justEffect(1)
+      .delayUpstreamValue(500)
+      .thenSwitchTo(justEffect(2).map { it }) { a, b -> "$a$b" }
+      .delayUpstreamValue(1000)
+      .thenMightAsWell(justEffect("This should be ignored"))
+      .invoke()
+      .subscribe({ finalValues.add(it) })
+
+    runBlocking {
+      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
+        while (finalValues != arrayListOf("12")) { }; Unit
+      }
+
+      // Then
+      assertEquals(finalValues, arrayListOf("12"))
+    }
   }
 
   @Test

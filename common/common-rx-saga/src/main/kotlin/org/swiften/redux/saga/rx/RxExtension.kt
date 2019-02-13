@@ -7,7 +7,7 @@ package org.swiften.redux.saga.rx
 
 import io.reactivex.Single
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.thenSwitchToEffect
+import org.swiften.redux.saga.common.thenSwitchTo
 
 /** Created by haipham on 2019/01/26 */
 /**
@@ -18,7 +18,8 @@ import org.swiften.redux.saga.common.thenSwitchToEffect
  * @param transformer See [CallEffect.transformer].
  * @return A [SagaEffect] instance.
  */
-fun <P, R> SagaEffect<P>.mapSingle(transformer: (P) -> Single<R>): SagaEffect<R> where P : Any, R : Any {
+fun <P, R> SagaEffect<P>.mapSingle(transformer: (P) -> Single<R>):
+  SagaEffect<R> where P : Any, R : Any {
   return this.transform(SagaEffects.mapSingle(transformer))
 }
 
@@ -37,7 +38,7 @@ inline fun <reified State, R, R2, R3> SagaEffect<R>.selectFromState(
   noinline selector: (State) -> R2,
   noinline combiner: (R, R2) -> R3
 ): SagaEffect<R3> where R : Any, R2 : Any, R3 : Any {
-  return this.thenSwitchToEffect(SagaEffects.selectFromState(selector), combiner)
+  return this.thenSwitchTo(SagaEffects.selectFromState(selector), combiner)
 }
 
 /**
@@ -50,7 +51,7 @@ inline fun <reified State, R, R2, R3> SagaEffect<R>.selectFromState(
  */
 inline fun <reified State, R2> SagaEffect<*>.selectFromState(noinline selector: (State) -> R2):
   SagaEffect<R2> where R2 : Any {
-  return this.thenSwitchToEffect(SagaEffects.selectFromState(selector))
+  return this.thenSwitchTo(SagaEffects.selectFromState(selector))
 }
 
 /**
@@ -59,6 +60,7 @@ inline fun <reified State, R2> SagaEffect<*>.selectFromState(noinline selector: 
  * @param R2 The result emission type.
  * @receiver A [SagaEffect] instance.
  */
-fun <R, R2> SagaEffect<R>.thenNoMatterWhat(defaultValue: R2): SagaEffect<R2> where R : Any, R2: Any {
+fun <R, R2> SagaEffect<R>.thenNoMatterWhat(defaultValue: R2):
+  SagaEffect<R2> where R : Any, R2: Any {
   return SagaEffects.thenNoMatterWhat<R, R2>(defaultValue)(this)
 }
