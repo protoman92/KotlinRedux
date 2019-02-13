@@ -12,6 +12,7 @@ import org.swiften.redux.saga.common.CommonEffects
 import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.ISagaEffectTransformer
 import org.swiften.redux.saga.common.SagaEffect
+import kotlin.reflect.KClass
 
 /** Created by haipham on 2019/01/13 */
 /** Top-level namespace for Rx-based [ISagaEffect] */
@@ -68,20 +69,23 @@ object SagaEffects {
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <State, R> selectFromState(cls: Class<State>, selector: (State) -> R): SagaEffect<R> where R : Any {
+  fun <State, R> selectFromState(cls: Class<State>, selector: (State) -> R):
+    SagaEffect<R> where R : Any {
     return SelectEffect(cls, selector)
   }
 
   /**
-   * Create a [SelectEffect].
+   * Similar to [selectFromState], but uses a [KClass] instead of [Class].
    * @param State The state type to select from.
    * @param R The result emission type.
+   * @param cls See [SelectEffect.cls].
    * @param selector See [SelectEffect.selector].
    * @return A [SagaEffect] instance.
    */
-  inline fun <reified State, R> selectFromState(noinline selector: (State) -> R):
-    SagaEffect<R> where R : Any {
-    return this.selectFromState(State::class.java, selector)
+  @JvmStatic
+  fun <State, R> selectFromState(cls: KClass<State>, selector: (State) -> R):
+    SagaEffect<R> where State : Any, R : Any {
+    return this.selectFromState(cls.java, selector)
   }
 
   /**
@@ -125,7 +129,7 @@ object SagaEffects {
    */
   @JvmStatic
   inline fun <reified Action, P, R> takeEveryAction(
-    crossinline extractor: Function1<Action, P?>,
+    crossinline extractor: (Action) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
     noinline creator: Function1<P, ISagaEffect<R>>
   ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
@@ -146,7 +150,7 @@ object SagaEffects {
    */
   @JvmStatic
   fun <P, R> takeLatest(
-    extractor: Function1<IReduxAction, P?>,
+    extractor: (IReduxAction) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
     creator: Function1<P, ISagaEffect<R>>
   ): SagaEffect<R> where P : Any, R : Any {
@@ -165,7 +169,7 @@ object SagaEffects {
    */
   @JvmStatic
   inline fun <reified Action, P, R> takeLatestAction(
-    crossinline extractor: Function1<Action, P?>,
+    crossinline extractor: (Action) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
     noinline creator: Function1<P, ISagaEffect<R>>
   ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {

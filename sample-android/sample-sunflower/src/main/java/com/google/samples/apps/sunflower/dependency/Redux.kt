@@ -22,8 +22,8 @@ import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.mapIgnoringNull
 import org.swiften.redux.saga.common.map
+import org.swiften.redux.saga.common.mapIgnoringNull
 import org.swiften.redux.saga.common.mapSuspend
 import org.swiften.redux.saga.common.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.just
@@ -181,7 +181,7 @@ object Redux {
 
       private fun selectPlantFromGarden(): SagaEffect<Any> {
         return takeEveryAction<Action.SelectPlantFromGarden, Int, Any>({ it.index }) { index ->
-          selectFromState<State, Option<List<PlantAndGardenPlantings>>> { Option.wrap(it.plantAndGardenPlantings) }
+          selectFromState(State::class) { Option.wrap(it.plantAndGardenPlantings) }
             .mapIgnoringNull { it.value?.elementAtOrNull(index) }
             .map { it.plant }
             .map { it.plantId }
@@ -216,7 +216,7 @@ object Redux {
     object PlantSaga {
       private fun selectPlantFromPlantList(): SagaEffect<Any> {
         return takeEveryAction<Action.SelectPlantFromPlantList, Int, Any>({ it.index }) { index ->
-          selectFromState<State, Option<List<Plant>>> { Option.wrap(it.plants) }
+          selectFromState(State::class) { Option.wrap(it.plants) }
             .mapIgnoringNull { it.value?.elementAtOrNull(index) }
             .map { it.plantId }
             .putInStore { Screen.PlantListToPlantDetail(it) }
@@ -230,7 +230,7 @@ object Redux {
        */
       private fun syncPlants(api: PlantRepository): SagaEffect<Any> {
         return takeEveryData { api.getPlants() }
-          .selectFromState<State, List<Plant>, Int, List<Plant>>({ it.selectedGrowZone }, { a, b ->
+          .selectFromState(State::class, { it.selectedGrowZone }, { a, b ->
             if (b == NO_GROW_ZONE) a else a.filter { it.growZoneNumber == b }
           }).putInStore { Action.UpdatePlants(it) }
       }
