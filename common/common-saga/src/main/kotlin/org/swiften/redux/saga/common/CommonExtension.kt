@@ -209,7 +209,7 @@ fun <R, R2, R3> SagaEffect<R>.thenSwitchToEffect(
 }
 
 /**
- * Invoke a [ThenEffect] but ignore emissions from [this]
+ * Invoke a [ThenEffect] but ignore emissions from [this].
  * @receiver A [SagaEffect] instance.
  * @param R The first source emission type.
  * @param R2 The result emission type.
@@ -218,6 +218,18 @@ fun <R, R2, R3> SagaEffect<R>.thenSwitchToEffect(
  */
 fun <R, R2> SagaEffect<R>.thenSwitchToEffect(effect: ISagaEffect<R2>): SagaEffect<R2> where R : Any, R2 : Any {
   return this.thenSwitchToEffect(effect) { _, b -> b }
+}
+
+/**
+ * Invoke a [ForceThenEffect] on [this] and [effect].
+ * @receiver A [SagaEffect] instance.
+ * @param R The first source emission type.
+ * @param R2 The second source emission type.
+ * @param effect See [ForceThenEffect.source2].
+ * @return A [SagaEffect] instance.
+ */
+fun <R, R2> SagaEffect<R>.thenNoMatterWhat(effect: ISagaEffect<R2>): SagaEffect<R2> where R : Any, R2 : Any {
+  return CommonEffects.thenNoMatterWhat(this, effect)
 }
 
 /**

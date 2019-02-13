@@ -181,6 +181,21 @@ object CommonEffects {
   }
 
   /**
+   * Create a [ForceThenEffect] instance.
+   * @param R The first source emission type.
+   * @param R2 The second source emission type.
+   * @param source1 See [ThenEffect.source1].
+   * @param source2 See [ThenEffect.source2].
+   * @return A [ForceThenEffect] instance.
+   */
+  fun <R, R2> thenNoMatterWhat(
+    source1: ISagaEffect<R>,
+    source2: ISagaEffect<R2>
+  ): SagaEffect<R2> where R : Any, R2 : Any {
+    return ForceThenEffect(source1, source2)
+  }
+
+  /**
    * Create a [TimeoutEffect].
    * @param R The result emission type.
    * @param millis See [TimeoutEffect.millis].
