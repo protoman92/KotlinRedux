@@ -85,6 +85,18 @@ object SagaEffects {
   }
 
   /**
+   * Convenience method for [CommonEffects.thenNoMatterWhat] to switch to [defaultValue].
+   * @param R The source emission type.
+   * @param R2 The result emission type.
+   * @param source An [ISagaEffect] instance.
+   * @param defaultValue A [R2] instance.
+   * @return A [SagaEffect] instance.
+   */
+  fun <R, R2> thenNoMatterWhat(source: ISagaEffect<R>, defaultValue: R2): SagaEffect<R2> where R : Any, R2 : Any {
+    return CommonEffects.thenNoMatterWhat(source, this.just(defaultValue))
+  }
+
+  /**
    * Create a [TakeEveryEffect] instance.
    * @param P The source emission type.
    * @param R The result emission type.

@@ -52,3 +52,13 @@ inline fun <reified State, R2> SagaEffect<*>.selectFromState(noinline selector: 
   SagaEffect<R2> where R2 : Any {
   return this.thenSwitchToEffect(SagaEffects.selectFromState(selector))
 }
+
+/**
+ * Invoke [SagaEffects.thenNoMatterWhat] on [this].
+ * @param R The source emission type.
+ * @param R2 The result emission type.
+ * @receiver A [SagaEffect] instance.
+ */
+fun <R, R2> SagaEffect<R>.thenNoMatterWhat(defaultValue: R2): SagaEffect<R2> where R : Any, R2: Any {
+  return SagaEffects.thenNoMatterWhat(this, defaultValue)
+}

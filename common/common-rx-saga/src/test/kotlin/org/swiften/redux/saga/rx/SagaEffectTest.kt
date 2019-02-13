@@ -20,6 +20,8 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.CommonSagaEffectTest
 import org.swiften.redux.saga.common.castValue
 import org.swiften.redux.saga.common.catchError
+import org.swiften.redux.saga.common.doOnValue
+import org.swiften.redux.saga.common.filter
 import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapAsync
 import org.swiften.redux.saga.rx.SagaEffects.from
@@ -60,6 +62,38 @@ class SagaEffectTest : CommonSagaEffectTest() {
     // When && Then
     assertEquals(sourceOutput1.nextValue(this.timeout), 3)
     assertEquals(sourceOutput2.nextValue(this.timeout), 4)
+  }
+
+  @Test
+  fun `Take latest with forceful then should work correctly`() {
+    // Setup
+    data class Action(val value: Int) : IReduxAction
+    val finalValues = synchronizedList(arrayListOf<Int>())
+    val defaultValue = -1
+    val error = "Error!"
+    val allActionValues = (0 until 100)
+    val correctValues = allActionValues.map { defaultValue }
+
+    val sourceOutput = takeEveryAction<Action, Int, Int>({ it.value }) { value ->
+      this@SagaEffectTest.justEffect(value)
+        .filter { it % 3 == 0 }
+        .map { if (it % 2 == 0) throw Exception(error) else it }
+        .thenNoMatterWhat(defaultValue)
+    }.invoke()
+
+    sourceOutput.subscribe({ finalValues.add(it) })
+
+    // When
+    allActionValues.forEach { sourceOutput.onAction(Action(it)) }
+
+    runBlocking {
+      withTimeoutOrNull(this@SagaEffectTest.timeout) {
+        while (finalValues.sorted() != correctValues.sorted()) { }; Unit
+      }
+
+      // Then
+      assertEquals(finalValues.sorted(), correctValues.sorted())
+    }
   }
 
   @Test

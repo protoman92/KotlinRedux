@@ -236,6 +236,36 @@ abstract class CommonSagaEffectTest {
     // When && Then
     assertEquals(finalOutput.nextValue(this.timeout), "12")
   }
+  
+  @Test
+  fun `Force-then effect should enforce ordering when source is empty or errorneous`() {
+    // Setup
+    val finalValues = synchronizedList(arrayListOf<Int>())
+    val error = "Error!"
+
+    // When
+    justEffect(1)
+      .map { throw Exception(error) }
+      .thenNoMatterWhat(justEffect(2))
+      .invoke()
+      .subscribe({ finalValues.add(it) })
+
+    justEffect(1)
+      .filter { it % 2 == 0 }
+      .map { throw Exception(error) }
+      .thenNoMatterWhat(justEffect(3))
+      .invoke()
+      .subscribe({ finalValues.add(it) })
+
+    runBlocking {
+      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
+        while (finalValues != arrayListOf(2, 3)) { }; Unit
+      }
+
+      // Then
+      assertEquals(finalValues, arrayListOf(2, 3))
+    }
+  }
 
   @Test
   fun `Timeout effect should error with timeout`() {
