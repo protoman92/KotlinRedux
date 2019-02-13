@@ -20,7 +20,6 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.CommonSagaEffectTest
 import org.swiften.redux.saga.common.castValue
 import org.swiften.redux.saga.common.catchError
-import org.swiften.redux.saga.common.doOnValue
 import org.swiften.redux.saga.common.filter
 import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapAsync

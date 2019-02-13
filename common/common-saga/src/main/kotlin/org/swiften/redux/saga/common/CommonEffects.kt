@@ -87,7 +87,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R> ifEmptyThenReturnValue(defaultValue: () -> R): ISagaEffectTransformer<R, R> where R : Any {
+  fun <R> ifEmptyThenReturnValue(defaultValue: R): ISagaEffectTransformer<R, R> where R : Any {
     return { IfEmptyEffect(it, defaultValue) }
   }
 
@@ -166,33 +166,26 @@ object CommonEffects {
    * @param R The first source emission type.
    * @param R2 The second source emission type.
    * @param R3 The result emission type.
-   * @param source1 See [ThenEffect.source1].
    * @param source2 See [ThenEffect.source2].
    * @param combiner See [ThenEffect.combiner].
-   * @return A [ThenEffect] instance.
+   * @return A [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <R, R2, R3> then(
-    source1: ISagaEffect<R>,
-    source2: ISagaEffect<R2>,
-    combiner: Function2<R, R2, R3>
-  ): SagaEffect<R3> where R : Any, R2 : Any, R3 : Any {
-    return ThenEffect(source1, source2, combiner)
+  fun <R, R2, R3> then(source2: ISagaEffect<R2>, combiner: Function2<R, R2, R3>):
+    ISagaEffectTransformer<R, R3> where R : Any, R2 : Any, R3 : Any {
+    return { ThenEffect(it, source2, combiner) }
   }
 
   /**
    * Create a [ForceThenEffect] instance.
    * @param R The first source emission type.
    * @param R2 The second source emission type.
-   * @param source1 See [ThenEffect.source1].
    * @param source2 See [ThenEffect.source2].
-   * @return A [ForceThenEffect] instance.
+   * @return A [ISagaEffectTransformer] instance.
    */
-  fun <R, R2> thenNoMatterWhat(
-    source1: ISagaEffect<R>,
-    source2: ISagaEffect<R2>
-  ): SagaEffect<R2> where R : Any, R2 : Any {
-    return ForceThenEffect(source1, source2)
+  fun <R, R2> thenNoMatterWhat(source2: ISagaEffect<R2>):
+    ISagaEffectTransformer<R, R2> where R : Any, R2 : Any {
+    return { ForceThenEffect(it, source2) }
   }
 
   /**

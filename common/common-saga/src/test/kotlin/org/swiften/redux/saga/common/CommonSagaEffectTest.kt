@@ -164,7 +164,7 @@ abstract class CommonSagaEffectTest {
     // When
     fromEffect(0, 1, 2, 3)
       .filter { false }
-      .ifEmptyThenReturnValue { defaultValue }
+      .ifEmptyThenReturnValue(defaultValue)
       .invoke()
       .subscribe({ finalValues.add(it) })
 
@@ -236,7 +236,7 @@ abstract class CommonSagaEffectTest {
     // When && Then
     assertEquals(finalOutput.nextValue(this.timeout), "12")
   }
-  
+
   @Test
   fun `Force-then effect should enforce ordering when source is empty or errorneous`() {
     // Setup

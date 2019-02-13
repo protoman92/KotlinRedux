@@ -106,7 +106,7 @@ fun <R> SagaEffect<R>.filter(predicate: (R) -> Boolean): SagaEffect<R> where R :
  * @param defaultValue See [IfEmptyEffect.defaultValue].
  * @return A [SagaEffect] instance.
  */
-fun <R> SagaEffect<R>.ifEmptyThenReturnValue(defaultValue: () -> R): SagaEffect<R> where R : Any {
+fun <R> SagaEffect<R>.ifEmptyThenReturnValue(defaultValue: R): SagaEffect<R> where R : Any {
   return CommonEffects.ifEmptyThenReturnValue(defaultValue)(this)
 }
 
@@ -205,7 +205,7 @@ fun <R, R2, R3> SagaEffect<R>.thenSwitchToEffect(
   effect: ISagaEffect<R2>,
   combiner: Function2<R, R2, R3>
 ): SagaEffect<R3> where R : Any, R2 : Any, R3 : Any {
-  return CommonEffects.then(this, effect, combiner)
+  return CommonEffects.then(effect, combiner)(this)
 }
 
 /**
@@ -229,7 +229,7 @@ fun <R, R2> SagaEffect<R>.thenSwitchToEffect(effect: ISagaEffect<R2>): SagaEffec
  * @return A [SagaEffect] instance.
  */
 fun <R, R2> SagaEffect<R>.thenNoMatterWhat(effect: ISagaEffect<R2>): SagaEffect<R2> where R : Any, R2 : Any {
-  return CommonEffects.thenNoMatterWhat(this, effect)
+  return CommonEffects.thenNoMatterWhat<R, R2>(effect)(this)
 }
 
 /**

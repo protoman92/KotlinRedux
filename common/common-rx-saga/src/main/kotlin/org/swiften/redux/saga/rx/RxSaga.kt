@@ -96,8 +96,8 @@ class SagaOutput<T : Any>(
     this.disposable.clear(); this.onDispose()
   }
 
-  override fun ifEmpty(defaultValue: () -> T): ISagaOutput<T> {
-    return this.with(this.stream.defaultIfEmpty(defaultValue()))
+  override fun ifEmpty(defaultValue: T): ISagaOutput<T> {
+    return this.with(this.stream.defaultIfEmpty(defaultValue))
   }
 
   override fun ifEmpty(secondOutput: ISagaOutput<T>): ISagaOutput<T> {

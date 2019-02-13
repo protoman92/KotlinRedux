@@ -9,11 +9,11 @@ package org.swiften.redux.saga.common
 /**
  * [SagaEffect] whose [ISagaOutput] emits [defaultValue] when [source] is empty.
  * @param source The source [ISagaEffect] instance.
- * @param defaultValue Function that creates [R] to emit when stream is empty.
+ * @param defaultValue An [R] instance.
  */
 internal class IfEmptyEffect<R>(
   private val source: ISagaEffect<R>,
-  private val defaultValue: () -> R
+  private val defaultValue: R
 ) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
     return this.source.invoke(p1).ifEmpty(this.defaultValue)

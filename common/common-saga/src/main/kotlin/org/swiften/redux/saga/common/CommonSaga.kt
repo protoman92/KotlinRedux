@@ -112,10 +112,10 @@ interface ISagaOutput<T> where T : Any {
 
   /**
    * Emit [defaultValue] if the stream is empty.
-   * @param defaultValue Function that creates [T] to emit when stream is empty.
+   * @param defaultValue A [T] instance.
    * @return An [ISagaOutput] instance.
    */
-  fun ifEmpty(defaultValue: () -> T): ISagaOutput<T>
+  fun ifEmpty(defaultValue: T): ISagaOutput<T>
 
   /**
    * Switch to [secondOutput] if [this] is empty.
