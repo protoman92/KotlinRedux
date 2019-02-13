@@ -4,7 +4,7 @@
 
 `CallEffect(source: `[`ISagaEffect`](../../org.swiften.redux.saga.common/-i-saga-effect.md)`<`[`P`](index.md#P)`>, transformer: (`[`P`](index.md#P)`) -> <ERROR CLASS><`[`R`](index.md#R)`>)`
 
-[ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) awaits for a [Single](#) to complete.
+[SagaEffect](../../org.swiften.redux.saga.common/-saga-effect/index.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) awaits for a [Single](#) to complete.
 
 ### Parameters
 

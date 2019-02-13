@@ -13,7 +13,7 @@ Invoke a [SuspendCatchErrorEffect](-suspend-catch-error-effect/index.md) on [thi
 `catcher` - See [SuspendCatchErrorEffect.catcher](-suspend-catch-error-effect/catcher.md).
 
 **Receiver**
-A [SagaEffect](-saga-effect/index.md) instance.
+See [SuspendCatchErrorEffect.source](-suspend-catch-error-effect/source.md).
 
 **Return**
 A [SagaEffect](-saga-effect/index.md) instance.

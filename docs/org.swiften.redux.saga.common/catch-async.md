@@ -13,7 +13,7 @@ Invoke a [AsyncCatchErrorEffect](-async-catch-error-effect/index.md) on [this](c
 `catcher` - See [AsyncCatchErrorEffect.catcher](-async-catch-error-effect/catcher.md).
 
 **Receiver**
-A [SagaEffect](-saga-effect/index.md) instance.
+See [AsyncCatchErrorEffect.source](-async-catch-error-effect/source.md).
 
 **Return**
 A [SagaEffect](-saga-effect/index.md) instance.

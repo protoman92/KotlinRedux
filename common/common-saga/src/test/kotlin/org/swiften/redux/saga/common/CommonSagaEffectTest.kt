@@ -249,7 +249,7 @@ abstract class CommonSagaEffectTest {
   }
 
   @Test
-  fun `Force-then effect should enforce ordering when source is empty or errorneous`() {
+  fun `Force-then effect should enforce ordering when source is empty or erroneous`() {
     // Setup
     val finalValues = synchronizedList(arrayListOf<Int>())
     val error = "Error!"

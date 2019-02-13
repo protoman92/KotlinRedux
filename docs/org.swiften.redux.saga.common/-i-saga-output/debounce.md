@@ -2,7 +2,7 @@
 
 # debounce
 
-`abstract fun debounce(millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`ISagaOutput`](index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L97)
+`abstract fun debounce(millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`ISagaOutput`](index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L104)
 
 Debounce emissions by [millis](debounce.md#org.swiften.redux.saga.common.ISagaOutput$debounce(kotlin.Long)/millis), i.e. accepting only values that are [millis](debounce.md#org.swiften.redux.saga.common.ISagaOutput$debounce(kotlin.Long)/millis) away from their
 immediate predecessors.

@@ -13,7 +13,7 @@ in order to call [ListAdapter.submitList](#).
 
 `LState` - The local state type that [GState](index.md#GState) must extend from.
 
-`OutProp` - Property as defined by [this](#)'s parent.
+`OutProp` - Property as defined by [adapter](adapter.md)'s parent.
 
 `VH` - The [RecyclerView.ViewHolder](#) instance.
 

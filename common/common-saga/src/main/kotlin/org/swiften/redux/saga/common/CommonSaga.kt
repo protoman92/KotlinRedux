@@ -118,7 +118,7 @@ interface ISagaOutput<T> where T : Any {
   fun ifEmpty(defaultValue: T): ISagaOutput<T>
 
   /**
-   * Switch to [secondOutput] if [this] is empty.
+   * Switch to [secondOutput] if the stream is empty.
    * @param secondOutput A fallback [ISagaOutput] instance.
    * @return An [ISagaOutput] instance.
    */

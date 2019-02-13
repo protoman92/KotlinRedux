@@ -4,7 +4,7 @@
 
 `JustEffect(value: `[`R`](index.md#R)`)`
 
-[ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) whose [SagaOutput](../-saga-output/index.md) simply emits [value](value.md).
+[SagaEffect](../../org.swiften.redux.saga.common/-saga-effect/index.md) whose [SagaOutput](../-saga-output/index.md) simply emits [value](value.md).
 
 ### Parameters
 

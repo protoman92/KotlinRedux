@@ -13,7 +13,7 @@ Invoke a [FilterEffect](-filter-effect/index.md) on [this](filter/-this-.md).
 `predicate` - See [FilterEffect.predicate](-filter-effect/predicate.md).
 
 **Receiver**
-A [SagaEffect](-saga-effect/index.md) instance.
+See [FilterEffect.source](-filter-effect/source.md).
 
 **Return**
 A [SagaEffect](-saga-effect/index.md) instance.

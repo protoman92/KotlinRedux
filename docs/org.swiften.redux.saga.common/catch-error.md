@@ -13,7 +13,7 @@ Catch [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable
 `catcher` - See [CatchErrorEffect.catcher](-catch-error-effect/catcher.md).
 
 **Receiver**
-A [SagaEffect](-saga-effect/index.md) instance.
+See [CatchErrorEffect.source](-catch-error-effect/source.md).
 
 **Return**
 A [SagaEffect](-saga-effect/index.md) instance.

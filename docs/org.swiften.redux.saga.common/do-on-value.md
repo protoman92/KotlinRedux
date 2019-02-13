@@ -13,7 +13,7 @@ Invoke a [DoOnValueEffect](-do-on-value-effect/index.md) on [this](do-on-value/-
 `performer` - See [DoOnValueEffect.performer](-do-on-value-effect/performer.md).
 
 **Receiver**
-A [SagaEffect](-saga-effect/index.md) instance.
+See [DoOnValueEffect.source](-do-on-value-effect/source.md).
 
 **Return**
 A [SagaEffect](-saga-effect/index.md) instance.*

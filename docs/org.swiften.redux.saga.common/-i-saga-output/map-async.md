@@ -2,7 +2,7 @@
 
 # mapAsync
 
-`abstract fun <T2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> mapAsync(transform: suspend <ERROR CLASS>.(`[`T`](index.md#T)`) -> <ERROR CLASS><`[`T2`](map-async.md#T2)`>): `[`ISagaOutput`](index.md)`<`[`T2`](map-async.md#T2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L128)
+`abstract fun <T2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> mapAsync(transform: suspend <ERROR CLASS>.(`[`T`](index.md#T)`) -> <ERROR CLASS><`[`T2`](map-async.md#T2)`>): `[`ISagaOutput`](index.md)`<`[`T2`](map-async.md#T2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L149)
 
 Map emissions from [T](index.md#T) to [T2](map-async.md#T2) with async [transform](map-async.md#org.swiften.redux.saga.common.ISagaOutput$mapAsync(kotlin.SuspendFunction2((, org.swiften.redux.saga.common.ISagaOutput.T, ((org.swiften.redux.saga.common.ISagaOutput.mapAsync.T2)))))/transform).
 
