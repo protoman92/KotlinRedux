@@ -78,6 +78,10 @@ class SagaOutput<T : Any>(
     return this.with(this.stream.onErrorReturn(catcher))
   }
 
+  override fun catchError(secondOutput: ISagaOutput<T>): ISagaOutput<T> {
+    return this.with(this.stream.onErrorResumeNext((secondOutput as SagaOutput<T>).stream))
+  }
+
   override fun catchSuspend(catcher: suspend CoroutineScope.(Throwable) -> T): ISagaOutput<T> {
     return this.with(this.stream.onErrorResumeNext { e: Throwable ->
       this@SagaOutput.rxSingle { catcher(this, e) }.toFlowable()
@@ -94,6 +98,10 @@ class SagaOutput<T : Any>(
 
   override fun ifEmpty(defaultValue: () -> T): ISagaOutput<T> {
     return this.with(this.stream.defaultIfEmpty(defaultValue()))
+  }
+
+  override fun ifEmpty(secondOutput: ISagaOutput<T>): ISagaOutput<T> {
+    return this.with(this.stream.switchIfEmpty((secondOutput as SagaOutput<T>).stream))
   }
 
   override fun retry(times: Long) = this.with(this.stream.retry(times))

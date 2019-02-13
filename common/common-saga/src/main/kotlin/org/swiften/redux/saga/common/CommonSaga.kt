@@ -51,21 +51,28 @@ interface ISagaOutput<T> where T : Any {
   val onAction: IActionDispatcher
 
   /**
-   * Catch error with [catcher].
+   * Catch [Throwable] with [catcher].
    * @param catcher Function that catches [Throwable] and returns [T].
    * @return An [ISagaOutput] instance.
    */
   fun catchError(catcher: (Throwable) -> T): ISagaOutput<T>
 
   /**
-   * Catch error with suspending [catcher].
+   * Catch [Throwable] and switch to [secondOutput].
+   * @param secondOutput A fallback [ISagaOutput] instance.
+   * @return An [ISagaOutput] instance.
+   */
+  fun catchError(secondOutput: ISagaOutput<T>): ISagaOutput<T>
+
+  /**
+   * Catch [Throwable] with a suspending [catcher].
    * @param catcher Function that catches [Throwable] in a [CoroutineScope] and returns [T].
    * @return An [ISagaOutput] instance.
    */
   fun catchSuspend(catcher: suspend CoroutineScope.(Throwable) -> T): ISagaOutput<T>
 
   /**
-   * Catch error with async [catcher].
+   * Catch [Throwable] with an async [catcher].
    * @param catcher Function that catches [Throwable] in a [CoroutineScope] and returns [T].
    * @return An [ISagaOutput] instance.
    */
@@ -109,6 +116,13 @@ interface ISagaOutput<T> where T : Any {
    * @return An [ISagaOutput] instance.
    */
   fun ifEmpty(defaultValue: () -> T): ISagaOutput<T>
+
+  /**
+   * Switch to [secondOutput] if [this] is empty.
+   * @param secondOutput A fallback [ISagaOutput] instance.
+   * @return An [ISagaOutput] instance.
+   */
+  fun ifEmpty(secondOutput: ISagaOutput<T>): ISagaOutput<T>
 
   /**
    * Map emissions from [T] to [T2] with [transform].
