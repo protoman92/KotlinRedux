@@ -12,7 +12,7 @@ import org.swiften.redux.saga.common.thenSwitchToEffect
 /** Created by haipham on 2019/01/26 */
 /**
  * Invoke a [CallEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [CallEffect.source].
  * @param P The source emission type.
  * @param R The result emission type.
  * @param transformer See [CallEffect.transformer].
@@ -24,6 +24,7 @@ fun <P, R> SagaEffect<P>.mapSingle(transformer: (P) -> Single<R>): SagaEffect<R>
 
 /**
  * Invoke a [SelectEffect] on [this] and combine the emitted values with [combiner].
+ * @receiver A [SagaEffect] instance.
  * @param State The state type to select from.
  * @param R The source emission type.
  * @param R2 The value type to be selected from [State].
@@ -41,6 +42,7 @@ inline fun <reified State, R, R2, R3> SagaEffect<R>.selectFromState(
 
 /**
  * Invoke a [SelectEffect] but ignore emissions from [this].
+ * @receiver A [SagaEffect] instance.
  * @param State The state type to select from.
  * @param R2 The result emission type.
  * @param selector See [SelectEffect.selector].

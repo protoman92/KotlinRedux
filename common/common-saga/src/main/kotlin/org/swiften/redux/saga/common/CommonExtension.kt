@@ -33,7 +33,7 @@ inline fun <reified R> SagaEffect<*>.castValue(): SagaEffect<R> where R : Any {
 
 /**
  * Catch [Throwable] from upstream with [catcher].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [CatchErrorEffect.source].
  * @param R The result emission type.
  * @param catcher See [CatchErrorEffect.catcher].
  * @return A [SagaEffect] instance.
@@ -44,7 +44,7 @@ fun <R> SagaEffect<R>.catchError(catcher: (Throwable) -> R): SagaEffect<R> where
 
 /**
  * Invoke a [SuspendCatchErrorEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [SuspendCatchErrorEffect.source].
  * @param R The result emission type.
  * @param catcher See [SuspendCatchErrorEffect.catcher].
  * @return A [SagaEffect] instance.
@@ -56,7 +56,7 @@ fun <R> SagaEffect<R>.catchSuspend(catcher: suspend CoroutineScope.(Throwable) -
 
 /**
  * Invoke a [AsyncCatchErrorEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [AsyncCatchErrorEffect.source].
  * @param R The result emission type.
  * @param catcher See [AsyncCatchErrorEffect.catcher].
  * @return A [SagaEffect] instance.
@@ -68,7 +68,7 @@ fun <R> SagaEffect<R>.catchAsync(catcher: suspend CoroutineScope.(Throwable) -> 
 
 /**
  * Invoke a [DelayEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [DelayEffect.source].
  * @param R The result emission type.
  * @param millis See [DelayEffect.millis].
  * @return A [SagaEffect] instance.
@@ -79,7 +79,7 @@ fun <R> SagaEffect<R>.delayUpstreamValue(millis: Long): SagaEffect<R> where R : 
 
 /**
  * Invoke a [DoOnValueEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [DoOnValueEffect.source].
  * @param R The result emission type.
  * @param performer See [DoOnValueEffect.performer].
  * @return A [SagaEffect] instance.*
@@ -90,7 +90,7 @@ fun <R> SagaEffect<R>.doOnValue(performer: (R) -> Unit): SagaEffect<R> where R :
 
 /**
  * Invoke a [FilterEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [FilterEffect.source].
  * @param R The result emission type.
  * @param predicate See [FilterEffect.predicate].
  * @return A [SagaEffect] instance.
@@ -101,7 +101,7 @@ fun <R> SagaEffect<R>.filter(predicate: (R) -> Boolean): SagaEffect<R> where R :
 
 /**
  * Invoke a [IfEmptyEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [IfEmptyEffect.source].
  * @param R The result emission type.
  * @param defaultValue See [IfEmptyEffect.defaultValue].
  * @return A [SagaEffect] instance.
@@ -112,7 +112,7 @@ fun <R> SagaEffect<R>.ifEmptyThenReturnValue(defaultValue: () -> R): SagaEffect<
 
 /**
  * Invoke a [MapEffect] on the current [ISagaEffect].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [MapEffect.source].
  * @param P The source emission type.
  * @param R The result emission type.
  * @param transformer See [MapEffect.transformer].
@@ -124,7 +124,7 @@ fun <P, R> SagaEffect<P>.map(transformer: (P) -> R): SagaEffect<R> where P : Any
 
 /**
  * Invoke a [AsyncMapEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [AsyncMapEffect.source].
  * @param P The source emission type.
  * @param R The result emission type.
  * @param transformer See [AsyncMapEffect.transformer].
@@ -137,7 +137,7 @@ fun <P, R> SagaEffect<P>.mapAsync(transformer: suspend CoroutineScope.(P) -> Def
 
 /**
  * Invoke a [CompactMapEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [CompactMapEffect.source].
  * @param R The result emission type.
  * @param transformer See [CompactMapEffect.transformer].
  * @return An [ISagaEffect] instance.
@@ -148,7 +148,7 @@ fun <P, R> SagaEffect<P>.mapIgnoringNull(transformer: (P) -> R?): SagaEffect<R> 
 
 /**
  * Invoke a [PutEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [PutEffect.source].
  * @param P The source emission type.
  * @param actionCreator See [PutEffect.actionCreator].
  * @return A [SagaEffect] instance.
@@ -159,7 +159,7 @@ fun <P> SagaEffect<P>.putInStore(actionCreator: (P) -> IReduxAction): SagaEffect
 
 /**
  * Invoke a [RetryEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [RetryEffect.source].
  * @param R The result emission type.
  * @param times See [RetryEffect.times].
  * @return A [SagaEffect] instance.
@@ -170,7 +170,7 @@ fun <R> SagaEffect<R>.retryMultipleTimes(times: Long): SagaEffect<R> where R : A
 
 /**
  * Invoke a [RetryEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [RetryEffect.source].
  * @param R The result emission type.
  * @param times See [RetryEffect.times].
  * @return A [SagaEffect] instance.
@@ -179,7 +179,7 @@ fun <R> SagaEffect<R>.retryMultipleTimes(times: Int) where R : Any = this.retryM
 
 /**
  * Invoke a [SuspendMapEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [SuspendMapEffect.source].
  * @param P The source emission type.
  * @param R The result emission type.
  * @param transformer See [SuspendMapEffect.transformer].
@@ -193,7 +193,7 @@ fun <P, R> SagaEffect<P>.mapSuspend(
 
 /**
  * Invoke a [ThenEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [ThenEffect.source1].
  * @param R The first source emission type.
  * @param R2 The second source emission type.
  * @param R3 The result emission type.
@@ -210,7 +210,7 @@ fun <R, R2, R3> SagaEffect<R>.thenSwitchToEffect(
 
 /**
  * Invoke a [ThenEffect] but ignore emissions from [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [ThenEffect.source1].
  * @param R The first source emission type.
  * @param R2 The result emission type.
  * @param effect See [ThenEffect.source2].
@@ -222,7 +222,7 @@ fun <R, R2> SagaEffect<R>.thenSwitchToEffect(effect: ISagaEffect<R2>): SagaEffec
 
 /**
  * Invoke a [ForceThenEffect] on [this] and [effect].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [ForceThenEffect.source1].
  * @param R The first source emission type.
  * @param R2 The second source emission type.
  * @param effect See [ForceThenEffect.source2].
@@ -234,7 +234,7 @@ fun <R, R2> SagaEffect<R>.thenNoMatterWhat(effect: ISagaEffect<R2>): SagaEffect<
 
 /**
  * Invoke [thenSwitchToEffect] with a single [value].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [ThenEffect.source1].
  * @param R The first source emission type.
  * @param R2 The result emission type.
  * @param value See [ThenEffect.source2].
@@ -244,7 +244,7 @@ fun <R, R2> SagaEffect<R>.thenSwitchToValue(value: R2) where R : Any, R2 : Any =
 
 /**
  * Invoke a [TimeoutEffect] on [this].
- * @receiver A [SagaEffect] instance.
+ * @receiver See [TimeoutEffect.source].
  * @param R The result emission type.
  * @param millis See [TimeoutEffect.millis].
  * @return A [SagaEffect] instance.

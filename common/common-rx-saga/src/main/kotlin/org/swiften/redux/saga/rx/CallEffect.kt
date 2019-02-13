@@ -13,7 +13,7 @@ import org.swiften.redux.saga.common.SagaInput
 
 /** Created by haipham on 2019/01/05 */
 /**
- * [ISagaEffect] whose [ISagaOutput] awaits for a [Single] to complete.
+ * [SagaEffect] whose [ISagaOutput] awaits for a [Single] to complete.
  * @param P The source emission type.
  * @param R The result emission type.
  * @param source The source [ISagaEffect] instance.

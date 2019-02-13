@@ -5,14 +5,13 @@
 
 package org.swiften.redux.saga.rx
 
-import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.ISagaOutput
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaInput
 
 /** Created by haipham on 2019/01/01 */
 /**
- * [ISagaEffect] whose [SagaOutput] selects some value from an internal [State] using [selector].
+ * [SagaEffect] whose [SagaOutput] selects some value from an internal [State] using [selector].
  * @param State The state type to select from.
  * @param R The result emission type.
  * @param cls The [Class] to [State].
