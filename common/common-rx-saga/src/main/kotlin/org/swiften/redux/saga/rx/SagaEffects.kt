@@ -66,7 +66,7 @@ object SagaEffects {
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun putInStore(action: IReduxAction): ISagaEffect<Any> {
+  fun putInStore(action: IReduxAction): SagaEffect<Any> {
     return this.putInStore(Unit) { action }
   }
 

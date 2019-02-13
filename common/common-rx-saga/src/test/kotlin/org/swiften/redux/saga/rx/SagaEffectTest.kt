@@ -24,6 +24,7 @@ import org.swiften.redux.saga.common.filter
 import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapAsync
 import org.swiften.redux.saga.common.thenMightAsWell
+import org.swiften.redux.saga.common.thenNoMatterWhat
 import org.swiften.redux.saga.rx.SagaEffects.from
 import org.swiften.redux.saga.rx.SagaEffects.just
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
@@ -79,7 +80,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       this@SagaEffectTest.justEffect(value)
         .filter { it % 3 == 0 }
         .map { if (it % 2 == 0) throw Exception(error) else it }
-        .thenNoMatterWhat(defaultValue)
+        .thenNoMatterWhat(just(defaultValue))
         .thenMightAsWell(justEffect(ignoredValue))
     }.invoke()
 

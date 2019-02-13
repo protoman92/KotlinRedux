@@ -91,15 +91,3 @@ fun <State, R2> SagaEffect<*>.selectFromState(cls: KClass<State>, selector: (Sta
   SagaEffect<R2> where State : Any, R2 : Any {
   return this.selectFromState(cls.java, selector)
 }
-
-/**
- * Invoke [SagaEffects.thenNoMatterWhat] on [this].
- * @receiver A [SagaEffect] instance.
- * @param R The source emission type.
- * @param R2 The result emission type.
- * @receiver A [SagaEffect] instance.
- */
-fun <R, R2> SagaEffect<R>.thenNoMatterWhat(defaultValue: R2):
-  SagaEffect<R2> where R : Any, R2: Any {
-  return SagaEffects.thenNoMatterWhat<R, R2>(defaultValue)(this)
-}

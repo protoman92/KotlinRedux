@@ -12,10 +12,11 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.catchAsync
+import org.swiften.redux.saga.common.doOnValue
 import org.swiften.redux.saga.common.mapAsync
 import org.swiften.redux.saga.common.mapIgnoringNull
 import org.swiften.redux.saga.common.putInStore
-import org.swiften.redux.saga.common.thenSwitchTo
+import org.swiften.redux.saga.common.thenNoMatterWhat
 import org.swiften.redux.saga.common.thenSwitchToValue
 import org.swiften.redux.saga.rx.SagaEffects.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
@@ -86,13 +87,13 @@ object MainRedux {
         { it.query },
         TakeEffectOptions(500)
       ) { query ->
-        putInStore(true) { Action.UpdateLoadingResult(it) }
+        putInStore(Action.UpdateLoadingResult(true))
           .thenSwitchToValue(query)
           .mapAsync { this.async { Option.wrap(api.searchMusicStore(it)) } }
           .catchAsync { this.async { Option.wrap(api.createFakeResult()) } }
           .mapIgnoringNull { it.value }
           .putInStore { Action.UpdateMusicResult(it) }
-          .thenSwitchTo(putInStore(false) { Action.UpdateLoadingResult(it) })
+          .thenNoMatterWhat(putInStore(Action.UpdateLoadingResult(false)))
       }
     }
   }
