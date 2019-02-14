@@ -24,12 +24,19 @@ import org.swiften.redux.saga.common.SagaInput
  * @param options A [TakeEffectOptions] instance.
  * @param creator Function that creates [ISagaEffect] from [P].
  */
-internal abstract class TakeEffect<Action, P, R>(
+abstract class TakeEffect<Action, P, R>(
   private val cls: Class<Action>,
   private val extractor: (Action) -> P?,
   private val options: TakeEffectOptions,
   private val creator: (P) -> ISagaEffect<R>
 ) : SagaEffect<R>() where Action : IReduxAction, P : Any, R : Any {
+  constructor(source: TakeEffect<Action, P, R>) : this(
+    source.cls,
+    source.extractor,
+    source.options,
+    source.creator
+  )
+
   /**
    * Flatten an [ISagaOutput] that streams [ISagaOutput] to access the values streamed by
    * the inner [ISagaOutput].
@@ -47,8 +54,23 @@ internal abstract class TakeEffect<Action, P, R>(
       }
     }
 
-    return this.flatten(nested
-      .debounce(this@TakeEffect.options.debounceMillis)
-      .map { this@TakeEffect.creator(it).invoke(p1) })
+    return this.flatten(nested.map { this@TakeEffect.creator(it).invoke(p1) })
+  }
+}
+
+/**
+ * Perform debounce for a [TakeEffect] stream.
+ * @param Action The [IReduxAction] type to perform param extraction.
+ * @param P The input value extracted from [IReduxAction].
+ * @param R The result emission type.
+ * @param source The source [TakeEffect] instance.
+ * @param millis The time to debounce by, in milliseconds.
+ */
+class DebounceTakeEffect<Action, P, R>(
+  private val source: TakeEffect<Action, P, R>,
+  private val millis: Long
+) : TakeEffect<Action, P, R>(source) where Action : IReduxAction, P : Any, R : Any {
+  override fun flatten(nested: ISagaOutput<ISagaOutput<R>>): ISagaOutput<R> {
+    return this.source.flatten(nested.debounce(this.millis))
   }
 }

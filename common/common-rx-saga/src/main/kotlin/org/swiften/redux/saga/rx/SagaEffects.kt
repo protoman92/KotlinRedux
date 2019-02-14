@@ -127,7 +127,7 @@ object SagaEffects {
     extractor: (Action) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
     creator: (P) -> ISagaEffect<R>
-  ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
+  ): TakeEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
     return TakeEveryEffect(cls, extractor, options, creator)
   }
 
@@ -147,7 +147,7 @@ object SagaEffects {
     extractor: (Action) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
     creator: (P) -> ISagaEffect<R>
-  ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
+  ): TakeEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
     return this.takeEvery(cls.java, extractor, options, creator)
   }
 
@@ -168,7 +168,7 @@ object SagaEffects {
     actionKeys: Collection<String>,
     options: TakeEffectOptions = TakeEffectOptions(),
     creator: (IReduxActionWithKey) -> ISagaEffect<R>
-  ): SagaEffect<R> where R : Any {
+  ): TakeEffect<IReduxActionWithKey, IReduxActionWithKey, R> where R : Any {
     return this.takeEvery(IReduxActionWithKey::class, { action ->
       if (actionKeys.contains(action.key)) action else null
     }, options, creator)
@@ -190,7 +190,7 @@ object SagaEffects {
     extractor: (Action) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
     creator: Function1<P, ISagaEffect<R>>
-  ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
+  ): TakeEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
     return TakeLatestEffect(cls, extractor, options, creator)
   }
 
@@ -210,7 +210,7 @@ object SagaEffects {
     extractor: (Action) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
     creator: (P) -> ISagaEffect<R>
-  ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
+  ): TakeEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
     return this.takeLatest(cls.java, extractor, options, creator)
   }
 
@@ -231,9 +231,21 @@ object SagaEffects {
     actionKeys: Collection<String>,
     options: TakeEffectOptions = TakeEffectOptions(),
     creator: (IReduxActionWithKey) -> ISagaEffect<R>
-  ): SagaEffect<R> where R : Any {
+  ): TakeEffect<IReduxActionWithKey, IReduxActionWithKey, R> where R : Any {
     return this.takeLatest(IReduxActionWithKey::class, { action ->
       if (actionKeys.contains(action.key)) action else null
     }, options, creator)
+  }
+
+  /**
+   * Create a [DebounceTakeEffect] instance to perform debounce for a [TakeEffect].
+   * @param Action The [IReduxAction] type to perform param extraction.
+   * @param P The input value extracted from [IReduxAction].
+   * @param R The result emission type.
+   * @param millis See [DebounceTakeEffect.millis].
+   */
+  fun <Action, P, R> debounceTake(millis: Long): ITakeEffectTransformer<Action, P, R>
+    where Action : IReduxAction, P : Any, R : Any {
+    return { DebounceTakeEffect(it, millis) }
   }
 }

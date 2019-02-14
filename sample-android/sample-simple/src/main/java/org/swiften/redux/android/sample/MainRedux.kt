@@ -19,7 +19,7 @@ import org.swiften.redux.saga.common.thenNoMatterWhat
 import org.swiften.redux.saga.common.thenSwitchToValue
 import org.swiften.redux.saga.rx.SagaEffects.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.takeLatest
-import org.swiften.redux.saga.rx.TakeEffectOptions
+import org.swiften.redux.saga.rx.debounceTake
 import org.swiften.redux.thunk.IReduxThunkAction
 import org.swiften.redux.thunk.ThunkFunction
 import java.io.Serializable
@@ -82,11 +82,7 @@ object MainRedux {
     fun sagas(api: IMainRepository) = arrayListOf(this.autocompleteSaga(api))
 
     private fun autocompleteSaga(api: IMainRepository): SagaEffect<Any> {
-      return takeLatest(
-        Action.UpdateAutocompleteQuery::class,
-        { it.query },
-        TakeEffectOptions(500)
-      ) { query ->
+      return takeLatest(Action.UpdateAutocompleteQuery::class, { it.query }) { query ->
         putInStore(Action.UpdateLoadingResult(true))
           .thenSwitchToValue(query)
           .mapAsync { this.async { Option.wrap(api.searchMusicStore(it)) } }
@@ -94,7 +90,7 @@ object MainRedux {
           .mapIgnoringNull { it.value }
           .putInStore { Action.UpdateMusicResult(it) }
           .thenNoMatterWhat(putInStore(Action.UpdateLoadingResult(false)))
-      }
+      }.debounceTake(1000)
     }
   }
 }
