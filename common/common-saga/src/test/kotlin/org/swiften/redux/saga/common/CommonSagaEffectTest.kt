@@ -65,7 +65,7 @@ abstract class CommonSagaEffectTest {
 
   fun test_takeEffectWithActionKeys_shouldTakeCorrectActions(
     createTakeEffect: (
-      actionKeys: Collection<String>,
+      actionKeys: Set<String>,
       creator: (IReduxActionWithKey) -> ISagaEffect<Any>
     ) -> SagaEffect<Any>
   ) {
@@ -84,7 +84,7 @@ abstract class CommonSagaEffectTest {
       override val key: String get() = "3"
     }
 
-    val keys = arrayListOf("1", "2")
+    val keys = setOf("1", "2")
     val takeOutput = createTakeEffect(keys) { v -> justEffect((v as BaseAction).value) }.invoke()
     val finalValues = synchronizedList(arrayListOf<Int>())
     val allValues = 0 until 100

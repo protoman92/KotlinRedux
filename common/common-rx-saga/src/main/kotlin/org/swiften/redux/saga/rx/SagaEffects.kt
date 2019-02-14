@@ -130,7 +130,7 @@ object SagaEffects {
   }
 
   /**
-   * Convenience function to invoke [takeEvery] using [KClass] instead of [Class].
+   * Convenience function to invoke [takeEveryForKeys] using [KClass] instead of [Class].
    * @param Action The [IReduxAction] type to perform param extraction.
    * @param P The input value extracted from [IReduxAction].
    * @param R The result emission type.
@@ -154,13 +154,13 @@ object SagaEffects {
    *
    * This way, we can catch multiple [IReduxActionWithKey] without having to implement a manual
    * [TakeEffect.extractor] that returns [Unit].
-   * @param actionKeys A [Collection] of [IReduxActionWithKey.key].
+   * @param actionKeys A [Set] of [IReduxActionWithKey.key].
    * @param creator See [TakeEffect.creator].
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <R> takeEvery(
-    actionKeys: Collection<String>,
+  fun <R> takeEveryForKeys(
+    actionKeys: Set<String>,
     creator: (IReduxActionWithKey) -> ISagaEffect<R>
   ): TakeEffect<IReduxActionWithKey, IReduxActionWithKey, R> where R : Any {
     return this.takeEvery(IReduxActionWithKey::class, { action ->
@@ -187,7 +187,7 @@ object SagaEffects {
   }
 
   /**
-   * Convenience function to invoke [takeLatest] using [KClass] instead of [Class].
+   * Convenience function to invoke [takeLatestForKeys] using [KClass] instead of [Class].
    * @param Action The [IReduxAction] type to check for.
    * @param P The source emission type.
    * @param R The result emission type.
@@ -211,13 +211,13 @@ object SagaEffects {
    *
    * This way, we can catch multiple [IReduxActionWithKey] without having to implement a manual
    * [TakeEffect.extractor] that returns [Unit].
-   * @param actionKeys A [Collection] of [IReduxActionWithKey.key].
+   * @param actionKeys A [Set] of [IReduxActionWithKey.key].
    * @param creator See [TakeEffect.creator].
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <R> takeLatest(
-    actionKeys: Collection<String>,
+  fun <R> takeLatestForKeys(
+    actionKeys: Set<String>,
     creator: (IReduxActionWithKey) -> ISagaEffect<R>
   ): TakeEffect<IReduxActionWithKey, IReduxActionWithKey, R> where R : Any {
     return this.takeLatest(IReduxActionWithKey::class, { action ->

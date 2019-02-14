@@ -27,7 +27,9 @@ import org.swiften.redux.saga.common.thenNoMatterWhat
 import org.swiften.redux.saga.rx.SagaEffects.from
 import org.swiften.redux.saga.rx.SagaEffects.just
 import org.swiften.redux.saga.rx.SagaEffects.takeEvery
+import org.swiften.redux.saga.rx.SagaEffects.takeEveryForKeys
 import org.swiften.redux.saga.rx.SagaEffects.takeLatest
+import org.swiften.redux.saga.rx.SagaEffects.takeLatestForKeys
 import java.net.URL
 import java.util.Collections.synchronizedList
 
@@ -53,12 +55,12 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
   @Test
   fun `Take every effect with keys should take correct actions`() {
-    test_takeEffectWithActionKeys_shouldTakeCorrectActions { a, b -> takeEvery(a, creator = b) }
+    test_takeEffectWithActionKeys_shouldTakeCorrectActions { a, b -> takeEveryForKeys(a, creator = b) }
   }
 
   @Test
   fun `Take latest effect with keys should take correct actions`() {
-    test_takeEffectWithActionKeys_shouldTakeCorrectActions { a, b -> takeLatest(a, creator = b) }
+    test_takeEffectWithActionKeys_shouldTakeCorrectActions { a, b -> takeLatestForKeys(a, creator = b) }
   }
 
   @Test
