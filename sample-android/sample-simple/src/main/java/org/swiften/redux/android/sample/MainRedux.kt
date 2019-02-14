@@ -12,14 +12,13 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.catchAsync
-import org.swiften.redux.saga.common.doOnValue
 import org.swiften.redux.saga.common.mapAsync
 import org.swiften.redux.saga.common.mapIgnoringNull
 import org.swiften.redux.saga.common.putInStore
 import org.swiften.redux.saga.common.thenNoMatterWhat
 import org.swiften.redux.saga.common.thenSwitchToValue
 import org.swiften.redux.saga.rx.SagaEffects.putInStore
-import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
+import org.swiften.redux.saga.rx.SagaEffects.takeLatest
 import org.swiften.redux.saga.rx.TakeEffectOptions
 import org.swiften.redux.thunk.IReduxThunkAction
 import org.swiften.redux.thunk.ThunkFunction
@@ -83,7 +82,8 @@ object MainRedux {
     fun sagas(api: IMainRepository) = arrayListOf(this.autocompleteSaga(api))
 
     private fun autocompleteSaga(api: IMainRepository): SagaEffect<Any> {
-      return takeLatestAction<Action.UpdateAutocompleteQuery, String, Any>(
+      return takeLatest(
+        Action.UpdateAutocompleteQuery::class,
         { it.query },
         TakeEffectOptions(500)
       ) { query ->

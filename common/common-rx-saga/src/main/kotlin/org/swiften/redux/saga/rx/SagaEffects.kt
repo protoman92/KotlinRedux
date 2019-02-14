@@ -111,64 +111,67 @@ object SagaEffects {
 
   /**
    * Create a [TakeEveryEffect] instance.
+   * @param Action The [IReduxAction] type to perform extraction.
    * @param P The source emission type.
    * @param R The result emission type.
+   * @param cls See [TakeEffect.cls].
    * @param extractor See [TakeEffect.extractor].
    * @param options See [TakeEffect.options].
    * @param creator See [TakeEffect.creator].
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <P, R> takeEvery(
-    extractor: (IReduxAction) -> P?,
+  fun <Action, P, R> takeEvery(
+    cls: Class<Action>,
+    extractor: (Action) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
     creator: (P) -> ISagaEffect<R>
-  ): SagaEffect<R> where P : Any, R : Any {
-    return TakeEveryEffect(extractor, options, creator)
+  ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
+    return TakeEveryEffect(cls, extractor, options, creator)
   }
 
   /**
-   * Convenience function to create [TakeEveryEffect] for a specific type of [IReduxAction].
-   * @param Action The [IReduxAction] type to check for.
-   * @param P The source emission type.
+   * Convenience function to invoke [takeEvery] using [KClass] instead of [Class].
+   * @param Action The [IReduxAction] type to perform param extraction.
+   * @param P The input value extracted from [IReduxAction].
    * @param R The result emission type.
-   * @param extractor See [TakeEffect.extractor].
-   * @param options See [TakeEffect.options].
-   * @param creator See [TakeEffect.creator].
-   * @return A [SagaEffect] instance.
+   * @param cls The [Class] for [Action].
+   * @param extractor Function that extracts [P] from [IReduxAction].
+   * @param options A [TakeEffectOptions] instance.
+   * @param creator Function that creates [ISagaEffect] from [P].
    */
   @JvmStatic
-  inline fun <reified Action, P, R> takeEveryAction(
-    crossinline extractor: (Action) -> P?,
+  fun <Action, P, R> takeEvery(
+    cls: KClass<Action>,
+    extractor: (Action) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
-    noinline creator: Function1<P, ISagaEffect<R>>
+    creator: Function1<P, ISagaEffect<R>>
   ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
-    return this.takeEvery(
-      { when (it) { is Action -> extractor(it); else -> null } },
-      options, creator
-    )
+    return this.takeEvery(cls.java, extractor, options, creator)
   }
 
   /**
    * Create a [TakeLatestEffect] instance.
-   * @param P The source emission type.
+   * @param Action The [IReduxAction] type to perform param extraction.
+   * @param P The input value extracted from [IReduxAction].
    * @param R The result emission type.
-   * @param extractor See [TakeEffect.extractor].
-   * @param options See [TakeEffect.options].
-   * @param creator See [TakeEffect.creator].
-   * @return A [SagaEffect] instance.
+   * @param cls The [Class] for [Action].
+   * @param extractor Function that extracts [P] from [IReduxAction].
+   * @param options A [TakeEffectOptions] instance.
+   * @param creator Function that creates [ISagaEffect] from [P].
    */
   @JvmStatic
-  fun <P, R> takeLatest(
-    extractor: (IReduxAction) -> P?,
+  fun <Action, P, R> takeLatest(
+    cls: Class<Action>,
+    extractor: (Action) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
     creator: Function1<P, ISagaEffect<R>>
-  ): SagaEffect<R> where P : Any, R : Any {
-    return TakeLatestEffect(extractor, options, creator)
+  ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
+    return TakeLatestEffect(cls, extractor, options, creator)
   }
 
   /**
-   * Convenience function to create [TakeLatestEffect] for a specific type of [IReduxAction].
+   * Convenience function to invoke [takeLatest] using [KClass] instead of [Class].
    * @param Action The [IReduxAction] type to check for.
    * @param P The source emission type.
    * @param R The result emission type.
@@ -178,13 +181,12 @@ object SagaEffects {
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  inline fun <reified Action, P, R> takeLatestAction(
-    crossinline extractor: (Action) -> P?,
+  fun <Action, P, R> takeLatest(
+    cls: KClass<Action>,
+    extractor: (Action) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
-    noinline creator: Function1<P, ISagaEffect<R>>
+    creator: (P) -> ISagaEffect<R>
   ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
-    return this.takeLatest(
-      { when (it) { is Action -> extractor(it); else -> null } }, options, creator
-    )
+    return this.takeLatest(cls.java, extractor, options, creator)
   }
 }

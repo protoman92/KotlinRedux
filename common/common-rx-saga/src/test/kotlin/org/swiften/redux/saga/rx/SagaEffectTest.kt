@@ -27,8 +27,8 @@ import org.swiften.redux.saga.common.thenMightAsWell
 import org.swiften.redux.saga.common.thenNoMatterWhat
 import org.swiften.redux.saga.rx.SagaEffects.from
 import org.swiften.redux.saga.rx.SagaEffects.just
-import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
-import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
+import org.swiften.redux.saga.rx.SagaEffects.takeEvery
+import org.swiften.redux.saga.rx.SagaEffects.takeLatest
 import java.net.URL
 import java.util.Collections.synchronizedList
 
@@ -44,14 +44,14 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @ObsoleteCoroutinesApi
   fun `Take every effect should take all actions`() {
     test_takeEffect_shouldTakeCorrectActions(
-      { a, b -> takeEveryAction(a, creator = b) }, arrayListOf(0, 1, 2, 3))
+      { a, b -> takeEvery(IReduxAction::class, a, creator = b) }, arrayListOf(0, 1, 2, 3))
   }
 
   @Test
   @ObsoleteCoroutinesApi
   fun `Take latest effect should take latest actions`() {
     test_takeEffect_shouldTakeCorrectActions(
-      { a, b -> takeLatestAction(a, creator = b) }, arrayListOf(3))
+      { a, b -> takeLatest(IReduxAction::class, a, creator = b) }, arrayListOf(3))
   }
 
   @Test
@@ -76,7 +76,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val allActionValues = (0 until 100)
     val correctValues = allActionValues.map { defaultValue }
 
-    val sourceOutput = takeEveryAction<Action, Int, Int>({ it.value }) { value ->
+    val sourceOutput = takeEvery(Action::class, { it.value }) { value ->
       this@SagaEffectTest.justEffect(value)
         .filter { it % 3 == 0 }
         .map { if (it % 2 == 0) throw Exception(error) else it }
@@ -111,7 +111,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       "Input: $q, Result: $result"
     }
 
-    val sourceOutput = takeLatestAction<Action, String, Any>({ it.query }) { query ->
+    val sourceOutput = takeLatest(Action::class, { it.query }) { query ->
       just(query)
         .map { "unavailable$it" }
         .mapAsync { this.searchMusicStore(it) }

@@ -16,17 +16,20 @@ import org.swiften.redux.saga.common.SagaInput
 /**
  * [TakeEffect] instances produces streams that filter [IReduxAction] with [extractor] and pluck out
  * the appropriate ones to perform additional work on with [creator].
+ * @param Action The [IReduxAction] type to perform param extraction.
  * @param P The input value extracted from [IReduxAction].
  * @param R The result emission type.
+ * @param cls The [Class] for [Action].
  * @param extractor Function that extracts [P] from [IReduxAction].
  * @param options A [TakeEffectOptions] instance.
  * @param creator Function that creates [ISagaEffect] from [P].
  */
-internal abstract class TakeEffect<P, R>(
-  private val extractor: (IReduxAction) -> P?,
+internal abstract class TakeEffect<Action, P, R>(
+  private val cls: Class<Action>,
+  private val extractor: (Action) -> P?,
   private val options: TakeEffectOptions,
   private val creator: (P) -> ISagaEffect<R>
-) : SagaEffect<R>() where P : Any, R : Any {
+) : SagaEffect<R>() where Action : IReduxAction, P : Any, R : Any {
   /**
    * Flatten an [ISagaOutput] that streams [ISagaOutput] to access the values streamed by
    * the inner [ISagaOutput].
@@ -39,7 +42,9 @@ internal abstract class TakeEffect<P, R>(
     val subject = PublishProcessor.create<P>().toSerialized()
 
     val nested = SagaOutput(p1.scope, subject) { p ->
-      this@TakeEffect.extractor(p)?.also { subject.onNext(it) }
+      if (cls.isInstance(p)) {
+        this@TakeEffect.extractor(cls.cast(p))?.also { subject.onNext(it) }
+      }
     }
 
     return this.flatten(nested
