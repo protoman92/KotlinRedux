@@ -18,15 +18,13 @@ import org.swiften.redux.saga.common.ISagaOutput
  * @param R The result emission type.
  * @param cls The [Class] for [Action].
  * @param extractor Function that extracts [P] from [IReduxAction].
- * @param options A [TakeEffectOptions] instance.
  * @param creator Function that creates [ISagaEffect] from [P].
  */
 internal class TakeEveryEffect<Action, P, R>(
   cls: Class<Action>,
   extractor: (Action) -> P?,
-  options: TakeEffectOptions,
   creator: (P) -> ISagaEffect<R>
-) : TakeEffect<Action, P, R>(cls, extractor, options, creator) where
+) : TakeEffect<Action, P, R>(cls, extractor, creator) where
   Action : IReduxAction, P : Any, R : Any {
   override fun flatten(nested: ISagaOutput<ISagaOutput<R>>) = nested.flatMap { it }
 }

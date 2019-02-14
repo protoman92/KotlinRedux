@@ -117,7 +117,6 @@ object SagaEffects {
    * @param R The result emission type.
    * @param cls See [TakeEffect.cls].
    * @param extractor See [TakeEffect.extractor].
-   * @param options See [TakeEffect.options].
    * @param creator See [TakeEffect.creator].
    * @return A [SagaEffect] instance.
    */
@@ -125,10 +124,9 @@ object SagaEffects {
   fun <Action, P, R> takeEvery(
     cls: Class<Action>,
     extractor: (Action) -> P?,
-    options: TakeEffectOptions = TakeEffectOptions(),
     creator: (P) -> ISagaEffect<R>
   ): TakeEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
-    return TakeEveryEffect(cls, extractor, options, creator)
+    return TakeEveryEffect(cls, extractor, creator)
   }
 
   /**
@@ -138,17 +136,15 @@ object SagaEffects {
    * @param R The result emission type.
    * @param cls The [Class] for [Action].
    * @param extractor Function that extracts [P] from [IReduxAction].
-   * @param options A [TakeEffectOptions] instance.
    * @param creator Function that creates [ISagaEffect] from [P].
    */
   @JvmStatic
   fun <Action, P, R> takeEvery(
     cls: KClass<Action>,
     extractor: (Action) -> P?,
-    options: TakeEffectOptions = TakeEffectOptions(),
     creator: (P) -> ISagaEffect<R>
   ): TakeEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
-    return this.takeEvery(cls.java, extractor, options, creator)
+    return this.takeEvery(cls.java, extractor, creator)
   }
 
   /**
@@ -159,19 +155,17 @@ object SagaEffects {
    * This way, we can catch multiple [IReduxActionWithKey] without having to implement a manual
    * [TakeEffect.extractor] that returns [Unit].
    * @param actionKeys A [Collection] of [IReduxActionWithKey.key].
-   * @param options See [TakeEffect.options].
    * @param creator See [TakeEffect.creator].
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
   fun <R> takeEvery(
     actionKeys: Collection<String>,
-    options: TakeEffectOptions = TakeEffectOptions(),
     creator: (IReduxActionWithKey) -> ISagaEffect<R>
   ): TakeEffect<IReduxActionWithKey, IReduxActionWithKey, R> where R : Any {
     return this.takeEvery(IReduxActionWithKey::class, { action ->
       if (actionKeys.contains(action.key)) action else null
-    }, options, creator)
+    }, creator)
   }
 
   /**
@@ -181,17 +175,15 @@ object SagaEffects {
    * @param R The result emission type.
    * @param cls The [Class] for [Action].
    * @param extractor Function that extracts [P] from [IReduxAction].
-   * @param options A [TakeEffectOptions] instance.
    * @param creator Function that creates [ISagaEffect] from [P].
    */
   @JvmStatic
   fun <Action, P, R> takeLatest(
     cls: Class<Action>,
     extractor: (Action) -> P?,
-    options: TakeEffectOptions = TakeEffectOptions(),
     creator: Function1<P, ISagaEffect<R>>
   ): TakeEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
-    return TakeLatestEffect(cls, extractor, options, creator)
+    return TakeLatestEffect(cls, extractor, creator)
   }
 
   /**
@@ -200,7 +192,6 @@ object SagaEffects {
    * @param P The source emission type.
    * @param R The result emission type.
    * @param extractor See [TakeEffect.extractor].
-   * @param options See [TakeEffect.options].
    * @param creator See [TakeEffect.creator].
    * @return A [SagaEffect] instance.
    */
@@ -208,10 +199,9 @@ object SagaEffects {
   fun <Action, P, R> takeLatest(
     cls: KClass<Action>,
     extractor: (Action) -> P?,
-    options: TakeEffectOptions = TakeEffectOptions(),
     creator: (P) -> ISagaEffect<R>
   ): TakeEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
-    return this.takeLatest(cls.java, extractor, options, creator)
+    return this.takeLatest(cls.java, extractor, creator)
   }
 
   /**
@@ -222,19 +212,17 @@ object SagaEffects {
    * This way, we can catch multiple [IReduxActionWithKey] without having to implement a manual
    * [TakeEffect.extractor] that returns [Unit].
    * @param actionKeys A [Collection] of [IReduxActionWithKey.key].
-   * @param options See [TakeEffect.options].
    * @param creator See [TakeEffect.creator].
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
   fun <R> takeLatest(
     actionKeys: Collection<String>,
-    options: TakeEffectOptions = TakeEffectOptions(),
     creator: (IReduxActionWithKey) -> ISagaEffect<R>
   ): TakeEffect<IReduxActionWithKey, IReduxActionWithKey, R> where R : Any {
     return this.takeLatest(IReduxActionWithKey::class, { action ->
       if (actionKeys.contains(action.key)) action else null
-    }, options, creator)
+    }, creator)
   }
 
   /**

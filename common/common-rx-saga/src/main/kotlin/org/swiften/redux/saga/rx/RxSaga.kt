@@ -122,6 +122,3 @@ class SagaOutput<T : Any>(
     this.disposable.add(this.stream.subscribe(onValue, onError))
   }
 }
-
-/** Options for [TakeEffect]. */
-class TakeEffectOptions
