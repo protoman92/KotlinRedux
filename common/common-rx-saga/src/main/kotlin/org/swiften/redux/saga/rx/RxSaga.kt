@@ -15,10 +15,6 @@ import org.swiften.redux.saga.common.ISagaOutput
 import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/22 */
-/**
- * Map one [TakeEffect] to another, keeping type parameters. */
-typealias ITakeEffectTransformer<A, P, R> = (TakeEffect<A, P, R>) -> (TakeEffect<A, P, R>)
-
 /** @see [ISagaOutput]. */
 class SagaOutput<T : Any>(
   private val scope: CoroutineScope,

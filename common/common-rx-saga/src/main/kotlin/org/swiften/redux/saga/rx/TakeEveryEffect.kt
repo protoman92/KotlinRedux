@@ -24,7 +24,7 @@ internal class TakeEveryEffect<Action, P, R>(
   cls: Class<Action>,
   extractor: (Action) -> P?,
   creator: (P) -> ISagaEffect<R>
-) : TakeEffect<Action, P, R>(cls, extractor, creator) where
+) : RxTakeEffect<Action, P, R>(cls, extractor, creator) where
   Action : IReduxAction, P : Any, R : Any {
   override fun flatten(nested: ISagaOutput<ISagaOutput<R>>) = nested.flatMap { it }
 }

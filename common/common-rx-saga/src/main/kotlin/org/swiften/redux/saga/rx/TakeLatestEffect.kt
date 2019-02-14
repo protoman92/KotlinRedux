@@ -25,7 +25,7 @@ internal class TakeLatestEffect<Action, P, R>(
   cls: Class<Action>,
   extractor: (Action) -> P?,
   creator: Function1<P, ISagaEffect<R>>
-) : TakeEffect<Action, P, R>(cls, extractor, creator)
+) : RxTakeEffect<Action, P, R>(cls, extractor, creator)
   where Action : IReduxAction, P : Any, R : Any {
   override fun flatten(nested: ISagaOutput<ISagaOutput<R>>) = nested.switchMap { it }
 }

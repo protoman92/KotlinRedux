@@ -17,6 +17,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.CommonSagaEffectTest
+import org.swiften.redux.saga.common.ISagaEffect
+import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.common.TakeEffect
 import org.swiften.redux.saga.common.castValue
 import org.swiften.redux.saga.common.catchError
 import org.swiften.redux.saga.common.filter
@@ -38,8 +41,53 @@ class SagaEffectTest : CommonSagaEffectTest() {
   override fun <T> justEffect(value: T) where T : Any = just(value)
 
   @ExperimentalCoroutinesApi
-  override fun <T : Any> fromEffect(vararg values: T) =
-    from(GlobalScope.rxFlowable { values.forEach { this.send(it) } })
+  override fun <T : Any> fromEffect(vararg values: T): SagaEffect<T> {
+    return from(GlobalScope.rxFlowable { values.forEach { this.send(it) } })
+  }
+
+  private fun test_takeEffectDebounce_shouldEmitCorrectValues(
+    createTakeEffect: (
+      extractor: (IReduxAction) -> Int?,
+      creator: (Int) -> ISagaEffect<Int>
+    ) -> TakeEffect<IReduxAction, Int, Int>
+  ) {
+    // Setup
+    data class Action(val value: Int) : IReduxAction
+    val finalValues = synchronizedList(arrayListOf<Int>())
+    val debounceTime = 500L
+
+    val sourceOutput = createTakeEffect({
+      (it as Action).value
+    }, { value ->
+      this@SagaEffectTest.justEffect(value)
+    }).debounceTake(debounceTime).invoke()
+
+    sourceOutput.subscribe({ finalValues.add(it) })
+
+    // When
+    runBlocking {
+      sourceOutput.onAction(Action(0))
+      delay(debounceTime - 100)
+      sourceOutput.onAction(Action(1))
+      delay(debounceTime + 100)
+      sourceOutput.onAction(Action(2))
+      delay(debounceTime - 100)
+      sourceOutput.onAction(Action(3))
+      delay(debounceTime + 100)
+      sourceOutput.onAction(Action(4))
+      delay(debounceTime - 100)
+      sourceOutput.onAction(Action(5))
+
+      val correctValues = arrayListOf(1, 3, 5)
+
+      withTimeoutOrNull(this@SagaEffectTest.timeout) {
+        while (finalValues.sorted() != correctValues.sorted()) { }; Unit
+      }
+
+      // Then
+      assertEquals(finalValues.sorted(), correctValues.sorted())
+    }
+  }
 
   @Test
   fun `Take every effect should take all actions`() {
@@ -110,40 +158,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
   @Test
   fun `Take effect debounce should emit correct values`() {
-    // Setup
-    data class Action(val value: Int) : IReduxAction
-    val finalValues = synchronizedList(arrayListOf<Int>())
-    val debounceTime = 500L
-
-    val sourceOutput = takeEvery(Action::class, { it.value }) { value ->
-      this@SagaEffectTest.justEffect(value)
-    }.debounceTake(debounceTime).invoke()
-
-    sourceOutput.subscribe({ finalValues.add(it) })
-
-    // When
-    runBlocking {
-      sourceOutput.onAction(Action(0))
-      delay(debounceTime - 100)
-      sourceOutput.onAction(Action(1))
-      delay(debounceTime + 100)
-      sourceOutput.onAction(Action(2))
-      delay(debounceTime - 100)
-      sourceOutput.onAction(Action(3))
-      delay(debounceTime + 100)
-      sourceOutput.onAction(Action(4))
-      delay(debounceTime - 100)
-      sourceOutput.onAction(Action(5))
-
-      val correctValues = arrayListOf(1, 3, 5)
-
-      withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues.sorted() != correctValues.sorted()) { }; Unit
-      }
-
-      // Then
-      assertEquals(finalValues.sorted(), correctValues.sorted())
-    }
+    test_takeEffectDebounce_shouldEmitCorrectValues { a, b -> takeEvery(IReduxAction::class, a, b) }
   }
 
   @Test

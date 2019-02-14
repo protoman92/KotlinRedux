@@ -12,7 +12,9 @@ import org.swiften.redux.core.IReduxActionWithKey
 import org.swiften.redux.saga.common.CommonEffects
 import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.ISagaEffectTransformer
+import org.swiften.redux.saga.common.ITakeEffectTransformer
 import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.common.TakeEffect
 import kotlin.reflect.KClass
 
 /** Created by haipham on 2019/01/13 */

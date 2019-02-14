@@ -3,14 +3,9 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga.rx
+package org.swiften.redux.saga.common
 
-import io.reactivex.processors.PublishProcessor
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.common.ISagaEffect
-import org.swiften.redux.saga.common.ISagaOutput
-import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.SagaInput
 
 /** Created by haipham on 2018/12/23 */
 /**
@@ -24,12 +19,10 @@ import org.swiften.redux.saga.common.SagaInput
  * @param creator Function that creates [ISagaEffect] from [P].
  */
 abstract class TakeEffect<Action, P, R>(
-  private val cls: Class<Action>,
-  private val extractor: (Action) -> P?,
-  private val creator: (P) -> ISagaEffect<R>
+  val cls: Class<Action>,
+  val extractor: (Action) -> P?,
+  val creator: (P) -> ISagaEffect<R>
 ) : SagaEffect<R>() where Action : IReduxAction, P : Any, R : Any {
-  constructor(source: TakeEffect<Action, P, R>) : this(source.cls, source.extractor, source.creator)
-
   /**
    * Flatten an [ISagaOutput] that streams [ISagaOutput] to access the values streamed by
    * the inner [ISagaOutput].
@@ -37,16 +30,4 @@ abstract class TakeEffect<Action, P, R>(
    * @return An [ISagaOutput] instance.
    */
   abstract fun flatten(nested: ISagaOutput<ISagaOutput<R>>): ISagaOutput<R>
-
-  override operator fun invoke(p1: SagaInput): ISagaOutput<R> {
-    val subject = PublishProcessor.create<P>().toSerialized()
-
-    val nested = SagaOutput(p1.scope, subject) { p ->
-      if (cls.isInstance(p)) {
-        this@TakeEffect.extractor(cls.cast(p))?.also { subject.onNext(it) }
-      }
-    }
-
-    return this.flatten(nested.map { this@TakeEffect.creator(it).invoke(p1) })
-  }
 }

@@ -8,6 +8,7 @@ package org.swiften.redux.saga.rx
 import io.reactivex.Single
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.common.TakeEffect
 import org.swiften.redux.saga.common.thenSwitchTo
 import kotlin.reflect.KClass
 

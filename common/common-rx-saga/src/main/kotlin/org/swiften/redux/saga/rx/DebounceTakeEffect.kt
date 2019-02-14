@@ -7,6 +7,7 @@ package org.swiften.redux.saga.rx
 
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.ISagaOutput
+import org.swiften.redux.saga.common.TakeEffect
 
 /** Created by viethai.pham on 2019/02/14/2 */
 /**
@@ -17,10 +18,10 @@ import org.swiften.redux.saga.common.ISagaOutput
  * @param source The source [TakeEffect] instance.
  * @param millis The time to debounce by, in milliseconds.
  */
-class DebounceTakeEffect<Action, P, R>(
+internal class DebounceTakeEffect<Action, P, R>(
   private val source: TakeEffect<Action, P, R>,
   private val millis: Long
-) : TakeEffect<Action, P, R>(source) where Action : IReduxAction, P : Any, R : Any {
+) : RxTakeEffect<Action, P, R>(source) where Action : IReduxAction, P : Any, R : Any {
   override fun flatten(nested: ISagaOutput<ISagaOutput<R>>): ISagaOutput<R> {
     return this.source.flatten(nested.debounce(this.millis))
   }
