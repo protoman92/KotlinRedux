@@ -14,6 +14,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.IReduxActionWithKey
 import java.util.Collections.synchronizedList
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -29,15 +30,15 @@ abstract class CommonSagaEffectTest {
   fun test_takeEffect_shouldTakeCorrectActions(
     createTakeEffect: (
       extractor: (IReduxAction) -> Int?,
-      creator: Function1<Int, ISagaEffect<Any>>
+      creator: (Int) -> ISagaEffect<Any>
     ) -> SagaEffect<Any>,
     actualValues: List<Int>
   ) {
     // Setup
-    class TakeAction(val value: Int) : IReduxAction
+    class Action(val value: Int) : IReduxAction
 
     val takeOutput = createTakeEffect(
-      { when (it) { is TakeAction -> it.value; else -> null } },
+      { when (it) { is Action -> it.value; else -> null } },
       { v -> justEffect(v).mapSuspend { delay(1000); it } }
     ).invoke()
 
@@ -45,12 +46,60 @@ abstract class CommonSagaEffectTest {
     takeOutput.subscribe({ finalValues.add(it as Int) })
 
     // When
-    takeOutput.onAction(TakeAction(0))
-    takeOutput.onAction(TakeAction(1))
+    takeOutput.onAction(Action(0))
+    takeOutput.onAction(Action(1))
     takeOutput.onAction(DefaultReduxAction.Dummy)
-    takeOutput.onAction(TakeAction(2))
+    takeOutput.onAction(Action(2))
     takeOutput.onAction(DefaultReduxAction.Dummy)
-    takeOutput.onAction(TakeAction(3))
+    takeOutput.onAction(Action(3))
+
+    runBlocking {
+      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
+        while (finalValues.sorted() != actualValues.sorted()) { }; Unit
+      }
+
+      // Then
+      assertEquals(finalValues.sorted(), actualValues.sorted())
+    }
+  }
+
+  fun test_takeEffectWithActionKeys_shouldTakeCorrectActions(
+    createTakeEffect: (
+      actionKeys: Collection<String>,
+      creator: (IReduxActionWithKey) -> ISagaEffect<Any>
+    ) -> SagaEffect<Any>
+  ) {
+    // Setup
+    abstract class BaseAction(val value: Int)
+
+    class Action1(value: Int) : BaseAction(value), IReduxActionWithKey {
+      override val key: String get() = "1"
+    }
+
+    class Action2(value: Int) : BaseAction(value), IReduxActionWithKey {
+      override val key: String get() = "2"
+    }
+
+    class Action3(value: Int) : BaseAction(value), IReduxActionWithKey {
+      override val key: String get() = "3"
+    }
+
+    val keys = arrayListOf("1", "2")
+    val takeOutput = createTakeEffect(keys) { v -> justEffect((v as BaseAction).value) }.invoke()
+    val finalValues = synchronizedList(arrayListOf<Int>())
+    val allValues = 0 until 100
+    val actualValues = allValues.filter { it % 3 != 0 }
+    takeOutput.subscribe({ finalValues.add(it as Int) })
+
+    // When
+    actualValues.forEach {
+      if (it % 3 ==  0)
+        takeOutput.onAction(Action3(it))
+      else if (it % 2 == 0)
+        takeOutput.onAction(Action2(it))
+      else
+        takeOutput.onAction(Action1(it))
+    }
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {

@@ -35,6 +35,11 @@ typealias IDeinitializer = Function0<Unit>
 /** Represents a Redux action. */
 interface IReduxAction
 
+/** Represents a [IReduxAction] that is identifiable by [key]. */
+interface IReduxActionWithKey : IReduxAction {
+  val key: String
+}
+
 /**
  * Represents an object that provides [IReducer].
  * @param GState The global state type.

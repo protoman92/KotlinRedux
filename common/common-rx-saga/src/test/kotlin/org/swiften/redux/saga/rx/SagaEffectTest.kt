@@ -8,7 +8,6 @@ package org.swiften.redux.saga.rx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -41,17 +40,25 @@ class SagaEffectTest : CommonSagaEffectTest() {
     from(GlobalScope.rxFlowable { values.forEach { this.send(it) } })
 
   @Test
-  @ObsoleteCoroutinesApi
   fun `Take every effect should take all actions`() {
     test_takeEffect_shouldTakeCorrectActions(
       { a, b -> takeEvery(IReduxAction::class, a, creator = b) }, arrayListOf(0, 1, 2, 3))
   }
 
   @Test
-  @ObsoleteCoroutinesApi
   fun `Take latest effect should take latest actions`() {
     test_takeEffect_shouldTakeCorrectActions(
       { a, b -> takeLatest(IReduxAction::class, a, creator = b) }, arrayListOf(3))
+  }
+
+  @Test
+  fun `Take every effect with keys should take correct actions`() {
+    test_takeEffectWithActionKeys_shouldTakeCorrectActions { a, b -> takeEvery(a, creator = b) }
+  }
+
+  @Test
+  fun `Take latest effect with keys should take correct actions`() {
+    test_takeEffectWithActionKeys_shouldTakeCorrectActions { a, b -> takeLatest(a, creator = b) }
   }
 
   @Test

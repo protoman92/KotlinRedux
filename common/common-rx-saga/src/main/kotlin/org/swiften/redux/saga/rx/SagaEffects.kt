@@ -8,6 +8,7 @@ package org.swiften.redux.saga.rx
 import io.reactivex.Flowable
 import io.reactivex.Single
 import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.IReduxActionWithKey
 import org.swiften.redux.saga.common.CommonEffects
 import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.ISagaEffectTransformer
@@ -145,9 +146,32 @@ object SagaEffects {
     cls: KClass<Action>,
     extractor: (Action) -> P?,
     options: TakeEffectOptions = TakeEffectOptions(),
-    creator: Function1<P, ISagaEffect<R>>
+    creator: (P) -> ISagaEffect<R>
   ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
     return this.takeEvery(cls.java, extractor, options, creator)
+  }
+
+  /**
+   * Instead of specifying the action type, check if [IReduxAction] instances that pass through
+   * the pipeline conform to [IReduxActionWithKey], and whether their [IReduxActionWithKey.key]
+   * values are part of the specified [actionKeys].
+   *
+   * This way, we can catch multiple [IReduxActionWithKey] without having to implement a manual
+   * [TakeEffect.extractor] that returns [Unit].
+   * @param actionKeys A [Collection] of [IReduxActionWithKey.key].
+   * @param options See [TakeEffect.options].
+   * @param creator See [TakeEffect.creator].
+   * @return A [SagaEffect] instance.
+   */
+  @JvmStatic
+  fun <R> takeEvery(
+    actionKeys: Collection<String>,
+    options: TakeEffectOptions = TakeEffectOptions(),
+    creator: (IReduxActionWithKey) -> ISagaEffect<R>
+  ): SagaEffect<R> where R : Any {
+    return this.takeEvery(IReduxActionWithKey::class, { action ->
+      if (actionKeys.contains(action.key)) action else null
+    }, options, creator)
   }
 
   /**
@@ -188,5 +212,28 @@ object SagaEffects {
     creator: (P) -> ISagaEffect<R>
   ): SagaEffect<R> where Action : IReduxAction, P : Any, R : Any {
     return this.takeLatest(cls.java, extractor, options, creator)
+  }
+
+  /**
+   * Instead of specifying the action type, check if [IReduxAction] instances that pass through
+   * the pipeline conform to [IReduxActionWithKey], and whether their [IReduxActionWithKey.key]
+   * values are part of the specified [actionKeys].
+   *
+   * This way, we can catch multiple [IReduxActionWithKey] without having to implement a manual
+   * [TakeEffect.extractor] that returns [Unit].
+   * @param actionKeys A [Collection] of [IReduxActionWithKey.key].
+   * @param options See [TakeEffect.options].
+   * @param creator See [TakeEffect.creator].
+   * @return A [SagaEffect] instance.
+   */
+  @JvmStatic
+  fun <R> takeLatest(
+    actionKeys: Collection<String>,
+    options: TakeEffectOptions = TakeEffectOptions(),
+    creator: (IReduxActionWithKey) -> ISagaEffect<R>
+  ): SagaEffect<R> where R : Any {
+    return this.takeLatest(IReduxActionWithKey::class, { action ->
+      if (actionKeys.contains(action.key)) action else null
+    }, options, creator)
   }
 }
