@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) haipham 2018. All rights reserved.
-  ~ Any attempt to reproduce this source code in any form shall be met with legal actions.
-  -->
-
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>

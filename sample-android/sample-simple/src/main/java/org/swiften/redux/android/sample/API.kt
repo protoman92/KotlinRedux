@@ -8,19 +8,19 @@ package org.swiften.redux.android.sample
 import android.net.Uri
 import java.net.URL
 
-/** Created by haipham on 2019/01/05 */
-interface IMainApi {
-  fun searchMusicStore(input: String): String
+/** Created by haipham on 27/1/19 */
+interface ISearchAPI<Result> {
+  fun searchMusicStore(query: String, limit: Int): Result
 }
 
-class MainApi : IMainApi {
-  override fun searchMusicStore(input: String): String {
+class API : ISearchAPI<String> {
+  override fun searchMusicStore(query: String, limit: Int): String {
     val url = Uri.Builder()
       .scheme("https")
       .authority("itunes.apple.com")
       .appendPath("search")
-      .appendQueryParameter("term", input)
-      .appendQueryParameter("limit", "5")
+      .appendQueryParameter("term", query)
+      .appendQueryParameter("limit", "$limit")
       .appendQueryParameter("media", "music")
       .build()
       .toString()

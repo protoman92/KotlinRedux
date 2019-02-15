@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) haipham 2019. All rights reserved.
+  ~ Any attempt to reproduce this source code in any form shall be met with legal actions.
+  -->
+
+<resources>
+  <dimen name="progress_bar_height">15dp</dimen>
+  <dimen name="text_view_height">40dp</dimen>
+  <dimen name="text_view_font">20sp</dimen>
+  <dimen name="small_text_font">16sp</dimen>
+  <dimen name="title_font">30sp</dimen>
+  <dimen name="spacing1">8dp</dimen>
+  <dimen name="spacing2">16dp</dimen>
+</resources>
