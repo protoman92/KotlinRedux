@@ -2,7 +2,7 @@
 
 # IDeinitializerProvider
 
-`interface IDeinitializerProvider` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L60)
+`interface IDeinitializerProvider` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L65)
 
 Represents an object that provides [IDeinitializer](../-i-deinitializer.md).
 

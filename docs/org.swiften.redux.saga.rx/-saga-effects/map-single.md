@@ -2,7 +2,7 @@
 
 # mapSingle
 
-`fun <P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> mapSingle(transformer: (`[`P`](map-single.md#P)`) -> <ERROR CLASS><`[`R`](map-single.md#R)`>): `[`ISagaEffectTransformer`](../../org.swiften.redux.saga.common/-i-saga-effect-transformer.md)`<`[`P`](map-single.md#P)`, `[`R`](map-single.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaEffects.kt#L28)
+`fun <P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> mapSingle(transformer: (`[`P`](map-single.md#P)`) -> <ERROR CLASS><`[`R`](map-single.md#R)`>): `[`ISagaEffectTransformer`](../../org.swiften.redux.saga.common/-i-saga-effect-transformer.md)`<`[`P`](map-single.md#P)`, `[`R`](map-single.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaEffects.kt#L31)
 
 Create a [CallEffect](../-call-effect/index.md).
 

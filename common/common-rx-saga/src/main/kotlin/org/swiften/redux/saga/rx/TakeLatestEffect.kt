@@ -11,7 +11,7 @@ import org.swiften.redux.saga.common.ISagaOutput
 
 /** Created by haipham on 2018/12/23 */
 /**
- * [TakeEffect] whose output switches to the latest [IReduxAction] every time one arrives. This is
+ * [RxTakeEffect] whose output switches to the latest [IReduxAction] every time one arrives. This is
  * best used for cases whereby we are only interested in the latest value, such as in an
  * autocomplete search implementation. Contrast this with [TakeEveryEffect].
  * @param Action The [IReduxAction] type to perform param extraction.

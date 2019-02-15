@@ -197,7 +197,7 @@ class Fragment1 : Fragment(), IPropContainer<GlobalState, Unit, State, Action> {
       return State(state.query)
     }
 
-    // This functio has access to the store's action dispatcher function.
+    // This function has access to the store's action dispatcher function.
     override fun mapAction(dispatch: IActionDispatcher, outProps: Unit): Action {
       return Action { dispatch(Redux.Action.SetSearchQuery(it)) }
     }

@@ -2,7 +2,7 @@
 
 # map
 
-`abstract fun <T2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> map(transform: (`[`T`](index.md#T)`) -> `[`T2`](map.md#T2)`): `[`ISagaOutput`](index.md)`<`[`T2`](map.md#T2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L133)
+`abstract fun <T2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> map(transform: (`[`T`](index.md#T)`) -> `[`T2`](map.md#T2)`): `[`ISagaOutput`](index.md)`<`[`T2`](map.md#T2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L136)
 
 Map emissions from [T](index.md#T) to [T2](map.md#T2) with [transform](map.md#org.swiften.redux.saga.common.ISagaOutput$map(kotlin.Function1((org.swiften.redux.saga.common.ISagaOutput.T, org.swiften.redux.saga.common.ISagaOutput.map.T2)))/transform).
 

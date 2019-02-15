@@ -2,6 +2,7 @@
   <dictionary name="haipham">
     <words>
       <w>alltypes</w>
+      <w>codegen</w>
       <w>coroutine</w>
       <w>coroutines</w>
       <w>crossinline</w>
@@ -11,6 +12,8 @@
       <w>deinitializer</w>
       <w>deinitializing</w>
       <w>dokka</w>
+      <w>functio</w>
+      <w>interactor</w>
       <w>itunes</w>
       <w>kotlinlang</w>
       <w>ktlint</w>
@@ -18,8 +21,10 @@
       <w>lifecycles</w>
       <w>livedata</w>
       <w>middlewares</w>
+      <w>mvvm</w>
       <w>noninfringement</w>
       <w>pham</w>
+      <w>reactively</w>
       <w>recyclerview</w>
       <w>redux</w>
       <w>typealias</w>

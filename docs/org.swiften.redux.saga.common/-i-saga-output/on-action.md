@@ -2,7 +2,7 @@
 
 # onAction
 
-`abstract val onAction: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L51)
+`abstract val onAction: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L54)
 
 Trigger every time an [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) arrives.
 
