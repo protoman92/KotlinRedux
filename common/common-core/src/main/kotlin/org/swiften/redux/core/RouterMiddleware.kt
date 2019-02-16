@@ -59,7 +59,7 @@ internal class RouterMiddleware<Screen>(
           this@RouterMiddleware.router.deinitialize()
         }
 
-        EmptyDispatchJob
+        EmptyJob
       }
     }
   }

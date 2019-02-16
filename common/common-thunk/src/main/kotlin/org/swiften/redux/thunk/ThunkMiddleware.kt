@@ -8,11 +8,11 @@ package org.swiften.redux.thunk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import org.swiften.redux.core.CoroutineDispatchJob
+import org.swiften.redux.core.CoroutineJob
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.DispatchMapper
 import org.swiften.redux.core.DispatchWrapper
-import org.swiften.redux.core.EmptyDispatchJob
+import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IMiddleware
 import org.swiften.redux.core.IReduxAction
@@ -72,13 +72,13 @@ internal class ThunkMiddleware<GExt>(
         wrapper.dispatch(action)
 
         when (action) {
-          is IReduxThunkAction<*, *, *> -> CoroutineDispatchJob(context) {
+          is IReduxThunkAction<*, *, *> -> CoroutineJob(context) {
             val castAction = action as IReduxThunkAction<Any, Any, Any>
             castAction.payload(scope, p1.dispatch, p1.lastState, Unit)
           }
 
-          is DefaultReduxAction.Deinitialize -> { context.cancel(); EmptyDispatchJob }
-          else -> EmptyDispatchJob
+          is DefaultReduxAction.Deinitialize -> { context.cancel(); EmptyJob }
+          else -> EmptyJob
         }
       }
     }

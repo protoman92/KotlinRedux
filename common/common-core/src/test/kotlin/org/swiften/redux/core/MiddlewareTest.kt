@@ -18,9 +18,9 @@ class MiddlewareTest : BaseMiddlewareTest() {
     val order = arrayListOf<Int>()
 
     val wrappedStore = applyMiddlewares<Int>(
-      { { w -> DispatchWrapper.wrap(w, "1") { w.dispatch(it); order.add(1); EmptyDispatchJob } } },
-      { { w -> DispatchWrapper.wrap(w, "2") { w.dispatch(it); order.add(2); EmptyDispatchJob } } },
-      { { w -> DispatchWrapper.wrap(w, "3") { w.dispatch(it); order.add(3); EmptyDispatchJob } } }
+      { { w -> DispatchWrapper.wrap(w, "1") { w.dispatch(it); order.add(1); EmptyJob } } },
+      { { w -> DispatchWrapper.wrap(w, "2") { w.dispatch(it); order.add(2); EmptyJob } } },
+      { { w -> DispatchWrapper.wrap(w, "3") { w.dispatch(it); order.add(3); EmptyJob } } }
     )(store)
 
     // When
@@ -44,12 +44,12 @@ class MiddlewareTest : BaseMiddlewareTest() {
       { { w -> DispatchWrapper.wrap(w, "1") {
         w.dispatch(it)
         if (it is RepeatAction) repeatCount.incrementAndGet()
-        EmptyDispatchJob
+        EmptyJob
       } } },
       { i -> { w -> DispatchWrapper.wrap(w, "2") {
         w.dispatch(it)
         if (it is TriggerAction) i.dispatch(RepeatAction())
-        EmptyDispatchJob
+        EmptyJob
       } } }
     )(store)
 

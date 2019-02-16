@@ -8,7 +8,7 @@ package org.swiften.redux.saga.common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
-import org.swiften.redux.core.EmptyDispatchJob
+import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
@@ -220,7 +220,7 @@ abstract class SagaEffect<R> : ISagaEffect<R> where R : Any {
    * @param state See [SagaInput.lastState].
    * @return An [ISagaOutput] instance.
    */
-  fun invoke(state: Any) = this.invoke(GlobalScope, state) { EmptyDispatchJob }
+  fun invoke(state: Any) = this.invoke(GlobalScope, state) { EmptyJob }
 
   /**
    * Call [ISagaEffect] with convenience parameters for testing.

@@ -12,7 +12,7 @@ import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
 import org.swiften.redux.core.BaseMiddlewareTest
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.EmptyDispatchJob
+import org.swiften.redux.core.EmptyJob
 
 /** Created by haipham on 2019/01/15 */
 class SagaMiddlewareTest : BaseMiddlewareTest() {
@@ -20,7 +20,7 @@ class SagaMiddlewareTest : BaseMiddlewareTest() {
   fun `Redux saga middleware should work correctly`() {
     // Setup
     val outputs = (0 until 100).map { mock<ISagaOutput<Any>> {
-      on { this.onAction } doReturn { EmptyDispatchJob }
+      on { this.onAction } doReturn { EmptyJob }
     } }
 
     val effects = outputs.map<ISagaOutput<Any>, ISagaEffect<Any>> { o -> { o } }
