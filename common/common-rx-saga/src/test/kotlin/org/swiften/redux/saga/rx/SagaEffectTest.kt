@@ -6,22 +6,32 @@
 package org.swiften.redux.saga.rx
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxFlowable
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.swiften.redux.async.createAsyncMiddleware
+import org.swiften.redux.core.FinalStore
+import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.IReduxActionWithKey
+import org.swiften.redux.core.IReduxStore
+import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.saga.common.CommonSagaEffectTest
 import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.TakeEffect
 import org.swiften.redux.saga.common.castValue
 import org.swiften.redux.saga.common.catchError
+import org.swiften.redux.saga.common.createSagaMiddleware
+import org.swiften.redux.saga.common.doOnValue
 import org.swiften.redux.saga.common.filter
 import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapAsync
@@ -29,12 +39,14 @@ import org.swiften.redux.saga.common.thenMightAsWell
 import org.swiften.redux.saga.common.thenNoMatterWhat
 import org.swiften.redux.saga.rx.SagaEffects.from
 import org.swiften.redux.saga.rx.SagaEffects.just
+import org.swiften.redux.saga.rx.SagaEffects.selectFromState
 import org.swiften.redux.saga.rx.SagaEffects.takeEvery
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryForKeys
 import org.swiften.redux.saga.rx.SagaEffects.takeLatest
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestForKeys
 import java.net.URL
 import java.util.Collections.synchronizedList
+import java.util.Random
 
 /** Created by haipham on 2018/12/23 */
 class SagaEffectTest : CommonSagaEffectTest() {
@@ -159,6 +171,74 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `Take effect debounce should emit correct values`() {
     test_takeEffectDebounce_shouldEmitCorrectValues { a, b -> takeEvery(IReduxAction::class, a, b) }
+  }
+
+  @Test
+  fun `Take with selects should ensure thread-safety and that latest state is used`() {
+    // Setup
+    data class State(val a1: Int? = null, val a2: Int? = null)
+
+    abstract class Container(val value: Int) : IReduxActionWithKey {
+      override fun toString(): String = "${this.key}-${this.value}"
+    }
+
+    class Action1(value: Int) : Container(value) {
+      override val key: String get() = "Action1"
+    }
+
+    class Action2(value: Int) : Container(value) {
+      override val key: String get() = "Action2"
+    }
+
+    val reducer: IReducer<State> = { state, action ->
+      when (action) {
+        is Action1 -> state.copy(a1 = action.value)
+        is Action2 -> state.copy(a2 = action.value)
+        else -> state
+      }
+    }
+
+    val enhancedReducer: IReducer<State> = { state, action ->
+      val newState = reducer(state, action)
+      newState
+    }
+
+    var store: IReduxStore<State>? = null
+    val finalValues = synchronizedList(arrayListOf<Pair<State, State>>())
+
+    val takeEffect = takeEveryForKeys(setOf("Action1", "Action2")) { action ->
+      val lastState = store!!.lastState()
+      val newState = reducer(lastState, action)
+      selectFromState(State::class) { s -> s to newState }.doOnValue { finalValues.add(it) }
+    }
+
+    store = applyMiddlewares<State>(
+      createAsyncMiddleware(),
+      createSagaMiddleware(arrayListOf(takeEffect))
+    )(FinalStore(State(), enhancedReducer))
+
+    // When
+    val rand = Random()
+    val iteration = 1000
+
+    val jobs = (0 until iteration).map { _ -> GlobalScope.launch(start = CoroutineStart.LAZY) {
+      if (rand.nextBoolean()) {
+        store.dispatch(Action1(rand.nextInt(100)))
+      } else {
+        store.dispatch(Action2(rand.nextInt(100)))
+      }
+    } }
+
+    jobs.forEach { it.start() }
+
+    runBlocking {
+      withTimeoutOrNull(this@SagaEffectTest.timeout) {
+        while (finalValues.size != iteration) { }; Unit
+      }
+
+      // Then
+      finalValues.forEach { assertEquals(it.first, it.second) }
+    }
   }
 
   @Test
