@@ -20,7 +20,7 @@ import kotlin.concurrent.write
 class ThreadSafeStore<GState>(
   private var state: GState,
   override val reducer: IReducer<GState>
-) : IReduxStore<GState> {
+) : IReduxStore<GState> where GState : Any {
   private val lock = ReentrantReadWriteLock()
   private val subscribers = HashMap<String, (GState) -> Unit>()
 

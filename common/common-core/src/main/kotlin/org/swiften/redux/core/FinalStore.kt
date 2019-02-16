@@ -12,7 +12,7 @@ package org.swiften.redux.core
  * @param GState The global state type.
  * @param store An [IReduxStore] instance.
  */
-class FinalStore<GState> private constructor(store: IReduxStore<GState>) :
+class FinalStore<GState : Any> private constructor(store: IReduxStore<GState>) :
   IReduxStore<GState> by store {
   constructor(state: GState, reducer: IReducer<GState>) :
     this(fun (): IReduxStore<GState> {

@@ -44,7 +44,7 @@ interface IReduxActionWithKey : IReduxAction {
  * Represents an object that provides [IReducer].
  * @param GState The global state type.
  */
-interface IReducerProvider<GState> {
+interface IReducerProvider<GState> where GState : Any {
   val reducer: IReducer<GState>
 }
 
@@ -57,7 +57,7 @@ interface IDispatcherProvider {
  * Represents an object that provides [IStateGetter].
  * @param GState The global state type.
  */
-interface IStateGetterProvider<out GState> {
+interface IStateGetterProvider<out GState> where GState : Any {
   val lastState: IStateGetter<GState>
 }
 
@@ -70,7 +70,7 @@ interface IDeinitializerProvider {
  * Represents an object that provides [IReduxSubscriber].
  * @param GState The global state type.
  */
-interface IReduxSubscriberProvider<out GState> {
+interface IReduxSubscriberProvider<out GState> where GState : Any {
   val subscribe: IReduxSubscriber<GState>
 }
 
@@ -85,3 +85,4 @@ interface IReduxStore<GState> :
   IStateGetterProvider<GState>,
   IReduxSubscriberProvider<GState>,
   IDeinitializerProvider
+  where GState : Any
