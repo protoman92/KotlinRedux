@@ -41,13 +41,12 @@ internal class SagaMiddleware(
       val sagaInput = SagaInput(scope, p1.lastState, p1.dispatch)
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
       outputs.forEach { it.subscribe({}) }
-      println(wrapper.id)
 
       /**
        * We use a [ReentrantLock] here to ensure the store receives the latest state by the time
        * [ISagaOutput.onAction] happens, so that it is available for state value selection.
        */
-      DispatchWrapper("${wrapper.id}-saga") { action ->
+      DispatchWrapper.wrap(wrapper, "saga") { action ->
         lock.withLock {
           wrapper.dispatch(action)
           outputs.forEach { it.onAction(action) }

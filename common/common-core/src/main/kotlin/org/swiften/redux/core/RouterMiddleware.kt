@@ -42,7 +42,7 @@ internal class RouterMiddleware<Screen>(
 
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
-      DispatchWrapper("${wrapper.id}-router") { action ->
+      DispatchWrapper.wrap(wrapper, "router") { action ->
         wrapper.dispatch(action)
 
         /**

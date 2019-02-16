@@ -6,9 +6,8 @@
 package org.swiften.redux.core
 
 import java.util.UUID
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.concurrent.read
-import kotlin.concurrent.write
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 /** Created by haipham on 2019/01/27 */
 /**
@@ -22,20 +21,20 @@ internal class LoggingMiddleware<GState>(
 ) : IMiddleware<GState> {
   override fun invoke(p1: MiddlewareInput<GState>): DispatchMapper {
     return { wrapper ->
-      val lock = ReentrantReadWriteLock()
+      val lock = ReentrantLock()
       val subscriberId = "${this@LoggingMiddleware}${UUID.randomUUID()}"
       var lastAction: IReduxAction? = null
 
       val subscription = p1.subscriber(subscriberId) {
-        lock.read { this@LoggingMiddleware.logger(it, lastAction) }
+        lock.withLock { this@LoggingMiddleware.logger(it, lastAction) }
       }
 
-      DispatchWrapper("${wrapper.id}-logging") {
+      DispatchWrapper.wrap(wrapper, "logging") {
         if (it == DefaultReduxAction.Deinitialize) {
-          lock.write { subscription.unsubscribe() }
+          lock.withLock { subscription.unsubscribe() }
         }
 
-        lock.write { lastAction = it }
+        lock.withLock { lastAction = it }
         wrapper.dispatch(it)
       }
     }

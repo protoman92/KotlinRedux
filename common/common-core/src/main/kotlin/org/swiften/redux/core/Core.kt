@@ -30,7 +30,7 @@ typealias IStateGetter<GState> = () -> GState
 typealias IReduxSubscriber<GState> = (String, (GState) -> Unit) -> IReduxSubscription
 
 /** Perform some deinitialization logic. */
-typealias IDeinitializer = Function0<Unit>
+typealias IDeinitializer = () -> Unit
 
 /** Represents a Redux action. */
 interface IReduxAction
@@ -76,8 +76,7 @@ interface IReduxSubscriberProvider<out GState> {
 
 /**
  * Represents a Redux store that can dispatch [IReduxAction] with a [IActionDispatcher] to mutate
- * some internal [GState]. Other objects can subscribe to [GState] updates using
- * [subscribe].
+ * some internal [GState]. Other objects can subscribe to [GState] updates using [subscribe].
  * @param GState The global state type.
  */
 interface IReduxStore<GState> :

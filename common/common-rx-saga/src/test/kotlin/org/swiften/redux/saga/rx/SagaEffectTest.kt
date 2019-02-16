@@ -214,6 +214,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
     store = applyMiddlewares<State>(
       createAsyncMiddleware(),
+      createAsyncMiddleware(),
       createSagaMiddleware(arrayListOf(takeEffect))
     )(FinalStore(State(), enhancedReducer))
 

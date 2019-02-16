@@ -36,17 +36,6 @@ class MiddlewareInput<out GState>(
 )
 
 /**
- * Use this [DispatchWrapper] to track the ordering of [dispatch] wrapping using [id].
- * @param id A [String] value.
- * @param dispatch See [IReduxStore.dispatch].
- */
-class DispatchWrapper(val id: String, val dispatch: IActionDispatcher) {
-  companion object {
-    const val ROOT_WRAPPER = "root"
-  }
-}
-
-/**
  * Enhance a [store] by overriding its [IReduxStore.dispatch] with [dispatch].
  * @param GState The global state type.
  * @param store An [IReduxStore] instance.
@@ -82,14 +71,15 @@ fun <GState> combineMiddlewares(
   return fun(store): IActionDispatcher {
     val lazyDispatch = LazyDispatch()
     val input = MiddlewareInput(lazyDispatch, store.lastState, store.subscribe)
-    val rootWrapper = DispatchWrapper(DispatchWrapper.ROOT_WRAPPER, store.dispatch)
+    val rootWrapper = DispatchWrapper.root(store.dispatch)
 
-    lazyDispatch.dispatch = if (middlewares.isEmpty()) rootWrapper else {
+    val finalWrapper = if (middlewares.isEmpty()) rootWrapper else {
       middlewares.reduce { acc, middleware ->
         { input -> { acc(input)(middleware(input)(it)) } }
       }(input)(rootWrapper)
-    }.dispatch
+    }
 
+    lazyDispatch.dispatch = finalWrapper.dispatch
     return lazyDispatch
   }
 }

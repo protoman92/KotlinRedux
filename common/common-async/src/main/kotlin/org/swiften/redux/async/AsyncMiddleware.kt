@@ -24,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
 internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddleware<Any> {
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
-      DispatchWrapper("${wrapper.id}-async") { action ->
+      DispatchWrapper.wrap(wrapper, "async") { action ->
         when (action) {
           is DefaultReduxAction.Deinitialize -> this@AsyncMiddleware.context.cancel()
           else -> GlobalScope.launch(this@AsyncMiddleware.context) { wrapper.dispatch(action) }

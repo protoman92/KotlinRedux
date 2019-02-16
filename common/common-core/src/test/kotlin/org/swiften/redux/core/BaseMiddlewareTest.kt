@@ -13,6 +13,6 @@ open class BaseMiddlewareTest {
   }
 
   fun mockDispatchWrapper(dispatch: IActionDispatcher = {}): DispatchWrapper {
-    return DispatchWrapper(DispatchWrapper.ROOT_WRAPPER, dispatch)
+    return DispatchWrapper.root(dispatch)
   }
 }

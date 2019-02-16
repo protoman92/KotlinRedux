@@ -66,7 +66,7 @@ internal class ThunkMiddleware<GExt>(
         override val coroutineContext = Dispatchers.Default + this@ThunkMiddleware.context
       }
 
-      DispatchWrapper("${wrapper.id}-thunk") { action ->
+      DispatchWrapper.wrap(wrapper, "thunk") { action ->
         wrapper.dispatch(action)
 
         when (action) {
