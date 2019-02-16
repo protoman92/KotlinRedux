@@ -36,6 +36,11 @@ class CoroutineDispatchJob(
   private val context: CoroutineContext,
   private val job: Job
 ) : IDispatchJob {
+  constructor(
+    context: CoroutineContext,
+    performer: suspend CoroutineContext.() -> Unit
+  ) : this(context, GlobalScope.launch(context) { performer(context) })
+
   override fun blockingWait() {
     val latch = CountDownLatch(1)
 

@@ -7,7 +7,6 @@ package org.swiften.redux.android.saga.rx.livedata
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -39,7 +38,7 @@ class LiveDataEffectTest {
     takeEveryData { data }
       .mapAsync { this.async { delay(1000); it } }
       .filter { it % 2 == 0 }
-      .invoke(GlobalScope, 0) { }
+      .invoke()
       .subscribe({ finalValues.add(it) })
 
     // When

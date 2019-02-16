@@ -15,12 +15,12 @@ class MiddlewareTest : BaseMiddlewareTest() {
   fun `Applying middlewares to a store should produce correct order`() {
     // Setup
     val store = ThreadSafeStore(0) { a, _ -> a }
-    val ordering = arrayListOf<Int>()
+    val order = arrayListOf<Int>()
 
     val wrappedStore = applyMiddlewares<Int>(
-      { { w -> DispatchWrapper.wrap(w, "1") { w.dispatch(it); ordering.add(1) } } },
-      { { w -> DispatchWrapper.wrap(w, "2") { w.dispatch(it); ordering.add(2) } } },
-      { { w -> DispatchWrapper.wrap(w, "3") { w.dispatch(it); ordering.add(3) } } }
+      { { w -> DispatchWrapper.wrap(w, "1") { w.dispatch(it); order.add(1); EmptyDispatchJob } } },
+      { { w -> DispatchWrapper.wrap(w, "2") { w.dispatch(it); order.add(2); EmptyDispatchJob } } },
+      { { w -> DispatchWrapper.wrap(w, "3") { w.dispatch(it); order.add(3); EmptyDispatchJob } } }
     )(store)
 
     // When
@@ -29,7 +29,7 @@ class MiddlewareTest : BaseMiddlewareTest() {
     wrappedStore.dispatch(DefaultReduxAction.Dummy)
 
     // Then
-    assertEquals(ordering, arrayListOf(3, 2, 1, 3, 2, 1, 3, 2, 1))
+    assertEquals(order, arrayListOf(3, 2, 1, 3, 2, 1, 3, 2, 1))
   }
 
   @Test
@@ -44,10 +44,12 @@ class MiddlewareTest : BaseMiddlewareTest() {
       { { w -> DispatchWrapper.wrap(w, "1") {
         w.dispatch(it)
         if (it is RepeatAction) repeatCount.incrementAndGet()
+        EmptyDispatchJob
       } } },
       { i -> { w -> DispatchWrapper.wrap(w, "2") {
         w.dispatch(it)
         if (it is TriggerAction) i.dispatch(RepeatAction())
+        EmptyDispatchJob
       } } }
     )(store)
 

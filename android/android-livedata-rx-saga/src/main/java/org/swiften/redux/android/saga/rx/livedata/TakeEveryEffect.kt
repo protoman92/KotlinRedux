@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import org.swiften.redux.core.EmptyDispatchJob
 import org.swiften.redux.saga.common.ISagaOutput
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaInput
@@ -39,6 +40,6 @@ internal class TakeEveryEffect<R>(private val creator: () -> LiveData<R>) : Saga
       .toFlowable(BackpressureStrategy.BUFFER)
       .serialize()
 
-    return SagaOutput(p1.scope, stream) { }
+    return SagaOutput(p1.scope, stream) { EmptyDispatchJob }
   }
 }
