@@ -43,7 +43,7 @@ class MiddlewareInput<out GState>(
  */
 class EnhancedReduxStore<GState>(
   private val store: IReduxStore<GState>,
-  override val dispatch: (IReduxAction) -> Unit
+  override val dispatch: IActionDispatcher
 ) : IReduxStore<GState> by store
 
 /**

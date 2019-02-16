@@ -76,6 +76,7 @@ internal class ThunkMiddleware<GExt>(
           }
 
           is DefaultReduxAction.Deinitialize -> scope.coroutineContext.cancel()
+          else -> Unit
         }
       }
     }

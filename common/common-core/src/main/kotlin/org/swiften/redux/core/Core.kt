@@ -7,7 +7,7 @@ package org.swiften.redux.core
 
 /** Created by haipham on 2018/03/31 */
 /** Represents an [IReduxAction] dispatcher. */
-typealias IActionDispatcher = (IReduxAction) -> Unit
+typealias IActionDispatcher = (IReduxAction) -> Any
 
 /**
  * Represents a Redux reducer that reduce a [IReduxAction] onto a previous state to produce a new
