@@ -6,15 +6,15 @@
 package org.swiften.redux.saga.rx;
 
 import io.reactivex.Single;
-import kotlin.Unit;
 import kotlinx.coroutines.GlobalScope;
 import org.junit.Test;
+import org.swiften.redux.core.EmptyDispatchJob;
 
 import static org.junit.Assert.assertEquals;
 import static org.swiften.redux.saga.common.CommonEffects.map;
 import static org.swiften.redux.saga.common.CommonEffects.retryMultipleTimes;
-import static org.swiften.redux.saga.rx.SagaEffects.mapSingle;
 import static org.swiften.redux.saga.rx.SagaEffects.just;
+import static org.swiften.redux.saga.rx.SagaEffects.mapSingle;
 
 /**
  * Created by haipham on 2019/01/14
@@ -27,7 +27,7 @@ public final class ReduxSagaTest {
       .transform(map(i -> i * 2))
       .transform(mapSingle(i -> Single.just(i * 3)))
       .transform(retryMultipleTimes(3))
-      .invoke(GlobalScope.INSTANCE, 0, a -> Unit.INSTANCE)
+      .invoke(GlobalScope.INSTANCE, 0, a -> EmptyDispatchJob.INSTANCE)
       .nextValue(1000);
 
     // When && Then

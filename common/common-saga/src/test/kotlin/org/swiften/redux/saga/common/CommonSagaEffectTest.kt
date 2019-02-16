@@ -13,6 +13,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
+import org.swiften.redux.core.EmptyDispatchJob
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
 import java.util.Collections.synchronizedList
@@ -236,7 +237,7 @@ abstract class CommonSagaEffectTest {
     justEffect(0)
       .map { it }
       .putInStore { Action(it) }
-      .invoke(GlobalScope, {}) { dispatched.add(it) }
+      .invoke(GlobalScope, {}) { dispatched.add(it); EmptyDispatchJob }
       .subscribe({})
 
     // When

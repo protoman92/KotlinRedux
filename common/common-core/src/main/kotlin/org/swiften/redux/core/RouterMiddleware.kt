@@ -58,6 +58,8 @@ internal class RouterMiddleware<Screen>(
         if (action == DefaultReduxAction.Deinitialize) {
           this@RouterMiddleware.router.deinitialize()
         }
+
+        EmptyDispatchJob
       }
     }
   }
