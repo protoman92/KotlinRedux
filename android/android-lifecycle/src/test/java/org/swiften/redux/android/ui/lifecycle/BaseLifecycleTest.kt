@@ -8,7 +8,7 @@ package org.swiften.redux.android.ui.lifecycle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import org.swiften.redux.core.EmptyDispatchJob
+import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDeinitializer
 import org.swiften.redux.core.IReduxSubscription
@@ -73,7 +73,7 @@ open class BaseLifecycleTest {
       return subscription
     }
 
-    override val dispatch: IActionDispatcher = { EmptyDispatchJob }
+    override val dispatch: IActionDispatcher = { EmptyJob }
     override val deinitialize: IDeinitializer = {}
   }
 }

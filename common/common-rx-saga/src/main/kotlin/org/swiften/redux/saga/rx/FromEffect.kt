@@ -6,7 +6,7 @@
 package org.swiften.redux.saga.rx
 
 import io.reactivex.Flowable
-import org.swiften.redux.core.EmptyDispatchJob
+import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaInput
 
@@ -19,5 +19,5 @@ import org.swiften.redux.saga.common.SagaInput
 internal class FromEffect<R>(
   private val stream: Flowable<R>
 ) : SagaEffect<R>() where R : Any {
-  override fun invoke(p1: SagaInput) = SagaOutput(p1.scope, this.stream) { EmptyDispatchJob }
+  override fun invoke(p1: SagaInput) = SagaOutput(p1.scope, this.stream) { EmptyJob }
 }

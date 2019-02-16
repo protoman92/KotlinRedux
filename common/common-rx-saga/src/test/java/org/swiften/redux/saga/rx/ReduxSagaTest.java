@@ -8,7 +8,7 @@ package org.swiften.redux.saga.rx;
 import io.reactivex.Single;
 import kotlinx.coroutines.GlobalScope;
 import org.junit.Test;
-import org.swiften.redux.core.EmptyDispatchJob;
+import org.swiften.redux.core.EmptyJob;
 
 import static org.junit.Assert.assertEquals;
 import static org.swiften.redux.saga.common.CommonEffects.map;
@@ -27,7 +27,7 @@ public final class ReduxSagaTest {
       .transform(map(i -> i * 2))
       .transform(mapSingle(i -> Single.just(i * 3)))
       .transform(retryMultipleTimes(3))
-      .invoke(GlobalScope.INSTANCE, 0, a -> EmptyDispatchJob.INSTANCE)
+      .invoke(GlobalScope.INSTANCE, 0, a -> EmptyJob.INSTANCE)
       .nextValue(1000);
 
     // When && Then

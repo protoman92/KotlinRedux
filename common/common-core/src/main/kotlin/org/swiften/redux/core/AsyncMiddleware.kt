@@ -21,8 +21,8 @@ internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddlew
 
       DispatchWrapper.wrap(wrapper, "async") { action ->
         when (action) {
-          is DefaultReduxAction.Deinitialize -> { context.cancel(); EmptyDispatchJob }
-          else -> CoroutineDispatchJob(context) { wrapper.dispatch(action) } }
+          is DefaultReduxAction.Deinitialize -> { context.cancel(); EmptyJob }
+          else -> CoroutineJob(context) { wrapper.dispatch(action) } }
       }
     }
   }

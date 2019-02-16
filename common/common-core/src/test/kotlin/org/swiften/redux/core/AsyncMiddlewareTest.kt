@@ -21,7 +21,7 @@ class AsyncMiddlewareTest : BaseMiddlewareTest() {
     val dispatched = AtomicInteger(0)
     val job = Job()
     val middleware = createAsyncMiddleware(job)
-    val dispatch: IActionDispatcher = { dispatched.incrementAndGet(); EmptyDispatchJob }
+    val dispatch: IActionDispatcher = { dispatched.incrementAndGet(); EmptyJob }
     val dispatchWrapper = this.mockDispatchWrapper(dispatch)
     val input = mockMiddlewareInput(0)
     val wrappedDispatch = middleware(input)(dispatchWrapper).dispatch

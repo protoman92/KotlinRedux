@@ -12,7 +12,7 @@ import kotlinx.coroutines.cancel
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.DispatchMapper
 import org.swiften.redux.core.DispatchWrapper
-import org.swiften.redux.core.EmptyDispatchJob
+import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IMiddleware
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.MiddlewareInput
@@ -58,7 +58,7 @@ internal class SagaMiddleware(
             scope.coroutineContext.cancel()
           }
 
-          EmptyDispatchJob
+          EmptyJob
         }
       }
     }

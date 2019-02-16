@@ -6,7 +6,7 @@
 package org.swiften.redux.saga.rx
 
 import io.reactivex.processors.PublishProcessor
-import org.swiften.redux.core.EmptyDispatchJob
+import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.ISagaOutput
@@ -38,7 +38,7 @@ internal abstract class RxTakeEffect<Action, P, R>(
         this@RxTakeEffect.extractor(cls.cast(p))?.also { subject.onNext(it) }
       }
 
-      EmptyDispatchJob
+      EmptyJob
     }
 
     return this.flatten(nested.map { this@RxTakeEffect.creator(it).invoke(p1) })

@@ -12,30 +12,27 @@ import java.util.concurrent.CountDownLatch
 import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2019/02/16 */
-/**
- * Represents a job for [IActionDispatcher] that can be resolved to ensure [IReduxStore.dispatch]
- * finishes mutating internal state.
- */
-interface IDispatchJob {
+/** Represents a job that does some asynchronous work and can be resolved synchronously. */
+interface IAsyncJob {
   /** Wait until some asynchronous action finishes. */
   fun blockingWait()
 }
 
-/** Represents an empty [IDispatchJob] that does not do anything. */
-object EmptyDispatchJob : IDispatchJob {
+/** Represents an empty [IAsyncJob] that does not do anything. */
+object EmptyJob : IAsyncJob {
   override fun blockingWait() {}
 }
 
 /**
- * Represents an [IDispatchJob] that handles [Job]. It waits for [job] to resolve synchronously
- * with a [CountDownLatch].
+ * Represents an [IAsyncJob] that handles [Job]. It waits for [job] to resolve synchronously with
+ * a [CountDownLatch].
  * @param context A [CoroutineContext] instance.
  * @param job The [Job] to be resolved.
  */
-class CoroutineDispatchJob(
+class CoroutineJob(
   private val context: CoroutineContext,
   private val job: Job
-) : IDispatchJob {
+) : IAsyncJob {
   constructor(
     context: CoroutineContext,
     performer: suspend CoroutineContext.() -> Unit
@@ -45,7 +42,7 @@ class CoroutineDispatchJob(
     val latch = CountDownLatch(1)
 
     GlobalScope.launch(this.context) {
-      this@CoroutineDispatchJob.job.join()
+      this@CoroutineJob.job.join()
       latch.countDown()
     }
 
