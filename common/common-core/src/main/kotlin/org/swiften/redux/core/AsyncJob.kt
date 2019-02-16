@@ -15,12 +15,12 @@ import kotlin.coroutines.CoroutineContext
 /** Represents a job that does some asynchronous work and can be resolved synchronously. */
 interface IAsyncJob {
   /** Wait until some asynchronous action finishes. */
-  fun blockingWait()
+  fun await()
 }
 
 /** Represents an empty [IAsyncJob] that does not do anything. */
 object EmptyJob : IAsyncJob {
-  override fun blockingWait() {}
+  override fun await() {}
 }
 
 /**
@@ -38,7 +38,7 @@ class CoroutineJob(
     performer: suspend CoroutineContext.() -> Unit
   ) : this(context, GlobalScope.launch(context) { performer(context) })
 
-  override fun blockingWait() {
+  override fun await() {
     val latch = CountDownLatch(1)
 
     GlobalScope.launch(this.context) {
