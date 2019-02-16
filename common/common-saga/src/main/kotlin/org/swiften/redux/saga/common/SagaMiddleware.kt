@@ -15,6 +15,8 @@ import org.swiften.redux.core.DispatchWrapper
 import org.swiften.redux.core.IMiddleware
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.MiddlewareInput
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2018/12/22 */
@@ -30,6 +32,8 @@ internal class SagaMiddleware(
 ) : IMiddleware<Any> {
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
+      val lock = ReentrantLock()
+
       val scope = object : CoroutineScope {
         override val coroutineContext = Dispatchers.Default + this@SagaMiddleware.context
       }
@@ -38,14 +42,20 @@ internal class SagaMiddleware(
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
       outputs.forEach { it.subscribe({}) }
 
+      /**
+       * We use a [ReentrantLock] here to ensure the store receives the latest state by the time
+       * [ISagaOutput.onAction] happens, so that it is available for state value selection.
+       */
       DispatchWrapper("${wrapper.id}-saga") { action ->
-        wrapper.dispatch(action)
-        outputs.forEach { it.onAction(action) }
+        lock.withLock {
+          wrapper.dispatch(action)
+          outputs.forEach { it.onAction(action) }
 
-        /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [ISagaOutput] */
-        if (action == DefaultReduxAction.Deinitialize) {
-          outputs.forEach { it.dispose() }
-          scope.coroutineContext.cancel()
+          /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [ISagaOutput]. */
+          if (action == DefaultReduxAction.Deinitialize) {
+            outputs.forEach { it.dispose() }
+            scope.coroutineContext.cancel()
+          }
         }
       }
     }
