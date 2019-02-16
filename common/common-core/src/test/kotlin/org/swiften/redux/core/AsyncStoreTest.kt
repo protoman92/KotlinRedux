@@ -3,12 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.async
-
-import org.swiften.redux.core.BaseStoreTest
-import org.swiften.redux.core.IReduxStore
-import org.swiften.redux.core.ThreadSafeStore
-import org.swiften.redux.core.applyMiddlewares
+package org.swiften.redux.core
 
 /** Created by haipham on 2018/01/14 */
 class AsyncStoreTest : BaseStoreTest() {

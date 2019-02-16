@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.async
+package org.swiften.redux.core
 
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -11,9 +11,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.swiften.redux.core.BaseMiddlewareTest
-import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.IActionDispatcher
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/26 */

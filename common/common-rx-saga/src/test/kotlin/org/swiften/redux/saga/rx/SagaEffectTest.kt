@@ -17,7 +17,7 @@ import kotlinx.coroutines.rx2.rxFlowable
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.swiften.redux.async.createAsyncMiddleware
+import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction

@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivityParcelable
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
-import org.swiften.redux.async.createAsyncMiddleware
+import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.core.createRouterMiddleware
