@@ -5,7 +5,9 @@
 
 package org.swiften.redux.core
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
@@ -18,11 +20,13 @@ internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddlew
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       val context = this@AsyncMiddleware.context
+      val scope = object : CoroutineScope { override val coroutineContext get() = context }
 
       DispatchWrapper.wrap(wrapper, "async") { action ->
         when (action) {
           is DefaultReduxAction.Deinitialize -> { context.cancel(); EmptyJob }
-          else -> CoroutineJob(context) { wrapper.dispatch(action) } }
+          else -> CoroutineJob(scope.async { wrapper.dispatch(action).await() })
+        }
       }
     }
   }
@@ -33,7 +37,7 @@ internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddlew
  * @param context See [AsyncMiddleware.context].
  * @return An [AsyncMiddleware] instance.
  */
-internal fun createAsyncMiddleware(context: CoroutineContext = SupervisorJob()): IMiddleware<Any> {
+internal fun createAsyncMiddleware(context: CoroutineContext): IMiddleware<Any> {
   return AsyncMiddleware(context)
 }
 

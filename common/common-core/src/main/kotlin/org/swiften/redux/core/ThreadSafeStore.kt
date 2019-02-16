@@ -27,9 +27,14 @@ class ThreadSafeStore<GState>(
   override val lastState = { this.lock.read { this.state } }
 
   override val dispatch: IActionDispatcher = { action ->
-    this.lock.write { this.state = this.reducer(this.state, action) }
-    this.lock.read { this.subscribers.forEach { it.value(this.state) } }
-    EmptyJob
+    val newState = this.lock.write {
+      val state = this.reducer(this.state, action)
+      this.state = state
+      state
+    }
+
+    this.lock.read { this.subscribers.forEach { it.value(newState) } }
+    JustJob(newState as Any)
   }
 
   override val subscribe: IReduxSubscriber<GState> = { id, callback ->

@@ -7,6 +7,7 @@ package org.swiften.redux.thunk
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import org.swiften.redux.core.CoroutineJob
 import org.swiften.redux.core.DefaultReduxAction
@@ -62,20 +63,17 @@ internal class ThunkMiddleware<GExt>(
   @Suppress("UNCHECKED_CAST")
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     val context = this@ThunkMiddleware.context
-
-    val scope = object : CoroutineScope {
-      override val coroutineContext get() = context
-    }
+    val scope = object : CoroutineScope { override val coroutineContext get() = context }
 
     return { wrapper ->
       DispatchWrapper.wrap(wrapper, "thunk") { action ->
         wrapper.dispatch(action)
 
         when (action) {
-          is IReduxThunkAction<*, *, *> -> CoroutineJob(context) {
+          is IReduxThunkAction<*, *, *> -> CoroutineJob(scope.async {
             val castAction = action as IReduxThunkAction<Any, Any, Any>
             castAction.payload(scope, p1.dispatch, p1.lastState, Unit)
-          }
+          })
 
           is DefaultReduxAction.Deinitialize -> { context.cancel(); EmptyJob }
           else -> EmptyJob
