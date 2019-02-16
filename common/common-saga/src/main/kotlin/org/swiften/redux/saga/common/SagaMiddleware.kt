@@ -6,18 +6,18 @@
 package org.swiften.redux.saga.common
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.DispatchMapper
 import org.swiften.redux.core.DispatchWrapper
 import org.swiften.redux.core.EmptyJob
+import org.swiften.redux.core.IAsyncJob
 import org.swiften.redux.core.IMiddleware
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.MiddlewareInput
+import org.swiften.redux.core.ThreadSafeDispatcher
 import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2018/12/22 */
@@ -34,33 +34,29 @@ internal class SagaMiddleware(
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       val lock = ReentrantLock()
-
-      val scope = object : CoroutineScope {
-        override val coroutineContext = Dispatchers.Default + this@SagaMiddleware.context
-      }
-
+      val context = this@SagaMiddleware.context
+      val scope = object : CoroutineScope { override val coroutineContext = context }
       val sagaInput = SagaInput(scope, p1.lastState, p1.dispatch)
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
       outputs.forEach { it.subscribe({}) }
 
       /**
-       * We use a [ReentrantLock] here to ensure the store receives the latest state by the time
-       * [ISagaOutput.onAction] happens, so that it is available for state value selection.
+       * We use a [ThreadSafeDispatcher] and [IAsyncJob.await] here to ensure the store receives the
+       * latest state by the time [ISagaOutput.onAction] happens, so that it is available for state
+       * value selection.
        */
-      DispatchWrapper.wrap(wrapper, "saga") { action ->
-        lock.withLock {
-          wrapper.dispatch(action)
-          outputs.forEach { it.onAction(action) }
+      DispatchWrapper.wrap(wrapper, "saga", ThreadSafeDispatcher(lock) { action ->
+        wrapper.dispatch(action).await()
+        outputs.forEach { it.onAction(action).await() }
 
-          /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [ISagaOutput]. */
-          if (action == DefaultReduxAction.Deinitialize) {
-            outputs.forEach { it.dispose() }
-            scope.coroutineContext.cancel()
-          }
-
-          EmptyJob
+        /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [ISagaOutput]. */
+        if (action == DefaultReduxAction.Deinitialize) {
+          outputs.forEach { it.dispose() }
+          scope.coroutineContext.cancel()
         }
-      }
+
+        EmptyJob
+      })
     }
   }
 }

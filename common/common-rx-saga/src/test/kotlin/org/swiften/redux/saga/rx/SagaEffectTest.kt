@@ -7,6 +7,7 @@ package org.swiften.redux.saga.rx
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -17,13 +18,13 @@ import kotlinx.coroutines.rx2.rxFlowable
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.applyMiddlewares
+import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.saga.common.CommonSagaEffectTest
 import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.SagaEffect
@@ -198,11 +199,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       }
     }
 
-    val enhancedReducer: IReducer<State> = { state, action ->
-      val newState = reducer(state, action)
-      newState
-    }
-
+    val enhancedReducer: IReducer<State> = { s, a -> val newState = reducer(s, a); newState }
     var store: IReduxStore<State>? = null
     val finalValues = synchronizedList(arrayListOf<Pair<State, State>>())
 
@@ -215,29 +212,30 @@ class SagaEffectTest : CommonSagaEffectTest() {
     store = applyMiddlewares<State>(
       createAsyncMiddleware(),
       createAsyncMiddleware(),
-      createSagaMiddleware(arrayListOf(takeEffect))
+      createSagaMiddleware(arrayListOf(takeEffect)),
+      createAsyncMiddleware(),
+      createAsyncMiddleware()
     )(FinalStore(State(), enhancedReducer))
 
     // When
     val rand = Random()
     val iteration = 1000
 
-    val jobs = (0 until iteration).map { _ -> GlobalScope.launch(start = CoroutineStart.LAZY) {
-      if (rand.nextBoolean()) {
-        store.dispatch(Action1(rand.nextInt(100)))
-      } else {
-        store.dispatch(Action2(rand.nextInt(100)))
+    val jobs = (0 until iteration).map { _ ->
+      GlobalScope.launch(Dispatchers.IO, CoroutineStart.LAZY) {
+        if (rand.nextBoolean()) {
+          store.dispatch(Action1(rand.nextInt(100))).await()
+        } else {
+          store.dispatch(Action2(rand.nextInt(100))).await()
+        }
       }
-    } }
-
-    jobs.forEach { it.start() }
+    }
 
     runBlocking {
-      withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues.size != iteration) { }; Unit
-      }
+      jobs.forEach { it.join() }
 
       // Then
+      assertEquals(finalValues.size, iteration)
       finalValues.forEach { assertEquals(it.first, it.second) }
     }
   }
