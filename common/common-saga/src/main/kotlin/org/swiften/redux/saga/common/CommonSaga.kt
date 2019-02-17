@@ -197,12 +197,6 @@ interface ISagaOutput<T> where T : Any {
   fun timeout(millis: Long): ISagaOutput<T>
 
   /**
-   * Wait for the first [T] that arrives.
-   * @return A [T] instance.
-   */
-  fun await(): T
-
-  /**
    * Wait for the first [T] that arrives, or default to [defaultValue] if the stream is empty.
    * @param defaultValue A [T] instance.
    * @return A [T] instance.
@@ -214,7 +208,7 @@ interface ISagaOutput<T> where T : Any {
    * @param timeoutMillis Timeout time in milliseconds.
    * @return A nullable [T] instance.
    */
-  fun await(timeoutMillis: Long): T
+  fun awaitFor(timeoutMillis: Long): T
 
   /**
    * Subscribe to values with [onValue], and error with [onError].
@@ -245,13 +239,13 @@ abstract class SagaEffect<R> : ISagaEffect<R> where R : Any {
    * @param state See [SagaInput.lastState].
    * @return An [ISagaOutput] instance.
    */
-  fun invoke(state: Any) = this.invoke(SagaInput.withState(state))
+  fun invoke(state: Any): ISagaOutput<R> = this.invoke(SagaInput.withState(state))
 
   /**
    * Call [ISagaEffect] with convenience parameters for testing.
    * @return An [ISagaOutput] instance.
    */
-  fun invoke() = this.invoke(SagaInput.EMPTY)
+  fun invoke(): ISagaOutput<R> = this.invoke(SagaInput.EMPTY)
 
   /**
    * Transform into another [SagaEffect] with [transformer].

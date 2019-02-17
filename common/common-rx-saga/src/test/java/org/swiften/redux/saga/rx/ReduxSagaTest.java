@@ -28,7 +28,7 @@ public final class ReduxSagaTest {
       .transform(mapSingle(i -> Single.just(i * 3)))
       .transform(retryMultipleTimes(3))
       .invoke(GlobalScope.INSTANCE, 0, a -> EmptyJob.INSTANCE)
-      .await(1000);
+      .awaitFor(1000);
 
     // When && Then
     assertEquals(value, 6);

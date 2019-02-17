@@ -21,7 +21,15 @@ import kotlin.reflect.KClass
 /** Top-level namespace for Rx-based [ISagaEffect] */
 object SagaEffects {
   /**
-   * Create a [CallEffect].
+   * Create an [AwaitEffect] instance.
+   * @param R The result emission type.
+   * @param creator See [AwaitEffect.creator].
+   * @return A [SagaEffect] instance.
+   */
+  fun <R> await(creator: IAwaitCreator<R>) : SagaEffect<R> where R : Any = AwaitEffect(creator)
+
+  /**
+   * Create a [CallEffect] instance.
    * @param P The source emission type.
    * @param R The result emission type.
    * @param transformer See [CallEffect.transformer].
@@ -69,9 +77,7 @@ object SagaEffects {
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun putInStore(action: IReduxAction): SagaEffect<Any> {
-    return this.putInStore(Unit) { action }
-  }
+  fun putInStore(action: IReduxAction): SagaEffect<Any> = this.putInStore(Unit) { action }
 
   /**
    * Create a [SelectEffect].

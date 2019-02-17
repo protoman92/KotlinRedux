@@ -10,6 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.rx2.rxSingle
+import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.saga.common.ISagaOutput
 import java.util.concurrent.TimeUnit
@@ -24,6 +25,21 @@ class SagaOutput<T : Any>(
   internal var source: SagaOutput<*>? = null
   private var onDispose: () -> Unit = { }
   private val disposable by lazy { CompositeDisposable() }
+
+  companion object {
+    /**
+     * Create a [ISagaOutput] from [creator] using [CoroutineScope.rxSingle].
+     * @param scope A [CoroutineScope] instance.
+     * @param creator Suspending function that produces [T].
+     * @return An [ISagaOutput] instance.
+     */
+    fun <T> from(
+      scope: CoroutineScope,
+      creator: suspend CoroutineScope.() -> T
+    ) : ISagaOutput<T> where T : Any {
+      return SagaOutput(scope, scope.rxSingle { creator() }.toFlowable()) { EmptyJob }
+    }
+  }
 
   private fun <T2> with(newStream: Flowable<T2>): ISagaOutput<T2> where T2 : Any {
     val result = SagaOutput(this.scope, newStream, this.onAction)
@@ -108,11 +124,9 @@ class SagaOutput<T : Any>(
 
   override fun timeout(millis: Long) = this.with(this.stream.timeout(millis, TimeUnit.MILLISECONDS))
 
-  override fun await(): T = this.stream.blockingFirst()
-
   override fun await(defaultValue: T): T = this.stream.blockingFirst(defaultValue)
 
-  override fun await(timeoutMillis: Long): T = this.stream
+  override fun awaitFor(timeoutMillis: Long): T = this.stream
     .timeout(timeoutMillis, TimeUnit.MILLISECONDS)
     .blockingFirst()
 
