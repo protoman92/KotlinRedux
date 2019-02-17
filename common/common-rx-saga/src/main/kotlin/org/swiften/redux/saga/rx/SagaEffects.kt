@@ -13,6 +13,7 @@ import org.swiften.redux.saga.common.CommonEffects
 import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.ISagaEffectTransformer
 import org.swiften.redux.saga.common.ITakeEffectTransformer
+import org.swiften.redux.saga.common.PutEffect
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SingleSagaEffect
 import org.swiften.redux.saga.common.TakeEffect
@@ -67,20 +68,20 @@ object SagaEffects {
    * @param P The source emission type.
    * @param value See [JustEffect.value].
    * @param actionCreator See [CommonEffects.putInStore].
-   * @return A [SingleSagaEffect] instance.
+   * @return A [PutEffect] instance.
    */
   @JvmStatic
-  fun <P> putInStore(value: P, actionCreator: (P) -> IReduxAction): SingleSagaEffect<Any> where P : Any {
+  fun <P> putInStore(value: P, actionCreator: (P) -> IReduxAction): PutEffect<P> where P : Any {
     return CommonEffects.putInStore(actionCreator)(this.just(value))
   }
 
   /**
    * Call [putInStore] with [action].
    * @param action An [IReduxAction] instance.
-   * @return A [SingleSagaEffect] instance.
+   * @return A [PutEffect] instance.
    */
   @JvmStatic
-  fun putInStore(action: IReduxAction): SingleSagaEffect<Any> = this.putInStore(Unit) { action }
+  fun putInStore(action: IReduxAction): PutEffect<Unit> = this.putInStore(Unit) { action }
 
   /**
    * Create a [SelectEffect].
