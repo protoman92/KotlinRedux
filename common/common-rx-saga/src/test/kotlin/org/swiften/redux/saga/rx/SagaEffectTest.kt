@@ -18,6 +18,7 @@ import kotlinx.coroutines.rx2.rxFlowable
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
@@ -38,8 +39,10 @@ import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapAsync
 import org.swiften.redux.saga.common.thenMightAsWell
 import org.swiften.redux.saga.common.thenNoMatterWhat
+import org.swiften.redux.saga.rx.SagaEffects.await
 import org.swiften.redux.saga.rx.SagaEffects.from
 import org.swiften.redux.saga.rx.SagaEffects.just
+import org.swiften.redux.saga.rx.SagaEffects.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.selectFromState
 import org.swiften.redux.saga.rx.SagaEffects.takeEvery
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryForKeys
@@ -122,17 +125,6 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `Take latest effect with keys should take correct actions`() {
     test_takeEffectWithActionKeys_shouldTakeCorrectActions { a, b -> takeLatestForKeys(a, creator = b) }
-  }
-
-  @Test
-  fun `Select effect should extract some value from a state`() {
-    // Setup
-    val sourceOutput1 = just(1).selectFromState(Any::class, { 2 }, { a, b -> a + b }).invoke()
-    val sourceOutput2 = just(2).selectFromState(State::class) { 4 }.invoke(State())
-
-    // When && Then
-    assertEquals(sourceOutput1.await(this.timeout), 3)
-    assertEquals(sourceOutput2.await(this.timeout), 4)
   }
 
   @Test
@@ -272,6 +264,90 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
       // Then
       assertEquals(finalValues.size, 1)
+    }
+  }
+
+  @Test
+  fun `Select effect should extract some value from a state`() {
+    // Setup
+    val sourceOutput1 = just(1).selectFromState(Any::class, { 2 }, { a, b -> a + b }).invoke()
+    val sourceOutput2 = just(2).selectFromState(State::class) { 4 }.invoke(State())
+
+    // When && Then
+    assertEquals(sourceOutput1.awaitFor(this.timeout), 3)
+    assertEquals(sourceOutput2.awaitFor(this.timeout), 4)
+  }
+
+  @Test
+  fun `Await effect should work correctly for successful await sequence`() {
+    // Setup
+    class State(val value: Int = 0)
+    data class ProgressAction(val progress: Boolean) : IReduxAction
+    data class ValueAction(val value: Int) : IReduxAction
+
+    val dispatched = arrayListOf<IReduxAction>()
+
+    val source = await { input ->
+      putInStore(ProgressAction(true)).invoke(input).await({})
+      val value = selectFromState(State::class) { it.value }.invoke(input).await(0)
+      val newValue = value * 2
+      putInStore(ValueAction(newValue)).invoke(input).await({})
+      putInStore(ProgressAction(false)).invoke(input).await({})
+    }
+
+    // When
+    source.invoke(GlobalScope, State(10)) { dispatched.add(it); EmptyJob }.subscribe({})
+
+    runBlocking {
+      delay(1000)
+
+      // Then
+      assertEquals(dispatched, arrayListOf(
+        ProgressAction(true),
+        ValueAction(20),
+        ProgressAction(false)
+      ))
+    }
+  }
+
+  @Test
+  fun `Await effect should work correctly for erroneous await sequence`() {
+    // Setup
+    class State(val value: Int = 0)
+    data class ProgressAction(val progress: Boolean) : IReduxAction
+    data class ValueAction(val value: Int) : IReduxAction
+    data class ErrorAction(val error: Throwable) : IReduxAction
+
+    val dispatched = arrayListOf<IReduxAction>()
+    val error = Exception("Oops!")
+    val api: suspend (Int) -> Int = { throw error }
+
+    val source = await { input ->
+      putInStore(ProgressAction(true)).invoke(input).await({})
+      val value = selectFromState(State::class) { it.value }.filter { false }.invoke(input).await(0)
+
+      try {
+        val newValue = api(value)
+        putInStore(ValueAction(newValue)).invoke(input).await({})
+      } catch (e: Throwable) {
+        putInStore(ErrorAction(e)).invoke(input).await({})
+      } finally {
+        putInStore(ProgressAction(false)).invoke(input).await({})
+      }
+    }
+
+    // When
+    source.invoke(GlobalScope, State(10)) { dispatched.add(it); EmptyJob }.subscribe({})
+
+    runBlocking {
+      delay(1000)
+
+      // Then
+      assertEquals(dispatched, arrayListOf(
+        ProgressAction(true),
+        ErrorAction(error),
+        ProgressAction(false)
+      ))
     }
   }
 }
