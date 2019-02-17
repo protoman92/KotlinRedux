@@ -4,13 +4,25 @@
 [![Build Status](https://travis-ci.org/protoman92/KotlinRedux.svg?branch=master)](https://travis-ci.org/protoman92/KotlinRedux)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
+## Table of Contents
+
+- [Foreword](https://github.com/protoman92/KotlinRedux/blob/master/README.md#Foreword)
+- [Motivation](https://github.com/protoman92/KotlinRedux/blob/master/README.md#Motivation)
+- [Principles](https://github.com/protoman92/KotlinRedux/blob/master/README.md#Principles)
+- [Main features](https://github.com/protoman92/KotlinRedux/blob/master/README.md#Main-features)
+- [How it works](https://github.com/protoman92/KotlinRedux/blob/master/README.md#How-it-works)
+- [Extent of Android support](https://github.com/protoman92/KotlinRedux/blob/master/README.md#Extent-of-Android-support)
+- [Demo](https://github.com/protoman92/KotlinRedux/blob/master/README.md#Demo)
+
+## Foreword
+
 Reactive Redux implementation for Kotlin. From the [original JavaScript implementation](https://github.com/reduxjs/redux):
 
 > Redux is a predictable state container for JavaScript apps. [...]It helps you write applications that behave consistently, run in different environments (client, server, and native), and are easy to test.
 
 In a Redux architecture, the entire app can be described as a function of some global state object. For a search app of some nature, a simplified state may look like:
 
-```java
+```kotlin
 data class GlobalState(
   val query: String? = null,
   val result: SearchResult? = null
@@ -53,7 +65,7 @@ Generally, we would use data classes for their **copy** methods to ensure immuta
 
 For actions, we use sealed classes to encapsulate custom values:
 
-```java
+```kotlin
 typealias IReducer<GlobalState> = (GlobalState, IReduxAction) -> GlobalState
 
 sealed class Action : IReduxAction {
@@ -114,7 +126,7 @@ Aside from **OutProp** (which is immutable from the children's perspective), vie
 
 To start the Redux journey, make a **Fragment** (or anything that implements **LifecycleOwner**) implement [IPropContainer](https://github.com/protoman92/KotlinRedux/blob/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L48):
 
-```java
+```kotlin
 data class State(val query: String?)
 class Action(val updateQuery: (String?) -> Unit)
 
@@ -145,7 +157,7 @@ Now we can go to our custom **Application** class, **MainApplication**, to set u
 
 ### How property injection works
 
-```java
+```kotlin
 override fun onCreate() {
   super.onCreate()
   val initialState = ...
@@ -154,16 +166,16 @@ override fun onCreate() {
   val injector = AndroidPropInjector(store)
 
   injector.injectActivitySerializable(this) { lifecycleOwner ->
-      when (lifecycleOwner) {
-        is Fragment1 -> this.injectLifecycle(Unit, it) // Oops, compile error
-      }
+    when (lifecycleOwner) {
+      is Fragment1 -> this.injectLifecycle(Unit, it) // Oops, compile error
+    }
   }
 }
 ```
 
 Why is it raising a compile error? As it turns out, we are only setting up **Fragment1** to receive data, but not how those data will be calculated. This is the job of the [IPropMapper](https://github.com/protoman92/KotlinRedux/blob/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L101):
 
-```java
+```kotlin
 data class GlobalState(val query: String? = null)
 
 object Redux {
@@ -214,10 +226,10 @@ class MainApplication : Application() {
     val injector = AndroidPropInjector(store)
 
     injector.injectActivitySerializable(this) { lifecycleOwner ->
-        when (lifecycleOwner) {
-          // Fragment1's companion object is now the mapper.
-          is Fragment1 -> this.injectLifecycle(Unit, it, Fragment1)
-        }
+      when (lifecycleOwner) {
+        // Fragment1's companion object is now the mapper.
+        is Fragment1 -> this.injectLifecycle(Unit, it, Fragment1)
+      }
     }
   }
 }
@@ -227,20 +239,7 @@ class MainApplication : Application() {
 
 As I was saying, every stroke on the keyboard now sends a **Redux.Action.SetSearchQuery** action to the Redux store. All of the store's middlewares now can intercept this **IReduxAction** to do their funny businesses. One such middleware is the **Saga** middleware, which is the recommended approach to tackling asynchronous work in a Redux system:
 
-```java
-// Declarative style.
-fun performSearch(api: ISearchAPI): SagaEffect<Any> {
-  // Catch all SetSearchQuery actions with a takeLatest (same idea as RxJava.switchMap),
-  // then perform async logic.
-  return takeLatest(Redux.Action.SetSearchQuery::class, { it.query }) { query ->
-    just(query)                                                     // Same as Flowable.just
-      .thenMightAsWell(putInStore(Redux.Action.SetLoading(true)))   // Put a true loading flag.
-      .mapAsync { q -> this.async { api.search(q) } }               // Perform a search.
-      .putInStore { Redux.Action.SetSearchResults(it) }             // Put results back in store.
-      .thenNoMatterWhat(putInStore(Redux.Action.SetLoading(false))) // Disable loading no matter what.
-  }
-}
-
+```kotlin
 // Imperative style. This style may be cleaner if the flow is complicated, and is preferred
 // because it allows clean try - catch - finally.
 fun performSearch(api: ISearchAPI): SagaEffect<Unit> {
@@ -261,6 +260,19 @@ fun performSearch(api: ISearchAPI): SagaEffect<Unit> {
     }
   }
 }
+
+// Declarative style. This is more suitable for simple logic.
+fun performSearch(api: ISearchAPI): SagaEffect<Any> {
+  // Catch all SetSearchQuery actions with a takeLatest (same idea as RxJava.switchMap),
+  // then perform async logic.
+  return takeLatest(Redux.Action.SetSearchQuery::class, { it.query }) { query ->
+    just(query)                                                     // Same as Flowable.just
+      .thenMightAsWell(putInStore(Redux.Action.SetLoading(true)))   // Put a true loading flag.
+      .mapAsync { q -> this.async { api.search(q) } }               // Perform a search.
+      .putInStore { Redux.Action.SetSearchResults(it) }             // Put results back in store.
+      .thenNoMatterWhat(putInStore(Redux.Action.SetLoading(false))) // Disable loading no matter what.
+  }
+}
 ```
 
 What this logic does is:
@@ -277,7 +289,7 @@ need to worry about subscriptions, thread handling etc - everything happens on b
 
 Apply the relevant middlewares like so:
 
-```java
+```kotlin
 val store = applyMiddlewares<GlobalState>(
   createAsyncMiddleware(),
   createRouterMiddleware(Router(this)),
@@ -290,7 +302,7 @@ val store = applyMiddlewares<GlobalState>(
 
 **OutProp** is **Unit** for **Fragment1**, but it might very well contain non-Redux dependencies for other views, such as a Picasso provider to inject a **Picasso** instance into **Fragment1** for image loading. For example, we can do:
 
-```java
+```kotlin
 // Fragment2
 interface IPicassoProvider {
   val picasso: Picasso
@@ -349,4 +361,4 @@ There are a bunch of other things that I haven't touched on, but rest assured th
 
 - [android-sunflower](https://github.com/protoman92/KotlinRedux/tree/master/sample-android/sample-sunflower): This is a rewrite of [sunflower](https://github.com/googlesamples/android-sunflower) to use Redux entirely. There is very little boilerplate and no codegen aside from **Room** DB usage;
 
-- [ReduxForAndroid](https://github.com/protoman92/ReduxForAndroid): Simple music search engine sample that accesses the iTunes store for tracks matching specified queries.
+- [ReduxForAndroid](https://github.com/protoman92/KotlinRedux/tree/master/sample-android/sample-simple): Simple music search engine sample that accesses the iTunes store for tracks matching specified queries.
