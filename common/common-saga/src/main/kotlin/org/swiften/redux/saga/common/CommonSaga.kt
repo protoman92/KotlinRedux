@@ -43,7 +43,19 @@ class SagaInput(
   val scope: CoroutineScope = GlobalScope,
   val lastState: IStateGetter<*>,
   val dispatch: IActionDispatcher
-)
+) {
+  companion object {
+    /** Represents a [SagaInput] that does not have any meaningful functionalities. */
+    val EMPTY = this.withState({})
+
+    /**
+     * Creates a [SagaInput] that simply returns [state] when [SagaInput.lastState] is invoked.
+     * @param state See [SagaInput.lastState].
+     * @return A [SagaInput] instance.
+     */
+    fun withState(state: Any) = SagaInput(GlobalScope, { state }) { EmptyJob }
+  }
+}
 
 /**
  * Stream values for a [ISagaEffect]. This stream has functional operators that can transform
@@ -233,13 +245,13 @@ abstract class SagaEffect<R> : ISagaEffect<R> where R : Any {
    * @param state See [SagaInput.lastState].
    * @return An [ISagaOutput] instance.
    */
-  fun invoke(state: Any) = this.invoke(GlobalScope, state) { EmptyJob }
+  fun invoke(state: Any) = this.invoke(SagaInput.withState(state))
 
   /**
    * Call [ISagaEffect] with convenience parameters for testing.
    * @return An [ISagaOutput] instance.
    */
-  fun invoke() = this.invoke({})
+  fun invoke() = this.invoke(SagaInput.EMPTY)
 
   /**
    * Transform into another [SagaEffect] with [transformer].
