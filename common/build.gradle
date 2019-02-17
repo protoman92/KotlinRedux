@@ -1,5 +1,5 @@
 buildscript {
-  project.apply from: "${rootDir}/constants.gradle"
+  project.apply from: "$rootDir/constants.gradle"
 
   repositories {
     jcenter()
@@ -33,7 +33,7 @@ subprojects {
   group = 'com.github.protoman92'
   version '1.0-SNAPSHOT'
 
-  project.apply from: "${rootDir}/constants.gradle"
+  project.apply from: "$rootDir/constants.gradle"
 
   configurations { testArtifacts.extendsFrom testRuntime }
 

@@ -3,9 +3,9 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 buildscript {
-  project.apply from: "${rootDir}/constants.gradle"
-  project.apply from: "${rootDir}/android/constants.gradle"
-  project.apply from: "${rootDir}/sample-android/constants.gradle"
+  project.apply from: "$rootDir/constants.gradle"
+  project.apply from: "$rootDir/android/constants.gradle"
+  project.apply from: "$rootDir/sample-android/constants.gradle"
 
   repositories {
     google()
@@ -29,9 +29,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-project.apply from: "${rootDir}/constants.gradle"
-project.apply from: "${rootDir}/android/constants.gradle"
-project.apply from: "${rootDir}/sample-android/constants.gradle"
+project.apply from: "$rootDir/constants.gradle"
+project.apply from: "$rootDir/android/constants.gradle"
+project.apply from: "$rootDir/sample-android/constants.gradle"
 
 configurations.all {
   // Make sure the latest JitPack releases are used.
@@ -76,7 +76,4 @@ dependencies {
   debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanary"
 }
 
-// TODO Investigate why this fails locally.
-afterEvaluate { project ->
-  project.tasks.lint { onlyIf { return false } }
-}
+project.apply from: "$rootDir/sample-android/skipped.gradle"

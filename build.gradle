@@ -1,5 +1,5 @@
 buildscript {
-  project.apply from: "${rootDir}/constants.gradle"
+  project.apply from: "$rootDir/constants.gradle"
 
   repositories {
     jcenter()
@@ -12,7 +12,7 @@ buildscript {
 
 
 apply plugin: 'org.jetbrains.dokka'
-project.apply from: "${rootDir}/constants.gradle"
+project.apply from: "$rootDir/constants.gradle"
 
 dokka {
   moduleName = dokkaOutputDir
@@ -50,7 +50,7 @@ dokka {
 }
 
 subprojects {
-  project.apply from: "${rootDir}/constants.gradle"
+  project.apply from: "$rootDir/constants.gradle"
 
   configurations.all {
     // Make sure the latest JitPack releases are used.
