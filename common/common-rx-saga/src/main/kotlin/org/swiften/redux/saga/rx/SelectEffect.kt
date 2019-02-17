@@ -18,7 +18,7 @@ import org.swiften.redux.saga.common.SingleSagaEffect
  * @param cls The [Class] to [State].
  * @param selector Function that selects [R] from [State].
  */
-internal class SelectEffect<State, R>(
+class SelectEffect<State, R>(
   private val cls: Class<State>,
   private val selector: (State) -> R
 ) : SingleSagaEffect<R>() where R : Any {
@@ -27,4 +27,12 @@ internal class SelectEffect<State, R>(
     require(this.cls.isInstance(lastState))
     return SagaEffects.just(this.selector(this.cls.cast(lastState))).invoke(p1)
   }
+
+  /**
+   * Since we will always select from an available [State], there will not be a situation whereby
+   * the resulting [ISagaOutput] is empty. We can forgo the default value in this [await].
+   * @param input A [SagaInput] instance.
+   * @return A [R] instance.
+   */
+  fun await(input: SagaInput) = (this.invoke(input) as SagaOutput<R>).await()
 }

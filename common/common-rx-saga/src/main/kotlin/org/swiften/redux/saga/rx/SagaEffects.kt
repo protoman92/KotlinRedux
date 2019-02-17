@@ -89,11 +89,10 @@ object SagaEffects {
    * @param R The result emission type.
    * @param cls See [SelectEffect.cls].
    * @param selector See [SelectEffect.selector].
-   * @return A [SingleSagaEffect] instance.
+   * @return A [SelectEffect] instance.
    */
   @JvmStatic
-  fun <State, R> selectFromState(cls: Class<State>, selector: (State) -> R):
-    SingleSagaEffect<R> where R : Any {
+  fun <State, R> selectFromState(cls: Class<State>, selector: (State) -> R): SelectEffect<State, R> where R : Any {
     return SelectEffect(cls, selector)
   }
 
@@ -103,11 +102,10 @@ object SagaEffects {
    * @param R The result emission type.
    * @param cls See [SelectEffect.cls].
    * @param selector See [SelectEffect.selector].
-   * @return A [SingleSagaEffect] instance.
+   * @return A [SelectEffect] instance.
    */
   @JvmStatic
-  fun <State, R> selectFromState(cls: KClass<State>, selector: (State) -> R):
-    SingleSagaEffect<R> where State : Any, R : Any {
+  fun <State, R> selectFromState(cls: KClass<State>, selector: (State) -> R): SelectEffect<State, R> where State : Any, R : Any {
     return this.selectFromState(cls.java, selector)
   }
 

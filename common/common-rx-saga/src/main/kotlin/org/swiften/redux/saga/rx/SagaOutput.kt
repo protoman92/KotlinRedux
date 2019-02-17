@@ -133,4 +133,11 @@ class SagaOutput<T : Any>(
   override fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit) {
     this.disposable.add(this.stream.subscribe(onValue, onError))
   }
+
+  /**
+   * Wait forever for the first [T] instance. Beware that if [stream] is empty, this will block
+   * infinitely.
+   * @return A [T] instance.
+   */
+  fun await(): T = this.stream.blockingFirst()
 }
