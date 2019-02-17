@@ -5,17 +5,11 @@
 
 package org.swiften.redux.android.sample
 
-import kotlinx.coroutines.async
-import org.swiften.kotlinfp.Option
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.mapAsync
-import org.swiften.redux.saga.common.mapIgnoringNull
-import org.swiften.redux.saga.common.putInStore
-import org.swiften.redux.saga.common.thenMightAsWell
-import org.swiften.redux.saga.common.thenNoMatterWhat
+import org.swiften.redux.saga.rx.SagaEffects.await
 import org.swiften.redux.saga.rx.SagaEffects.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.selectFromState
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestForKeys
@@ -100,16 +94,25 @@ object Redux {
 
   object Saga {
     @Suppress("MemberVisibilityCanBePrivate")
-    fun searchSaga(api: ISearchAPI<MusicResult?>): SagaEffect<Any> {
-      return takeLatestForKeys(setOf(Action.Search.UPDATE_LIMIT, Action.Search.UPDATE_QUERY)) { _ ->
-        selectFromState(State::class) {
-          Option.wrap(it.search.query).zipWithNullable(it.search.limit) { a, b -> a to b.count }
+    fun searchSaga(api: ISearchAPI<MusicResult?>): SagaEffect<Unit> {
+      return takeLatestForKeys(setOf(Action.Search.UPDATE_LIMIT, Action.Search.UPDATE_QUERY)) {
+        await { input ->
+          val searchState = selectFromState(State::class) { it.search }.await(input)
+          val query = searchState.query
+          val limit = (searchState.limit ?: ResultLimit.FIVE).count
+
+          try {
+            if (query != null) {
+              putInStore(Action.Search.SetLoading(true)).await(input)
+              val result = api.searchMusicStore(query, limit)
+              putInStore(Action.UpdateMusicResult(result)).await(input)
+            }
+          } catch (e: Throwable) {
+            println("Redux: not handling $e right now yet")
+          } finally {
+            putInStore(Action.Search.SetLoading(false)).await(input)
+          }
         }
-          .mapIgnoringNull { it.value }
-          .thenMightAsWell(putInStore(Action.Search.SetLoading(true)))
-          .mapAsync { this.async { Option.wrap(api.searchMusicStore(it.first, it.second)) } }
-          .putInStore { Action.UpdateMusicResult(it.value) }
-          .thenNoMatterWhat(putInStore(Action.Search.SetLoading(false)))
       }.debounceTake(1000)
     }
 
