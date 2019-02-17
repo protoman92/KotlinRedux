@@ -131,8 +131,8 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val sourceOutput2 = just(2).selectFromState(State::class) { 4 }.invoke(State())
 
     // When && Then
-    assertEquals(sourceOutput1.nextValue(this.timeout), 3)
-    assertEquals(sourceOutput2.nextValue(this.timeout), 4)
+    assertEquals(sourceOutput1.await(this.timeout), 3)
+    assertEquals(sourceOutput2.await(this.timeout), 4)
   }
 
   @Test

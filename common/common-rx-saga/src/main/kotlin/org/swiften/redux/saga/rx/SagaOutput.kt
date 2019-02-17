@@ -108,11 +108,13 @@ class SagaOutput<T : Any>(
 
   override fun timeout(millis: Long) = this.with(this.stream.timeout(millis, TimeUnit.MILLISECONDS))
 
-  override fun nextValue(timeoutMillis: Long) = try {
-    this.stream
-      .timeout(timeoutMillis, TimeUnit.MILLISECONDS)
-      .blockingFirst()
-  } catch (e: Throwable) { null }
+  override fun await(): T = this.stream.blockingFirst()
+
+  override fun await(defaultValue: T): T = this.stream.blockingFirst(defaultValue)
+
+  override fun await(timeoutMillis: Long): T = this.stream
+    .timeout(timeoutMillis, TimeUnit.MILLISECONDS)
+    .blockingFirst()
 
   override fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit) {
     this.disposable.add(this.stream.subscribe(onValue, onError))

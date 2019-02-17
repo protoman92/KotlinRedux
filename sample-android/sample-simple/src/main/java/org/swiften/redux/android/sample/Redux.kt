@@ -101,7 +101,7 @@ object Redux {
   object Saga {
     @Suppress("MemberVisibilityCanBePrivate")
     fun searchSaga(api: ISearchAPI<MusicResult?>): SagaEffect<Any> {
-      return takeLatestForKeys(setOf(Action.Search.UPDATE_LIMIT, Action.Search.UPDATE_QUERY)) { a ->
+      return takeLatestForKeys(setOf(Action.Search.UPDATE_LIMIT, Action.Search.UPDATE_QUERY)) { _ ->
         selectFromState(State::class) {
           Option.wrap(it.search.query).zipWithNullable(it.search.limit) { a, b -> a to b.count }
         }

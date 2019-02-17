@@ -185,11 +185,24 @@ interface ISagaOutput<T> where T : Any {
   fun timeout(millis: Long): ISagaOutput<T>
 
   /**
+   * Wait for the first [T] that arrives.
+   * @return A [T] instance.
+   */
+  fun await(): T
+
+  /**
+   * Wait for the first [T] that arrives, or default to [defaultValue] if the stream is empty.
+   * @param defaultValue A [T] instance.
+   * @return A [T] instance.
+   */
+  fun await(defaultValue: T): T
+
+  /**
    * Get the next [T], but only if it arrives before [timeoutMillis].
    * @param timeoutMillis Timeout time in milliseconds.
-   * @return An [ISagaOutput] instance.
+   * @return A nullable [T] instance.
    */
-  fun nextValue(timeoutMillis: Long): T?
+  fun await(timeoutMillis: Long): T
 
   /**
    * Subscribe to values with [onValue], and error with [onError].

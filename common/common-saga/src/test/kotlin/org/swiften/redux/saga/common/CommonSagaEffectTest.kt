@@ -338,6 +338,6 @@ abstract class CommonSagaEffectTest {
       .invoke()
 
     // When && Then
-    assertEquals(finalOutput.nextValue(this.timeout), 100)
+    assertEquals(finalOutput.await(this.timeout), 100)
   }
 }
