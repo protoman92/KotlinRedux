@@ -289,7 +289,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
     val source = await { input ->
       putInStore(ProgressAction(true)).await(input)
-      val value = selectFromState(State::class) { it.value }.await(input, 0)
+      val value = selectFromState(State::class) { it.value }.await(input)
       val newValue = value * 2
       putInStore(ValueAction(newValue)).await(input)
       putInStore(ProgressAction(false)).await(input)
