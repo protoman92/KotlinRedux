@@ -2,7 +2,7 @@
 
 # putInStore
 
-`fun <P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> putInStore(actionCreator: (`[`P`](put-in-store.md#P)`) -> `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`): `[`ISagaEffectTransformer`](../-i-saga-effect-transformer.md)`<`[`P`](put-in-store.md#P)`, `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L149)
+`fun <P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> putInStore(actionCreator: (`[`P`](put-in-store.md#P)`) -> `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`): (`[`SagaEffect`](../-saga-effect/index.md)`<`[`P`](put-in-store.md#P)`>) -> `[`PutEffect`](../-put-effect/index.md)`<`[`P`](put-in-store.md#P)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L149)
 
 Create a [PutEffect](../-put-effect/index.md).
 

@@ -2,7 +2,7 @@
 
 # LoggingMiddleware
 
-`internal class LoggingMiddleware<GState> : `[`IMiddleware`](../-i-middleware.md)`<`[`GState`](index.md#GState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/LoggingMiddleware.kt#L20)
+`internal class LoggingMiddleware<GState> : `[`IMiddleware`](../-i-middleware.md)`<`[`GState`](index.md#GState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/LoggingMiddleware.kt#L19)
 
 [IMiddleware](../-i-middleware.md) implementation that supports logging. Specify [logger](logger.md) to customize how events
 are formatted.

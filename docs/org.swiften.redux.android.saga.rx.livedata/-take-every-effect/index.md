@@ -2,7 +2,7 @@
 
 # TakeEveryEffect
 
-`internal class TakeEveryEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-livedata-rx-saga/src/main/java/org/swiften/redux/android/saga/rx/livedata/TakeEveryEffect.kt#L27)
+`internal class TakeEveryEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-livedata-rx-saga/src/main/java/org/swiften/redux/android/saga/rx/livedata/TakeEveryEffect.kt#L28)
 
 [SagaEffect](../../org.swiften.redux.saga.common/-saga-effect/index.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) streams all values emitted by the [LiveData](#) created by
 [creator](creator.md). Beware that [LiveData.observeForever](#) and [LiveData.removeObserver](#) must happen on

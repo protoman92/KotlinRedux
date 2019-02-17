@@ -2,7 +2,7 @@
 
 # RxTakeEffect
 
-`internal abstract class RxTakeEffect<Action : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`, P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`TakeEffect`](../../org.swiften.redux.saga.common/-take-effect/index.md)`<`[`Action`](index.md#Action)`, `[`P`](index.md#P)`, `[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/RxTakeEffect.kt#L25)
+`internal abstract class RxTakeEffect<Action : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`, P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`TakeEffect`](../../org.swiften.redux.saga.common/-take-effect/index.md)`<`[`Action`](index.md#Action)`, `[`P`](index.md#P)`, `[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/RxTakeEffect.kt#L26)
 
 [PublishProcessor](#)-based implementation of [TakeEffect](../../org.swiften.redux.saga.common/-take-effect/index.md).
 

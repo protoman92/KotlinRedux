@@ -2,7 +2,7 @@
 
 # thenSwitchTo
 
-`fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R3 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> thenSwitchTo(source2: `[`ISagaEffect`](../-i-saga-effect.md)`<`[`R2`](then-switch-to.md#R2)`>, combiner: (`[`R`](then-switch-to.md#R)`, `[`R2`](then-switch-to.md#R2)`) -> `[`R3`](then-switch-to.md#R3)`): `[`ISagaEffectTransformer`](../-i-saga-effect-transformer.md)`<`[`R`](then-switch-to.md#R)`, `[`R3`](then-switch-to.md#R3)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L175)
+`fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R3 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> thenSwitchTo(source2: `[`ISagaEffect`](../-i-saga-effect.md)`<`[`R2`](then-switch-to.md#R2)`>, combiner: (`[`R`](then-switch-to.md#R)`, `[`R2`](then-switch-to.md#R2)`) -> `[`R3`](then-switch-to.md#R3)`): `[`ISagaEffectTransformer`](../-i-saga-effect-transformer.md)`<`[`R`](then-switch-to.md#R)`, `[`R3`](then-switch-to.md#R3)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L174)
 
 Create a [ThenEffect](../-then-effect/index.md) instance.
 

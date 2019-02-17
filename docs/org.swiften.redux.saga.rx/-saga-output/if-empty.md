@@ -2,7 +2,7 @@
 
 # ifEmpty
 
-`fun ifEmpty(defaultValue: `[`T`](index.md#T)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/RxSaga.kt#L99)
+`fun ifEmpty(defaultValue: `[`T`](index.md#T)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L115)
 
 Overrides [ISagaOutput.ifEmpty](../../org.swiften.redux.saga.common/-i-saga-output/if-empty.md)
 
@@ -15,7 +15,7 @@ Emit [defaultValue](../../org.swiften.redux.saga.common/-i-saga-output/if-empty.
 **Return**
 An [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) instance.
 
-`fun ifEmpty(secondOutput: `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](index.md#T)`>): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/RxSaga.kt#L103)
+`fun ifEmpty(secondOutput: `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](index.md#T)`>): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L119)
 
 Overrides [ISagaOutput.ifEmpty](../../org.swiften.redux.saga.common/-i-saga-output/if-empty.md)
 

@@ -2,7 +2,7 @@
 
 # ThunkMiddleware
 
-`internal class ThunkMiddleware<GExt> : `[`IMiddleware`](../../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-thunk/src/main/kotlin/org/swiften/redux/thunk/ThunkMiddleware.kt#L58)
+`internal class ThunkMiddleware<GExt> : `[`IMiddleware`](../../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-thunk/src/main/kotlin/org/swiften/redux/thunk/ThunkMiddleware.kt#L59)
 
 [IMiddleware](../../org.swiften.redux.core/-i-middleware.md) implementation that handles [IReduxThunkAction](../-i-redux-thunk-action/index.md).
 

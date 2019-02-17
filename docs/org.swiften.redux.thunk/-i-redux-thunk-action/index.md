@@ -2,7 +2,7 @@
 
 # IReduxThunkAction
 
-`interface IReduxThunkAction<GState, GExt, Param> : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-thunk/src/main/kotlin/org/swiften/redux/thunk/ThunkMiddleware.kt#L47)
+`interface IReduxThunkAction<GState, GExt, Param> : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-thunk/src/main/kotlin/org/swiften/redux/thunk/ThunkMiddleware.kt#L48)
 
 A thunk action represents an [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) whose [payload](payload.md) is a function that can be resolved
 asynchronously. We can use these functions to perform simple async logic, such as fetching data

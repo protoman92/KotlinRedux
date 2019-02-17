@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`EnhancedReduxStore(store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>, dispatch: (`[`IReduxAction`](../-i-redux-action.md)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`
+`EnhancedReduxStore(store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>, dispatch: `[`IActionDispatcher`](../-i-action-dispatcher.md)`)`
 
 Enhance a [store](store.md) by overriding its [IReduxStore.dispatch](../-i-dispatcher-provider/dispatch.md) with [dispatch](dispatch.md).
 

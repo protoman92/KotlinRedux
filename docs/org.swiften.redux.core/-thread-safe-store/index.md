@@ -2,7 +2,7 @@
 
 # ThreadSafeStore
 
-`class ThreadSafeStore<GState> : `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/ThreadSafeStore.kt#L20)
+`class ThreadSafeStore<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/ThreadSafeStore.kt#L20)
 
 [ThreadSafeStore](./index.md) is a [IReduxStore](../-i-redux-store.md) implementation that supports thread-safe accesses and
 modifications. Pass in the initial [state](state.md) and the store's [reducer](reducer.md) in the constructor.

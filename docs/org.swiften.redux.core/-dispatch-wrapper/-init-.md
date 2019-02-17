@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`DispatchWrapper(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, dispatch: `[`IActionDispatcher`](../-i-action-dispatcher.md)`)`
+`private DispatchWrapper(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, dispatch: `[`IActionDispatcher`](../-i-action-dispatcher.md)`)`
 
 Use this [DispatchWrapper](index.md) to track the ordering of [dispatch](dispatch.md) wrapping using [id](id.md).
 

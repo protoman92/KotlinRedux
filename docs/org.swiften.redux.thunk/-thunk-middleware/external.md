@@ -2,7 +2,7 @@
 
 # external
 
-`private val external: `[`GExt`](index.md#GExt) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-thunk/src/main/kotlin/org/swiften/redux/thunk/ThunkMiddleware.kt#L59)
+`private val external: `[`GExt`](index.md#GExt) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-thunk/src/main/kotlin/org/swiften/redux/thunk/ThunkMiddleware.kt#L60)
 
 The external [GExt](index.md#GExt) argument.
 
