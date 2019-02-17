@@ -146,8 +146,7 @@ object CommonEffects {
    * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <P> putInStore(actionCreator: (P) -> IReduxAction):
-    (SagaEffect<P>) -> SingleSagaEffect<Any> where P : Any  {
+  fun <P> putInStore(actionCreator: (P) -> IReduxAction): (SagaEffect<P>) -> PutEffect<P> where P : Any  {
     return { PutEffect(it, actionCreator) }
   }
 

@@ -16,11 +16,19 @@ import org.swiften.redux.core.IReduxStore
  * @param source The source [ISagaEffect].
  * @param actionCreator Function that creates [IReduxAction] from [P].
  */
-internal class PutEffect<P>(
+class PutEffect<P>(
   private val source: ISagaEffect<P>,
   private val actionCreator: (P) -> IReduxAction
 ) : SingleSagaEffect<Any>() where P : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<Any> {
     return this.source.invoke(p1).map { p1.dispatch(this@PutEffect.actionCreator(it)) as Any }
   }
+
+  /**
+   * Since the result type of [this] is [Any], we can have an [await] method that does not require
+   * default value.
+   * @param input A [SagaInput] instance.
+   * @return [Any] value.
+   */
+  fun await(input: SagaInput): Any = this.await(input, {})
 }
