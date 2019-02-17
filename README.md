@@ -228,7 +228,8 @@ class MainApplication : Application() {
 As I was saying, every stroke on the keyboard now sends a **Redux.Action.SetSearchQuery** action to the Redux store. All of the store's middlewares now can intercept this **IReduxAction** to do their funny businesses. One such middleware is the **Saga** middleware, which is the recommended approach to tackling asynchronous work in a Redux system:
 
 ```java
-fun performSearch(api: ISearchAPI) {
+// Declarative style.
+fun performSearch(api: ISearchAPI): SagaEffect<Any> {
   // Catch all SetSearchQuery actions with a takeLatest (same idea as RxJava.switchMap),
   // then perform async logic.
   return takeLatest(Redux.Action.SetSearchQuery::class, { it.query }) { query ->
@@ -237,6 +238,27 @@ fun performSearch(api: ISearchAPI) {
       .mapAsync { q -> this.async { api.search(q) } }               // Perform a search.
       .putInStore { Redux.Action.SetSearchResults(it) }             // Put results back in store.
       .thenNoMatterWhat(putInStore(Redux.Action.SetLoading(false))) // Disable loading no matter what.
+  }
+}
+
+// Imperative style. This style may be cleaner if the flow is complicated, and is preferred
+// because it allows clean try - catch - finally.
+fun performSearch(api: ISearchAPI): SagaEffect<Unit> {
+  // Catch all SetSearchQuery actions with a takeLatest (same idea as RxJava.switchMap),
+  // then perform async logic.
+  return takeLatest(Redux.Action.SetSearchQuery::class, { it.query }) { query ->
+    await { input ->
+      putInStore(Redux.Action.SetLoading(true)).await(input)
+
+      try {
+        val results = api.search(query)
+        putInStore(Redux.Action.SetSearchResults(results)).await(input)
+      } catch (e) {
+        putInStore(Redux.Action.SetError(e)).await(input)
+      } finally {
+        putInStore(Redux.Action.SetLoading(false)).await(input)
+      }
+    }
   }
 }
 ```
