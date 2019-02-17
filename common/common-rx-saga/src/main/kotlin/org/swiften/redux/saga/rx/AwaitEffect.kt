@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import org.swiften.redux.saga.common.ISagaOutput
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaInput
+import org.swiften.redux.saga.common.SingleSagaEffect
 
 /** Created by viethai.pham on 2019/02/17 */
 /** Produces a value using [SagaInput] and [ISagaOutput.awaitFor]. */
@@ -21,7 +22,7 @@ typealias IAwaitCreator<R> = suspend CoroutineScope.(SagaInput) -> R
  * @param R The result emission type.
  * @param creator An [IAwaitCreator] instance.
  */
-internal class AwaitEffect<R>(private val creator: IAwaitCreator<R>) : SagaEffect<R>() where R : Any {
+internal class AwaitEffect<R>(private val creator: IAwaitCreator<R>) : SingleSagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
     return SagaOutput.from(p1.scope) { this@AwaitEffect.creator(this, p1) }
   }

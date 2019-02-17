@@ -14,6 +14,7 @@ import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.ISagaEffectTransformer
 import org.swiften.redux.saga.common.ITakeEffectTransformer
 import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.common.SingleSagaEffect
 import org.swiften.redux.saga.common.TakeEffect
 import kotlin.reflect.KClass
 
@@ -24,9 +25,11 @@ object SagaEffects {
    * Create an [AwaitEffect] instance.
    * @param R The result emission type.
    * @param creator See [AwaitEffect.creator].
-   * @return A [SagaEffect] instance.
+   * @return A [SingleSagaEffect] instance.
    */
-  fun <R> await(creator: IAwaitCreator<R>) : SagaEffect<R> where R : Any = AwaitEffect(creator)
+  fun <R> await(creator: IAwaitCreator<R>) : SingleSagaEffect<R> where R : Any {
+    return AwaitEffect(creator)
+  }
 
   /**
    * Create a [CallEffect] instance.
@@ -54,30 +57,30 @@ object SagaEffects {
    * Create a [JustEffect].
    * @param R The result emission type.
    * @param value See [JustEffect.value].
-   * @return A [SagaEffect] instance.
+   * @return A [SingleSagaEffect] instance.
    */
   @JvmStatic
-  fun <R> just(value: R): SagaEffect<R> where R : Any = JustEffect(value)
+  fun <R> just(value: R): SingleSagaEffect<R> where R : Any = JustEffect(value)
 
   /**
    * Call [CommonEffects.putInStore] with [SagaEffects.just].
    * @param P The source emission type.
    * @param value See [JustEffect.value].
    * @param actionCreator See [CommonEffects.putInStore].
-   * @return A [SagaEffect] instance.
+   * @return A [SingleSagaEffect] instance.
    */
   @JvmStatic
-  fun <P> putInStore(value: P, actionCreator: (P) -> IReduxAction): SagaEffect<Any> where P : Any {
+  fun <P> putInStore(value: P, actionCreator: (P) -> IReduxAction): SingleSagaEffect<Any> where P : Any {
     return CommonEffects.putInStore(actionCreator)(this.just(value))
   }
 
   /**
    * Call [putInStore] with [action].
    * @param action An [IReduxAction] instance.
-   * @return A [SagaEffect] instance.
+   * @return A [SingleSagaEffect] instance.
    */
   @JvmStatic
-  fun putInStore(action: IReduxAction): SagaEffect<Any> = this.putInStore(Unit) { action }
+  fun putInStore(action: IReduxAction): SingleSagaEffect<Any> = this.putInStore(Unit) { action }
 
   /**
    * Create a [SelectEffect].
@@ -85,11 +88,11 @@ object SagaEffects {
    * @param R The result emission type.
    * @param cls See [SelectEffect.cls].
    * @param selector See [SelectEffect.selector].
-   * @return A [SagaEffect] instance.
+   * @return A [SingleSagaEffect] instance.
    */
   @JvmStatic
   fun <State, R> selectFromState(cls: Class<State>, selector: (State) -> R):
-    SagaEffect<R> where R : Any {
+    SingleSagaEffect<R> where R : Any {
     return SelectEffect(cls, selector)
   }
 
@@ -99,11 +102,11 @@ object SagaEffects {
    * @param R The result emission type.
    * @param cls See [SelectEffect.cls].
    * @param selector See [SelectEffect.selector].
-   * @return A [SagaEffect] instance.
+   * @return A [SingleSagaEffect] instance.
    */
   @JvmStatic
   fun <State, R> selectFromState(cls: KClass<State>, selector: (State) -> R):
-    SagaEffect<R> where State : Any, R : Any {
+    SingleSagaEffect<R> where State : Any, R : Any {
     return this.selectFromState(cls.java, selector)
   }
 

@@ -220,7 +220,7 @@ interface ISagaOutput<T> where T : Any {
 
 /**
  * Abstract class to allow better interfacing with Java.
- * @param R The type of emission value.
+ * @param R The result emission type.
  */
 abstract class SagaEffect<R> : ISagaEffect<R> where R : Any {
   /**
@@ -255,5 +255,32 @@ abstract class SagaEffect<R> : ISagaEffect<R> where R : Any {
    */
   fun <R2> transform(transformer: ISagaEffectTransformer<R, R2>): SagaEffect<R2> where R2 : Any {
     return transformer(this)
+  }
+}
+
+/**
+ * Represents a [SagaEffect] whose [ISagaOutput] only produces a single [R] instance, instead of
+ * a stream.
+ * @param R The result emission type.
+ */
+abstract class SingleSagaEffect<R> : SagaEffect<R>() where R : Any {
+  /**
+   * See [ISagaOutput.await]. We invoke [this] with [input] then call [ISagaOutput.await].
+   * @param input A [SagaInput] instance.
+   * @param defaultValue A [R] instance.
+   * @return A [R] instance.
+   */
+  fun await(input: SagaInput, defaultValue: R): R {
+    return this.invoke(input).await(defaultValue)
+  }
+
+  /**
+   * See [ISagaOutput.await]. We invoke [this] with [input] then call [ISagaOutput.awaitFor].
+   * @param input A [SagaInput] instance.
+   * @param timeoutMillis Timeout time in milliseconds.
+   * @return A [R] instance.
+   */
+  fun awaitFor(input: SagaInput, timeoutMillis: Long): R {
+    return this.invoke(input).awaitFor(timeoutMillis)
   }
 }
