@@ -22,7 +22,7 @@ internal interface IAppCompatActivity : LifecycleOwner {
  * @param activity An [AppCompatActivity] instance.
  */
 class AppCompatActivityWrapper(private val activity: AppCompatActivity) : IAppCompatActivity {
-  override val supportFragmentManager = this.activity.supportFragmentManager
+  override val supportFragmentManager: FragmentManager = this.activity.supportFragmentManager
   override fun getLifecycle() = this.activity.lifecycle
   override fun toString() = this.activity.toString()
 }

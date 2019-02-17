@@ -17,7 +17,8 @@ import kotlin.concurrent.withLock
  */
 class ThreadSafeDispatcher(
   private val lock: ReentrantLock = ReentrantLock(),
-  private val dispatch: IActionDispatcher) : IActionDispatcher {
+  private val dispatch: IActionDispatcher
+) : IActionDispatcher {
   override fun invoke(p1: IReduxAction): IAsyncJob {
     return this.lock.withLock { this@ThreadSafeDispatcher.dispatch(p1) }
   }

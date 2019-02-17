@@ -58,7 +58,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
    * Since we will be manually injecting prop into [VH] instances, we will need to collect their
    * [ReduxSubscription] here.
    */
-  val vhSubscription = CompositeReduxSubscription("$this${Date().time}")
+  val vhSubscription = CompositeReduxSubscription("${this.adapter}${Date().time}")
 
   /**
    * Since we are only calling [ListAdapter.submitList] when [reduxProp] arrives, the

@@ -13,7 +13,7 @@ package org.swiften.redux.core
  */
 class DispatchWrapper private constructor (val id: String, val dispatch: IActionDispatcher) {
   companion object {
-    const val ROOT_WRAPPER = "root"
+    private const val ROOT_WRAPPER = "root"
 
     /**
      * Create the root [DispatchWrapper] with an [IActionDispatcher].
@@ -38,4 +38,3 @@ class DispatchWrapper private constructor (val id: String, val dispatch: IAction
 
   override fun toString() = this.id
 }
-

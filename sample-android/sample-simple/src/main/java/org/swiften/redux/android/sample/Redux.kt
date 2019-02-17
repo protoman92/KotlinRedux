@@ -11,7 +11,6 @@ import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.doOnValue
 import org.swiften.redux.saga.common.mapAsync
 import org.swiften.redux.saga.common.mapIgnoringNull
 import org.swiften.redux.saga.common.putInStore
@@ -102,7 +101,7 @@ object Redux {
   object Saga {
     @Suppress("MemberVisibilityCanBePrivate")
     fun searchSaga(api: ISearchAPI<MusicResult?>): SagaEffect<Any> {
-      return takeLatestForKeys(setOf(Action.Search.UPDATE_LIMIT, Action.Search.UPDATE_QUERY)) { _ ->
+      return takeLatestForKeys(setOf(Action.Search.UPDATE_LIMIT, Action.Search.UPDATE_QUERY)) { a ->
         selectFromState(State::class) {
           Option.wrap(it.search.query).zipWithNullable(it.search.limit) { a, b -> a to b.count }
         }

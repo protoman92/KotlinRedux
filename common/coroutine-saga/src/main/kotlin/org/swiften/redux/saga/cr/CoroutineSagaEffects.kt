@@ -40,7 +40,7 @@ inline fun <State, reified Action, P, R> ReduxSagaEffects.takeEveryAction(
   crossinline extractor: Function1<Action, P?>,
   noinline creator: Function1<P, ReduxSagaEffect<State, R>>,
   options: TakeEffectOptions = TakeEffectOptions()
-) where Action: IReduxAction = this.takeEvery(
+) where Action : IReduxAction = this.takeEvery(
   {
     when (it) {
       is Action -> extractor(it); else -> null
@@ -62,7 +62,7 @@ inline fun <State, reified Action, P, R> ReduxSagaEffects.takeLatestAction(
   crossinline extractor: Function1<Action, P?>,
   noinline creator: Function1<P, ReduxSagaEffect<State, R>>,
   options: TakeEffectOptions = TakeEffectOptions()
-) where Action: IReduxAction = this.takeLatest(
+) where Action : IReduxAction = this.takeLatest(
   { when (it) { is Action -> extractor(it); else -> null } },
   creator, options
 )

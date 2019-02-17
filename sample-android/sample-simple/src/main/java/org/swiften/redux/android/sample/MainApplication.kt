@@ -12,9 +12,9 @@ import org.swiften.redux.android.sample.Redux.State
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
-import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
+import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
 
 /** Created by haipham on 26/1/19 */
@@ -27,6 +27,7 @@ class MainApplication : Application() {
     val repository = Repository(Klaxon(), api)
 
     val store = applyMiddlewares<Redux.State>(
+      createAsyncMiddleware(),
       createSagaMiddleware(Redux.Saga.allSagas(repository)),
       createAsyncMiddleware()
     )(FinalStore(State(), Redux.Reducer))

@@ -41,7 +41,7 @@ class ReduxSagaOutput<T> internal constructor(
     scope: CoroutineScope,
     channel: ReceiveChannel<T>,
     onAction: IReduxDispatcher
-  ): this (creator.javaClass.simpleName, scope, channel, onAction)
+  ) : this (creator.javaClass.simpleName, scope, channel, onAction)
 
   internal var source: ReduxSagaOutput<*>? = null
   private var onDispose: () -> Unit = { }

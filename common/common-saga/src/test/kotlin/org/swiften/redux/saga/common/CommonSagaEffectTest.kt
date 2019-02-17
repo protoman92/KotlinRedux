@@ -94,7 +94,7 @@ abstract class CommonSagaEffectTest {
 
     // When
     actualValues.forEach {
-      if (it % 3 ==  0)
+      if (it % 3 == 0)
         takeOutput.onAction(Action3(it))
       else if (it % 2 == 0)
         takeOutput.onAction(Action2(it))
