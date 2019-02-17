@@ -288,11 +288,11 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val dispatched = arrayListOf<IReduxAction>()
 
     val source = await { input ->
-      putInStore(ProgressAction(true)).invoke(input).await({})
+      putInStore(ProgressAction(true)).await(input, {})
       val value = selectFromState(State::class) { it.value }.invoke(input).await(0)
       val newValue = value * 2
-      putInStore(ValueAction(newValue)).invoke(input).await({})
-      putInStore(ProgressAction(false)).invoke(input).await({})
+      putInStore(ValueAction(newValue)).await(input, {})
+      putInStore(ProgressAction(false)).await(input, {})
     }
 
     // When
@@ -328,11 +328,11 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
       try {
         val newValue = api(value)
-        putInStore(ValueAction(newValue)).invoke(input).await({})
+        putInStore(ValueAction(newValue)).await(input, {})
       } catch (e: Throwable) {
-        putInStore(ErrorAction(e)).invoke(input).await({})
+        putInStore(ErrorAction(e)).await(input, {})
       } finally {
-        putInStore(ProgressAction(false)).invoke(input).await({})
+        putInStore(ProgressAction(false)).await(input, {})
       }
     }
 
