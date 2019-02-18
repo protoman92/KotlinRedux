@@ -11,7 +11,7 @@ import kotlin.concurrent.write
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-/** Created by haipham on 2019/19/01 */
+/** Created by haipham on 2019/01/19 */
 /**
  * Note that [notifier] passes along both the previous and upcoming [T] values
  * @param T The property type to be observed.
@@ -36,7 +36,7 @@ open class VetoableObservableProp<T>(
 }
 
 /**
- * Use this to avoid lateinit modifiers for [ReduxProp]
+ * Use this to avoid lateinit modifiers for [ReduxProp].
  * @param State See [ReduxProp.state].
  * @param Action See [ReduxProp.action].
  * @param notifier See [VetoableObservableProp.notifier].

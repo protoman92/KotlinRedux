@@ -16,6 +16,7 @@ import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.ReduxProp
@@ -41,7 +42,8 @@ open class BaseLifecycleTest {
   }
 
   class TestLifecycleOwner : LifecycleOwner,
-    IPropContainer<Int, Unit, Int, Unit>,
+    IPropContainer<Int, Unit>,
+    IPropLifecycleOwner<Int, Unit>,
     IPropMapper<Int, Unit, Int, Unit> by TestLifecycleOwner {
     companion object : IPropMapper<Int, Unit, Int, Unit> {
       override fun mapState(state: Int, outProp: Unit) = state
@@ -58,11 +60,16 @@ open class BaseLifecycleTest {
     val injectionCount get() = this.subscriptions.size
 
     @Suppress("UNCHECKED_CAST")
-    override fun <LState, OutProp, State, Action> inject(
+    override fun <LState, OutProp, View, State, Action> inject(
       outProp: OutProp,
-      view: IPropContainer<LState, OutProp, State, Action>,
+      view: View,
       mapper: IPropMapper<LState, OutProp, State, Action>
-    ): IReduxSubscription where LState : Any, State : Any, Action : Any {
+    ): IReduxSubscription where
+      LState : Any,
+      View : IPropContainer<State, Action>,
+      View : IPropLifecycleOwner<LState, OutProp>,
+      State : Any,
+      Action : Any {
       val lastState = this.lastState()
       val subscription = ReduxSubscription("$view") { view.afterPropInjectionEnds() }
       val state = mapper.mapState(lastState as LState, outProp)

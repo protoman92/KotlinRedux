@@ -15,6 +15,7 @@ import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ReduxProp
+import org.swiften.redux.ui.StaticProp
 
 /** Created by haipham on 2018/12/17 */
 /** Callback for use with [LifecycleObserver]. */
@@ -101,7 +102,8 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
   GState : LState,
   LState : Any,
   Owner : LifecycleOwner,
-  Owner : IPropContainer<LState, OutProp, State, Action>,
+  Owner : IPropContainer<State, Action>,
+  Owner : IPropLifecycleOwner<LState, OutProp>,
   State : Any,
   Action : Any {
   var subscription: IReduxSubscription? = null
@@ -115,7 +117,7 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
       subscription = inject(outProp,
-        object : IPropContainer<LState, OutProp, State, Action> by lifecycleOwner {
+        object : IPropContainer<State, Action>, IPropLifecycleOwner<LState, OutProp> {
           override var reduxProp: ReduxProp<State, Action>
             get() = lifecycleOwner.reduxProp
 
@@ -128,6 +130,14 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
               .let { lifecycleOwner.reduxProp = value }
 
           override fun toString() = lifecycleOwner.toString()
+
+          override fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>) {
+            lifecycleOwner.beforePropInjectionStarts(sp)
+          }
+
+          override fun afterPropInjectionEnds() {
+            lifecycleOwner.afterPropInjectionEnds()
+          }
         }, mapper)
     }
 

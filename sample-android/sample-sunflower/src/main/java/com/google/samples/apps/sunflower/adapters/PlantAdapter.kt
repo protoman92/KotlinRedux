@@ -33,6 +33,7 @@ import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProp
 
@@ -70,7 +71,8 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>() {
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Redux.State, IDependency, Plant, ViewHolder.A> {
+    IPropContainer<Plant, ViewHolder.A>,
+    IPropLifecycleOwner<Redux.State, IDependency> {
     class A(override val picasso: Picasso, val goToPlantDetail: (Int) -> Unit) : IPicassoProvider
 
     private val image: ImageView = itemView.findViewById(R.id.plant_item_image)

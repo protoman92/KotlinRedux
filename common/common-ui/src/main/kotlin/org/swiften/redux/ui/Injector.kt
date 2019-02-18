@@ -40,13 +40,10 @@ interface IPropLifecycleOwner<LState, OutProp> where LState : Any {
 
 /**
  * Represents a container for [ReduxProp].
- * @param LState The local state type that the global state must extend from.
- * @param OutProp Property as defined by a view's parent.
  * @param State See [ReduxProp.state].
  * @param Action See [ReduxProp.action].
  */
-interface IPropContainer<LState, OutProp, State, Action> : IPropLifecycleOwner<LState, OutProp>
-  where LState : Any, State : Any, Action : Any {
+interface IPropContainer<State, Action> where State : Any, Action : Any {
   var reduxProp: ReduxProp<State, Action>
 }
 
@@ -119,18 +116,24 @@ interface IPropInjector<GState> :
    * provided to handle such cases.
    * @param LState The local state type that [GState] must extend from.
    * @param OutProp Property as defined by [view]'s parent.
+   * @param View The [IPropContainer] instance that also implements [IPropLifecycleOwner].
    * @param State See [ReduxProp.state].
    * @param Action See [ReduxProp.action].
    * @param outProp An [OutProp] instance.
-   * @param view An [IPropContainer] instance.
+   * @param view An [View] instance.
    * @param mapper An [IPropMapper] instance.
    * @return An [IReduxSubscription] instance.
    */
-  fun <LState, OutProp, State, Action> inject(
+  fun <LState, OutProp, View, State, Action> inject(
     outProp: OutProp,
-    view: IPropContainer<LState, OutProp, State, Action>,
+    view: View,
     mapper: IPropMapper<LState, OutProp, State, Action>
-  ): IReduxSubscription where LState : Any, State : Any, Action : Any
+  ): IReduxSubscription where
+    LState : Any,
+    View : IPropContainer<State, Action>,
+    View : IPropLifecycleOwner<LState, OutProp>,
+    State : Any,
+    Action : Any
 }
 
 /**
@@ -147,11 +150,16 @@ open class PropInjector<GState : Any> protected constructor(
   IStateGetterProvider<GState> by store,
   IDeinitializerProvider by store {
   @Suppress("UNCHECKED_CAST")
-  override fun <LState, OutProp, State, Action> inject(
+  override fun <LState, OutProp, View, State, Action> inject(
     outProp: OutProp,
-    view: IPropContainer<LState, OutProp, State, Action>,
+    view: View,
     mapper: IPropMapper<LState, OutProp, State, Action>
-  ): IReduxSubscription where LState : Any, State : Any, Action : Any {
+  ): IReduxSubscription where
+    LState : Any,
+    View : IPropContainer<State, Action>,
+    View : IPropLifecycleOwner<LState, OutProp>,
+    State : Any,
+    Action : Any {
     /**
      * It does not matter what the id is, as long as it is unique. This is because we will be
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep
@@ -212,7 +220,7 @@ open class PropInjector<GState : Any> protected constructor(
  * @receiver An [IPropContainer] instance.
  * @return The [IReduxSubscription.id].
  */
-fun IPropContainer<*, *, *, *>.unsubscribeSafely(): String? {
+fun IPropContainer<*, *>.unsubscribeSafely(): String? {
   try {
     val subscription = this.reduxProp.subscription
     subscription.unsubscribe()

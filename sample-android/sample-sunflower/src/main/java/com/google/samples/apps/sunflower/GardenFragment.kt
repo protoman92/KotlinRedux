@@ -28,12 +28,14 @@ import kotlinx.android.synthetic.main.fragment_garden.garden_list
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
 
 class GardenFragment : Fragment(),
-  IPropContainer<Redux.State, GardenFragment.IDependency, GardenFragment.S, Unit> {
+  IPropContainer<GardenFragment.S, Unit>,
+  IPropLifecycleOwner<Redux.State, GardenFragment.IDependency> {
   interface IDependency : GardenPlantingAdapter.IDependency
 
   data class S(val gardenPlantingCount: Int)

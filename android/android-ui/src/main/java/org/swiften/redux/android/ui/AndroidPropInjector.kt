@@ -9,6 +9,7 @@ import org.swiften.redux.android.util.AndroidUtil
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.PropInjector
 import org.swiften.redux.ui.ReduxProp
@@ -26,12 +27,17 @@ class AndroidPropInjector<GState>(
   store: IReduxStore<GState>,
   private val runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner
 ) : PropInjector<GState>(store) where GState : Any {
-  override fun <LState, OutProp, State, Action> inject(
+  override fun <LState, OutProp, View, State, Action> inject(
     outProp: OutProp,
-    view: IPropContainer<LState, OutProp, State, Action>,
+    view: View,
     mapper: IPropMapper<LState, OutProp, State, Action>
-  ): IReduxSubscription where LState : Any, State : Any, Action : Any {
-    return super.inject(outProp, object : IPropContainer<LState, OutProp, State, Action> {
+  ): IReduxSubscription where
+    LState : Any,
+    View : IPropContainer<State, Action>,
+    View : IPropLifecycleOwner<LState, OutProp>,
+    State : Any,
+    Action : Any {
+    return super.inject(outProp, object : IPropContainer<State, Action>, IPropLifecycleOwner<LState, OutProp> {
       override var reduxProp: ReduxProp<State, Action>
         get() = view.reduxProp
         set(value) { this@AndroidPropInjector.runner { view.reduxProp = value } }
