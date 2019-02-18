@@ -17,6 +17,7 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
+import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
 import java.io.Serializable
@@ -24,7 +25,7 @@ import java.io.Serializable
 /** Created by haipham on 27/1/19 */
 class MainFragment : Fragment(),
   IPropContainer<MainFragment.S, MainFragment.A>,
-  IPropLifecycleOwner<MainFragment.ILocalState, Unit> {
+  IPropLifecycleOwner<MainFragment.ILocalState, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<ILocalState, Unit, S, A> {
     override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): A {
       return A { dispatch(Redux.Action.Main.UpdateSelectedPage(it)) }

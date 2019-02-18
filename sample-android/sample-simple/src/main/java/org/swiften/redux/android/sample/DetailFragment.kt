@@ -16,12 +16,13 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
+import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 
 /** Created by haipham on 27/1/19 */
 class DetailFragment : Fragment(),
   IPropContainer<DetailFragment.S, Unit>,
-  IPropLifecycleOwner<DetailFragment.ILocalState, Unit> {
+  IPropLifecycleOwner<DetailFragment.ILocalState, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<ILocalState, Unit, DetailFragment.S, Unit> {
     override fun mapState(state: ILocalState, outProp: Unit): S {
       return S(state.selectedTrack?.let { i -> state.musicResult?.results?.elementAtOrNull(i) })

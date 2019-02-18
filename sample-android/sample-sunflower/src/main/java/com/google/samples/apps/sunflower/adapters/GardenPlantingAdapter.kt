@@ -35,6 +35,7 @@ import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
+import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
 import java.text.SimpleDateFormat
@@ -57,7 +58,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     IPropContainer<ViewHolder.S, ViewHolder.A>,
-    IPropLifecycleOwner<Redux.State, PositionProp<IDependency>> {
+    IPropLifecycleOwner<Redux.State, PositionProp<IDependency>> by NoopPropLifecycleOwner() {
     data class S(val plantings: PlantAndGardenPlantings?)
     class A(override val picasso: Picasso, val goToPlantDetail: () -> Unit) : IPicassoProvider
 
