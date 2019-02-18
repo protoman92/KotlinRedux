@@ -5,6 +5,7 @@
 
 package org.swiften.redux.saga.rx
 
+import io.reactivex.Single
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -248,6 +249,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       just(query)
         .map { "unavailable$it" }
         .mapAsync { this.searchMusicStore(it) }
+        .mapSingle { Single.just(it) }
         .castValue<Any>()
         .catchError {}
     }.invoke()

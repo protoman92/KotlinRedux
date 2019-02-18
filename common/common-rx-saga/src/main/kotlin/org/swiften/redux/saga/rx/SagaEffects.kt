@@ -28,7 +28,7 @@ object SagaEffects {
    * @param creator See [AwaitEffect.creator].
    * @return A [SingleSagaEffect] instance.
    */
-  fun <R> await(creator: IAwaitCreator<R>) : SingleSagaEffect<R> where R : Any {
+  fun <R> await(creator: IAwaitCreator<R>): SingleSagaEffect<R> where R : Any {
     return AwaitEffect(creator)
   }
 

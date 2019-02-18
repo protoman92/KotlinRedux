@@ -25,8 +25,8 @@ class PutEffect<P>(
   }
 
   /**
-   * Since the result type of [this] is [Any], we can have an [await] method that does not require
-   * default value.
+   * Since the result type of this [SingleSagaEffect] is [Any], we can have an [await] method that
+   * does not require default value.
    * @param input A [SagaInput] instance.
    * @return [Any] value.
    */

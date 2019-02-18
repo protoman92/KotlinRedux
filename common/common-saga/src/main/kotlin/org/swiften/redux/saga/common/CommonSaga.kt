@@ -265,7 +265,8 @@ abstract class SagaEffect<R> : ISagaEffect<R> where R : Any {
  */
 abstract class SingleSagaEffect<R> : SagaEffect<R>() where R : Any {
   /**
-   * See [ISagaOutput.await]. We invoke [this] with [input] then call [ISagaOutput.await].
+   * See [ISagaOutput.await]. We invoke this [SingleSagaEffect] with [input] then call
+   * [ISagaOutput.await].
    * @param input A [SagaInput] instance.
    * @param defaultValue A [R] instance.
    * @return A [R] instance.
@@ -275,7 +276,8 @@ abstract class SingleSagaEffect<R> : SagaEffect<R>() where R : Any {
   }
 
   /**
-   * See [ISagaOutput.await]. We invoke [this] with [input] then call [ISagaOutput.awaitFor].
+   * See [ISagaOutput.await]. We invoke this [SingleSagaEffect] with [input] then call
+   * [ISagaOutput.await].
    * @param input A [SagaInput] instance.
    * @param timeoutMillis Timeout time in milliseconds.
    * @return A [R] instance.

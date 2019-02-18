@@ -36,7 +36,7 @@ class SagaOutput<T : Any>(
     fun <T> from(
       scope: CoroutineScope,
       creator: suspend CoroutineScope.() -> T
-    ) : ISagaOutput<T> where T : Any {
+    ): ISagaOutput<T> where T : Any {
       return SagaOutput(scope, scope.rxSingle { creator() }.toFlowable()) { EmptyJob }
     }
   }
