@@ -130,7 +130,9 @@ To start the Redux journey, make a **Fragment** (or anything that implements **L
 data class State(val query: String?)
 class Action(val updateQuery: (String?) -> Unit)
 
-class Fragment1 : Fragment(), IPropContainer<GlobalState, Unit, State, Action> {
+class Fragment1 : Fragment(),
+  IPropContainer<State, Action>,
+  IPropLifecycleOwner<GlobalState, Unit> {
   override var reduxProps by ObservableReduxProps<State, Action> { _, next ->
     println(next.state?.query)
   }
@@ -200,7 +202,9 @@ object Redux {
   }
 }
 
-class Fragment1 : Fragment(), IPropContainer<GlobalState, Unit, State, Action> {
+class Fragment1 : Fragment(),
+  IPropContainer<State, Action>,
+  IPropLifecycleOwner<GlobalState, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<GlobalState, Unit, State, Action> {
     // This function has access to the latest GlobalState every time the global
     // state is updated.
@@ -311,7 +315,9 @@ interface IPicassoProvider {
 data class State(val imageURL: String? = null)
 class Action(override val picasso: Picasso) : IPicassoProvider
 
-class Fragment2 : Fragment(), IPropContainer<GlobalState, IPicassoProvider, State, Action> {
+class Fragment2 : Fragment(),
+  IPropContainer<State, Action>,
+  IPropLifecycleOwner<GlobalState, IPicassoProvider> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<GlobalState, IPicassoProvider, State, Action> {
     ...
     override fun mapAction(dispatch: IActionDispatcher, outProp: IPicassoProvider): Action {
