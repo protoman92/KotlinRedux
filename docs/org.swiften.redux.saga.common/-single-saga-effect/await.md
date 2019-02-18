@@ -2,9 +2,10 @@
 
 # await
 
-`fun await(input: `[`SagaInput`](../-saga-input/index.md)`, defaultValue: `[`R`](index.md#R)`): `[`R`](index.md#R) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L273)
+`fun await(input: `[`SagaInput`](../-saga-input/index.md)`, defaultValue: `[`R`](index.md#R)`): `[`R`](index.md#R) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L274)
 
-See [ISagaOutput.await](../-i-saga-output/await.md). We invoke [this](#) with [input](await.md#org.swiften.redux.saga.common.SingleSagaEffect$await(org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.SingleSagaEffect.R)/input) then call [ISagaOutput.await](../-i-saga-output/await.md).
+See [ISagaOutput.await](../-i-saga-output/await.md). We invoke this [SingleSagaEffect](index.md) with [input](await.md#org.swiften.redux.saga.common.SingleSagaEffect$await(org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.SingleSagaEffect.R)/input) then call
+[ISagaOutput.await](../-i-saga-output/await.md).
 
 ### Parameters
 

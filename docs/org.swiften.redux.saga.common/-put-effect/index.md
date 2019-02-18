@@ -32,15 +32,15 @@ using [actionCreator](action-creator.md).
 
 | Name | Summary |
 |---|---|
-| [await](await.md) | `fun await(input: `[`SagaInput`](../-saga-input/index.md)`): `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)<br>Since the result type of [this](#) is [Any](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html), we can have an [await](await.md) method that does not require default value. |
+| [await](await.md) | `fun await(input: `[`SagaInput`](../-saga-input/index.md)`): `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)<br>Since the result type of this [SingleSagaEffect](../-single-saga-effect/index.md) is [Any](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html), we can have an [await](await.md) method that does not require default value. |
 | [invoke](invoke.md) | `fun invoke(p1: `[`SagaInput`](../-saga-input/index.md)`): `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` |
 
 ### Inherited Functions
 
 | Name | Summary |
 |---|---|
-| [await](../-single-saga-effect/await.md) | `fun await(input: `[`SagaInput`](../-saga-input/index.md)`, defaultValue: `[`R`](../-single-saga-effect/index.md#R)`): `[`R`](../-single-saga-effect/index.md#R)<br>See [ISagaOutput.await](../-i-saga-output/await.md). We invoke [this](#) with [input](../-single-saga-effect/await.md#org.swiften.redux.saga.common.SingleSagaEffect$await(org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.SingleSagaEffect.R)/input) then call [ISagaOutput.await](../-i-saga-output/await.md). |
-| [awaitFor](../-single-saga-effect/await-for.md) | `fun awaitFor(input: `[`SagaInput`](../-saga-input/index.md)`, timeoutMillis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`R`](../-single-saga-effect/index.md#R)<br>See [ISagaOutput.await](../-i-saga-output/await.md). We invoke [this](#) with [input](../-single-saga-effect/await-for.md#org.swiften.redux.saga.common.SingleSagaEffect$awaitFor(org.swiften.redux.saga.common.SagaInput, kotlin.Long)/input) then call [ISagaOutput.awaitFor](../-i-saga-output/await-for.md). |
+| [await](../-single-saga-effect/await.md) | `fun await(input: `[`SagaInput`](../-saga-input/index.md)`, defaultValue: `[`R`](../-single-saga-effect/index.md#R)`): `[`R`](../-single-saga-effect/index.md#R)<br>See [ISagaOutput.await](../-i-saga-output/await.md). We invoke this [SingleSagaEffect](../-single-saga-effect/index.md) with [input](../-single-saga-effect/await.md#org.swiften.redux.saga.common.SingleSagaEffect$await(org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.SingleSagaEffect.R)/input) then call [ISagaOutput.await](../-i-saga-output/await.md). |
+| [awaitFor](../-single-saga-effect/await-for.md) | `fun awaitFor(input: `[`SagaInput`](../-saga-input/index.md)`, timeoutMillis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`R`](../-single-saga-effect/index.md#R)<br>See [ISagaOutput.await](../-i-saga-output/await.md). We invoke this [SingleSagaEffect](../-single-saga-effect/index.md) with [input](../-single-saga-effect/await-for.md#org.swiften.redux.saga.common.SingleSagaEffect$awaitFor(org.swiften.redux.saga.common.SagaInput, kotlin.Long)/input) then call [ISagaOutput.await](../-i-saga-output/await.md). |
 
 ### Extension Functions
 

@@ -2,7 +2,7 @@
 
 # callback
 
-`private val callback: `[`ILifecycleCallback`](../-i-lifecycle-callback/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidLifecycle.kt#L43)
+`private val callback: `[`ILifecycleCallback`](../-i-lifecycle-callback/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidLifecycle.kt#L44)
 
 An [ILifecycleCallback](../-i-lifecycle-callback/index.md) instance.
 

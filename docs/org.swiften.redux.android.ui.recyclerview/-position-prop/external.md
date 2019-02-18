@@ -2,7 +2,7 @@
 
 # external
 
-`val external: `[`OutProp`](index.md#OutProp) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L39)
+`val external: `[`OutProp`](index.md#OutProp) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L40)
 
 An [OutProp](index.md#OutProp) instance.
 

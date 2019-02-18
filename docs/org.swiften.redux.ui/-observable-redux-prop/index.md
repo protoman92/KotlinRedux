@@ -4,7 +4,7 @@
 
 `class ObservableReduxProp<State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/ObservableProp.kt#L44)
 
-Use this to avoid lateinit modifiers for [ReduxProp](../-redux-prop/index.md)
+Use this to avoid lateinit modifiers for [ReduxProp](../-redux-prop/index.md).
 
 ### Parameters
 
@@ -18,4 +18,4 @@ Use this to avoid lateinit modifiers for [ReduxProp](../-redux-prop/index.md)
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `ObservableReduxProp(notifier: (`[`IVariableProp`](../-i-variable-prop/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>?, `[`IVariableProp`](../-i-variable-prop/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`<br>Use this to avoid lateinit modifiers for [ReduxProp](../-redux-prop/index.md) |
+| [&lt;init&gt;](-init-.md) | `ObservableReduxProp(notifier: (`[`IVariableProp`](../-i-variable-prop/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>?, `[`IVariableProp`](../-i-variable-prop/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`<br>Use this to avoid lateinit modifiers for [ReduxProp](../-redux-prop/index.md). |

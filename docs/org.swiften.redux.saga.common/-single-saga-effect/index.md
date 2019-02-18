@@ -21,8 +21,8 @@ a stream.
 
 | Name | Summary |
 |---|---|
-| [await](await.md) | `fun await(input: `[`SagaInput`](../-saga-input/index.md)`, defaultValue: `[`R`](index.md#R)`): `[`R`](index.md#R)<br>See [ISagaOutput.await](../-i-saga-output/await.md). We invoke [this](#) with [input](await.md#org.swiften.redux.saga.common.SingleSagaEffect$await(org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.SingleSagaEffect.R)/input) then call [ISagaOutput.await](../-i-saga-output/await.md). |
-| [awaitFor](await-for.md) | `fun awaitFor(input: `[`SagaInput`](../-saga-input/index.md)`, timeoutMillis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`R`](index.md#R)<br>See [ISagaOutput.await](../-i-saga-output/await.md). We invoke [this](#) with [input](await-for.md#org.swiften.redux.saga.common.SingleSagaEffect$awaitFor(org.swiften.redux.saga.common.SagaInput, kotlin.Long)/input) then call [ISagaOutput.awaitFor](../-i-saga-output/await-for.md). |
+| [await](await.md) | `fun await(input: `[`SagaInput`](../-saga-input/index.md)`, defaultValue: `[`R`](index.md#R)`): `[`R`](index.md#R)<br>See [ISagaOutput.await](../-i-saga-output/await.md). We invoke this [SingleSagaEffect](./index.md) with [input](await.md#org.swiften.redux.saga.common.SingleSagaEffect$await(org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.SingleSagaEffect.R)/input) then call [ISagaOutput.await](../-i-saga-output/await.md). |
+| [awaitFor](await-for.md) | `fun awaitFor(input: `[`SagaInput`](../-saga-input/index.md)`, timeoutMillis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`R`](index.md#R)<br>See [ISagaOutput.await](../-i-saga-output/await.md). We invoke this [SingleSagaEffect](./index.md) with [input](await-for.md#org.swiften.redux.saga.common.SingleSagaEffect$awaitFor(org.swiften.redux.saga.common.SagaInput, kotlin.Long)/input) then call [ISagaOutput.await](../-i-saga-output/await.md). |
 
 ### Inherited Functions
 

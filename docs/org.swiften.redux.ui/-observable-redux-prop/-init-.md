@@ -4,7 +4,7 @@
 
 `ObservableReduxProp(notifier: (`[`IVariableProp`](../-i-variable-prop/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>?, `[`IVariableProp`](../-i-variable-prop/index.md)`<`[`State`](index.md#State)`, `[`Action`](index.md#Action)`>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`
 
-Use this to avoid lateinit modifiers for [ReduxProp](../-redux-prop/index.md)
+Use this to avoid lateinit modifiers for [ReduxProp](../-redux-prop/index.md).
 
 ### Parameters
 
