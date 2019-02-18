@@ -13,6 +13,7 @@ import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ReduxProp
@@ -46,7 +47,8 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, PositionProp<OutProp>, VHState, VHAction>,
+  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
   VHState : Any,
   VHAction : Any {
   val wrappedAdapter = this.injectRecyclerAdapter(outProp, adapter, adapterMapper, vhMapper)
@@ -85,7 +87,8 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, OutProp, VHState, VHAction>,
+  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropLifecycleOwner<LState, OutProp>,
   VHState : Any,
   VHAction : Any {
   val wrappedAdapter = this.injectDiffedAdapter(outProp, adapter, adapterMapper, diffCallback)
@@ -128,7 +131,8 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, OutProp, VHState, VHAction>,
+  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropLifecycleOwner<LState, OutProp>,
   VHState : Any,
   VHAction : Any {
   return this.injectDiffedAdapter(outProp, lifecycleOwner, adapter, adapterMapper,

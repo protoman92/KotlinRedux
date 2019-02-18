@@ -32,6 +32,7 @@ import org.swiften.redux.android.ui.recyclerview.PositionProp
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ObservableReduxProp
@@ -55,7 +56,8 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Redux.State, PositionProp<IDependency>, ViewHolder.S, ViewHolder.A> {
+    IPropContainer<ViewHolder.S, ViewHolder.A>,
+    IPropLifecycleOwner<Redux.State, PositionProp<IDependency>> {
     data class S(val plantings: PlantAndGardenPlantings?)
     class A(override val picasso: Picasso, val goToPlantDetail: () -> Unit) : IPicassoProvider
 

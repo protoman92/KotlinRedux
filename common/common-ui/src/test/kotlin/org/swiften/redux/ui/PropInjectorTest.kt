@@ -43,7 +43,7 @@ open class PropInjectorTest {
     }
   }
 
-  internal class View : IPropContainer<S, Unit, S, A> {
+  internal class View : IPropContainer<S, A>, IPropLifecycleOwner<S, Unit> {
     override var reduxProp by ObservableReduxProp<S, A> { prev, next ->
       this.propCallback?.invoke(prev, next)
       this.propInjectionCount.incrementAndGet()

@@ -21,6 +21,7 @@ import org.robolectric.annotation.Config
 import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ObservableReduxProp
@@ -31,7 +32,8 @@ import java.util.concurrent.atomic.AtomicInteger
 @RunWith(RobolectricTestRunner::class)
 class RecycleAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IPropContainer<Int, PositionProp<Unit>, Int, Unit> {
+    IPropContainer<Int, Unit>,
+    IPropLifecycleOwner<Int, PositionProp<Unit>> {
     companion object : IPropMapper<Int, PositionProp<Unit>, Int, Unit> {
       override fun mapState(state: Int, outProp: PositionProp<Unit>) = state
       override fun mapAction(dispatch: IActionDispatcher, outProp: PositionProp<Unit>) = Unit

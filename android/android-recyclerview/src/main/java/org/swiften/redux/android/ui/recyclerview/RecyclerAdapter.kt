@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ReduxProp
@@ -54,7 +55,8 @@ abstract class DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHA
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, PositionProp<OutProp>, VHState, VHAction>,
+  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
   VHState : Any,
   VHAction : Any {
   protected val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
@@ -145,7 +147,8 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, PositionProp<OutProp>, VHState, VHAction>,
+  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
   VHState : Any,
   VHAction : Any {
   return object : DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHAction>(adapter) {

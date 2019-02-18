@@ -30,12 +30,14 @@ import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
 
 class PlantListFragment : Fragment(),
-  IPropContainer<Redux.State, PlantListFragment.IDependency, PlantListFragment.S, PlantListFragment.A> {
+  IPropContainer<PlantListFragment.S, PlantListFragment.A>,
+  IPropLifecycleOwner<Redux.State, PlantListFragment.IDependency> {
   interface IDependency : PlantAdapter.IDependency
 
   data class S(val plantCount: Int)

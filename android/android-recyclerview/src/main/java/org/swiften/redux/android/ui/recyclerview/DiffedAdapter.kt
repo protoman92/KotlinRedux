@@ -13,6 +13,7 @@ import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.ReduxProp
@@ -46,7 +47,8 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ) : ListAdapter<VHState, VH>(diffCallback),
-  IPropContainer<LState, OutProp, List<VHState>, VHAction> where
+  IPropContainer<List<VHState>, VHAction>,
+  IPropLifecycleOwner<LState, OutProp> where
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
@@ -158,7 +160,8 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : IPropContainer<LState, OutProp, VHState, VHAction>,
+  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropLifecycleOwner<LState, OutProp>,
   VHState : Any,
   VHAction : Any {
   val listAdapter = object : ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(adapter, diffCallback) {
