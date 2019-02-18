@@ -30,12 +30,13 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
+import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
 
 class GardenFragment : Fragment(),
   IPropContainer<GardenFragment.S, Unit>,
-  IPropLifecycleOwner<Redux.State, GardenFragment.IDependency> {
+  IPropLifecycleOwner<Redux.State, GardenFragment.IDependency> by NoopPropLifecycleOwner() {
   interface IDependency : GardenPlantingAdapter.IDependency
 
   data class S(val gardenPlantingCount: Int)

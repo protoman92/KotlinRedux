@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.core.ReduxSubscription
+import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -47,8 +48,8 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ) : ListAdapter<VHState, VH>(diffCallback),
-  IPropContainer<List<VHState>, VHAction>,
-  IPropLifecycleOwner<LState, OutProp> where
+  IPropLifecycleOwner<LState, OutProp> by NoopPropLifecycleOwner(),
+  IPropContainer<List<VHState>, VHAction> where
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,

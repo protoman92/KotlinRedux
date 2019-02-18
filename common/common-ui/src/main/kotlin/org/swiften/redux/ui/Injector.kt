@@ -25,17 +25,26 @@ import kotlin.concurrent.write
  */
 interface IPropLifecycleOwner<LState, OutProp> where LState : Any {
   /**
-   * This is called before [IPropInjector.inject] is called. Override the default implementation to
-   * catch this event.
+   * This is called before [IPropInjector.inject] is called.
    * @param sp A [StaticProp] instance.
    */
-  fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>) {}
+  fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>)
 
   /**
-   * This is called after [IReduxSubscription.unsubscribe] is called. Override the default
-   * implementation to catch this event.
+   * This is called after [IReduxSubscription.unsubscribe] is called.
    */
-  fun afterPropInjectionEnds() {}
+  fun afterPropInjectionEnds()
+}
+
+/**
+ * Use this class as a delegate for [IPropLifecycleOwner] if the target does not want to implement
+ * lifecycles.
+ * @param LState The local state type that the global state must extend from.
+ * @param OutProp Property as defined by a view's parent.
+ */
+class NoopPropLifecycleOwner<LState, OutProp> : IPropLifecycleOwner<LState, OutProp> where LState : Any {
+  override fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>) {}
+  override fun afterPropInjectionEnds() {}
 }
 
 /**

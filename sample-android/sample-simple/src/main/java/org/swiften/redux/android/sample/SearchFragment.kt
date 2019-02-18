@@ -28,6 +28,7 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
+import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
 
@@ -58,7 +59,7 @@ class SearchAdapter : ReduxRecyclerViewAdapter<SearchAdapter.ViewHolder>() {
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     IPropContainer<S, A>,
-    IPropLifecycleOwner<ILocalState, Unit> {
+    IPropLifecycleOwner<ILocalState, Unit> by NoopPropLifecycleOwner() {
     override var reduxProp by ObservableReduxProp<S, A> { _, next ->
       next.state?.track?.also {
         this.trackName.text = it.trackName
@@ -85,7 +86,7 @@ class SearchAdapter : ReduxRecyclerViewAdapter<SearchAdapter.ViewHolder>() {
 
 class SearchFragment : Fragment(),
   IPropContainer<SearchFragment.S, SearchFragment.A>,
-  IPropLifecycleOwner<SearchFragment.ILocalState, Unit> {
+  IPropLifecycleOwner<SearchFragment.ILocalState, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<ILocalState, Unit, S, A> {
     override fun mapState(state: ILocalState, outProp: Unit) = state.search
 
