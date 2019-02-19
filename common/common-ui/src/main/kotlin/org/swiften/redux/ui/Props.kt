@@ -38,6 +38,6 @@ data class StaticProp<LState, OutProp>(
  */
 data class ReduxProp<State, Action>(
   val subscription: IReduxSubscription,
-  override val state: State?,
-  override val action: Action?
+  override val state: State,
+  override val action: Action
 ) : IVariableProp<State, Action> where State : Any, Action : Any

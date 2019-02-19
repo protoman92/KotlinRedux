@@ -6,7 +6,7 @@
 package org.swiften.redux.ui
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.core.IActionDispatcher
@@ -15,6 +15,7 @@ import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.core.ThreadSafeStore
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2018/12/20 */
@@ -44,9 +45,12 @@ open class PropInjectorTest {
   }
 
   internal class View : IPropContainer<S, A>, IPropLifecycleOwner<S, Unit> {
+    private val propInitialized = AtomicBoolean(false)
+
     override var reduxProp by ObservableReduxProp<S, A> { prev, next ->
       this.propCallback?.invoke(prev, next)
       this.propInjectionCount.incrementAndGet()
+      this.propInitialized.set(true)
     }
 
     var propCallback: ((IVariableProp<S, A>?, IVariableProp<S, A>) -> Unit)? = null
@@ -55,11 +59,14 @@ open class PropInjectorTest {
     val afterInjectionCount = AtomicInteger()
 
     override fun beforePropInjectionStarts(sp: StaticProp<S, Unit>) {
-      assertNotNull(this.reduxProp)
+      assertFalse(this.propInitialized.get())
       this.beforeInjectionCount.incrementAndGet()
     }
 
-    override fun afterPropInjectionEnds() { this.afterInjectionCount.incrementAndGet() }
+    override fun afterPropInjectionEnds() {
+      this.afterInjectionCount.incrementAndGet()
+      this.propInitialized.set(false)
+    }
   }
 
   protected lateinit var store: StoreWrapper
@@ -94,6 +101,7 @@ open class PropInjectorTest {
     val injector = this.createInjector(this.store)
     val view = View()
     val allProps = arrayListOf<Pair<S?, S?>>()
+    val reinjectCount = 1000
     view.propCallback = { prev, next -> allProps.add(prev?.state to next.state) }
 
     // When
@@ -104,21 +112,19 @@ open class PropInjectorTest {
     this.store.dispatch(Action.SetQuery("2"))
     this.store.dispatch(Action.SetQuery("3"))
     this.store.dispatch(Action.SetQuery("3"))
-    injector.inject(Unit, view, this.mapper)
+    repeat((reinjectCount)) { injector.inject(Unit, view, this.mapper) }
 
     // Then
-    assertEquals(this.store.unsubscribeCount.get(), 1)
-    assertEquals(view.propInjectionCount.get(), 6)
-    assertEquals(view.beforeInjectionCount.get(), 2)
-    assertEquals(view.afterInjectionCount.get(), 1)
+    assertEquals(this.store.unsubscribeCount.get(), reinjectCount)
+    assertEquals(view.propInjectionCount.get(), 4)
+    assertEquals(view.beforeInjectionCount.get(), reinjectCount + 1)
+    assertEquals(view.afterInjectionCount.get(), reinjectCount)
 
     assertEquals(allProps, arrayListOf(
       null to S(""),
       S("") to S("1"),
       S("1") to S("2"),
-      S("2") to S("3"),
-      S("3") to null,
-      null to S("3"))
-    )
+      S("2") to S("3")
+    ))
   }
 }

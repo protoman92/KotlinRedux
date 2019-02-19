@@ -10,18 +10,19 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.android.util.AndroidUtil
 import org.swiften.redux.core.IReduxStore
-import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IFullPropInjector
+import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.PropInjectorTest
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
 import org.swiften.redux.ui.VetoableObservableProp
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/28 */
@@ -46,6 +47,8 @@ class AndroidInjectorTest : PropInjectorTest() {
   }
 
   internal class AndroidView : IPropContainer<S, A>, IPropLifecycleOwner<S, Unit> {
+    private val propInitialized = AtomicBoolean(false)
+
     /**
      * Make sue [VetoableObservableProp.equalChecker] always returns false to avoid comparison
      * because [AndroidUtil.IMainThreadRunner.invoke] is performed before the prop comparison
@@ -54,18 +57,24 @@ class AndroidInjectorTest : PropInjectorTest() {
      */
     override var reduxProp by VetoableObservableProp<ReduxProp<S, A>>(
       { _, _ -> false }
-    ) { _, _ -> this.propInjectionCount.incrementAndGet() }
+    ) { _, _ ->
+      this.propInjectionCount.incrementAndGet()
+      this.propInitialized.set(true)
+    }
 
     val propInjectionCount = AtomicInteger()
     val beforeInjectionCount = AtomicInteger()
     val afterInjectionCount = AtomicInteger()
 
     override fun beforePropInjectionStarts(sp: StaticProp<S, Unit>) {
-      assertNotNull(this.reduxProp)
+      assertFalse(this.propInitialized.get())
       this.beforeInjectionCount.incrementAndGet()
     }
 
-    override fun afterPropInjectionEnds() { this.afterInjectionCount.incrementAndGet() }
+    override fun afterPropInjectionEnds() {
+      this.afterInjectionCount.incrementAndGet()
+      this.propInitialized.set(false)
+    }
   }
 
   override fun createInjector(store: IReduxStore<S>): IFullPropInjector<S> {
@@ -82,12 +91,11 @@ class AndroidInjectorTest : PropInjectorTest() {
 
     runBlocking {
       // When
-      (0 until 5).forEach { GlobalScope.launch { injector.inject(Unit, view, mapper) } }
-
-      delay(500)
+      repeat(5) { GlobalScope.launch { injector.inject(Unit, view, mapper) } }
+      delay(1000)
 
       // Then
-      /** By now, [runner] should have been called upon as many times as specified */
+      /** By now, [runner] should have been called upon as many times as specified. */
       assertEquals(this@AndroidInjectorTest.runner.runCount,
         view.propInjectionCount.get() +
           view.beforeInjectionCount.get() +
