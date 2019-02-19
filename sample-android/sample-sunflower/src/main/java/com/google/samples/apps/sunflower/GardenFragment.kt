@@ -50,18 +50,16 @@ class GardenFragment : Fragment(),
   }
 
   override var reduxProp by ObservableReduxProp<S, Unit> { prev, next ->
-    next.state?.also {
-      if (it.gardenPlantingCount == 0) {
-        this.garden_list.visibility = View.GONE
-        this.empty_garden.visibility = View.VISIBLE
-      } else {
-        this.garden_list.visibility = View.VISIBLE
-        this.empty_garden.visibility = View.GONE
-      }
+    if (next.state.gardenPlantingCount == 0) {
+      this.garden_list.visibility = View.GONE
+      this.empty_garden.visibility = View.VISIBLE
+    } else {
+      this.garden_list.visibility = View.VISIBLE
+      this.empty_garden.visibility = View.GONE
+    }
 
-      if (it.gardenPlantingCount != prev?.state?.gardenPlantingCount) {
-        this.garden_list.adapter?.notifyDataSetChanged()
-      }
+    if (next.state.gardenPlantingCount != prev?.state?.gardenPlantingCount) {
+      this.garden_list.adapter?.notifyDataSetChanged()
     }
   }
 

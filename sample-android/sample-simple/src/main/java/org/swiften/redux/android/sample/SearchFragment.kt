@@ -61,7 +61,7 @@ class SearchAdapter : ReduxRecyclerViewAdapter<SearchAdapter.ViewHolder>() {
     IPropContainer<S, A>,
     IPropLifecycleOwner<ILocalState, Unit> by NoopPropLifecycleOwner() {
     override var reduxProp by ObservableReduxProp<S, A> { _, next ->
-      next.state?.track?.also {
+      next.state.track?.also {
         this.trackName.text = it.trackName
         this.artistName.text = it.artistName
       }
@@ -72,7 +72,7 @@ class SearchAdapter : ReduxRecyclerViewAdapter<SearchAdapter.ViewHolder>() {
 
     override fun beforePropInjectionStarts(sp: StaticProp<ILocalState, Unit>) {
       this.itemView.setOnClickListener {
-        this@ViewHolder.reduxProp.action?.selectTrack?.invoke(this@ViewHolder.layoutPosition)
+        this@ViewHolder.reduxProp.action.selectTrack(this@ViewHolder.layoutPosition)
       }
     }
   }
@@ -111,9 +111,7 @@ class SearchFragment : Fragment(),
   class A(val updateQuery: (String?) -> Unit, val updateLimit: (ResultLimit?) -> Unit)
 
   override var reduxProp by ObservableReduxProp<S, A> { _, next ->
-    next.state?.also {
-      this.progress_bar.visibility = if (it.loading) View.VISIBLE else View.INVISIBLE
-    }
+    this.progress_bar.visibility = if (next.state.loading) View.VISIBLE else View.INVISIBLE
   }
 
   override fun onCreateView(
@@ -127,7 +125,7 @@ class SearchFragment : Fragment(),
 
     this.search_query.addTextChangedListener(object : TextWatcher {
       override fun afterTextChanged(s: Editable?) {
-        this@SearchFragment.reduxProp.action?.updateQuery?.invoke(s?.toString())
+        this@SearchFragment.reduxProp.action.updateQuery(s?.toString())
       }
 
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -159,7 +157,7 @@ class SearchFragment : Fragment(),
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
           val selectedLimit = selectableLimits.elementAtOrNull(position)
-          this@SearchFragment.reduxProp.action?.updateLimit?.invoke(selectedLimit)
+          this@SearchFragment.reduxProp.action.updateLimit(selectedLimit)
         }
       }
     }

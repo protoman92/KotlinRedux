@@ -36,7 +36,7 @@ class DetailFragment : Fragment(),
   data class S(val track: MusicTrack?)
 
   override var reduxProp by ObservableReduxProp<S, Unit> { _, next ->
-    next.state?.track?.also {
+    next.state.track?.also {
       this.trackName.text = it.trackName
       this.artistName.text = it.artistName
     }

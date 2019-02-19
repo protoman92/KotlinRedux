@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.IPropInjector
-import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IFullPropInjector
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.NoopPropLifecycleOwner
@@ -70,7 +70,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
    * safely access [ReduxProp.action] in [onBindViewHolder].
    */
   override var reduxProp by ObservableReduxProp<List<VHState>, VHAction> { _, next ->
-    this.submitList(next.state ?: arrayListOf())
+    this.submitList(next.state)
   }
 
   override fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>) {

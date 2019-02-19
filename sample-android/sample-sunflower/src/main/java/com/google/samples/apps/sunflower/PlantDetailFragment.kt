@@ -77,21 +77,20 @@ class PlantDetailFragment : Fragment(),
   }
 
   override var reduxProp by ObservableReduxProp<S, A> { _, next ->
-    next.state?.plant?.also { p ->
+    next.state.plant?.also { p ->
       this.shareText = this.getString(R.string.share_text_plant, p.name)
       this.plant_watering.text = this.context?.let { this.bindWateringText(it, p.wateringInterval) }
       this.plant_detail.text = HtmlCompat.fromHtml(p.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
       this.toolbar_layout.title = p.name
 
-      next.action?.picasso?.also {
-        it.load(p.imageUrl)
-          .centerCrop()
-          .resize(LARGE_IMAGE_DIMEN, LARGE_IMAGE_DIMEN)
-          .into(this.detail_image)
-      }
+      next.action.picasso
+        .load(p.imageUrl)
+        .centerCrop()
+        .resize(LARGE_IMAGE_DIMEN, LARGE_IMAGE_DIMEN)
+        .into(this.detail_image)
     }
 
-    next.state?.isPlanted?.also { this.fab.visibility = if (it) View.GONE else View.VISIBLE }
+    next.state.isPlanted?.also { this.fab.visibility = if (it) View.GONE else View.VISIBLE }
   }
 
   private var shareText: String = ""
@@ -139,7 +138,7 @@ class PlantDetailFragment : Fragment(),
 
   override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, IDependency>) {
     this.fab.setOnClickListener {
-      this.reduxProp.action?.addPlantToGarden?.invoke()
+      this.reduxProp.action.addPlantToGarden()
       Snackbar.make(it, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG).show()
     }
   }

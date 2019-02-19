@@ -14,8 +14,8 @@ import org.swiften.redux.core.IReduxSubscription
  * @param Action Action type that handles view interactions.
  */
 interface IVariableProp<out State, out Action> where State : Any, Action : Any {
-  val state: State?
-  val action: Action?
+  val state: State
+  val action: Action
 }
 
 /**
