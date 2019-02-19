@@ -134,14 +134,14 @@ class Fragment1 : Fragment(),
   IPropContainer<State, Action>,
   IPropLifecycleOwner<GlobalState, Unit> {
   override var reduxProps by ObservableReduxProps<State, Action> { _, next ->
-    println(next.state?.query)
+    println(next.state.query)
   }
 
   // This is one of the only two lifecycle methods that you will need to worry about.
   override fun beforePropInjectionStarts(...) {
     this.search_query.addTextChangedListener(object : TextWatcher() {
       override fun onTextChanged(s: CharSequence?, ...) {
-        this@Fragment1.reduxProps.action?.updateQuery?.invoke(s?.toString())
+        this@Fragment1.reduxProps.action.updateQuery(s?.toString())
       }
     })
   }
@@ -326,11 +326,8 @@ class Fragment2 : Fragment(),
   }
 
   override val reduxProps by ObservableReduxProps<State, Action> { _, next ->
-    next.state?.imageURL?.also { url ->
-      next.action?.picasso?.also { picasso ->
-        picasso.load(url).into(this.image_view)
-      }
-    }
+    val imageURL = next.state.imageURL
+    next.action.picasso.load(imageURL).into(this.image_view)
   }
 }
 
