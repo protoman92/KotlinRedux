@@ -176,54 +176,58 @@ open class PropInjector<GState : Any> protected constructor(
     View : IPropLifecycleOwner<LState, OutProp>,
     State : Any,
     Action : Any {
+    /** If [view] has received an injection before, unsubscribe from that. */
+    view.unsubscribeSafely()
+
     /**
      * It does not matter what the id is, as long as it is unique. This is because we will be
      * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep
      * track of this id.
      */
     val subscriberId = "$view${UUID.randomUUID()}"
-
-    /** If [view] has received an injection before, unsubscribe from that */
-    view.unsubscribeSafely()
-
-    /**
-     * Since [IReduxStore.subscribe] has not been called yet, we pass in a placebo
-     * [ReduxSubscription] which will later be replaced with the actual [IReduxSubscription].
-     */
-    view.reduxProp = ReduxProp(ReduxSubscription.EMPTY, null, null)
-    view.beforePropInjectionStarts(StaticProp(this as IFullPropInjector<LState>, outProp))
+    view.beforePropInjectionStarts(StaticProp(this as IPropInjector<LState>, outProp))
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
+    var firstTime = true
 
     val onStateUpdate: (GState) -> Unit = {
       val next = mapper.mapState(it as LState, outProp)
       val prev = lock.read { previousState }
+      val first = lock.read { firstTime }
 
       lock.write {
         previousState = next
 
         if (next != prev) {
-          val actions = mapper.mapAction(this@PropInjector.dispatch, outProp)
-          view.reduxProp = view.reduxProp.copy(state = next, action = actions)
+          val action = mapper.mapAction(this@PropInjector.dispatch, outProp)
+
+          if (first) {
+            view.reduxProp = ReduxProp(ReduxSubscription.EMPTY, next, action)
+            firstTime = false
+          } else {
+            view.reduxProp = view.reduxProp.copy(state = next, action = action)
+          }
         }
       }
     }
 
     /**
      * Immediately set [IPropContainer.reduxProp] based on [store]'s last [GState], in case this
-     * [store] does not relay last [GState] on subscription.
+     * [store] does not relay last [GState] on subscription. When we call this, [view] should
+     * receive an initial [ReduxProp] with [ReduxSubscription.EMPTY], so now we no longer have to
+     * worry about [UninitializedPropertyAccessException] or [NullPointerException].
      */
     onStateUpdate(this.store.lastState())
     val subscription = this.store.subscribe(subscriberId, onStateUpdate)
 
     /** Wrap a [ReduxSubscription] to perform [IPropLifecycleOwner.afterPropInjectionEnds] */
-    val wrappedSub = ReduxSubscription(subscription.id) {
+    val wrappedSubscription = ReduxSubscription(subscription.id) {
       subscription.unsubscribe()
       view.afterPropInjectionEnds()
     }
 
-    view.reduxProp = view.reduxProp.copy(wrappedSub)
-    return wrappedSub
+    view.reduxProp = view.reduxProp.copy(wrappedSubscription)
+    return wrappedSubscription
   }
 }
 
