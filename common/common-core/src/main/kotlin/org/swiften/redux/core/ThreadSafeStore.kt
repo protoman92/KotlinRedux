@@ -34,7 +34,7 @@ class ThreadSafeStore<GState>(
     }
 
     this.lock.read { this.subscribers.forEach { it.value(newState) } }
-    JustJob(newState as Any)
+    JustJob(newState)
   }
 
   override val subscribe: IReduxSubscriber<GState> = { id, callback ->
