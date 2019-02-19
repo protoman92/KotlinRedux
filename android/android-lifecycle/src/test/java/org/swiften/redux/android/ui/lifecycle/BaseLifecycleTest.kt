@@ -16,7 +16,7 @@ import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.IPropContainer
-import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ObservableReduxProp
@@ -56,7 +56,7 @@ open class BaseLifecycleTest {
     override fun getLifecycle(): Lifecycle = this.registry
   }
 
-  class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IPropInjector<Int> {
+  class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IFullPropInjector<Int> {
     val subscriptions: MutableList<IReduxSubscription> = synchronizedList(mutableListOf())
     val injectionCount get() = this.subscriptions.size
 
@@ -75,7 +75,7 @@ open class BaseLifecycleTest {
       val subscription = ReduxSubscription("$view") { view.afterPropInjectionEnds() }
       val state = mapper.mapState(lastState as LState, outProp)
       val action = mapper.mapAction(this.dispatch, outProp)
-      view.beforePropInjectionStarts(StaticProp(this as IPropInjector<LState>, outProp))
+      view.beforePropInjectionStarts(StaticProp(this as IFullPropInjector<LState>, outProp))
       view.reduxProp = ReduxProp(subscription, state, action)
       this.subscriptions.add(subscription)
       return subscription

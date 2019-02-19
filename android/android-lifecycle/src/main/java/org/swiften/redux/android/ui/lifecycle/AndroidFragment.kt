@@ -63,6 +63,7 @@ internal fun <GState> IPropInjector<GState>.injectFragment(
 
 /**
  * Call [injectFragment] with an [AppCompatActivity].
+ * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param activity An [AppCompatActivity] instance.
  * @param inject Function that performs injections on [LifecycleOwner] instances passing through.

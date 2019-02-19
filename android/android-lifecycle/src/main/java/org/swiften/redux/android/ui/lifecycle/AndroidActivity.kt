@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IFullPropInjector
 import java.io.Serializable
 import java.util.Date
 
@@ -41,21 +42,21 @@ interface IBundleStateSaver<GState> {
 }
 
 /**
- * Listen to [Activity] lifecycle callbacks and perform [inject] when necessary. We can also
- * declare [saveState] and [restoreState] to handle [GState] persistence.
+ * Listen to [Activity] lifecycle callbacks and perform [inject] when necessary. We can also declare
+ * [saveState] and [restoreState] to handle [GState] persistence.
  *
  * When [Application.ActivityLifecycleCallbacks.onActivityCreated] is called, perform [inject]
  * on the [AppCompatActivity] being created, and also call [injectFragment]. This is why
  * [inject] accepts [LifecycleOwner] as its only parameter so that it can handle both
  * [AppCompatActivity] and [Fragment].
- * @receiver An [IPropInjector] instance.
+ * @receiver An [IFullPropInjector] instance.
  * @param GState The global state type.
  * @param application An [Application] instance.
  * @param saver An [IBundleStateSaver] instance.
  * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
  * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
-fun <GState> IPropInjector<GState>.injectActivity(
+fun <GState> IFullPropInjector<GState>.injectActivity(
   application: Application,
   saver: IBundleStateSaver<GState>,
   inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
@@ -94,12 +95,13 @@ fun <GState> IPropInjector<GState>.injectActivity(
 /**
  * Similar to [injectActivity], but provides default persistence for when [GState] is
  * [Serializable].
+ * @receiver An [IFullPropInjector] instance.
  * @param GState The global state type.
  * @param application An [Application] instance.
  * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
  * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
-inline fun <reified GState> IPropInjector<GState>.injectActivitySerializable(
+inline fun <reified GState> IFullPropInjector<GState>.injectActivitySerializable(
   application: Application,
   noinline inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks where GState : Any, GState : Serializable {
@@ -117,12 +119,13 @@ inline fun <reified GState> IPropInjector<GState>.injectActivitySerializable(
 /**
  * Similar to [injectActivity], but provides default persistence for when [GState] is
  * [Parcelable].
+ * @receiver An [IFullPropInjector] instance.
  * @param GState The global state type.
  * @param application An [Application] instance.
  * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
  * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
-inline fun <reified GState> IPropInjector<GState>.injectActivityParcelable(
+inline fun <reified GState> IFullPropInjector<GState>.injectActivityParcelable(
   application: Application,
   noinline inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
 ): Application.ActivityLifecycleCallbacks where GState : Any, GState : Parcelable {

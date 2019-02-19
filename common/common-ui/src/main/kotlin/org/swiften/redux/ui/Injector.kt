@@ -19,13 +19,13 @@ import kotlin.concurrent.write
 
 /** Created by haipham on 2018/12/16 */
 /**
- * Handle lifecycles for a target of [IPropInjector].
+ * Handle lifecycles for a target of [IFullPropInjector].
  * @param LState The local state type that the global state must extend from.
  * @param OutProp Property as defined by a view's parent.
  */
 interface IPropLifecycleOwner<LState, OutProp> where LState : Any {
   /**
-   * This is called before [IPropInjector.inject] is called.
+   * This is called before [IFullPropInjector.inject] is called.
    * @param sp A [StaticProp] instance.
    */
   fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>)
@@ -97,7 +97,7 @@ interface IActionMapper<in OutProp, out Action> where Action : Any {
  * property as dictated by its parent.
  *
  * For example, a parent view, which contains a list of child views, wants to call
- * [IPropInjector.inject] for said children. The [OutProp] generic for these children should
+ * [IFullPropInjector.inject] for said children. The [OutProp] generic for these children should
  * therefore be an [Int] that corresponds to their respective indexes in the parent.
  * @param LState The local state type that the global state must extend from.
  * @param OutProp Property as defined by a view's parent.
@@ -113,10 +113,7 @@ interface IPropMapper<in LState, in OutProp, out State, out Action> :
  * Inject state and actions into an [IPropContainer].
  * @param GState The global state type.
  */
-interface IPropInjector<GState> :
-  IDispatcherProvider,
-  IStateGetterProvider<GState>,
-  IDeinitializerProvider where GState : Any {
+interface IPropInjector<GState> : IStateGetterProvider<GState> where GState : Any {
   /**
    * Inject [State] and [Action] into [view].
    *
@@ -146,15 +143,25 @@ interface IPropInjector<GState> :
 }
 
 /**
- * A [IPropInjector] implementation that handles [inject] in a thread-safe manner. It also invokes
- * [IPropLifecycleOwner.beforePropInjectionStarts] and [IPropLifecycleOwner.afterPropInjectionEnds]
- * when appropriate.
+ * An [IPropInjector] that also implements [IDispatcherProvider], [IStateGetterProvider] and
+ * [IDeinitializerProvider] to handle lifecycle and state saving in the relevant platforms.
+ * @param GState The global state type.
+ */
+interface IFullPropInjector<GState> :
+  IPropInjector<GState>,
+  IDispatcherProvider,
+  IDeinitializerProvider where GState : Any
+
+/**
+ * A [IFullPropInjector] implementation that handles [inject] in a thread-safe manner. It also
+ * invokes [IPropLifecycleOwner.beforePropInjectionStarts] and
+ * [IPropLifecycleOwner.afterPropInjectionEnds] when appropriate.
  * @param GState The global state type.
  * @param store An [IReduxStore] instance.
  */
 open class PropInjector<GState : Any> protected constructor(
   private val store: IReduxStore<GState>
-) : IPropInjector<GState>,
+) : IFullPropInjector<GState>,
   IDispatcherProvider by store,
   IStateGetterProvider<GState> by store,
   IDeinitializerProvider by store {
@@ -184,7 +191,7 @@ open class PropInjector<GState : Any> protected constructor(
      * [ReduxSubscription] which will later be replaced with the actual [IReduxSubscription].
      */
     view.reduxProp = ReduxProp(ReduxSubscription.EMPTY, null, null)
-    view.beforePropInjectionStarts(StaticProp(this as IPropInjector<LState>, outProp))
+    view.beforePropInjectionStarts(StaticProp(this as IFullPropInjector<LState>, outProp))
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
 
@@ -203,8 +210,8 @@ open class PropInjector<GState : Any> protected constructor(
     }
 
     /**
-     * Immediately set [IPropContainer.reduxProp] based on [store]'s last [GState], in case
-     * this [store] does not relay last [GState] on subscription.
+     * Immediately set [IPropContainer.reduxProp] based on [store]'s last [GState], in case this
+     * [store] does not relay last [GState] on subscription.
      */
     onStateUpdate(this.store.lastState())
     val subscription = this.store.subscribe(subscriberId, onStateUpdate)

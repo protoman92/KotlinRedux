@@ -16,7 +16,7 @@ import org.junit.Test
 import org.swiften.redux.android.util.AndroidUtil
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.ui.IPropContainer
-import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.PropInjectorTest
 import org.swiften.redux.ui.ReduxProp
@@ -68,7 +68,7 @@ class AndroidInjectorTest : PropInjectorTest() {
     override fun afterPropInjectionEnds() { this.afterInjectionCount.incrementAndGet() }
   }
 
-  override fun createInjector(store: IReduxStore<S>): IPropInjector<S> {
+  override fun createInjector(store: IReduxStore<S>): IFullPropInjector<S> {
     return AndroidPropInjector(store, this.runner)
   }
 

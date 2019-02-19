@@ -84,7 +84,7 @@ open class PropInjectorTest {
     }
   }
 
-  open fun createInjector(store: IReduxStore<S>): IPropInjector<S> {
+  open fun createInjector(store: IReduxStore<S>): IFullPropInjector<S> {
     return TestInjector(store)
   }
 
