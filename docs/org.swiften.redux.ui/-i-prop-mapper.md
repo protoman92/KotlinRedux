@@ -8,7 +8,7 @@ Maps [LState](-i-prop-mapper.md#LState) to [State](-i-prop-mapper.md#State) and 
 property as dictated by its parent.
 
 For example, a parent view, which contains a list of child views, wants to call
-[IPropInjector.inject](-i-prop-injector/inject.md) for said children. The [OutProp](-i-prop-mapper.md#OutProp) generic for these children should
+[IFullPropInjector.inject](-i-prop-injector/inject.md) for said children. The [OutProp](-i-prop-mapper.md#OutProp) generic for these children should
 therefore be an [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) that corresponds to their respective indexes in the parent.
 
 ### Parameters

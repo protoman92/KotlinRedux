@@ -16,8 +16,8 @@ Container for an [IPropContainer](../-i-prop-container/index.md) mutable propert
 
 | Name | Summary |
 |---|---|
-| [action](action.md) | `abstract val action: `[`Action`](index.md#Action)`?` |
-| [state](state.md) | `abstract val state: `[`State`](index.md#State)`?` |
+| [action](action.md) | `abstract val action: `[`Action`](index.md#Action) |
+| [state](state.md) | `abstract val state: `[`State`](index.md#State) |
 
 ### Inheritors
 

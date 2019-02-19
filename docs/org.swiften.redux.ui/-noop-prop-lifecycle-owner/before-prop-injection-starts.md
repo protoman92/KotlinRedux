@@ -6,7 +6,7 @@
 
 Overrides [IPropLifecycleOwner.beforePropInjectionStarts](../-i-prop-lifecycle-owner/before-prop-injection-starts.md)
 
-This is called before [IPropInjector.inject](../-i-prop-injector/inject.md) is called.
+This is called before [IFullPropInjector.inject](../-i-prop-injector/inject.md) is called.
 
 ### Parameters
 

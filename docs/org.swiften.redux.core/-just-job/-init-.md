@@ -2,7 +2,12 @@
 
 # &lt;init&gt;
 
-`JustJob(value: `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`)`
+`JustJob(value: `[`T`](index.md#T)`)`
 
 Represents an [IAsyncJob](../-i-async-job/index.md) that returns some [value](value.md) on [await](await.md).
 
+### Parameters
+
+`T` - The return type of [await](await.md).
+
+`value` - A [T](index.md#T) instance.

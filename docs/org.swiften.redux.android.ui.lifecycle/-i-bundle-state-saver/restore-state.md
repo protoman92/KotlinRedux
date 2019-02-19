@@ -2,7 +2,7 @@
 
 # restoreState
 
-`abstract fun restoreState(bundle: <ERROR CLASS>): `[`GState`](index.md#GState)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidActivity.kt#L40)
+`abstract fun restoreState(bundle: <ERROR CLASS>): `[`GState`](index.md#GState)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidActivity.kt#L41)
 
 Restore a [GState](index.md#GState) from [bundle](restore-state.md#org.swiften.redux.android.ui.lifecycle.IBundleStateSaver$restoreState()/bundle).
 

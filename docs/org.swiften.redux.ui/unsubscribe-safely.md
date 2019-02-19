@@ -2,7 +2,7 @@
 
 # unsubscribeSafely
 
-`fun `[`IPropContainer`](-i-prop-container/index.md)`<*, *>.unsubscribeSafely(): `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L232)
+`fun `[`IPropContainer`](-i-prop-container/index.md)`<*, *>.unsubscribeSafely(): `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L243)
 
 Unsubscribe from [IPropContainer.reduxProp](-i-prop-container/redux-prop.md) safely, i.e. catch
 [UninitializedPropertyAccessException](#) because this is most probably declared as lateinit in

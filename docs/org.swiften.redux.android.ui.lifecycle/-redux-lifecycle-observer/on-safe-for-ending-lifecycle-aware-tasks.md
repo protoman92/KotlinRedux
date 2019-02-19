@@ -2,7 +2,7 @@
 
 # onSafeForEndingLifecycleAwareTasks
 
-`open fun onSafeForEndingLifecycleAwareTasks(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidLifecycle.kt#L75)
+`open fun onSafeForEndingLifecycleAwareTasks(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidLifecycle.kt#L76)
 
 Overrides [ILifecycleCallback.onSafeForEndingLifecycleAwareTasks](../-i-lifecycle-callback/on-safe-for-ending-lifecycle-aware-tasks.md)
 

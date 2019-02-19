@@ -4,7 +4,7 @@
 
 `interface IPropLifecycleOwner<LState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, OutProp>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L26)
 
-Handle lifecycles for a target of [IPropInjector](../-i-prop-injector/index.md).
+Handle lifecycles for a target of [IFullPropInjector](../-i-full-prop-injector.md).
 
 ### Parameters
 
@@ -17,7 +17,7 @@ Handle lifecycles for a target of [IPropInjector](../-i-prop-injector/index.md).
 | Name | Summary |
 |---|---|
 | [afterPropInjectionEnds](after-prop-injection-ends.md) | `abstract fun afterPropInjectionEnds(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>This is called after [IReduxSubscription.unsubscribe](../../org.swiften.redux.core/-i-redux-subscription/unsubscribe.md) is called. |
-| [beforePropInjectionStarts](before-prop-injection-starts.md) | `abstract fun beforePropInjectionStarts(sp: `[`StaticProp`](../-static-prop/index.md)`<`[`LState`](index.md#LState)`, `[`OutProp`](index.md#OutProp)`>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>This is called before [IPropInjector.inject](../-i-prop-injector/inject.md) is called. |
+| [beforePropInjectionStarts](before-prop-injection-starts.md) | `abstract fun beforePropInjectionStarts(sp: `[`StaticProp`](../-static-prop/index.md)`<`[`LState`](index.md#LState)`, `[`OutProp`](index.md#OutProp)`>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>This is called before [IFullPropInjector.inject](../-i-prop-injector/inject.md) is called. |
 
 ### Inheritors
 

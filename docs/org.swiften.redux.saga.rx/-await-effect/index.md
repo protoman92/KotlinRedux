@@ -5,7 +5,7 @@
 `internal class AwaitEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SingleSagaEffect`](../../org.swiften.redux.saga.common/-single-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/AwaitEffect.kt#L25)
 
 [SagaEffect](../../org.swiften.redux.saga.common/-saga-effect/index.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) is created from [creator](creator.md), which is a function that creates
-[R](index.md#R) using [ISagaOutput.awaitFor](../../org.swiften.redux.saga.common/-i-saga-output/await-for.md). It is important that the resulting [SagaOutput.stream](../-saga-output/stream.md) emits only
+[R](index.md#R) using [ISagaOutput.awaitFor](../../org.swiften.redux.core/-i-async-job/await-for.md). It is important that the resulting [SagaOutput.stream](../-saga-output/stream.md) emits only
 one element.
 
 ### Parameters
@@ -18,7 +18,7 @@ one element.
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `AwaitEffect(creator: `[`IAwaitCreator`](../-i-await-creator.md)`<`[`R`](index.md#R)`>)`<br>[SagaEffect](../../org.swiften.redux.saga.common/-saga-effect/index.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) is created from [creator](creator.md), which is a function that creates [R](index.md#R) using [ISagaOutput.awaitFor](../../org.swiften.redux.saga.common/-i-saga-output/await-for.md). It is important that the resulting [SagaOutput.stream](../-saga-output/stream.md) emits only one element. |
+| [&lt;init&gt;](-init-.md) | `AwaitEffect(creator: `[`IAwaitCreator`](../-i-await-creator.md)`<`[`R`](index.md#R)`>)`<br>[SagaEffect](../../org.swiften.redux.saga.common/-saga-effect/index.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) is created from [creator](creator.md), which is a function that creates [R](index.md#R) using [ISagaOutput.awaitFor](../../org.swiften.redux.core/-i-async-job/await-for.md). It is important that the resulting [SagaOutput.stream](../-saga-output/stream.md) emits only one element. |
 
 ### Properties
 
@@ -36,8 +36,8 @@ one element.
 
 | Name | Summary |
 |---|---|
-| [await](../../org.swiften.redux.saga.common/-single-saga-effect/await.md) | `fun await(input: `[`SagaInput`](../../org.swiften.redux.saga.common/-saga-input/index.md)`, defaultValue: `[`R`](../../org.swiften.redux.saga.common/-single-saga-effect/index.md#R)`): `[`R`](../../org.swiften.redux.saga.common/-single-saga-effect/index.md#R)<br>See [ISagaOutput.await](../../org.swiften.redux.saga.common/-i-saga-output/await.md). We invoke this [SingleSagaEffect](../../org.swiften.redux.saga.common/-single-saga-effect/index.md) with [input](../../org.swiften.redux.saga.common/-single-saga-effect/await.md#org.swiften.redux.saga.common.SingleSagaEffect$await(org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.SingleSagaEffect.R)/input) then call [ISagaOutput.await](../../org.swiften.redux.saga.common/-i-saga-output/await.md). |
-| [awaitFor](../../org.swiften.redux.saga.common/-single-saga-effect/await-for.md) | `fun awaitFor(input: `[`SagaInput`](../../org.swiften.redux.saga.common/-saga-input/index.md)`, timeoutMillis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`R`](../../org.swiften.redux.saga.common/-single-saga-effect/index.md#R)<br>See [ISagaOutput.await](../../org.swiften.redux.saga.common/-i-saga-output/await.md). We invoke this [SingleSagaEffect](../../org.swiften.redux.saga.common/-single-saga-effect/index.md) with [input](../../org.swiften.redux.saga.common/-single-saga-effect/await-for.md#org.swiften.redux.saga.common.SingleSagaEffect$awaitFor(org.swiften.redux.saga.common.SagaInput, kotlin.Long)/input) then call [ISagaOutput.await](../../org.swiften.redux.saga.common/-i-saga-output/await.md). |
+| [await](../../org.swiften.redux.saga.common/-single-saga-effect/await.md) | `fun await(input: `[`SagaInput`](../../org.swiften.redux.saga.common/-saga-input/index.md)`, defaultValue: `[`R`](../../org.swiften.redux.saga.common/-single-saga-effect/index.md#R)`): `[`R`](../../org.swiften.redux.saga.common/-single-saga-effect/index.md#R)<br>See [ISagaOutput.await](../../org.swiften.redux.core/-i-async-job/await.md). We invoke this [SingleSagaEffect](../../org.swiften.redux.saga.common/-single-saga-effect/index.md) with [input](../../org.swiften.redux.saga.common/-single-saga-effect/await.md#org.swiften.redux.saga.common.SingleSagaEffect$await(org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.SingleSagaEffect.R)/input) then call [ISagaOutput.await](../../org.swiften.redux.core/-i-async-job/await.md). |
+| [awaitFor](../../org.swiften.redux.saga.common/-single-saga-effect/await-for.md) | `fun awaitFor(input: `[`SagaInput`](../../org.swiften.redux.saga.common/-saga-input/index.md)`, timeoutMillis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`R`](../../org.swiften.redux.saga.common/-single-saga-effect/index.md#R)<br>See [ISagaOutput.await](../../org.swiften.redux.core/-i-async-job/await.md). We invoke this [SingleSagaEffect](../../org.swiften.redux.saga.common/-single-saga-effect/index.md) with [input](../../org.swiften.redux.saga.common/-single-saga-effect/await-for.md#org.swiften.redux.saga.common.SingleSagaEffect$awaitFor(org.swiften.redux.saga.common.SagaInput, kotlin.Long)/input) then call [ISagaOutput.await](../../org.swiften.redux.core/-i-async-job/await.md). |
 
 ### Extension Functions
 

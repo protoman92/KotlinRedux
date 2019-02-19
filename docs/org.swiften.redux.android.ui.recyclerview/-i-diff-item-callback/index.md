@@ -2,7 +2,7 @@
 
 # IDiffItemCallback
 
-`interface IDiffItemCallback<T>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/DiffedAdapter.kt#L27)
+`interface IDiffItemCallback<T>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/DiffedAdapter.kt#L28)
 
 Callback for [DiffUtil.ItemCallback](#) since [DiffUtil.ItemCallback](#) is an abstract class.
 

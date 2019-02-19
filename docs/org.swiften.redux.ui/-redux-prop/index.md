@@ -22,12 +22,12 @@ Container for [subscription](subscription.md), [state](state.md) and [action](ac
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `ReduxProp(subscription: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`, state: `[`State`](index.md#State)`?, action: `[`Action`](index.md#Action)`?)`<br>Container for [subscription](subscription.md), [state](state.md) and [action](action.md). |
+| [&lt;init&gt;](-init-.md) | `ReduxProp(subscription: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`, state: `[`State`](index.md#State)`, action: `[`Action`](index.md#Action)`)`<br>Container for [subscription](subscription.md), [state](state.md) and [action](action.md). |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
-| [action](action.md) | `val action: `[`Action`](index.md#Action)`?`<br>An [Action](index.md#Action) instance. |
-| [state](state.md) | `val state: `[`State`](index.md#State)`?`<br>A [State](index.md#State) instance. |
+| [action](action.md) | `val action: `[`Action`](index.md#Action)<br>An [Action](index.md#Action) instance. |
+| [state](state.md) | `val state: `[`State`](index.md#State)<br>A [State](index.md#State) instance. |
 | [subscription](subscription.md) | `val subscription: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)<br>An [IReduxSubscription](../../org.swiften.redux.core/-i-redux-subscription/index.md) instance. |

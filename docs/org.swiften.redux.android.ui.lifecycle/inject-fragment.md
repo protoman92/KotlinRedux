@@ -18,7 +18,7 @@ session automatically disposes of itself when [ReduxLifecycleObserver.onDestroy]
 **Receiver**
 An [IPropInjector](../org.swiften.redux.ui/-i-prop-injector/index.md) instance.
 
-`internal fun <GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-fragment.md#GState)`>.injectFragment(activity: <ERROR CLASS>, inject: `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-fragment.md#GState)`>.(<ERROR CLASS>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L70)
+`internal fun <GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-fragment.md#GState)`>.injectFragment(activity: <ERROR CLASS>, inject: `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-fragment.md#GState)`>.(<ERROR CLASS>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L71)
 
 Call [injectFragment](./inject-fragment.md) with an [AppCompatActivity](#).
 
@@ -29,3 +29,7 @@ Call [injectFragment](./inject-fragment.md) with an [AppCompatActivity](#).
 `activity` - An [AppCompatActivity](#) instance.
 
 `inject` - Function that performs injections on [LifecycleOwner](#) instances passing through.
+
+**Receiver**
+An [IPropInjector](../org.swiften.redux.ui/-i-prop-injector/index.md) instance.
+

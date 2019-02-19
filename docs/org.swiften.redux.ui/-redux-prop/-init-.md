@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`ReduxProp(subscription: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`, state: `[`State`](index.md#State)`?, action: `[`Action`](index.md#Action)`?)`
+`ReduxProp(subscription: `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`, state: `[`State`](index.md#State)`, action: `[`Action`](index.md#Action)`)`
 
 Container for [subscription](subscription.md), [state](state.md) and [action](action.md).
 
