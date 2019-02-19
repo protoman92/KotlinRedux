@@ -8,8 +8,9 @@ package org.swiften.redux.android.ui.recyclerview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.core.CompositeReduxSubscription
-import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
@@ -20,7 +21,7 @@ import java.util.Date
 /** Created by haipham on 2019/01/08 */
 /**
  * Convenience [RecyclerView.Adapter] that implements some default methods to make working with
- * [IPropInjector] easier. Basically, [RecyclerView.Adapter.getItemCount] always returns 0
+ * [IFullPropInjector] easier. Basically, [RecyclerView.Adapter.getItemCount] always returns 0
  * (because it will be delegated to a different calculation.
  *
  * This class is not required because custom [RecyclerView.Adapter] only needs to do the same as
@@ -111,7 +112,7 @@ abstract class DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHA
   }
 
   /**
-   * Since we will be performing [IPropInjector.inject] for [VH] instances, we will be using
+   * Since we will be performing [IFullPropInjector.inject] for [VH] instances, we will be using
    * [CompositeReduxSubscription.add] a lot every time [RecyclerView.Adapter.onBindViewHolder] is
    * called. As a result, calling this method will ensure proper deinitialization.
    */

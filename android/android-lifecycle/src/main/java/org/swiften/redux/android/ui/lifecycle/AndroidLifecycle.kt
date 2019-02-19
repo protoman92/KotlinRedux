@@ -10,8 +10,9 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.core.IReduxSubscription
-import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ReduxProp
@@ -22,7 +23,7 @@ import org.swiften.redux.ui.StaticProp
 interface ILifecycleCallback {
   /**
    * This method will be called when it is safe to perform lifecycle-aware tasks, such as
-   * [IPropInjector.inject].
+   * [IFullPropInjector.inject].
    */
   fun onSafeForStartingLifecycleAwareTasks()
 
@@ -81,7 +82,7 @@ open class ReduxLifecycleObserver(
 }
 
 /**
- * Call [IPropInjector.inject] for [lifecycleOwner].
+ * Call [IFullPropInjector.inject] for [lifecycleOwner].
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param LState The local state type that [GState] must extend from.
@@ -109,7 +110,7 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
   var subscription: IReduxSubscription? = null
 
   /**
-   * We perform [IPropInjector.inject] in [ReduxLifecycleObserver.onStart] because by then
+   * We perform [IFullPropInjector.inject] in [ReduxLifecycleObserver.onStart] because by then
    * the views would have been initialized, and thus can be accessed in
    * [IPropLifecycleOwner.beforePropInjectionStarts]. To mirror this, unsubscription is done in
    * [ReduxLifecycleObserver.onStop] because said views are not destroyed yet.
@@ -141,7 +142,9 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
         }, mapper)
     }
 
-    override fun onSafeForEndingLifecycleAwareTasks() { subscription?.unsubscribe() }
+    override fun onSafeForEndingLifecycleAwareTasks() {
+      subscription?.unsubscribe()
+    }
   })
 
   return lifecycleOwner

@@ -11,11 +11,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.NoopPropLifecycleOwner
-import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
+import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
@@ -133,7 +134,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
  * [adapter] does not have to be a [ListAdapter] - it can be any [RecyclerView.Adapter] as long as
  * it implements [RecyclerView.Adapter.onCreateViewHolder].
  *
- * Since we do not call [IPropInjector.inject] directly into [VH], we cannot use
+ * Since we do not call [IFullPropInjector.inject] directly into [VH], we cannot use
  * [IPropMapper.mapAction] on [VH] itself. As a result, we must pass down
  * [ReduxProp.action] from [ReduxListAdapter.reduxProp] into each [VH] instance. The [VHAction]
  * should contain actions that take at least one [Int] parameter, (e.g. (Int) -> Unit), so that we
@@ -141,6 +142,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
  *
  * Note that this does not support lifecycle handling, so we will need to manually set null via
  * [RecyclerView.setAdapter] to invoke [RecyclerView.Adapter.onDetachedFromRecyclerView].
+ * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param OutProp Property as defined by [adapter]'s parent.
  * @param VH The [RecyclerView.ViewHolder] instance.
