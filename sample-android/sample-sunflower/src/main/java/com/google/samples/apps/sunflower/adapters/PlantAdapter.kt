@@ -81,21 +81,18 @@ class PlantAdapter : ReduxRecyclerViewAdapter<PlantAdapter.ViewHolder>() {
 
     init {
       this.itemView.setOnClickListener {
-        this@ViewHolder.reduxProp.action?.goToPlantDetail?.invoke(this.layoutPosition)
+        this@ViewHolder.reduxProp.action.goToPlantDetail(this.layoutPosition)
       }
     }
 
     override var reduxProp by ObservableReduxProp<Plant, A> { _, next ->
-      next.state?.also { state ->
-        this.title.text = state.name
+      this.title.text = next.state.name
 
-        next.action?.picasso?.also {
-          it.load(state.imageUrl)
-            .centerCrop()
-            .resize(SMALL_IMAGE_DIMEN, SMALL_IMAGE_DIMEN)
-            .into(this.image)
-        }
-      }
+      next.action.picasso
+        .load(next.state.imageUrl)
+        .centerCrop()
+        .resize(SMALL_IMAGE_DIMEN, SMALL_IMAGE_DIMEN)
+        .into(this.image)
     }
   }
 }

@@ -42,7 +42,7 @@ class MainFragment : Fragment(),
   class A(val selectPage: (Int) -> Unit)
 
   override var reduxProp by ObservableReduxProp<S, A> { _, next ->
-    next.state?.also { this.view_pager.currentItem = it.selectedPage }
+    next.state.also { this.view_pager.currentItem = it.selectedPage }
   }
 
   override fun onCreateView(
@@ -74,7 +74,7 @@ class MainFragment : Fragment(),
         ) {}
 
         override fun onPageSelected(position: Int) {
-          this@MainFragment.reduxProp.action?.selectPage?.invoke(position)
+          this@MainFragment.reduxProp.action.selectPage(position)
         }
       })
     }

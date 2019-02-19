@@ -55,7 +55,7 @@ class PlantListFragment : Fragment(),
   }
 
   override var reduxProp by ObservableReduxProp<S, A> { prev, next ->
-    if (next.state?.plantCount != prev?.state?.plantCount) {
+    if (next.state.plantCount != prev?.state?.plantCount) {
       this.plant_list.adapter?.notifyDataSetChanged()
     }
   }
@@ -77,7 +77,7 @@ class PlantListFragment : Fragment(),
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
       R.id.filter_zone -> {
-        this.reduxProp.action?.updateGrowZone?.invoke()
+        this.reduxProp.action.updateGrowZone()
         true
       }
       else -> super.onOptionsItemSelected(item)

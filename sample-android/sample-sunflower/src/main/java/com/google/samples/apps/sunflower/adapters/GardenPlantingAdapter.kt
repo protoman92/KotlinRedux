@@ -75,7 +75,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
     }
 
     override var reduxProp by ObservableReduxProp<S, A> { _, next ->
-      next.state?.plantings?.also { p ->
+      next.state.plantings?.also { p ->
         if (p.gardenPlantings.isNotEmpty()) {
           val context = this.itemView.context
           val gardenPlanting = p.gardenPlantings[0]
@@ -93,12 +93,11 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
           this.plantDate.text = context.getString(R.string.planted_date, p.plant.name, plantDateStr)
           this.waterDate.text = wateringStr
 
-          next.action?.picasso?.also {
-            it.load(p.plant.imageUrl)
-              .centerCrop()
-              .resize(SMALL_IMAGE_DIMEN, SMALL_IMAGE_DIMEN)
-              .into(this.imageView)
-          }
+          next.action.picasso
+            .load(p.plant.imageUrl)
+            .centerCrop()
+            .resize(SMALL_IMAGE_DIMEN, SMALL_IMAGE_DIMEN)
+            .into(this.imageView)
         }
       }
     }
@@ -110,7 +109,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
 
     override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, PositionProp<IDependency>>) {
       this.itemView.setOnClickListener {
-        this@ViewHolder.reduxProp.action?.goToPlantDetail?.invoke()
+        this@ViewHolder.reduxProp.action.goToPlantDetail()
       }
     }
   }
