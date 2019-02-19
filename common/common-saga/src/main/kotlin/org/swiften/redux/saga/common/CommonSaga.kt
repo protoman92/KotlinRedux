@@ -10,6 +10,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.core.IAsyncJob
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IStateGetter
@@ -62,7 +63,7 @@ class SagaInput(
  * emitted values.
  * @param T The emission value type.
  */
-interface ISagaOutput<T> where T : Any {
+interface ISagaOutput<T> : IAsyncJob<T> where T : Any {
   /** Trigger every time an [IReduxAction] arrives. */
   val onAction: IActionDispatcher
 
@@ -195,20 +196,6 @@ interface ISagaOutput<T> where T : Any {
    * @return An [ISagaOutput] instance.
    */
   fun timeout(millis: Long): ISagaOutput<T>
-
-  /**
-   * Wait for the first [T] that arrives, or default to [defaultValue] if the stream is empty.
-   * @param defaultValue A [T] instance.
-   * @return A [T] instance.
-   */
-  fun await(defaultValue: T): T
-
-  /**
-   * Get the next [T], but only if it arrives before [timeoutMillis].
-   * @param timeoutMillis Timeout time in milliseconds.
-   * @return A nullable [T] instance.
-   */
-  fun awaitFor(timeoutMillis: Long): T
 
   /**
    * Subscribe to values with [onValue], and error with [onError].

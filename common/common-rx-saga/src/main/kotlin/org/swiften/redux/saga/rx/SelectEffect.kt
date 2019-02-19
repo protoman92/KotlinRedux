@@ -34,5 +34,5 @@ class SelectEffect<State, R>(
    * @param input A [SagaInput] instance.
    * @return A [R] instance.
    */
-  fun await(input: SagaInput) = (this.invoke(input) as SagaOutput<R>).await()
+  fun await(input: SagaInput) = this.invoke(input).await()
 }
