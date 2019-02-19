@@ -11,29 +11,40 @@ import kotlinx.coroutines.runBlocking
 import java.util.concurrent.CountDownLatch
 
 /** Created by haipham on 2019/02/16 */
-/** Represents a job that does some asynchronous work and can be resolved synchronously. */
-interface IAsyncJob {
-  /** Wait until some asynchronous action finishes. */
-  fun await(): Any
+/**
+ * Represents a job that does some asynchronous work and can be resolved synchronously.
+ * @param T The return type of [await].
+ */
+interface IAsyncJob<T> where T : Any {
+  /**
+   * Wait until some asynchronous action finishes.
+   * @return A [T] instance.
+   */
+  fun await(): T
 }
 
 /** Represents an empty [IAsyncJob] that does not do anything. */
-object EmptyJob : IAsyncJob {
+object EmptyJob : IAsyncJob<Unit> {
   override fun await() = Unit
 }
 
-/** Represents an [IAsyncJob] that returns some [value] on [await]. */
-class JustJob(private val value: Any) : IAsyncJob {
+/**
+ * Represents an [IAsyncJob] that returns some [value] on [await].
+ * @param T The return type of [await].
+ * @param value A [T] instance.
+ */
+class JustJob<T>(private val value: T) : IAsyncJob<T> where T : Any {
   override fun await() = this.value
 }
 
 /**
  * Represents an [IAsyncJob] that handles [Job]. It waits for [job] to resolve synchronously with
  * a [CountDownLatch].
+ * @param T The return type of [await].
  * @param job The [Job] to be resolved.
  */
-class CoroutineJob(private val job: Deferred<Any>) : IAsyncJob {
-  override fun await(): Any {
+class CoroutineJob<T>(private val job: Deferred<T>) : IAsyncJob<T> where T : Any {
+  override fun await(): T {
     return runBlocking { this@CoroutineJob.job.await() }
   }
 }
