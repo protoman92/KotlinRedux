@@ -21,7 +21,7 @@ import static org.swiften.redux.saga.rx.SagaEffects.mapSingle;
  */
 public final class ReduxSagaTest {
   @Test
-  public void test_invokingSagaWithJava_shouldWork() {
+  public void test_invokingSagaWithJava_shouldWork() throws Exception {
     // Setup
     Object value = just(1)
       .transform(map(i -> i * 2))
