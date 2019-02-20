@@ -27,7 +27,7 @@ data class MusicResult(
   val results: List<MusicTrack>
 ) : Serializable
 
-enum class ResultLimit(val count: Int) {
+enum class ResultLimit(val count: Int) : Serializable {
   FIVE(5),
   TEN(10),
   TWENTY(20)

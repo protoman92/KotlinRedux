@@ -15,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IFullPropInjector
+import org.swiften.redux.ui.IPropInjector
 import java.io.Serializable
 import java.util.Date
 
@@ -74,7 +74,7 @@ fun <GState> IFullPropInjector<GState>.injectActivity(
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
       try {
         savedInstanceState
-          ?.run { restoreState(this) }
+          ?.run { saver.restoreState(this) }
           ?.apply { this@injectActivity.dispatch(DefaultReduxAction.ReplaceState(this)) }
       } catch (e: Throwable) { }
 

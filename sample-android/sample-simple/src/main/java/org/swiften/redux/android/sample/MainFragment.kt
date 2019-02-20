@@ -52,31 +52,27 @@ class MainFragment : Fragment(),
   ): View? = inflater.inflate(R.layout.main_fragment, container, false)
 
   override fun beforePropInjectionStarts(sp: StaticProp<ILocalState, Unit>) {
-    this.fragmentManager?.also {
-      val adapter = object : FragmentPagerAdapter(it) {
-        override fun getItem(position: Int): Fragment = when (position) {
-          Constants.MAIN_PAGE_DETAIL_INDEX -> DetailFragment()
-          else -> SearchFragment()
-        }
-
-        override fun getCount() = 2
+    this.view_pager.adapter = object : FragmentPagerAdapter(this.childFragmentManager) {
+      override fun getItem(position: Int): Fragment = when (position) {
+        Constants.MAIN_PAGE_DETAIL_INDEX -> DetailFragment()
+        else -> SearchFragment()
       }
 
-      this.view_pager.adapter = adapter
-
-      this.view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-        override fun onPageScrollStateChanged(state: Int) {}
-
-        override fun onPageScrolled(
-          position: Int,
-          positionOffset: Float,
-          positionOffsetPixels: Int
-        ) {}
-
-        override fun onPageSelected(position: Int) {
-          this@MainFragment.reduxProp.action.selectPage(position)
-        }
-      })
+      override fun getCount() = 2
     }
+
+    this.view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+      override fun onPageScrollStateChanged(state: Int) {}
+
+      override fun onPageScrolled(
+        position: Int,
+        positionOffset: Float,
+        positionOffsetPixels: Int
+      ) {}
+
+      override fun onPageSelected(position: Int) {
+        this@MainFragment.reduxProp.action.selectPage(position)
+      }
+    })
   }
 }

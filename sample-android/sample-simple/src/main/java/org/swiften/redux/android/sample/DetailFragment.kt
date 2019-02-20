@@ -18,6 +18,7 @@ import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
+import java.io.Serializable
 
 /** Created by haipham on 27/1/19 */
 class DetailFragment : Fragment(),
@@ -33,7 +34,7 @@ class DetailFragment : Fragment(),
 
   interface ILocalState : IMusicResultProvider, ISelectedTrackProvider
 
-  data class S(val track: MusicTrack?)
+  data class S(val track: MusicTrack?) : Serializable
 
   override var reduxProp by ObservableReduxProp<S, Unit> { _, next ->
     next.state.track?.also {

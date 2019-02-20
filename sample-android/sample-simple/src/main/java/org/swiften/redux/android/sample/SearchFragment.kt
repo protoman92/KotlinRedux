@@ -31,6 +31,7 @@ import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
+import java.io.Serializable
 
 /** Created by haipham on 27/1/19 */
 class SearchAdapter : ReduxRecyclerViewAdapter<SearchAdapter.ViewHolder>() {
@@ -106,7 +107,7 @@ class SearchFragment : Fragment(),
     val query: String? = null,
     val loading: Boolean = false,
     val limit: ResultLimit? = ResultLimit.FIVE
-  )
+  ) : Serializable
 
   class A(val updateQuery: (String?) -> Unit, val updateLimit: (ResultLimit?) -> Unit)
 

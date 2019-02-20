@@ -19,7 +19,8 @@
     android:layout_weight="0.5"
     android:padding="@dimen/spacing1"
     android:lines="1"
-    android:textSize="@dimen/text_view_font"/>
+    android:textSize="@dimen/text_view_font"
+    android:saveEnabled="false"/>
 
   <TextView
     android:id="@+id/artistName"
@@ -29,6 +30,7 @@
     android:gravity="end"
     android:padding="@dimen/spacing1"
     android:lines="1"
-    android:textSize="@dimen/text_view_font"/>
+    android:textSize="@dimen/text_view_font"
+    android:saveEnabled="false"/>
 
 </LinearLayout>
