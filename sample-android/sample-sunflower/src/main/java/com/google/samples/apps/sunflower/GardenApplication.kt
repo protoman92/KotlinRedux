@@ -15,9 +15,9 @@ import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivityParcelable
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
-import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
+import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.core.createRouterMiddleware
 import org.swiften.redux.saga.common.createSagaMiddleware
 import org.swiften.redux.thunk.createThunkMiddleware
@@ -53,7 +53,6 @@ class GardenApplication : Application() {
         is GardenFragment -> this.injectLifecycle(dependency, it, GardenFragment)
         is PlantDetailFragment -> this.injectLifecycle(dependency, it, PlantDetailFragment)
         is PlantListFragment -> this.injectLifecycle(dependency, it, PlantListFragment)
-        else -> Unit
       }
     }
   }

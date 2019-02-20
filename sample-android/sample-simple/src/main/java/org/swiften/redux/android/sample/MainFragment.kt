@@ -14,6 +14,8 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.main_fragment.view_pager
 import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.UUIDSubscriberIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -24,6 +26,7 @@ import java.io.Serializable
 
 /** Created by haipham on 27/1/19 */
 class MainFragment : Fragment(),
+  ISubscriberIDProvider by UUIDSubscriberIDProvider(),
   IPropContainer<MainFragment.S, MainFragment.A>,
   IPropLifecycleOwner<MainFragment.ILocalState, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<ILocalState, Unit, S, A> {

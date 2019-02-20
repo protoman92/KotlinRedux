@@ -15,6 +15,8 @@ import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.android.util.AndroidUtil
 import org.swiften.redux.core.IReduxStore
+import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.UUIDSubscriberIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -22,7 +24,6 @@ import org.swiften.redux.ui.LateinitObservableProp
 import org.swiften.redux.ui.PropInjectorTest
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
-import org.swiften.redux.ui.inject
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -47,7 +48,10 @@ class AndroidInjectorTest : PropInjectorTest() {
     this.runner = Runner()
   }
 
-  internal class AndroidView : IPropContainer<S, A>, IPropLifecycleOwner<S, Unit> {
+  internal class AndroidView :
+    ISubscriberIDProvider by UUIDSubscriberIDProvider(),
+    IPropContainer<S, A>,
+    IPropLifecycleOwner<S, Unit> {
     private val propInitialized = AtomicBoolean(false)
 
     override var reduxProp by LateinitObservableProp<ReduxProp<S, A>> { _, _ ->

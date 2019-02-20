@@ -10,14 +10,13 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.core.IReduxSubscription
+import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.ReduxProp
-import org.swiften.redux.ui.StaticProp
-import org.swiften.redux.ui.inject
 
 /** Created by haipham on 2018/12/17 */
 /** Callback for use with [LifecycleObserver]. */
@@ -104,6 +103,7 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
   GState : LState,
   LState : Any,
   Owner : LifecycleOwner,
+  Owner : ISubscriberIDProvider,
   Owner : IPropContainer<State, Action>,
   Owner : IPropLifecycleOwner<LState, OutProp>,
   State : Any,
@@ -118,29 +118,7 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
    */
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
     override fun onSafeForStartingLifecycleAwareTasks() {
-      subscription = this@injectLifecycle.inject(outProp,
-        object : IPropContainer<State, Action>, IPropLifecycleOwner<LState, OutProp> {
-          override var reduxProp: ReduxProp<State, Action>
-            get() = lifecycleOwner.reduxProp
-
-            /**
-             * If [Lifecycle.getCurrentState] is [Lifecycle.State.DESTROYED], do not set
-             * [IPropContainer.reduxProp] since there's no point in doing so.
-             */
-            set(value) = lifecycleOwner.lifecycle.currentState
-              .takeUnless { it == Lifecycle.State.DESTROYED }
-              .let { lifecycleOwner.reduxProp = value }
-
-          override fun toString() = lifecycleOwner.toString()
-
-          override fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>) {
-            lifecycleOwner.beforePropInjectionStarts(sp)
-          }
-
-          override fun afterPropInjectionEnds() {
-            lifecycleOwner.afterPropInjectionEnds()
-          }
-        }, mapper)
+      subscription = this@injectLifecycle.inject(outProp, lifecycleOwner, mapper)
     }
 
     override fun onSafeForEndingLifecycleAwareTasks() {
