@@ -142,9 +142,9 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
 
     // When && Then
     owner.registry.markState(Lifecycle.State.STARTED)
-    injector.subscriptions.forEach { assertFalse(it.isUnsubscribed()) }
+    injector.subscriptions.forEach { _, v -> assertFalse(v.isUnsubscribed()) }
     owner.registry.markState(Lifecycle.State.DESTROYED)
-    injector.subscriptions.forEach { assertTrue(it.isUnsubscribed()) }
+    injector.subscriptions.forEach { _, v -> assertTrue(v.isUnsubscribed()) }
   }
 
   @Test

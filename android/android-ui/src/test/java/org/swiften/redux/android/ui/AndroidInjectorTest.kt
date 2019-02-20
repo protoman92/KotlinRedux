@@ -18,10 +18,10 @@ import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
+import org.swiften.redux.ui.LateinitObservableProp
 import org.swiften.redux.ui.PropInjectorTest
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
-import org.swiften.redux.ui.VetoableObservableProp
 import org.swiften.redux.ui.inject
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -50,15 +50,7 @@ class AndroidInjectorTest : PropInjectorTest() {
   internal class AndroidView : IPropContainer<S, A>, IPropLifecycleOwner<S, Unit> {
     private val propInitialized = AtomicBoolean(false)
 
-    /**
-     * Make sue [VetoableObservableProp.equalChecker] always returns false to avoid comparison
-     * because [AndroidUtil.IMainThreadRunner.invoke] is performed before the prop comparison
-     * happens. By returning false we can compare the actual [Runner.runCount] with the number
-     * of times prop injection happens.
-     */
-    override var reduxProp by VetoableObservableProp<ReduxProp<S, A>>(
-      { _, _ -> false }
-    ) { _, _ ->
+    override var reduxProp by LateinitObservableProp<ReduxProp<S, A>> { _, _ ->
       this.propInjectionCount.incrementAndGet()
       this.propInitialized.set(true)
     }

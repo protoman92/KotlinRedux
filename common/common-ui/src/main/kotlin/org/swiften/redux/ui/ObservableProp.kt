@@ -18,10 +18,7 @@ import kotlin.reflect.KProperty
  * @param equalChecker Check equality for two [T] instances.
  * @param notifier Broadcast the latest [T] instance.
  */
-open class VetoableObservableProp<T>(
-  private val equalChecker: (T?, T) -> Boolean = { a, b -> a == b },
-  private val notifier: (T?, T) -> Unit
-) : ReadWriteProperty<Any?, T> where T : Any {
+open class LateinitObservableProp<T>(private val notifier: (T?, T) -> Unit) : ReadWriteProperty<Any?, T> where T : Any {
   private lateinit var value: T
   private val lock by lazy { ReentrantReadWriteLock() }
 
@@ -31,7 +28,7 @@ open class VetoableObservableProp<T>(
   override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
     val previous = this.lock.read { if (this::value.isInitialized) this.value else null }
     this.lock.write { this.value = value }
-    this.lock.read { if (!this.equalChecker(previous, value)) { this.notifier(previous, value) } }
+    this.lock.read { this.notifier(previous, value) }
   }
 }
 
@@ -39,10 +36,8 @@ open class VetoableObservableProp<T>(
  * Use this to avoid lateinit modifiers for [ReduxProp].
  * @param State See [ReduxProp.state].
  * @param Action See [ReduxProp.action].
- * @param notifier See [VetoableObservableProp.notifier].
+ * @param notifier See [LateinitObservableProp.notifier].
  */
 class ObservableReduxProp<State : Any, Action : Any>(
   notifier: (IVariableProp<State, Action>?, IVariableProp<State, Action>) -> Unit
-) : ReadWriteProperty<Any?, ReduxProp<State, Action>> by VetoableObservableProp({ a, b ->
-  a?.state == b.state
-}, { prev, next -> notifier(prev, next) })
+) : ReadWriteProperty<Any?, ReduxProp<State, Action>> by LateinitObservableProp(notifier)
