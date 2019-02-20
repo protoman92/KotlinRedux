@@ -31,6 +31,8 @@ import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.recyclerview.PositionProp
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.UUIDSubscriberIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -57,6 +59,7 @@ class GardenPlantingAdapter : ReduxRecyclerViewAdapter<GardenPlantingAdapter.Vie
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    ISubscriberIDProvider by UUIDSubscriberIDProvider(),
     IPropContainer<ViewHolder.S, ViewHolder.A>,
     IPropLifecycleOwner<Redux.State, PositionProp<IDependency>> by NoopPropLifecycleOwner() {
     data class S(val plantings: PlantAndGardenPlantings?)

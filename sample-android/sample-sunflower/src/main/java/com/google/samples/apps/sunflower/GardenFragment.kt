@@ -27,6 +27,8 @@ import kotlinx.android.synthetic.main.fragment_garden.empty_garden
 import kotlinx.android.synthetic.main.fragment_garden.garden_list
 import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapter
 import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.UUIDSubscriberIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -35,6 +37,7 @@ import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
 
 class GardenFragment : Fragment(),
+  ISubscriberIDProvider by UUIDSubscriberIDProvider(),
   IPropContainer<GardenFragment.S, Unit>,
   IPropLifecycleOwner<Redux.State, GardenFragment.IDependency> by NoopPropLifecycleOwner() {
   interface IDependency : GardenPlantingAdapter.IDependency

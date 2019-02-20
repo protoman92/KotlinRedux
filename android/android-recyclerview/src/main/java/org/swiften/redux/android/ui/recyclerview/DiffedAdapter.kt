@@ -65,9 +65,14 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
 
   /**
    * Since we will be manually injecting prop into [VH] instances, we will need to collect their
-   * [ReduxSubscription] here.
+   * [ReduxSubscription] here. We need a [CompositeReduxSubscription] here, unlike
+   * [DelegateRecyclerAdapter.viewHolderIDs], because we are not using [IPropInjector.inject]
+   * directly on [VH] instances. There is thus no need to keep track of [VH] subscriber IDs to
+   * perform [IPropInjector.unsubscribe], but we do need a [CompositeReduxSubscription] to ensure
+   * [IPropLifecycleOwner.afterPropInjectionEnds] is properly called when we do a sweeping
+   * unsubscription.
    */
-  val composite = CompositeReduxSubscription("${this.adapter}${Date().time}")
+  internal val composite = CompositeReduxSubscription("${this.adapter}${Date().time}")
 
   /**
    * Since we are only calling [ListAdapter.submitList] when [reduxProp] arrives, the
@@ -131,6 +136,16 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
   }
 
   override fun toString() = this.adapter.toString()
+
+  /**
+   * Clean up all subscriptions with [composite].
+   * @param injector An [IPropInjector] instance.
+   */
+  internal fun cleanUpSubscriptions(injector: IPropInjector<GState>) {
+    injector.unsubscribe(this.uniqueSubscriberID)
+    this.composite.unsubscribe()
+
+  }
 }
 
 /**
@@ -193,11 +208,11 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
       super.onDetachedFromRecyclerView(recyclerView)
-      this@injectDiffedAdapter.unsubscribe(this.uniqueSubscriberID)
+      this.cleanUpSubscriptions(this@injectDiffedAdapter)
     }
   }
 
-  this.injectBase(outProp, listAdapter, adapterMapper)
+  this.inject(outProp, listAdapter, adapterMapper)
   return listAdapter
 }
 
@@ -237,8 +252,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
     override fun onSafeForStartingLifecycleAwareTasks() {}
 
     override fun onSafeForEndingLifecycleAwareTasks() {
-      this@injectDiffedAdapter.unsubscribe(wrappedAdapter.uniqueSubscriberID)
-      wrappedAdapter.composite.unsubscribe()
+      wrappedAdapter.cleanUpSubscriptions(this@injectDiffedAdapter)
     }
   })
 

@@ -20,6 +20,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
 import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.UUIDSubscriberIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -33,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger
 @RunWith(RobolectricTestRunner::class)
 class RecycleAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    ISubscriberIDProvider by UUIDSubscriberIDProvider(),
     IPropContainer<Int, Unit>,
     IPropLifecycleOwner<Int, PositionProp<Unit>> by NoopPropLifecycleOwner() {
     companion object : IPropMapper<Int, PositionProp<Unit>, Int, Unit> {

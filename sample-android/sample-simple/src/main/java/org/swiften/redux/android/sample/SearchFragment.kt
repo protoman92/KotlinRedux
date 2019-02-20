@@ -25,6 +25,8 @@ import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
 import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.UUIDSubscriberIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -86,6 +88,7 @@ class SearchAdapter : ReduxRecyclerViewAdapter<SearchAdapter.ViewHolder>() {
 }
 
 class SearchFragment : Fragment(),
+  ISubscriberIDProvider by UUIDSubscriberIDProvider(),
   IPropContainer<SearchFragment.S, SearchFragment.A>,
   IPropLifecycleOwner<SearchFragment.ILocalState, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<ILocalState, Unit, S, A> {

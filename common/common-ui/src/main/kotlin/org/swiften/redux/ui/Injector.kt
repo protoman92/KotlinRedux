@@ -15,7 +15,6 @@ import org.swiften.redux.core.IReduxUnsubscriberProvider
 import org.swiften.redux.core.IStateGetterProvider
 import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.core.UUIDSubscriberIDProvider
 import java.util.Collections
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
@@ -134,7 +133,7 @@ interface IPropInjector<GState> : IStateGetterProvider<GState>, IReduxUnsubscrib
    * @param mapper An [IPropMapper] instance.
    * @return An [IReduxSubscription] instance.
    */
-  fun <LState, OutProp, View, State, Action> injectBase(
+  fun <LState, OutProp, View, State, Action> inject(
     outProp: OutProp,
     view: View,
     mapper: IPropMapper<LState, OutProp, State, Action>
@@ -178,7 +177,7 @@ open class PropInjector<GState : Any> protected constructor(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override fun <LState, OutProp, View, State, Action> injectBase(
+  override fun <LState, OutProp, View, State, Action> inject(
     outProp: OutProp,
     view: View,
     mapper: IPropMapper<LState, OutProp, State, Action>
@@ -229,36 +228,4 @@ open class PropInjector<GState : Any> protected constructor(
     this.subscriptions[subscriberId] = wrappedSubscription
     return wrappedSubscription
   }
-}
-
-/**
- * Provide a default implementation for [ISubscriberIDProvider] using [UUIDSubscriberIDProvider].
- * @param GState The global state type.
- * @param LState The local state type that [GState] must extend from.
- * @param OutProp Property as defined by [view]'s parent.
- * @param View The [IPropContainer] instance that also implements [IPropLifecycleOwner].
- * @param State See [ReduxProp.state].
- * @param Action See [ReduxProp.action].
- * @param outProp An [OutProp] instance.
- * @param view An [View] instance.
- * @param mapper An [IPropMapper] instance.
- * @return An [IReduxSubscription] instance.
- */
-fun <GState, LState, OutProp, View, State, Action> IPropInjector<GState>.inject(
-  outProp: OutProp,
-  view: View,
-  mapper: IPropMapper<LState, OutProp, State, Action>
-): IReduxSubscription where
-  GState : LState,
-  LState : Any,
-  View : IPropContainer<State, Action>,
-  View : IPropLifecycleOwner<LState, OutProp>,
-  State : Any,
-  Action : Any {
-  return this.injectBase(outProp, object :
-    ISubscriberIDProvider by UUIDSubscriberIDProvider(),
-    IPropContainer<State, Action> by view,
-    IPropLifecycleOwner<LState, OutProp> by view {
-    override fun toString(): String = view.toString()
-  }, mapper)
 }
