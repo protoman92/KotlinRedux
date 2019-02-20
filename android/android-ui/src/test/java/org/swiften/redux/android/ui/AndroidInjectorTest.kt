@@ -22,6 +22,7 @@ import org.swiften.redux.ui.PropInjectorTest
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
 import org.swiften.redux.ui.VetoableObservableProp
+import org.swiften.redux.ui.inject
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 

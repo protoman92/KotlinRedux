@@ -11,8 +11,9 @@ import org.swiften.redux.core.IDispatcherProvider
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IStateGetterProvider
+import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
-import java.util.UUID
+import org.swiften.redux.core.UUIDSubscriberIDProvider
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -130,12 +131,13 @@ interface IPropInjector<GState> : IStateGetterProvider<GState> where GState : An
    * @param mapper An [IPropMapper] instance.
    * @return An [IReduxSubscription] instance.
    */
-  fun <LState, OutProp, View, State, Action> inject(
+  fun <LState, OutProp, View, State, Action> injectBase(
     outProp: OutProp,
     view: View,
     mapper: IPropMapper<LState, OutProp, State, Action>
   ): IReduxSubscription where
     LState : Any,
+    View : ISubscriberIDProvider,
     View : IPropContainer<State, Action>,
     View : IPropLifecycleOwner<LState, OutProp>,
     State : Any,
@@ -166,12 +168,13 @@ open class PropInjector<GState : Any> protected constructor(
   IStateGetterProvider<GState> by store,
   IDeinitializerProvider by store {
   @Suppress("UNCHECKED_CAST")
-  override fun <LState, OutProp, View, State, Action> inject(
+  override fun <LState, OutProp, View, State, Action> injectBase(
     outProp: OutProp,
     view: View,
     mapper: IPropMapper<LState, OutProp, State, Action>
   ): IReduxSubscription where
     LState : Any,
+    View : ISubscriberIDProvider,
     View : IPropContainer<State, Action>,
     View : IPropLifecycleOwner<LState, OutProp>,
     State : Any,
@@ -179,12 +182,7 @@ open class PropInjector<GState : Any> protected constructor(
     /** If [view] has received an injection before, unsubscribe from that. */
     view.unsubscribeSafely()
 
-    /**
-     * It does not matter what the id is, as long as it is unique. This is because we will be
-     * passing along a [ReduxSubscription] to handle unsubscribe, so there's no need to keep
-     * track of this id.
-     */
-    val subscriberId = "$view${UUID.randomUUID()}"
+    val subscriberId = view.uniqueSubscriberID
     view.beforePropInjectionStarts(StaticProp(this as IPropInjector<LState>, outProp))
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
@@ -229,6 +227,38 @@ open class PropInjector<GState : Any> protected constructor(
     view.reduxProp = view.reduxProp.copy(wrappedSubscription)
     return wrappedSubscription
   }
+}
+
+/**
+ * Provide a default implementation for [ISubscriberIDProvider] using [UUIDSubscriberIDProvider].
+ * @param GState The global state type.
+ * @param LState The local state type that [GState] must extend from.
+ * @param OutProp Property as defined by [view]'s parent.
+ * @param View The [IPropContainer] instance that also implements [IPropLifecycleOwner].
+ * @param State See [ReduxProp.state].
+ * @param Action See [ReduxProp.action].
+ * @param outProp An [OutProp] instance.
+ * @param view An [View] instance.
+ * @param mapper An [IPropMapper] instance.
+ * @return An [IReduxSubscription] instance.
+ */
+fun <GState, LState, OutProp, View, State, Action> IPropInjector<GState>.inject(
+  outProp: OutProp,
+  view: View,
+  mapper: IPropMapper<LState, OutProp, State, Action>
+): IReduxSubscription where
+  GState : LState,
+  LState : Any,
+  View : IPropContainer<State, Action>,
+  View : IPropLifecycleOwner<LState, OutProp>,
+  State : Any,
+  Action : Any {
+  return this.injectBase(outProp, object :
+    ISubscriberIDProvider by UUIDSubscriberIDProvider(),
+    IPropContainer<State, Action> by view,
+    IPropLifecycleOwner<LState, OutProp> by view {
+    override fun toString(): String = view.toString()
+  }, mapper)
 }
 
 /**

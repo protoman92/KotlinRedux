@@ -20,6 +20,7 @@ import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
+import org.swiften.redux.ui.inject
 import org.swiften.redux.ui.unsubscribeSafely
 import java.util.Date
 
