@@ -20,7 +20,8 @@ class DefaultActionStore<GState>(state: GState, reducer: IReducer<GState>) :
   override val reducer get() = this.store.reducer
   override val dispatch get() = this.store.dispatch
   override val lastState get() = this.store.lastState
-  override val subscribe = this.store.subscribe
+  override val subscribe get() = this.store.subscribe
+  override val unsubscribe get() = this.store.unsubscribe
 
   override val deinitialize: IDeinitializer = {
     this.dispatch(DefaultReduxAction.Deinitialize)
