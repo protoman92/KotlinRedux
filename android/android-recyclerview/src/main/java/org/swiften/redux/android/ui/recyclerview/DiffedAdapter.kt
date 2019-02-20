@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
 import org.swiften.redux.core.CompositeReduxSubscription
-import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.core.UUIDSubscriberIDProvider
@@ -68,7 +67,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
    * Since we will be manually injecting prop into [VH] instances, we will need to collect their
    * [ReduxSubscription] here.
    */
-  val vhSubscription = CompositeReduxSubscription("${this.adapter}${Date().time}")
+  val composite = CompositeReduxSubscription("${this.adapter}${Date().time}")
 
   /**
    * Since we are only calling [ListAdapter.submitList] when [reduxProp] arrives, the
@@ -172,22 +171,24 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   VH : IPropLifecycleOwner<LState, OutProp>,
   VHState : Any,
   VHAction : Any {
-  val vhSubscriberIDs = hashMapOf<Int, IReduxSubscription>()
-
   val listAdapter = object : ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
-      val subscribeId = "$holder${Date().time}"
+
+      /**
+       * Since [position] is unique for each [VH], we can use it as a key, then remove it from
+       * [ReduxListAdapter.composite] in [RecyclerView.Adapter.onViewRecycled] to allow reuse.
+       */
+      val subscribeId = "$position"
       val subscription = ReduxSubscription(subscribeId) { holder.afterPropInjectionEnds() }
-      this.vhSubscription.add(subscription)
+      this.composite.add(subscription)
       holder.beforePropInjectionStarts(this.staticProp)
       holder.reduxProp = ReduxProp(this.getItem(position), this.reduxProp.action)
-      vhSubscriberIDs.set(position, subscription)
     }
 
     override fun onViewRecycled(holder: VH) {
       super.onViewRecycled(holder)
-      vhSubscriberIDs.remove(holder.layoutPosition)?.unsubscribe()
+      this.composite.remove("${holder.layoutPosition}")?.unsubscribe()
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
@@ -237,7 +238,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
 
     override fun onSafeForEndingLifecycleAwareTasks() {
       this@injectDiffedAdapter.unsubscribe(wrappedAdapter.uniqueSubscriberID)
-      wrappedAdapter.vhSubscription.unsubscribe()
+      wrappedAdapter.composite.unsubscribe()
     }
   })
 
