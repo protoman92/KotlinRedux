@@ -6,7 +6,10 @@
 package org.swiften.redux.android.ui.recyclerview
 
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
+import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
 import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
@@ -16,7 +19,6 @@ import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.inject
-import org.swiften.redux.ui.unsubscribeSafely
 import java.util.Date
 
 /** Created by haipham on 2019/01/08 */
@@ -61,7 +63,12 @@ abstract class DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHA
   VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
   VHState : Any,
   VHAction : Any {
-  protected val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
+  /**
+   * Since we will be performing [IFullPropInjector.inject] for [VH] instances, we will be using
+   * [CompositeReduxSubscription.add] a lot every time [RecyclerView.Adapter.onBindViewHolder] is
+   * called. Use this to ensure proper deinitialization.
+   */
+  internal val composite = CompositeReduxSubscription("${this.javaClass}${Date().time}")
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
     return this.adapter.onCreateViewHolder(parent, viewType)
@@ -74,7 +81,6 @@ abstract class DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHA
   override fun onViewRecycled(holder: VH) {
     super.onViewRecycled(holder)
     this.adapter.onViewRecycled(holder)
-    holder.unsubscribeSafely()?.also { this.composite.remove(it) }
   }
 
   override fun onViewAttachedToWindow(holder: VH) {
@@ -111,13 +117,6 @@ abstract class DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHA
     super.unregisterAdapterDataObserver(observer)
     this.adapter.unregisterAdapterDataObserver(observer)
   }
-
-  /**
-   * Since we will be performing [IFullPropInjector.inject] for [VH] instances, we will be using
-   * [CompositeReduxSubscription.add] a lot every time [RecyclerView.Adapter.onBindViewHolder] is
-   * called. As a result, calling this method will ensure proper deinitialization.
-   */
-  internal fun unsubscribeSafely() = this.composite.unsubscribe()
 }
 
 /**
@@ -153,6 +152,8 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
   VHState : Any,
   VHAction : Any {
+  val vhSubscriberIDs = hashMapOf<Int, String>()
+
   return object : DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHAction>(adapter) {
     override fun getItemCount(): Int {
       return adapterMapper.mapState(this@injectRecyclerAdapter.lastState(), Unit)
@@ -161,12 +162,57 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
     override fun onBindViewHolder(holder: VH, position: Int) {
       val vhOutProp = PositionProp(outProp, position)
       val subscription = this@injectRecyclerAdapter.inject(vhOutProp, holder, vhMapper)
+      vhSubscriberIDs.set(position, subscription.id)
       this.composite.add(subscription)
     }
 
     override fun onViewRecycled(holder: VH) {
       super.onViewRecycled(holder)
-      holder.unsubscribeSafely()?.also { this.composite.remove(it) }
+
+      vhSubscriberIDs.remove(holder.layoutPosition)?.also {
+        this@injectRecyclerAdapter.unsubscribe(it)
+      }
     }
   }
+}
+
+/**
+ * Perform [injectRecyclerAdapter], but also handle lifecycle with [lifecycleOwner].
+ * @receiver An [IPropInjector] instance.
+ * @param GState The global state type.
+ * @param LState The local state type that [GState] must extend from.
+ * @param OutProp Property as defined by [lifecycleOwner]'s parent.
+ * @param VH The [RecyclerView.ViewHolder] instance.
+ * @param VHState The [VH] state type. See [ReduxProp.state].
+ * @param VHAction The [VH] action type. See [ReduxProp.action].
+ * @param lifecycleOwner A [LifecycleOwner] instance.
+ * @param adapter The base [RecyclerView.Adapter] instance.
+ * @param outProp An [OutProp] instance.
+ * @param adapterMapper An [IStateMapper] instance that calculates item count for
+ * [RecyclerView.Adapter.getItemCount].
+ * @param vhMapper An [IPropMapper] instance for [VH].
+ * @return A [RecyclerView.Adapter] instance.
+ */
+fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectRecyclerAdapter(
+  outProp: OutProp,
+  lifecycleOwner: LifecycleOwner,
+  adapter: RecyclerView.Adapter<VH>,
+  adapterMapper: IStateMapper<LState, Unit, Int>,
+  vhMapper: IPropMapper<LState, PositionProp<OutProp>, VHState, VHAction>
+): RecyclerView.Adapter<VH> where
+  GState : LState,
+  LState : Any,
+  VH : RecyclerView.ViewHolder,
+  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
+  VHState : Any,
+  VHAction : Any {
+  val wrappedAdapter = this.injectRecyclerAdapter(outProp, adapter, adapterMapper, vhMapper)
+
+  ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
+    override fun onSafeForStartingLifecycleAwareTasks() {}
+    override fun onSafeForEndingLifecycleAwareTasks() { wrappedAdapter.composite.unsubscribe() }
+  })
+
+  return wrappedAdapter
 }

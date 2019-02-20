@@ -6,11 +6,17 @@
 package org.swiften.redux.android.ui.recyclerview
 
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
+import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
 import org.swiften.redux.core.CompositeReduxSubscription
+import org.swiften.redux.core.IReduxSubscription
+import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
+import org.swiften.redux.core.UUIDSubscriberIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
@@ -20,8 +26,6 @@ import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
-import org.swiften.redux.ui.inject
-import org.swiften.redux.ui.unsubscribeSafely
 import java.util.Date
 
 /** Created by haipham on 2019/01/24 */
@@ -50,6 +54,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ) : ListAdapter<VHState, VH>(diffCallback),
+  ISubscriberIDProvider by UUIDSubscriberIDProvider(),
   IPropLifecycleOwner<LState, OutProp> by NoopPropLifecycleOwner(),
   IPropContainer<List<VHState>, VHAction> where
   GState : LState,
@@ -85,7 +90,6 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
   override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
     super.onDetachedFromRecyclerView(recyclerView)
     this.adapter.onDetachedFromRecyclerView(recyclerView)
-    this.unsubscribeSafely()
   }
 
   override fun getItemViewType(position: Int) = this.adapter.getItemViewType(position)
@@ -168,6 +172,8 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   VH : IPropLifecycleOwner<LState, OutProp>,
   VHState : Any,
   VHAction : Any {
+  val vhSubscriberIDs = hashMapOf<Int, IReduxSubscription>()
+
   val listAdapter = object : ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
@@ -176,14 +182,107 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
       this.vhSubscription.add(subscription)
       holder.beforePropInjectionStarts(this.staticProp)
       holder.reduxProp = ReduxProp(subscription, this.getItem(position), this.reduxProp.action)
+      vhSubscriberIDs.set(position, subscription)
     }
 
     override fun onViewRecycled(holder: VH) {
       super.onViewRecycled(holder)
-      holder.unsubscribeSafely()?.also { this.vhSubscription.remove(it) }
+      vhSubscriberIDs.remove(holder.layoutPosition)?.unsubscribe()
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+      super.onDetachedFromRecyclerView(recyclerView)
+      this@injectDiffedAdapter.unsubscribe(this.uniqueSubscriberID)
     }
   }
 
-  this.inject(outProp, listAdapter, adapterMapper)
+  this.injectBase(outProp, listAdapter, adapterMapper)
   return listAdapter
 }
+
+/**
+ * Perform [injectDiffedAdapter], but also handle lifecycle with [lifecycleOwner].
+ * @receiver An [IPropInjector] instance.
+ * @param GState The global state type.
+ * @param LState The local state type that [GState] must extend from.
+ * @param OutProp Property as defined by [lifecycleOwner]'s parent.
+ * @param VH The [RecyclerView.ViewHolder] instance.
+ * @param VHState The [VH] state type. See [ReduxProp.state].
+ * @param VHAction The [VH] action type. See [ReduxProp.action].
+ * @param outProp An [OutProp] instance.
+ * @param lifecycleOwner A [LifecycleOwner] instance.
+ * @param adapter The base [RecyclerView.Adapter] instance.
+ * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
+ * @param diffCallback A [DiffUtil.ItemCallback] instance.
+ * @return A [ListAdapter] instance.
+ */
+fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
+  outProp: OutProp,
+  lifecycleOwner: LifecycleOwner,
+  adapter: RecyclerView.Adapter<VH>,
+  adapterMapper: IPropMapper<LState, OutProp, List<VHState>, VHAction>,
+  diffCallback: DiffUtil.ItemCallback<VHState>
+): ListAdapter<VHState, VH> where
+  GState : LState,
+  LState : Any,
+  VH : RecyclerView.ViewHolder,
+  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropLifecycleOwner<LState, OutProp>,
+  VHState : Any,
+  VHAction : Any {
+  val wrappedAdapter = this.injectDiffedAdapter(outProp, adapter, adapterMapper, diffCallback)
+
+  ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
+    override fun onSafeForStartingLifecycleAwareTasks() {}
+
+    override fun onSafeForEndingLifecycleAwareTasks() {
+      this@injectDiffedAdapter.unsubscribe(wrappedAdapter.uniqueSubscriberID)
+      wrappedAdapter.vhSubscription.unsubscribe()
+    }
+  })
+
+  return wrappedAdapter
+}
+
+/**
+ * Instead of [DiffUtil.ItemCallback], use [IDiffItemCallback] to avoid abstract class.
+ * @receiver An [IPropInjector] instance.
+ * @param GState The global state type.
+ * @param LState The local state type that [GState] must extend from.
+ * @param OutProp Property as defined by [lifecycleOwner]'s parent.
+ * @param VH The [RecyclerView.ViewHolder] instance.
+ * @param VHState The [VH] state type. See [ReduxProp.state].
+ * @param VHAction The [VH] action type. See [ReduxProp.action].
+ * @param outProp An [OutProp] instance.
+ * @param lifecycleOwner A [LifecycleOwner] instance.
+ * @param adapter The base [RecyclerView.Adapter] instance.
+ * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
+ * @param diffCallback A [IDiffItemCallback] instance.
+ * @return A [ListAdapter] instance.
+ */
+fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
+  outProp: OutProp,
+  lifecycleOwner: LifecycleOwner,
+  adapter: RecyclerView.Adapter<VH>,
+  adapterMapper: IPropMapper<LState, OutProp, List<VHState>, VHAction>,
+  diffCallback: IDiffItemCallback<VHState>
+): ListAdapter<VHState, VH> where
+  GState : LState,
+  LState : Any,
+  VH : RecyclerView.ViewHolder,
+  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropLifecycleOwner<LState, OutProp>,
+  VHState : Any,
+  VHAction : Any {
+  return this.injectDiffedAdapter(outProp, lifecycleOwner, adapter, adapterMapper,
+    object : DiffUtil.ItemCallback<VHState>() {
+      override fun areItemsTheSame(oldItem: VHState, newItem: VHState): Boolean {
+        return diffCallback.areItemsTheSame(oldItem, newItem)
+      }
+
+      override fun areContentsTheSame(oldItem: VHState, newItem: VHState): Boolean {
+        return diffCallback.areContentsTheSame(oldItem, newItem)
+      }
+    })
+}
+

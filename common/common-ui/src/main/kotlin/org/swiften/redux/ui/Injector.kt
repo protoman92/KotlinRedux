@@ -10,10 +10,13 @@ import org.swiften.redux.core.IDeinitializerProvider
 import org.swiften.redux.core.IDispatcherProvider
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscription
+import org.swiften.redux.core.IReduxUnsubscriber
+import org.swiften.redux.core.IReduxUnsubscriberProvider
 import org.swiften.redux.core.IStateGetterProvider
 import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.core.UUIDSubscriberIDProvider
+import java.util.Collections
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -114,7 +117,7 @@ interface IPropMapper<in LState, in OutProp, out State, out Action> :
  * Inject state and actions into an [IPropContainer].
  * @param GState The global state type.
  */
-interface IPropInjector<GState> : IStateGetterProvider<GState> where GState : Any {
+interface IPropInjector<GState> : IStateGetterProvider<GState>, IReduxUnsubscriberProvider where GState : Any {
   /**
    * Inject [State] and [Action] into [view].
    *
@@ -166,7 +169,14 @@ open class PropInjector<GState : Any> protected constructor(
 ) : IFullPropInjector<GState>,
   IDispatcherProvider by store,
   IStateGetterProvider<GState> by store,
+  IReduxUnsubscriberProvider,
   IDeinitializerProvider by store {
+  private val subscriptions = Collections.synchronizedMap(hashMapOf<String, IReduxSubscription>())
+
+  override val unsubscribe: IReduxUnsubscriber = { id ->
+    this.subscriptions.remove(id)?.unsubscribe()
+  }
+
   @Suppress("UNCHECKED_CAST")
   override fun <LState, OutProp, View, State, Action> injectBase(
     outProp: OutProp,
@@ -179,10 +189,11 @@ open class PropInjector<GState : Any> protected constructor(
     View : IPropLifecycleOwner<LState, OutProp>,
     State : Any,
     Action : Any {
-    /** If [view] has received an injection before, unsubscribe from that. */
-    view.unsubscribeSafely()
-
     val subscriberId = view.uniqueSubscriberID
+
+    /** If [view] has received an injection before, unsubscribe from that. */
+    this.unsubscribe(subscriberId)
+
     view.beforePropInjectionStarts(StaticProp(this as IPropInjector<LState>, outProp))
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
@@ -224,7 +235,7 @@ open class PropInjector<GState : Any> protected constructor(
       view.afterPropInjectionEnds()
     }
 
-    view.reduxProp = view.reduxProp.copy(wrappedSubscription)
+    this.subscriptions.set(subscriberId, wrappedSubscription)
     return wrappedSubscription
   }
 }
@@ -259,24 +270,4 @@ fun <GState, LState, OutProp, View, State, Action> IPropInjector<GState>.inject(
     IPropLifecycleOwner<LState, OutProp> by view {
     override fun toString(): String = view.toString()
   }, mapper)
-}
-
-/**
- * Unsubscribe from [IPropContainer.reduxProp] safely, i.e. catch
- * [UninitializedPropertyAccessException] because this is most probably declared as lateinit in
- * Kotlin code, and catch [NullPointerException] to satisfy Java code. Also return the
- * [ReduxSubscription.id] that can be used to track and remove the relevant [ReduxSubscription]
- * from other containers.
- * @receiver An [IPropContainer] instance.
- * @return The [IReduxSubscription.id].
- */
-fun IPropContainer<*, *>.unsubscribeSafely(): String? {
-  try {
-    val subscription = this.reduxProp.subscription
-    subscription.unsubscribe()
-    return subscription.id
-  } catch (e: UninitializedPropertyAccessException) {
-  } catch (e: NullPointerException) { }
-
-  return null
 }
