@@ -91,7 +91,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
 
     // Then - view holder injection
     assertEquals(injector.injectionCount, 3)
-    injector.subscriptions.forEach { assertFalse(it.isUnsubscribed()) }
+    injector.subscriptions.forEach { _, v -> assertFalse(v.isUnsubscribed()) }
 
     // When - lifecycle ending
     /** When state is destroyed, all subscriptions should have been disposed of */
@@ -101,6 +101,6 @@ class RecycleAdapterTest : BaseLifecycleTest() {
     lc.registry.markState(Lifecycle.State.DESTROYED)
 
     // Then - lifecycle ending
-    injector.subscriptions.forEach { assertTrue(it.isUnsubscribed()) }
+    injector.subscriptions.forEach { _, v -> assertTrue(v.isUnsubscribed()) }
   }
 }

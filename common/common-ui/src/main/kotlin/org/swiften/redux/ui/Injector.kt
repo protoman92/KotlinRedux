@@ -193,7 +193,6 @@ open class PropInjector<GState : Any> protected constructor(
 
     /** If [view] has received an injection before, unsubscribe from that. */
     this.unsubscribe(subscriberId)
-
     view.beforePropInjectionStarts(StaticProp(this as IPropInjector<LState>, outProp))
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null

@@ -101,8 +101,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
 
     // Then - view holder injection
     assertEquals(injector.injectionCount, 1)
-    viewHolders.forEach { assertFalse(it.reduxProp.subscription.isUnsubscribed()) }
-    injector.subscriptions.forEach { assertFalse(it.isUnsubscribed()) }
+    injector.subscriptions.forEach { _, v -> assertFalse(v.isUnsubscribed()) }
 
     // When - lifecycle ending
     /** When state is destroyed, all subscriptions should have been disposed of */
@@ -112,11 +111,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     lc.registry.markState(Lifecycle.State.DESTROYED)
 
     // Then - lifecycle ending
-    injector.subscriptions.forEach { assertTrue(it.isUnsubscribed()) }
-
-    viewHolders.forEach {
-      assertTrue(it.reduxProp.subscription.isUnsubscribed())
-      assertEquals(it.afterInjection.get(), 1)
-    }
+    injector.subscriptions.forEach { _, v -> assertTrue(v.isUnsubscribed()) }
+    viewHolders.forEach { assertEquals(it.afterInjection.get(), 1) }
   }
 }

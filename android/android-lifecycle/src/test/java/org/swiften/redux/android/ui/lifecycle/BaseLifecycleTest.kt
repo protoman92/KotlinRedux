@@ -24,7 +24,7 @@ import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
-import java.util.Collections.synchronizedList
+import java.util.Collections.synchronizedMap
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by viethai.pham on 2019/01/28 */
@@ -59,10 +59,12 @@ open class BaseLifecycleTest {
   }
 
   class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IFullPropInjector<Int> {
-    val subscriptions: MutableList<IReduxSubscription> = synchronizedList(mutableListOf())
+    val subscriptions = synchronizedMap(hashMapOf<String, IReduxSubscription>())
     val injectionCount get() = this.subscriptions.size
 
-    override val unsubscribe: IReduxUnsubscriber = {}
+    override val unsubscribe: IReduxUnsubscriber = { id ->
+      this.subscriptions.remove(id)?.unsubscribe()
+    }
 
     @Suppress("UNCHECKED_CAST")
     override fun <LState, OutProp, View, State, Action> injectBase(
@@ -77,12 +79,12 @@ open class BaseLifecycleTest {
       State : Any,
       Action : Any {
       val lastState = this.lastState()
-      val subscription = ReduxSubscription("$view") { view.afterPropInjectionEnds() }
+      val subscription = ReduxSubscription(view.uniqueSubscriberID) { view.afterPropInjectionEnds() }
       val state = mapper.mapState(lastState as LState, outProp)
       val action = mapper.mapAction(this.dispatch, outProp)
       view.beforePropInjectionStarts(StaticProp(this as IFullPropInjector<LState>, outProp))
       view.reduxProp = ReduxProp(state, action)
-      this.subscriptions.add(subscription)
+      this.subscriptions[view.uniqueSubscriberID] = subscription
       return subscription
     }
 
