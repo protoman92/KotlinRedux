@@ -19,6 +19,7 @@ import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.inject
+import java.util.Collections
 import java.util.Date
 
 /** Created by haipham on 2019/01/08 */
@@ -152,7 +153,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
   VHState : Any,
   VHAction : Any {
-  val vhSubscriberIDs = hashMapOf<Int, String>()
+  val vhSubscriberIDs = Collections.synchronizedMap(hashMapOf<Int, String>())
 
   return object : DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHAction>(adapter) {
     override fun getItemCount(): Int {
@@ -162,7 +163,12 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
     override fun onBindViewHolder(holder: VH, position: Int) {
       val vhOutProp = PositionProp(outProp, position)
       val subscription = this@injectRecyclerAdapter.inject(vhOutProp, holder, vhMapper)
-      vhSubscriberIDs.set(position, subscription.uniqueSubscriberID)
+
+      /**
+       * Since [position] is unique for each [VH], we can use it as a key, then remove it from
+       * [RecyclerView.Adapter.onViewRecycled] to allow reuse.
+       */
+      vhSubscriberIDs[position] = subscription.uniqueSubscriberID
       this.composite.add(subscription)
     }
 

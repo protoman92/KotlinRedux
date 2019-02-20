@@ -85,16 +85,18 @@ class CompositeReduxSubscription(override val uniqueSubscriberID: String) : IRed
   /**
    * Remove an [IReduxSubscription] instance whose [IReduxSubscription.id] equals [id].
    * @param subscribeId A [String] value.
+   * @return The remove [IReduxSubscription], if any.
    */
-  fun remove(subscribeId: String) {
-    this.lock.write { this.subscriptions.remove(subscribeId) }
+  fun remove(subscribeId: String): IReduxSubscription? {
+    return this.lock.write { this.subscriptions.remove(subscribeId) }
   }
 
   /**
    * Remove an [IReduxSubscription] from [subscriptions].
    * @param subscription An [IReduxSubscription] instance.
+   * @return The remove [IReduxSubscription], if any.
    */
-  fun remove(subscription: IReduxSubscription) {
-    this.remove(subscription.uniqueSubscriberID)
+  fun remove(subscription: IReduxSubscription): IReduxSubscription? {
+    return this.remove(subscription.uniqueSubscriberID)
   }
 }
