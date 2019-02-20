@@ -99,9 +99,7 @@ class SearchFragment : Fragment(),
     }
   }
 
-  interface ILocalState : SearchAdapter.ILocalState {
-    val search: S
-  }
+  interface ILocalState : ISearchStateProvider, SearchAdapter.ILocalState
 
   data class S(
     val query: String? = null,

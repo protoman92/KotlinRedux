@@ -25,6 +25,10 @@ interface ISelectedTrackProvider {
   val selectedTrack: Int?
 }
 
+interface ISearchStateProvider {
+  val search: SearchFragment.S
+}
+
 object Redux {
   data class State(
     override val main: MainFragment.S = MainFragment.S(),
@@ -94,10 +98,10 @@ object Redux {
 
   object Saga {
     @Suppress("MemberVisibilityCanBePrivate")
-    fun searchSaga(api: ISearchAPI<MusicResult?>): SagaEffect<Unit> {
+    fun searchSaga(api: ISearchAPI<MusicResult?>, debounce: Long = 1000): SagaEffect<Unit> {
       return takeLatestForKeys(setOf(Action.Search.UPDATE_LIMIT, Action.Search.UPDATE_QUERY)) {
         await { input ->
-          val searchState = selectFromState(State::class) { it.search }.await(input)
+          val searchState = selectFromState(ISearchStateProvider::class) { it.search }.await(input)
           val query = searchState.query
           val limit = (searchState.limit ?: ResultLimit.FIVE).count
 
@@ -113,7 +117,7 @@ object Redux {
             putInStore(Action.Search.SetLoading(false)).await(input)
           }
         }
-      }.debounceTake(1000)
+      }.debounceTake(debounce)
     }
 
     fun allSagas(api: ISearchAPI<MusicResult?>) = arrayListOf(searchSaga(api))
