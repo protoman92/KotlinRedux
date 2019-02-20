@@ -12,6 +12,7 @@ import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDeinitializer
 import org.swiften.redux.core.IReduxSubscription
+import org.swiften.redux.core.IReduxUnsubscriber
 import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
@@ -60,6 +61,8 @@ open class BaseLifecycleTest {
   class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IFullPropInjector<Int> {
     val subscriptions: MutableList<IReduxSubscription> = synchronizedList(mutableListOf())
     val injectionCount get() = this.subscriptions.size
+
+    override val unsubscribe: IReduxUnsubscriber = {}
 
     @Suppress("UNCHECKED_CAST")
     override fun <LState, OutProp, View, State, Action> injectBase(
