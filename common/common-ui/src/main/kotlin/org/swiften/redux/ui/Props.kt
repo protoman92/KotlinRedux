@@ -5,8 +5,6 @@
 
 package org.swiften.redux.ui
 
-import org.swiften.redux.core.IReduxSubscription
-
 /** Created by haipham on 2019/01/16 */
 /**
  * Container for an [IPropContainer] mutable properties.
@@ -32,12 +30,10 @@ data class StaticProp<LState, OutProp>(
  * Container for [subscription], [state] and [action].
  * @param State See [IVariableProp.state].
  * @param Action See [IVariableProp.action].
- * @param subscription An [IReduxSubscription] instance.
  * @param state A [State] instance.
  * @param action An [Action] instance.
  */
 data class ReduxProp<State, Action>(
-  val subscription: IReduxSubscription,
   override val state: State,
   override val action: Action
 ) : IVariableProp<State, Action> where State : Any, Action : Any

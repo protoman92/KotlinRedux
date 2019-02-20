@@ -81,7 +81,7 @@ open class BaseLifecycleTest {
       val state = mapper.mapState(lastState as LState, outProp)
       val action = mapper.mapAction(this.dispatch, outProp)
       view.beforePropInjectionStarts(StaticProp(this as IFullPropInjector<LState>, outProp))
-      view.reduxProp = ReduxProp(subscription, state, action)
+      view.reduxProp = ReduxProp(state, action)
       this.subscriptions.add(subscription)
       return subscription
     }

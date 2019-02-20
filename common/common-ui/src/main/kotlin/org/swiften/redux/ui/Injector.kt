@@ -197,25 +197,17 @@ open class PropInjector<GState : Any> protected constructor(
     view.beforePropInjectionStarts(StaticProp(this as IPropInjector<LState>, outProp))
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
-    var firstTime = true
 
     val onStateUpdate: (GState) -> Unit = {
       val next = mapper.mapState(it as LState, outProp)
       val prev = lock.read { previousState }
-      val first = lock.read { firstTime }
 
       lock.write {
         previousState = next
 
         if (next != prev) {
           val action = mapper.mapAction(this@PropInjector.dispatch, outProp)
-
-          if (first) {
-            view.reduxProp = ReduxProp(ReduxSubscription.EMPTY, next, action)
-            firstTime = false
-          } else {
-            view.reduxProp = view.reduxProp.copy(state = next, action = action)
-          }
+          view.reduxProp = ReduxProp(next, action)
         }
       }
     }
@@ -230,12 +222,12 @@ open class PropInjector<GState : Any> protected constructor(
     val subscription = this.store.subscribe(subscriberId, onStateUpdate)
 
     /** Wrap a [ReduxSubscription] to perform [IPropLifecycleOwner.afterPropInjectionEnds] */
-    val wrappedSubscription = ReduxSubscription(subscription.id) {
+    val wrappedSubscription = ReduxSubscription(subscription.uniqueSubscriberID) {
       subscription.unsubscribe()
       view.afterPropInjectionEnds()
     }
 
-    this.subscriptions.set(subscriberId, wrappedSubscription)
+    this.subscriptions[subscriberId] = wrappedSubscription
     return wrappedSubscription
   }
 }

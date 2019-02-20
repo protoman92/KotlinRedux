@@ -162,7 +162,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
     override fun onBindViewHolder(holder: VH, position: Int) {
       val vhOutProp = PositionProp(outProp, position)
       val subscription = this@injectRecyclerAdapter.inject(vhOutProp, holder, vhMapper)
-      vhSubscriberIDs.set(position, subscription.id)
+      vhSubscriberIDs.set(position, subscription.uniqueSubscriberID)
       this.composite.add(subscription)
     }
 
