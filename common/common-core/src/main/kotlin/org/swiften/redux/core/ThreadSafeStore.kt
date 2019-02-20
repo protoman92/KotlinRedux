@@ -40,9 +40,13 @@ class ThreadSafeStore<GState>(
   override val subscribe: IReduxSubscriber<GState> = { id, callback ->
     this.lock.write { this.subscribers[id] = callback }
 
-    /** Relay the last [GState] to this subscriber */
+    /** Relay the last [GState] to this subscriber. */
     this.lock.read { callback(this.state) }
-    ReduxSubscription(id) { this.lock.write { this.subscribers.remove(id) } }
+    ReduxSubscription(id) { this@ThreadSafeStore.unsubscribe(id) }
+  }
+
+  override val unsubscribe: IReduxUnsubscriber = { id ->
+    this.lock.write { this.subscribers.remove(id) }
   }
 
   override val deinitialize: IDeinitializer = {
