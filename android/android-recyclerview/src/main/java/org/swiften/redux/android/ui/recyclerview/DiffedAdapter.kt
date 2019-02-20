@@ -181,7 +181,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
       val subscription = ReduxSubscription(subscribeId) { holder.afterPropInjectionEnds() }
       this.vhSubscription.add(subscription)
       holder.beforePropInjectionStarts(this.staticProp)
-      holder.reduxProp = ReduxProp(subscription, this.getItem(position), this.reduxProp.action)
+      holder.reduxProp = ReduxProp(this.getItem(position), this.reduxProp.action)
       vhSubscriberIDs.set(position, subscription)
     }
 

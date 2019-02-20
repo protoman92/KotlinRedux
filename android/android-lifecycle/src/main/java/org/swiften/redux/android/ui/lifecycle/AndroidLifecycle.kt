@@ -144,7 +144,7 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
     }
 
     override fun onSafeForEndingLifecycleAwareTasks() {
-      subscription?.unsubscribe()
+      subscription?.also { this@injectLifecycle.unsubscribe(it.uniqueSubscriberID) }
     }
   })
 
