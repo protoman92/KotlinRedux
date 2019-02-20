@@ -13,12 +13,13 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDeinitializer
 import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IStateGetter
+import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.ui.NoopPropLifecycleOwner
-import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IFullPropInjector
+import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
+import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
@@ -61,12 +62,13 @@ open class BaseLifecycleTest {
     val injectionCount get() = this.subscriptions.size
 
     @Suppress("UNCHECKED_CAST")
-    override fun <LState, OutProp, View, State, Action> inject(
+    override fun <LState, OutProp, View, State, Action> injectBase(
       outProp: OutProp,
       view: View,
       mapper: IPropMapper<LState, OutProp, State, Action>
     ): IReduxSubscription where
       LState : Any,
+      View : ISubscriberIDProvider,
       View : IPropContainer<State, Action>,
       View : IPropLifecycleOwner<LState, OutProp>,
       State : Any,

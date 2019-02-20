@@ -8,13 +8,14 @@ package org.swiften.redux.android.ui.recyclerview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.core.CompositeReduxSubscription
-import org.swiften.redux.ui.IPropInjector
-import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IFullPropInjector
+import org.swiften.redux.ui.IPropContainer
+import org.swiften.redux.ui.IPropInjector
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.IStateMapper
 import org.swiften.redux.ui.ReduxProp
+import org.swiften.redux.ui.inject
 import org.swiften.redux.ui.unsubscribeSafely
 import java.util.Date
 
