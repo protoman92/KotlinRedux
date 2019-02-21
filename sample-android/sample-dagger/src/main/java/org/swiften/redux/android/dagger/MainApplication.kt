@@ -20,12 +20,18 @@ class MainApplication : Application() {
     if (LeakCanary.isInAnalyzerProcess(this)) { return }
     LeakCanary.install(this)
 
+    val mainComponent = DaggerMainComponent.builder()
+      .fragment1DependencyModule(Fragment1DependencyModule())
+      .dependencyLevel2Module(DependencyLevel2Module())
+      .dependencyLevel3Module(DependencyLevel3Module())
+      .build()
+
     val store = applyMiddlewares<Redux.State>(
       createRouterMiddleware(Router(this))
     )(FinalStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)
-    val injectionHelper = LifecycleInjectionHelper()
+    val injectionHelper = LifecycleInjectionHelper(mainComponent)
     injector.injectActivitySerializable(this) { injectionHelper.inject(this, it) }
   }
 }
