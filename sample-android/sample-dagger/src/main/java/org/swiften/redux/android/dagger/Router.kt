@@ -7,9 +7,9 @@ package org.swiften.redux.android.dagger
 
 import android.app.Application
 import androidx.fragment.app.Fragment
-import org.swiften.redux.android.dagger.business1.Fragment1
-import org.swiften.redux.android.dagger.business2.Fragment2
-import org.swiften.redux.android.dagger.business3.Fragment3
+import org.swiften.redux.android.dagger.business1.ParentFragment1
+import org.swiften.redux.android.dagger.business2.ParentFragment2
+import org.swiften.redux.android.dagger.business3.ParentFragment3
 import org.swiften.redux.android.router.createSingleActivityRouter
 import org.swiften.redux.core.IRouter
 
@@ -17,9 +17,9 @@ import org.swiften.redux.core.IRouter
 class Router(application: Application) : IRouter<Redux.Screen>
 by createSingleActivityRouter<MainActivity, Redux.Screen>(application, { a, s ->
   val fragment: Fragment = when (s) {
-    is Redux.Screen.Screen1 -> Fragment1()
-    is Redux.Screen.Screen2 -> Fragment2()
-    is Redux.Screen.Screen3 -> Fragment3()
+    is Redux.Screen.Screen1 -> ParentFragment1()
+    is Redux.Screen.Screen2 -> ParentFragment2()
+    is Redux.Screen.Screen3 -> ParentFragment3()
   }
 
   a.supportFragmentManager.beginTransaction()

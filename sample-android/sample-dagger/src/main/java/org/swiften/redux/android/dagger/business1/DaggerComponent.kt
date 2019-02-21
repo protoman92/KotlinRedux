@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.dagger.business3
+package org.swiften.redux.android.dagger.business1
 
 import dagger.Module
 import dagger.Provides
@@ -13,16 +13,16 @@ import org.swiften.redux.android.dagger.DependencyLevel2
 
 /** Created by viethai.pham on 2019/02/21 */
 @Module
-class Fragment3Module {
-  @Fragment3Scope
+class Fragment1Module {
+  @Business1Scope
   @Provides
   fun dependencyLevel1(sd: DependencyLevel2): DependencyLevel1 {
-    return DependencyLevel1(Fragment3::class.java.simpleName, sd)
+    return DependencyLevel1(ParentFragment1::class.java.simpleName, sd)
   }
 }
 
-@Fragment3Scope
-@Subcomponent(modules = [Fragment3Module::class])
-interface Fragment3Component {
+@Business1Scope
+@Subcomponent(modules = [Fragment1Module::class])
+interface Fragment1Component {
   fun dependency(): DependencyLevel1
 }

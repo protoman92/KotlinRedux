@@ -5,9 +5,9 @@
 
 package org.swiften.redux.android.dagger
 
-import org.swiften.redux.android.dagger.business1.Fragment1
-import org.swiften.redux.android.dagger.business2.Fragment2
-import org.swiften.redux.android.dagger.business3.Fragment3
+import org.swiften.redux.android.dagger.business1.ParentFragment1
+import org.swiften.redux.android.dagger.business2.ParentFragment2
+import org.swiften.redux.android.dagger.business3.ParentFragment3
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
@@ -17,13 +17,13 @@ import java.io.Serializable
 object Redux {
   data class State(
     val dummy: Int = 0,
-    override val flow1: Fragment1.S = Fragment1.S(),
-    override val flow2: Fragment2.S = Fragment2.S(),
-    override val flow3: Fragment3.S = Fragment3.S()
+    override val flow1: ParentFragment1.S = ParentFragment1.S(),
+    override val flow2: ParentFragment2.S = ParentFragment2.S(),
+    override val flow3: ParentFragment3.S = ParentFragment3.S()
   ) : Serializable,
-    Fragment1.ILocalState,
-    Fragment2.ILocalState,
-    Fragment3.ILocalState
+    ParentFragment1.ILocalState,
+    ParentFragment2.ILocalState,
+    ParentFragment3.ILocalState
 
   sealed class Screen : IRouterScreen {
     object Screen1 : Screen()

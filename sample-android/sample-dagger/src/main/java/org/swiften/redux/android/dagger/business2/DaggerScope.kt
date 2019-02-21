@@ -3,11 +3,11 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.dagger.business3
+package org.swiften.redux.android.dagger.business2
 
 import javax.inject.Scope
 
 /** Created by viethai.pham on 2019/02/21 */
 @Scope
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Fragment3Scope
+annotation class Business2Scope
