@@ -5,7 +5,6 @@
 
 package org.swiften.redux.ui
 
-import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDeinitializerProvider
 import org.swiften.redux.core.IDispatcherProvider
 import org.swiften.redux.core.IReduxStore
@@ -21,97 +20,6 @@ import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 /** Created by haipham on 2018/12/16 */
-/**
- * Handle lifecycles for a target of [IFullPropInjector].
- * @param LState The local state type that the global state must extend from.
- * @param OutProp Property as defined by a view's parent.
- */
-interface IPropLifecycleOwner<LState, OutProp> where LState : Any {
-  /**
-   * This is called before [IFullPropInjector.inject] is called.
-   * @param sp A [StaticProp] instance.
-   */
-  fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>)
-
-  /**
-   * This is called after [IReduxSubscription.unsubscribe] is called.
-   */
-  fun afterPropInjectionEnds()
-}
-
-/**
- * Use this class as a delegate for [IPropLifecycleOwner] if the target does not want to implement
- * lifecycles.
- * @param LState The local state type that the global state must extend from.
- * @param OutProp Property as defined by a view's parent.
- */
-class NoopPropLifecycleOwner<LState, OutProp> : IPropLifecycleOwner<LState, OutProp> where LState : Any {
-  override fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>) {}
-  override fun afterPropInjectionEnds() {}
-}
-
-/**
- * Represents a container for [ReduxProp].
- * @param State See [ReduxProp.state].
- * @param Action See [ReduxProp.action].
- */
-interface IPropContainer<State, Action> where State : Any, Action : Any {
-  var reduxProp: ReduxProp<State, Action>
-}
-
-/**
- * Maps [LState] to [State] for a [IPropContainer].
- * @param LState The local state type that the global state must extend from.
- * @param OutProp Property as defined by a view's parent.
- * @param State The container state.
- */
-interface IStateMapper<in LState, in OutProp, out State> where LState : Any, State : Any {
-  /**
-   * Map [LState] to [State] using [OutProp]
-   * @param state The latest [LState] instance.
-   * @param outProp The [OutProp] instance.
-   * @return A [State] instance.
-   */
-  fun mapState(state: LState, outProp: OutProp): State
-}
-
-/**
- * Maps [IActionDispatcher] to [Action] for a [IPropContainer]. Note that [Action] can include
- * external, non-Redux related dependencies provided by [OutProp].
- *
- * For example, if the app wants to load an image into a view, it's probably not a good idea to
- * download that image and store in the global state to be mapped into [ReduxProp.state]. It is
- * better to inject an image downloader in [Action] using [OutProp].
- * @param OutProp Property as defined by a view's parent.
- * @param Action See [ReduxProp.action].
- */
-interface IActionMapper<in OutProp, out Action> where Action : Any {
-  /**
-   * Map [IActionDispatcher] to [Action] using [OutProp].
-   * @param dispatch An [IActionDispatcher] instance.
-   * @param outProp The [OutProp] instance.
-   * @return An [Action] instance.
-   */
-  fun mapAction(dispatch: IActionDispatcher, outProp: OutProp): Action
-}
-
-/**
- * Maps [LState] to [State] and [Action] for a [IPropContainer]. [OutProp] is the view's immutable
- * property as dictated by its parent.
- *
- * For example, a parent view, which contains a list of child views, wants to call
- * [IFullPropInjector.inject] for said children. The [OutProp] generic for these children should
- * therefore be an [Int] that corresponds to their respective indexes in the parent.
- * @param LState The local state type that the global state must extend from.
- * @param OutProp Property as defined by a view's parent.
- * @param State See [ReduxProp.state].
- * @param Action See [ReduxProp.action].
- */
-interface IPropMapper<in LState, in OutProp, out State, out Action> :
-  IStateMapper<LState, OutProp, State>,
-  IActionMapper<OutProp, Action>
-  where LState : Any, State : Any, Action : Any
-
 /**
  * Inject state and actions into an [IPropContainer].
  * @param GState The global state type.
