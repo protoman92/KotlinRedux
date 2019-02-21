@@ -20,6 +20,7 @@
       <module fileurl="file://$PROJECT_DIR$/common/common-ui/common-ui.iml" filepath="$PROJECT_DIR$/common/common-ui/common-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/redux-jvm.iml" filepath="$PROJECT_DIR$/redux-jvm.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample-android/sample-android.iml" filepath="$PROJECT_DIR$/sample-android/sample-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample-android/sample-dagger/sample-dagger.iml" filepath="$PROJECT_DIR$/sample-android/sample-dagger/sample-dagger.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample-android/sample-simple/sample-simple.iml" filepath="$PROJECT_DIR$/sample-android/sample-simple/sample-simple.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample-android/sample-sunflower/sample-sunflower.iml" filepath="$PROJECT_DIR$/sample-android/sample-sunflower/sample-sunflower.iml" />
     </modules>
