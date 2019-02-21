@@ -20,6 +20,13 @@ class MainApplication : Application() {
     LeakCanary.install(this)
     val store = applyMiddlewares<Redux.State>()(FinalStore(Redux.State(), Redux.Reducer))
     val injector = AndroidPropInjector(store)
-    injector.injectActivitySerializable(this) {}
+
+    injector.injectActivitySerializable(this) {
+      when (it) {
+        is Fragment1 -> this.inject(Unit, it, Fragment1)
+        is Fragment2 -> this.inject(Unit, it, Fragment2)
+        is Fragment3 -> this.inject(Unit, it, Fragment3)
+      }
+    }
   }
 }
