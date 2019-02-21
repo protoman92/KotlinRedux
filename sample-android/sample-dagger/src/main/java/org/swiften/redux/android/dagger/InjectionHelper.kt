@@ -6,12 +6,14 @@
 package org.swiften.redux.android.dagger
 
 import androidx.lifecycle.LifecycleOwner
+import org.swiften.redux.android.dagger.dagger.Fragment1DependencyModule
+import org.swiften.redux.android.dagger.dagger.MainComponent
 import org.swiften.redux.android.ui.lifecycle.ILifecycleOwnerInjectionHelper
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.ui.IPropInjector
 
 /** Created by viethai.pham on 2019/02/21 */
-class LifecycleInjectionHelper(val mainComponent: MainComponent) : ILifecycleOwnerInjectionHelper<Redux.State> {
+class InjectionHelper(val mainComponent: MainComponent) : ILifecycleOwnerInjectionHelper<Redux.State> {
   override fun inject(injector: IPropInjector<Redux.State>, owner: LifecycleOwner) {
     when (owner) {
       is Fragment1 -> this.inject(injector, owner)
@@ -20,7 +22,8 @@ class LifecycleInjectionHelper(val mainComponent: MainComponent) : ILifecycleOwn
     }
   }
 
-  fun inject(injector: IPropInjector<Redux.State>, fragment1: Fragment1) {
-    injector.injectLifecycle(this.mainComponent.fragment1Dependency(), fragment1, Fragment1)
+  private fun inject(injector: IPropInjector<Redux.State>, fragment1: Fragment1) {
+    val component = this.mainComponent.plus(Fragment1DependencyModule())
+    injector.injectLifecycle(component.dependency(), fragment1, Fragment1)
   }
 }
