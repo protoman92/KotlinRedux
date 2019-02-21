@@ -203,6 +203,7 @@ object Redux {
 }
 
 class Fragment1 : Fragment(),
+  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
   IPropContainer<State, Action>,
   IPropLifecycleOwner<GlobalState, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<GlobalState, Unit, State, Action> {
@@ -316,6 +317,7 @@ data class State(val imageURL: String? = null)
 class Action(override val picasso: Picasso) : IPicassoProvider
 
 class Fragment2 : Fragment(),
+  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
   IPropContainer<State, Action>,
   IPropLifecycleOwner<GlobalState, IPicassoProvider> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<GlobalState, IPicassoProvider, State, Action> {
