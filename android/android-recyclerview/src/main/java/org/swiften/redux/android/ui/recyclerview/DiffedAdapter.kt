@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
 import org.swiften.redux.core.CompositeReduxSubscription
+import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
@@ -144,7 +144,6 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
   internal fun cleanUpSubscriptions(injector: IPropInjector<GState>) {
     injector.unsubscribe(this.uniqueSubscriberID)
     this.composite.unsubscribe()
-
   }
 }
 
@@ -220,7 +219,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param LState The local state type that [GState] must extend from.
- * @param OutProp Property as defined by [lifecycleOwner]'s parent.
+ * @param OutProp Property as defined by [adapter]'s parent.
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProp.state].
  * @param VHAction The [VH] action type. See [ReduxProp.action].
@@ -259,7 +258,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param LState The local state type that [GState] must extend from.
- * @param OutProp Property as defined by [lifecycleOwner]'s parent.
+ * @param OutProp Property as defined by [adapter]'s parent.
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProp.state].
  * @param VHAction The [VH] action type. See [ReduxProp.action].
@@ -302,7 +301,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param LState The local state type that [GState] must extend from.
- * @param OutProp Property as defined by [lifecycleOwner]'s parent.
+ * @param OutProp Property as defined by [adapter]'s parent.
  * @param VH The [RecyclerView.ViewHolder] instance.
  * @param VHState The [VH] state type. See [ReduxProp.state].
  * @param VHAction The [VH] action type. See [ReduxProp.action].
@@ -338,4 +337,3 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
       }
     })
 }
-
