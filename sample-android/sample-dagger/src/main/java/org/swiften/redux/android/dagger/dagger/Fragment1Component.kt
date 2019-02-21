@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.Subcomponent
 import org.swiften.redux.android.dagger.DependencyLevel1
 import org.swiften.redux.android.dagger.DependencyLevel2
+import org.swiften.redux.android.dagger.Fragment1
 
 /** Created by viethai.pham on 2019/02/21 */
 @Module
@@ -17,7 +18,7 @@ class Fragment1Module {
   @Fragment1Scope
   @Provides
   fun dependencyLevel1(sd: DependencyLevel2): DependencyLevel1 {
-    return DependencyLevel1(sd)
+    return DependencyLevel1(Fragment1::class.java.simpleName, sd)
   }
 }
 
