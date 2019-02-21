@@ -14,9 +14,12 @@ import org.swiften.redux.ui.IPropInjector
 class LifecycleInjectionHelper : ILifecycleOwnerInjectionHelper<Redux.State> {
   override fun inject(injector: IPropInjector<Redux.State>, owner: LifecycleOwner) {
     when (owner) {
-      is Fragment1 -> injector.injectLifecycle(Unit, owner, Fragment1)
       is Fragment2 -> injector.injectLifecycle(Unit, owner, Fragment2)
       is Fragment3 -> injector.injectLifecycle(Unit, owner, Fragment3)
     }
+  }
+
+  fun inject(injector: IPropInjector<Redux.State>, fragment1: Fragment1, dependency: DependencyLevel1) {
+    injector.injectLifecycle(dependency, fragment1, Fragment1)
   }
 }
