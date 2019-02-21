@@ -24,8 +24,8 @@ sealed class DefaultReduxAction : IReduxAction {
  * @param GState The global state type.
  * @param reducer See [IReduxStore.reducer].
  */
-class ReduxReducerWrapper<GState>(private val reducer: IReducer<GState>) :
-  IReducer<GState> by reducer {
+class ReduxReducerWrapper<GState>(private val reducer: IReducer<GState, IReduxAction>) :
+  IReducer<GState, IReduxAction> by reducer {
   @Suppress("UNCHECKED_CAST")
   @Throws(ClassCastException::class)
   override operator fun invoke(previous: GState, action: IReduxAction): GState {

@@ -112,7 +112,7 @@ object Redux {
     class PlantListToPlantDetail(val plantId: String) : Screen()
   }
 
-  object Reducer : IReducer<State> {
+  object Reducer : IReducer<State, IReduxAction> {
     override fun invoke(p1: State, p2: IReduxAction): State {
       return when (p2) {
         is Action -> when (p2) {

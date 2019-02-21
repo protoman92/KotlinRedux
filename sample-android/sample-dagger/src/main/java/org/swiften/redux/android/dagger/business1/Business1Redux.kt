@@ -20,8 +20,8 @@ object Business1Redux {
     data class SetQuery(val query: String?) : Action()
   }
 
-  object Reducer : IReducer<State> {
-    override fun invoke(p1: State, p2: IReduxAction): State {
+  object Reducer : IReducer<State, Action> {
+    override fun invoke(p1: State, p2: Action): State {
       return p1
     }
   }

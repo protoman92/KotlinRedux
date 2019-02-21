@@ -17,8 +17,8 @@ object Business3Redux {
 
   sealed class Action : IReduxAction
 
-  object Reducer : IReducer<Business3Redux.State> {
-    override fun invoke(p1: Business3Redux.State, p2: IReduxAction): Business3Redux.State {
+  object Reducer : IReducer<State, Action> {
+    override fun invoke(p1: State, p2: Action): Business3Redux.State {
       return p1
     }
   }

@@ -27,7 +27,7 @@ object Redux {
     object Screen3 : Screen()
   }
 
-  object Reducer : IReducer<State> {
+  object Reducer : IReducer<State, IReduxAction> {
     override fun invoke(p1: State, p2: IReduxAction): State {
       return when (p2) {
         is Business1Redux.Action -> p1.copy(business1 = Business1Redux.Reducer(p1.business1, p2))

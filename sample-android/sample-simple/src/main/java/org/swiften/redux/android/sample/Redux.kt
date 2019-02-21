@@ -66,7 +66,7 @@ object Redux {
     data class UpdateSelectedTrack(val index: Int?) : Action()
   }
 
-  object Reducer : IReducer<State> {
+  object Reducer : IReducer<State, IReduxAction> {
     override fun invoke(p1: State, p2: IReduxAction): State {
       return when (p2) {
         is Action -> when (p2) {
