@@ -29,6 +29,7 @@ class SagaOutput<T : Any>(
   companion object {
     /**
      * Create a [ISagaOutput] from [creator] using [CoroutineScope.rxSingle].
+     * @param T The emission value type.
      * @param scope A [CoroutineScope] instance.
      * @param creator Suspending function that produces [T].
      * @return An [ISagaOutput] instance.
@@ -38,6 +39,18 @@ class SagaOutput<T : Any>(
       creator: suspend CoroutineScope.() -> T
     ): ISagaOutput<T> where T : Any {
       return SagaOutput(scope, scope.rxSingle { creator() }.toFlowable()) { EmptyJob }
+    }
+
+    /**
+     * See [Flowable.merge]. Produces a [SagaOutput] whose [SagaOutput.stream] triggers any time
+     * a [SagaOutput.stream] from [outputs] emits a value.
+     * @param T The emission value type.
+     * @param scope A [CoroutineScope] instance.
+     * @param outputs A [Collection] of [SagaOutput].
+     * @return A [SagaOutput] instance.
+     */
+    fun <T> merge(scope: CoroutineScope, outputs: Collection<SagaOutput<T>>): SagaOutput<T> where T : Any {
+      return SagaOutput(scope, Flowable.merge(outputs.map { it.stream })) { EmptyJob }
     }
   }
 
