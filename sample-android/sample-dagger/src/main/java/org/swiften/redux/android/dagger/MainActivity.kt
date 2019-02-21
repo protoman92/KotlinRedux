@@ -7,6 +7,7 @@ package org.swiften.redux.android.dagger
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import org.swiften.redux.android.dagger.business1.Fragment1
 
 /** Created by haipham on 26/1/19 */
 class MainActivity : AppCompatActivity() {

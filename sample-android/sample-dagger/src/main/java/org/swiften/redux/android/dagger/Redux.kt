@@ -5,6 +5,9 @@
 
 package org.swiften.redux.android.dagger
 
+import org.swiften.redux.android.dagger.business1.Fragment1
+import org.swiften.redux.android.dagger.business2.Fragment2
+import org.swiften.redux.android.dagger.business3.Fragment3
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen

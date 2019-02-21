@@ -7,9 +7,6 @@ package org.swiften.redux.android.dagger
 
 import android.app.Application
 import com.squareup.leakcanary.LeakCanary
-import org.swiften.redux.android.dagger.dagger.DaggerMainComponent
-import org.swiften.redux.android.dagger.dagger.DependencyLevel2Module
-import org.swiften.redux.android.dagger.dagger.DependencyLevel3Module
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
 import org.swiften.redux.core.FinalStore

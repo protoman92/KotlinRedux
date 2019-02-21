@@ -7,6 +7,9 @@ package org.swiften.redux.android.dagger
 
 import android.app.Application
 import androidx.fragment.app.Fragment
+import org.swiften.redux.android.dagger.business1.Fragment1
+import org.swiften.redux.android.dagger.business2.Fragment2
+import org.swiften.redux.android.dagger.business3.Fragment3
 import org.swiften.redux.android.router.createSingleActivityRouter
 import org.swiften.redux.core.IRouter
 

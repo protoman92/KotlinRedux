@@ -3,27 +3,26 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.dagger.dagger
+package org.swiften.redux.android.dagger.business2
 
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
 import org.swiften.redux.android.dagger.DependencyLevel1
 import org.swiften.redux.android.dagger.DependencyLevel2
-import org.swiften.redux.android.dagger.Fragment3
 
 /** Created by viethai.pham on 2019/02/21 */
 @Module
-class Fragment3Module {
-  @Fragment3Scope
+class Fragment2Module {
+  @Fragment2Scope
   @Provides
   fun dependencyLevel1(sd: DependencyLevel2): DependencyLevel1 {
-    return DependencyLevel1(Fragment3::class.java.simpleName, sd)
+    return DependencyLevel1(Fragment2::class.java.simpleName, sd)
   }
 }
 
-@Fragment3Scope
-@Subcomponent(modules = [Fragment3Module::class])
-interface Fragment3Component {
+@Fragment2Scope
+@Subcomponent(modules = [Fragment2Module::class])
+interface Fragment2Component {
   fun dependency(): DependencyLevel1
 }

@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.dagger
+package org.swiften.redux.android.dagger.business3
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +12,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_3.nav1
 import kotlinx.android.synthetic.main.fragment_3.nav2
+import org.swiften.redux.android.dagger.DependencyLevel1
+import org.swiften.redux.android.dagger.R
+import org.swiften.redux.android.dagger.Redux
 import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.ISubscriberIDProvider
@@ -29,12 +32,14 @@ class Fragment3 : Fragment(),
   IPropContainer<Fragment3.S, Fragment3.A>,
   IPropLifecycleOwner<Fragment3.ILocalState, DependencyLevel1> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<ILocalState, DependencyLevel1, S, A> {
-    override fun mapState(state: ILocalState, outProp: DependencyLevel1): S = S()
+    override fun mapState(state: ILocalState, outProp: DependencyLevel1): S =
+      S()
 
-    override fun mapAction(dispatch: IActionDispatcher, outProp: DependencyLevel1): A = A(
-      { dispatch(Redux.Screen.Screen1) },
-      { dispatch(Redux.Screen.Screen2) }
-    )
+    override fun mapAction(dispatch: IActionDispatcher, outProp: DependencyLevel1): A =
+      A(
+        { dispatch(Redux.Screen.Screen1) },
+        { dispatch(Redux.Screen.Screen2) }
+      )
   }
 
   interface ILocalState {

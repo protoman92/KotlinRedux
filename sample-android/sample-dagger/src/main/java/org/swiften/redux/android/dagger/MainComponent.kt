@@ -3,13 +3,17 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.dagger.dagger
+package org.swiften.redux.android.dagger
 
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.swiften.redux.android.dagger.DependencyLevel2
-import org.swiften.redux.android.dagger.DependencyLevel3
+import org.swiften.redux.android.dagger.business1.Fragment1Component
+import org.swiften.redux.android.dagger.business1.Fragment1Module
+import org.swiften.redux.android.dagger.business2.Fragment2Component
+import org.swiften.redux.android.dagger.business2.Fragment2Module
+import org.swiften.redux.android.dagger.business3.Fragment3Component
+import org.swiften.redux.android.dagger.business3.Fragment3Module
 import javax.inject.Singleton
 
 /** Created by viethai.pham on 2019/02/21 */
