@@ -11,6 +11,7 @@ import org.swiften.redux.android.dagger.business3.Business3Redux
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
+import org.swiften.redux.saga.common.SagaEffect
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21/2 */
@@ -35,6 +36,12 @@ object Redux {
         is Business3Redux.Action -> p1.copy(business3 = Business3Redux.Reducer(p1.business3, p2))
         else -> p1
       }
+    }
+  }
+
+  object Saga {
+    fun allSagas(): Collection<SagaEffect<Any>> {
+      return arrayListOf(Business1Redux.Saga.allSagas())
     }
   }
 }

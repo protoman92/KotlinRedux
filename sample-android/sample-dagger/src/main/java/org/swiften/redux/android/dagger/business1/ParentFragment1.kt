@@ -33,7 +33,9 @@ class ParentFragment1 : Fragment(),
   IPropContainer<ParentFragment1.S, ParentFragment1.A>,
   IPropLifecycleOwner<Redux.State, DependencyLevel1> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<Redux.State, DependencyLevel1, S, A> {
-    override fun mapState(state: Redux.State, outProp: DependencyLevel1): S = state.business1.parent
+    override fun mapState(state: Redux.State, outProp: DependencyLevel1): S {
+      return state.business1.parent
+    }
 
     override fun mapAction(dispatch: IActionDispatcher, outProp: DependencyLevel1): A {
       return A(
@@ -43,7 +45,7 @@ class ParentFragment1 : Fragment(),
     }
   }
 
-  class S : Serializable
+  data class S(val loading: Boolean = false) : Serializable
 
   class A(val goToScreen2: () -> Unit, val goToScreen3: () -> Unit)
 

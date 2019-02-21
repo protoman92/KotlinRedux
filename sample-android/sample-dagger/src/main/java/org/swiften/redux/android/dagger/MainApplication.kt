@@ -11,7 +11,9 @@ import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
+import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.core.createRouterMiddleware
+import org.swiften.redux.saga.common.createSagaMiddleware
 
 /** Created by haipham on 26/1/19 */
 class MainApplication : Application() {
@@ -26,7 +28,9 @@ class MainApplication : Application() {
       .build()
 
     val store = applyMiddlewares<Redux.State>(
-      createRouterMiddleware(Router(this))
+      createAsyncMiddleware(),
+      createRouterMiddleware(Router(this)),
+      createSagaMiddleware(Redux.Saga.allSagas())
     )(FinalStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)
