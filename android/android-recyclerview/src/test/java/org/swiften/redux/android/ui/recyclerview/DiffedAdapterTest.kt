@@ -36,10 +36,14 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     IPropLifecycleOwner<Int, Unit> {
     class A
 
+    val beforeInjection = AtomicInteger()
     val afterInjection = AtomicInteger()
 
     override var reduxProp by ObservableReduxProp<Int, A> { _, _ -> }
-    override fun beforePropInjectionStarts(sp: StaticProp<Int, Unit>) {}
+
+    override fun beforePropInjectionStarts(sp: StaticProp<Int, Unit>) {
+      this.beforeInjection.incrementAndGet()
+    }
 
     override fun afterPropInjectionEnds() {
       this.afterInjection.incrementAndGet()
@@ -87,7 +91,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
     assertEquals(injector.injectionCount, 1)
 
     // When - view holder injection
-    /** Submit new items to ensure view holders binding do not throw index exception */
+    /** Submit new items to ensure view holders binding do not throw index exception. */
     val viewGroup = LinearLayout(InstrumentationRegistry.getInstrumentation().context)
     val viewHolders = mutableListOf<ViewHolder>()
 
@@ -95,9 +99,11 @@ class DiffedAdapterTest : BaseLifecycleTest() {
       val viewHolder = wrappedAdapter.onCreateViewHolder(viewGroup, 0)
       viewHolders.add(viewHolder)
 
-      /** No injections here, just manually setting of prop, so injection count remains the same */
-      wrappedAdapter.onBindViewHolder(viewHolder, i)
+      /** No injections here, just manually setting of prop, so injection count remains the same. */
+      wrappedAdapter.bindViewHolder(viewHolder, i)
     }
+
+    viewHolders.forEach { assertEquals(it.beforeInjection.get(), 1) }
 
     // Then - view holder injection
     assertEquals(injector.injectionCount, 1)
@@ -112,6 +118,30 @@ class DiffedAdapterTest : BaseLifecycleTest() {
 
     // Then - lifecycle ending
     injector.subscriptions.forEach { _, v -> assertTrue(v.isUnsubscribed()) }
+    viewHolders.forEach { assertEquals(it.afterInjection.get(), 1) }
+  }
+
+  @Test
+  fun `View holder subscription should be disposed of in onViewRecycled`() {
+    // Setup
+    val totalItemCount = 3
+    val injector = BaseLifecycleTest.TestInjector { totalItemCount }
+    val adapter = Adapter()
+    val wrappedAdapter = injector.injectDiffedAdapter(Unit, adapter, Adapter, Adapter)
+    val viewGroup = LinearLayout(InstrumentationRegistry.getInstrumentation().context)
+    val viewHolders = mutableListOf<ViewHolder>()
+
+    // When
+    (0 until totalItemCount).forEachIndexed { i, _ ->
+      val viewHolder = wrappedAdapter.onCreateViewHolder(viewGroup, 0)
+      viewHolders.add(viewHolder)
+      wrappedAdapter.bindViewHolder(viewHolder, i)
+    }
+
+    viewHolders.forEach { assertEquals(it.beforeInjection.get(), 1) }
+    viewHolders.forEach { wrappedAdapter.onViewRecycled(it) }
+
+    // Then
     viewHolders.forEach { assertEquals(it.afterInjection.get(), 1) }
   }
 }
