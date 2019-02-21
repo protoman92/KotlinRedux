@@ -50,7 +50,9 @@ class SagaOutput<T : Any>(
      * @return A [SagaOutput] instance.
      */
     fun <T> merge(scope: CoroutineScope, outputs: Collection<SagaOutput<T>>): SagaOutput<T> where T : Any {
-      return SagaOutput(scope, Flowable.merge(outputs.map { it.stream })) { EmptyJob }
+      return SagaOutput(scope, Flowable.merge(outputs.map { it.stream })) { a ->
+        outputs.forEach { it.onAction(a) }; EmptyJob
+      }
     }
   }
 

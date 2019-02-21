@@ -294,6 +294,44 @@ class SagaEffectTest : CommonSagaEffectTest() {
   }
 
   @Test
+  fun `Dispatching actions should all effect should call dispatch for all sub-effects`() {
+    // Setup
+    data class Action(val value: Int) : IReduxAction, Comparable<Action> {
+      override fun compareTo(other: Action): Int {
+        return this.value - other.value
+      }
+    }
+
+    val finalValues = synchronizedList(arrayListOf<Int>())
+    val iteration = 1000
+
+    val correctValues = (0 until iteration)
+      .map { arrayListOf(it, it * 2, it * 3) }
+      .flatten()
+      .sorted()
+
+    val sourceOutput = mergeAll(
+      takeLatest(Action::class, { it.value }) { justEffect(it).map { it } },
+      takeLatest(Action::class, { it.value }) { justEffect(it).map { it * 2 } },
+      takeLatest(Action::class, { it.value }) { justEffect(it).map { it * 3 } }
+    ).invoke()
+
+    sourceOutput.subscribe({ finalValues.add(it) })
+
+    // When
+    (0 until iteration).forEach { sourceOutput.onAction(Action(it)) }
+
+    runBlocking {
+      withTimeoutOrNull(this@SagaEffectTest.timeout) {
+        while (finalValues.sorted() != correctValues) { }; Unit
+      }
+
+      // Then
+      assertEquals(finalValues.sorted(), correctValues)
+    }
+  }
+
+  @Test
   fun `Select effect should extract some value from a state`() {
     // Setup
     val sourceOutput1 = just(1).selectFromState(Any::class, { 2 }, { a, b -> a + b }).invoke()
