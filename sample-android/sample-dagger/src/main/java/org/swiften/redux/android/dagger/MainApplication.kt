@@ -11,6 +11,7 @@ import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
+import org.swiften.redux.core.createRouterMiddleware
 
 /** Created by haipham on 26/1/19 */
 class MainApplication : Application() {
@@ -18,7 +19,11 @@ class MainApplication : Application() {
     super.onCreate()
     if (LeakCanary.isInAnalyzerProcess(this)) { return }
     LeakCanary.install(this)
-    val store = applyMiddlewares<Redux.State>()(FinalStore(Redux.State(), Redux.Reducer))
+
+    val store = applyMiddlewares<Redux.State>(
+      createRouterMiddleware(Router(this))
+    )(FinalStore(Redux.State(), Redux.Reducer))
+
     val injector = AndroidPropInjector(store)
 
     injector.injectActivitySerializable(this) {
