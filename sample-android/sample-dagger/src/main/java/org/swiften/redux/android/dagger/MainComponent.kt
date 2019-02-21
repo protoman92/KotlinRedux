@@ -8,12 +8,12 @@ package org.swiften.redux.android.dagger
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.swiften.redux.android.dagger.business1.Fragment1Component
-import org.swiften.redux.android.dagger.business1.Fragment1Module
-import org.swiften.redux.android.dagger.business2.Fragment2Component
-import org.swiften.redux.android.dagger.business2.Fragment2Module
-import org.swiften.redux.android.dagger.business3.Fragment3Component
-import org.swiften.redux.android.dagger.business3.Fragment3Module
+import org.swiften.redux.android.dagger.business1.Parent1Component
+import org.swiften.redux.android.dagger.business1.Parent1Module
+import org.swiften.redux.android.dagger.business2.Parent2Component
+import org.swiften.redux.android.dagger.business2.Parent2Module
+import org.swiften.redux.android.dagger.business3.Parent3Component
+import org.swiften.redux.android.dagger.business3.Parent3Module
 import javax.inject.Singleton
 
 /** Created by viethai.pham on 2019/02/21 */
@@ -41,7 +41,7 @@ class DependencyLevel2Module {
   DependencyLevel3Module::class
 ])
 interface MainComponent {
-  fun plus(module: Fragment1Module): Fragment1Component
-  fun plus(module: Fragment2Module): Fragment2Component
-  fun plus(module: Fragment3Module): Fragment3Component
+  fun plus(module: Parent1Module): Parent1Component
+  fun plus(module: Parent2Module): Parent2Component
+  fun plus(module: Parent3Module): Parent3Component
 }

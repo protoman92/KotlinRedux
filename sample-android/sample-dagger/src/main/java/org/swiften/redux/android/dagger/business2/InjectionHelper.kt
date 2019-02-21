@@ -20,7 +20,7 @@ class InjectionHelper(val mainComponent: MainComponent) : ILifecycleOwnerInjecti
   }
 
   private fun inject(injector: IPropInjector<Business2Redux.State>, fragment: ParentFragment2) {
-    val component = this.mainComponent.plus(Fragment2Module())
+    val component = this.mainComponent.plus(Parent2Module())
     injector.injectLifecycle(component.dependency(), fragment, ParentFragment2)
   }
 }

@@ -10,8 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_3.nav1
-import kotlinx.android.synthetic.main.fragment_3.nav2
+import kotlinx.android.synthetic.main.parent_3.nav1
+import kotlinx.android.synthetic.main.parent_3.nav2
 import org.swiften.redux.android.dagger.DependencyLevel1
 import org.swiften.redux.android.dagger.R
 import org.swiften.redux.android.dagger.Redux
@@ -57,7 +57,7 @@ class ParentFragment3 : Fragment(),
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return inflater.inflate(R.layout.fragment_3, container, false)
+    return inflater.inflate(R.layout.parent_3, container, false)
   }
 
   override fun beforePropInjectionStarts(sp: StaticProp<ILocalState, DependencyLevel1>) {

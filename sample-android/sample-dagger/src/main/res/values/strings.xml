@@ -1,9 +1,9 @@
 <resources>
   <string name="app_name">ReduxForAndroid</string>
-  <string name="fragment_1">Fragment 1</string>
-  <string name="fragment_2">Fragment 2</string>
-  <string name="fragment_3">Fragment 3</string>
-  <string name="go_to_fragment_1">Go to fragment 1</string>
-  <string name="go_to_fragment_2">Go to fragment 2</string>
-  <string name="go_to_fragment_3">Go to fragment 3</string>
+  <string name="business_1">Business 1</string>
+  <string name="business_2">Business 2</string>
+  <string name="business_3">Business 3</string>
+  <string name="go_to_business_1">Go to business 1</string>
+  <string name="go_to_business_2">Go to business 2</string>
+  <string name="go_to_business_3">Go to business 3</string>
 </resources>
