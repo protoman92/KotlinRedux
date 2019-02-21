@@ -16,7 +16,7 @@ import org.junit.Test
 import org.swiften.redux.android.util.AndroidUtil
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.ISubscriberIDProvider
-import org.swiften.redux.core.UUIDSubscriberIDProvider
+import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -49,7 +49,7 @@ class AndroidInjectorTest : PropInjectorTest() {
   }
 
   internal class AndroidView :
-    ISubscriberIDProvider by UUIDSubscriberIDProvider(),
+    ISubscriberIDProvider by DefaultSubscriberIDProvider(),
     IPropContainer<S, A>,
     IPropLifecycleOwner<S, Unit> {
     private val propInitialized = AtomicBoolean(false)

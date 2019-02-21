@@ -16,7 +16,7 @@ import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.core.ThreadSafeStore
-import org.swiften.redux.core.UUIDSubscriberIDProvider
+import org.swiften.redux.core.DefaultSubscriberIDProvider
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -45,7 +45,7 @@ open class PropInjectorTest {
   }
 
   internal class View :
-    ISubscriberIDProvider by UUIDSubscriberIDProvider(),
+    ISubscriberIDProvider by DefaultSubscriberIDProvider(),
     IPropContainer<S, A>,
     IPropLifecycleOwner<S, Unit> {
     private val propInitialized = AtomicBoolean(false)

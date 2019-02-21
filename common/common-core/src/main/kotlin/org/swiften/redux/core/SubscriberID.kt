@@ -15,6 +15,6 @@ interface ISubscriberIDProvider {
 }
 
 /** Default implementation of [ISubscriberIDProvider] that simply uses [UUID.randomUUID]. */
-class UUIDSubscriberIDProvider : ISubscriberIDProvider {
+class DefaultSubscriberIDProvider : ISubscriberIDProvider {
   override val uniqueSubscriberID: String = UUID.randomUUID().toString()
 }

@@ -15,7 +15,7 @@ import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
 import org.swiften.redux.core.CompositeReduxSubscription
 import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.core.UUIDSubscriberIDProvider
+import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
@@ -53,7 +53,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ) : ListAdapter<VHState, VH>(diffCallback),
-  ISubscriberIDProvider by UUIDSubscriberIDProvider(),
+  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
   IPropLifecycleOwner<LState, OutProp> by NoopPropLifecycleOwner(),
   IPropContainer<List<VHState>, VHAction> where
   GState : LState,
