@@ -80,6 +80,15 @@ configure(subprojects - project(':sample-android:sample-sunflower')) {
   project.apply from: "$rootDir/sample-android/skipped.gradle"
 }
 
+configure(project(':sample-android:sample-dagger')) {
+  apply plugin: 'kotlin-kapt'
+
+  dependencies {
+    implementation "com.google.dagger:dagger:$project.ext.dagger"
+    kapt "com.google.dagger:dagger-compiler:$project.ext.dagger"
+  }
+}
+
 configure(project(':sample-android:sample-sunflower')) {
   /*
    * Copyright 2018 Google LLC
