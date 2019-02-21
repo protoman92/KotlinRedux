@@ -43,6 +43,7 @@ import org.swiften.redux.saga.common.thenNoMatterWhat
 import org.swiften.redux.saga.rx.SagaEffects.await
 import org.swiften.redux.saga.rx.SagaEffects.from
 import org.swiften.redux.saga.rx.SagaEffects.just
+import org.swiften.redux.saga.rx.SagaEffects.mergeAll
 import org.swiften.redux.saga.rx.SagaEffects.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.selectFromState
 import org.swiften.redux.saga.rx.SagaEffects.takeEvery
@@ -266,6 +267,29 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
       // Then
       assertEquals(finalValues.size, 1)
+    }
+  }
+
+  @Test
+  fun `All effect should merge emissions from all sources`() {
+    // Setup
+    val finalValues = synchronizedList(arrayListOf<Int>())
+
+    // When
+    mergeAll(
+      justEffect(1),
+      justEffect(2),
+      justEffect(3),
+      justEffect(4)
+    ).invoke().subscribe({ finalValues.add(it) })
+
+    runBlocking {
+      withTimeoutOrNull(this@SagaEffectTest.timeout) {
+        if (finalValues.sorted() != arrayListOf(1, 2, 3, 4)) { }; Unit
+      }
+
+      // Then
+      assertEquals(finalValues.sorted(), arrayListOf(1, 2, 3, 4))
     }
   }
 
