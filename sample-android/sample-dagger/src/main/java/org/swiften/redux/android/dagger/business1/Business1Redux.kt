@@ -12,10 +12,13 @@ import java.io.Serializable
 /** Created by viethai.pham on 2019/02/21 */
 object Business1Redux {
   data class State(
-    val flow1: ParentFragment1.S = ParentFragment1.S()
+    val parent: ParentFragment1.S = ParentFragment1.S(),
+    val search: SearchView1.S = SearchView1.S()
   ) : Serializable
 
-  sealed class Action : IReduxAction
+  sealed class Action : IReduxAction {
+    data class SetQuery(val query: String?) : Action()
+  }
 
   object Reducer : IReducer<State> {
     override fun invoke(p1: State, p2: IReduxAction): State {

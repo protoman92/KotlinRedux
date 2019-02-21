@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.parent_1.nav1
 import kotlinx.android.synthetic.main.parent_1.nav2
+import kotlinx.android.synthetic.main.parent_1.search_view
 import org.swiften.redux.android.dagger.DependencyLevel1
 import org.swiften.redux.android.dagger.R
 import org.swiften.redux.android.dagger.Redux
@@ -32,7 +33,7 @@ class ParentFragment1 : Fragment(),
   IPropContainer<ParentFragment1.S, ParentFragment1.A>,
   IPropLifecycleOwner<Redux.State, DependencyLevel1> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<Redux.State, DependencyLevel1, S, A> {
-    override fun mapState(state: Redux.State, outProp: DependencyLevel1): S = state.business1.flow1
+    override fun mapState(state: Redux.State, outProp: DependencyLevel1): S = state.business1.parent
 
     override fun mapAction(dispatch: IActionDispatcher, outProp: DependencyLevel1): A {
       return A(
@@ -59,5 +60,6 @@ class ParentFragment1 : Fragment(),
   override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, DependencyLevel1>) {
     this.nav1.setOnClickListener { this@ParentFragment1.reduxProp.action.goToScreen2() }
     this.nav2.setOnClickListener { this@ParentFragment1.reduxProp.action.goToScreen3() }
+    sp.injector.inject(Unit, this.search_view, SearchView1)
   }
 }
