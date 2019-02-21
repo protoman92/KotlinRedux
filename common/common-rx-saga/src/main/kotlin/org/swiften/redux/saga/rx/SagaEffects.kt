@@ -64,6 +64,26 @@ object SagaEffects {
   fun <R> just(value: R): SingleSagaEffect<R> where R : Any = JustEffect(value)
 
   /**
+   * Create an [AllEffect] instance.
+   * @param R The result emission type.
+   * @param sources See [AllEffect.sources].
+   * @return An [AllEffect] instance.
+   */
+  fun <R> mergeAll(sources: Collection<SagaEffect<R>>): SagaEffect<R> where R : Any {
+    return AllEffect(sources)
+  }
+
+  /**
+   * Create an [AllEffect] instance.
+   * @param R The result emission type.
+   * @param sources See [AllEffect.sources].
+   * @return An [AllEffect] instance.
+   */
+  fun <R> mergeAll(vararg sources: SagaEffect<R>): SagaEffect<R> where R : Any {
+    return this.mergeAll(sources.asList())
+  }
+
+  /**
    * Call [CommonEffects.putInStore] with [SagaEffects.just].
    * @param P The source emission type.
    * @param value See [JustEffect.value].
@@ -242,6 +262,7 @@ object SagaEffects {
    * @param R The result emission type.
    * @param millis See [DebounceTakeEffect.millis].
    */
+  @JvmStatic
   fun <Action, P, R> debounceTake(millis: Long): ITakeEffectTransformer<Action, P, R>
     where Action : IReduxAction, P : Any, R : Any {
     return { DebounceTakeEffect(it, millis) }
