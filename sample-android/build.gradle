@@ -1,0 +1,171 @@
+buildscript {
+  project.apply from: "$rootDir/constants.gradle"
+  project.apply from: "$project.projectDir/constants.gradle"
+  project.apply from: "$rootDir/android/constants.gradle"
+
+  repositories {
+    google()
+    jcenter()
+    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
+  }
+
+  dependencies {
+    classpath 'com.android.tools.build:gradle:3.3.1'
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$project.ext.kotlin"
+  }
+}
+
+allprojects {
+  repositories {
+    google()
+    jcenter()
+    maven { url = "https://jitpack.io" }
+    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
+  }
+}
+
+configure(subprojects - project(':sample-android:sample-sunflower')) {
+  apply plugin: 'com.android.application'
+  apply plugin: 'kotlin-android'
+  apply plugin: 'kotlin-android-extensions'
+
+  project.apply from: "$rootDir/constants.gradle"
+  project.apply from: "$rootDir/android/constants.gradle"
+  project.apply from: "$rootDir/sample-android/constants.gradle"
+
+  configurations.all {
+    // Make sure the latest JitPack releases are used.
+    resolutionStrategy.cacheChangingModulesFor 24, 'hours'
+  }
+
+  android {
+    compileSdkVersion project.ext.compileSdk
+
+    defaultConfig {
+      applicationId "org.swiften.redux.android.sample"
+      minSdkVersion project.ext.minSdk
+      targetSdkVersion project.ext.targetSdk
+      versionCode project.ext.versionCode
+      versionName project.ext.versionName
+
+      testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+      release {
+        minifyEnabled false
+        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      }
+    }
+  }
+
+  dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':android:android-all')
+    implementation "com.github.protoman92:KotlinFP:master-SNAPSHOT"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin"
+    implementation "androidx.appcompat:appcompat:$project.ext.appCompat"
+    implementation "androidx.recyclerview:recyclerview:$project.ext.recyclerView"
+    implementation "androidx.constraintlayout:constraintlayout:$project.ext.constraintlayout"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$project.ext.kotlinCoroutines"
+    implementation "com.beust:klaxon:5.0.1"
+    implementation 'com.camerakit:camerakit:1.0.0-beta3.10'
+    implementation 'com.camerakit:jpegkit:0.1.0'
+    testImplementation "junit:junit:$junit"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$project.ext.leakCanary"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$project.ext.leakCanary"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$project.ext.leakCanary"
+  }
+
+  project.apply from: "$rootDir/sample-android/skipped.gradle"
+}
+
+configure(project(':sample-android:sample-sunflower')) {
+  /*
+   * Copyright 2018 Google LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   *     https://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  project.apply from: "$rootDir/constants.gradle"
+  project.apply from: "$rootDir/android/constants.gradle"
+  project.apply from: "$rootDir/sample-android/constants.gradle"
+  project.apply from: "$project.projectDir/constants.gradle"
+
+  apply plugin: 'com.android.application'
+  apply plugin: 'kotlin-android'
+  apply plugin: 'kotlin-android-extensions'
+  apply plugin: 'kotlin-kapt'
+
+  android {
+    compileSdkVersion project.ext.compileSdk
+
+    defaultConfig {
+      applicationId "com.google.samples.apps.sunflower"
+      minSdkVersion project.ext.minSdk
+      targetSdkVersion project.ext.targetSdk
+      testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+      versionCode 1
+      versionName "0.1.6"
+      vectorDrawables.useSupportLibrary true
+    }
+
+    buildTypes {
+      release {
+        minifyEnabled false
+        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      }
+    }
+
+    compileOptions {
+      sourceCompatibility JavaVersion.VERSION_1_8
+      targetCompatibility JavaVersion.VERSION_1_8
+    }
+  }
+
+  androidExtensions {
+    experimental = true
+  }
+
+  dependencies {
+    kapt "androidx.room:room-compiler:$project.ext.roomVersion"
+    implementation "android.arch.navigation:navigation-fragment-ktx:$project.ext.navigationVersion"
+    implementation "android.arch.navigation:navigation-ui-ktx:$project.ext.navigationVersion"
+    implementation "android.arch.work:work-runtime-ktx:$project.ext.workVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$project.ext.constraintlayout"
+    implementation "androidx.core:core-ktx:$project.ext.ktxVersion"
+    implementation "androidx.room:room-runtime:$project.ext.roomVersion"
+    implementation "com.squareup.picasso:picasso:$project.ext.picasso"
+    implementation "com.google.android.material:material:$project.ext.materialVersion"
+    implementation "com.google.code.gson:gson:$project.ext.gsonVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$project.ext.kotlin"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$project.ext.kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.kotlinCoroutines"
+
+    implementation project(':android:android-all')
+    implementation "com.github.protoman92:KotlinFP:master-SNAPSHOT"
+
+    // Testing dependencies
+    androidTestImplementation "androidx.arch.core:core-testing:$project.ext.androidxCoreTest"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$project.ext.espresso"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$project.ext.espresso"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:$project.ext.espresso"
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:$project.ext.uiAutomatorVersion"
+    testImplementation "junit:junit:$junit"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$project.ext.leakCanary"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$project.ext.leakCanary"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$project.ext.leakCanary"
+  }
+
+  project.apply from: "$rootDir/sample-android/skipped.gradle"
+}
