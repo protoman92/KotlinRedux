@@ -7,6 +7,9 @@ package org.swiften.redux.android.dagger
 
 import android.app.Application
 import com.squareup.leakcanary.LeakCanary
+import org.swiften.redux.android.dagger.dagger.DaggerMainComponent
+import org.swiften.redux.android.dagger.dagger.DependencyLevel2Module
+import org.swiften.redux.android.dagger.dagger.DependencyLevel3Module
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
 import org.swiften.redux.core.FinalStore
@@ -21,7 +24,6 @@ class MainApplication : Application() {
     LeakCanary.install(this)
 
     val mainComponent = DaggerMainComponent.builder()
-      .fragment1DependencyModule(Fragment1DependencyModule())
       .dependencyLevel2Module(DependencyLevel2Module())
       .dependencyLevel3Module(DependencyLevel3Module())
       .build()
@@ -31,7 +33,7 @@ class MainApplication : Application() {
     )(FinalStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)
-    val injectionHelper = LifecycleInjectionHelper(mainComponent)
+    val injectionHelper = InjectionHelper(mainComponent)
     injector.injectActivitySerializable(this) { injectionHelper.inject(this, it) }
   }
 }

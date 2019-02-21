@@ -3,11 +3,13 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.dagger
+package org.swiften.redux.android.dagger.dagger
 
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.swiften.redux.android.dagger.DependencyLevel2
+import org.swiften.redux.android.dagger.DependencyLevel3
 import javax.inject.Singleton
 
 /** Created by viethai.pham on 2019/02/21 */
@@ -29,21 +31,11 @@ class DependencyLevel2Module {
   }
 }
 
-@Module
-class Fragment1DependencyModule {
-  @Singleton
-  @Provides
-  fun dependencyLevel1(sd: DependencyLevel2): DependencyLevel1 {
-    return DependencyLevel1(sd)
-  }
-}
-
 @Singleton
 @Component(modules = [
-  Fragment1DependencyModule::class,
   DependencyLevel2Module::class,
   DependencyLevel3Module::class
 ])
 interface MainComponent {
-  fun fragment1Dependency(): DependencyLevel1
+  fun plus(module: Fragment1DependencyModule): Fragment1Component
 }
