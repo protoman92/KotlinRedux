@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_1.nav1
+import kotlinx.android.synthetic.main.fragment_1.nav2
 import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.ISubscriberIDProvider
@@ -18,6 +20,8 @@ import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
+import org.swiften.redux.ui.StaticProp
+import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21 */
 class Fragment1 : Fragment(),
@@ -26,15 +30,20 @@ class Fragment1 : Fragment(),
   IPropLifecycleOwner<Fragment1.ILocalState, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<ILocalState, Unit, S, A> {
     override fun mapState(state: ILocalState, outProp: Unit): S = S()
-    override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): A = A()
+
+    override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): A = A(
+      { dispatch(Redux.Screen.Screen2) },
+      { dispatch(Redux.Screen.Screen3) }
+    )
   }
 
   interface ILocalState {
     val flow1: S
   }
 
-  class S
-  class A
+  class S : Serializable
+
+  class A(val goToScreen2: () -> Unit, val goToScreen3: () -> Unit)
 
   override var reduxProp by ObservableReduxProp<S, A> { _, _ -> }
 
@@ -44,5 +53,10 @@ class Fragment1 : Fragment(),
     savedInstanceState: Bundle?
   ): View? {
     return inflater.inflate(R.layout.fragment_1, container, false)
+  }
+
+  override fun beforePropInjectionStarts(sp: StaticProp<ILocalState, Unit>) {
+    this.nav1.setOnClickListener { this@Fragment1.reduxProp.action.goToScreen2() }
+    this.nav2.setOnClickListener { this@Fragment1.reduxProp.action.goToScreen3() }
   }
 }

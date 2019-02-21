@@ -7,6 +7,7 @@ package org.swiften.redux.android.dagger
 
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.IRouterScreen
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21/2 */
@@ -20,6 +21,12 @@ object Redux {
     Fragment1.ILocalState,
     Fragment2.ILocalState,
     Fragment3.ILocalState
+
+  sealed class Screen : IRouterScreen {
+    object Screen1 : Screen()
+    object Screen2 : Screen()
+    object Screen3 : Screen()
+  }
 
   object Reducer : IReducer<State> {
     override fun invoke(p1: State, p2: IReduxAction): State = p1
