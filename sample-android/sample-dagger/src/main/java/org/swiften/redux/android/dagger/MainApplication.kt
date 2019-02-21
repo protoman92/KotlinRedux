@@ -9,7 +9,6 @@ import android.app.Application
 import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
-import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.core.createRouterMiddleware
@@ -26,13 +25,7 @@ class MainApplication : Application() {
     )(FinalStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)
-
-    injector.injectActivitySerializable(this) {
-      when (it) {
-        is Fragment1 -> this.injectLifecycle(Unit, it, Fragment1)
-        is Fragment2 -> this.injectLifecycle(Unit, it, Fragment2)
-        is Fragment3 -> this.injectLifecycle(Unit, it, Fragment3)
-      }
-    }
+    val injectionHelper = LifecycleInjectionHelper()
+    injector.injectActivitySerializable(this) { injectionHelper.inject(this, it) }
   }
 }
