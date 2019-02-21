@@ -5,9 +5,9 @@
 
 package org.swiften.redux.android.dagger
 
-import org.swiften.redux.android.dagger.business1.ParentFragment1
-import org.swiften.redux.android.dagger.business2.ParentFragment2
-import org.swiften.redux.android.dagger.business3.ParentFragment3
+import org.swiften.redux.android.dagger.business1.Business1Redux
+import org.swiften.redux.android.dagger.business2.Business2Redux
+import org.swiften.redux.android.dagger.business3.Business3Redux
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
@@ -16,14 +16,10 @@ import java.io.Serializable
 /** Created by viethai.pham on 2019/02/21/2 */
 object Redux {
   data class State(
-    val dummy: Int = 0,
-    override val flow1: ParentFragment1.S = ParentFragment1.S(),
-    override val flow2: ParentFragment2.S = ParentFragment2.S(),
-    override val flow3: ParentFragment3.S = ParentFragment3.S()
-  ) : Serializable,
-    ParentFragment1.ILocalState,
-    ParentFragment2.ILocalState,
-    ParentFragment3.ILocalState
+    val business1: Business1Redux.State = Business1Redux.State(),
+    val business2: Business2Redux.State = Business2Redux.State(),
+    val business3: Business3Redux.State = Business3Redux.State()
+  ) : Serializable
 
   sealed class Screen : IRouterScreen {
     object Screen1 : Screen()
@@ -32,6 +28,13 @@ object Redux {
   }
 
   object Reducer : IReducer<State> {
-    override fun invoke(p1: State, p2: IReduxAction): State = p1
+    override fun invoke(p1: State, p2: IReduxAction): State {
+      return when (p2) {
+        is Business1Redux.Action -> p1.copy(business1 = Business1Redux.Reducer(p1.business1, p2))
+        is Business2Redux.Action -> p1.copy(business2 = Business2Redux.Reducer(p1.business2, p2))
+        is Business3Redux.Action -> p1.copy(business3 = Business3Redux.Reducer(p1.business3, p2))
+        else -> p1
+      }
+    }
   }
 }
