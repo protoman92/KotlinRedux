@@ -5,7 +5,10 @@
 
 package org.swiften.redux.android.dagger
 
+import java.lang.annotation.RetentionPolicy
+import javax.inject.Scope
+
 /** Created by viethai.pham on 2019/02/21 */
-class DependencyLevel1(val sd: DependencyLevel2)
-class DependencyLevel2(val sd: DependencyLevel3)
-class DependencyLevel3
+@Scope
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Fragment1Scope
