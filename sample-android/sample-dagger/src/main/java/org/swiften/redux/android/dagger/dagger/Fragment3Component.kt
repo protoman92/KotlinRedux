@@ -13,16 +13,16 @@ import org.swiften.redux.android.dagger.DependencyLevel2
 
 /** Created by viethai.pham on 2019/02/21 */
 @Module
-class Fragment1Module {
-  @Fragment1Scope
+class Fragment3Module {
+  @Fragment3Scope
   @Provides
   fun dependencyLevel1(sd: DependencyLevel2): DependencyLevel1 {
     return DependencyLevel1(sd)
   }
 }
 
-@Fragment1Scope
-@Subcomponent(modules = [Fragment1Module::class])
-interface Fragment1Component {
+@Fragment3Scope
+@Subcomponent(modules = [Fragment3Module::class])
+interface Fragment3Component {
   fun dependency(): DependencyLevel1
 }
