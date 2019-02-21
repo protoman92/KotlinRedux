@@ -27,11 +27,11 @@ import java.io.Serializable
 class Fragment3 : Fragment(),
   ISubscriberIDProvider by DefaultSubscriberIDProvider(),
   IPropContainer<Fragment3.S, Fragment3.A>,
-  IPropLifecycleOwner<Fragment3.ILocalState, Unit> by NoopPropLifecycleOwner() {
-  companion object : IPropMapper<ILocalState, Unit, S, A> {
-    override fun mapState(state: ILocalState, outProp: Unit): S = S()
+  IPropLifecycleOwner<Fragment3.ILocalState, DependencyLevel1> by NoopPropLifecycleOwner() {
+  companion object : IPropMapper<ILocalState, DependencyLevel1, S, A> {
+    override fun mapState(state: ILocalState, outProp: DependencyLevel1): S = S()
 
-    override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): A = A(
+    override fun mapAction(dispatch: IActionDispatcher, outProp: DependencyLevel1): A = A(
       { dispatch(Redux.Screen.Screen1) },
       { dispatch(Redux.Screen.Screen2) }
     )
@@ -55,7 +55,7 @@ class Fragment3 : Fragment(),
     return inflater.inflate(R.layout.fragment_3, container, false)
   }
 
-  override fun beforePropInjectionStarts(sp: StaticProp<ILocalState, Unit>) {
+  override fun beforePropInjectionStarts(sp: StaticProp<ILocalState, DependencyLevel1>) {
     this.nav1.setOnClickListener { this@Fragment3.reduxProp.action.goToScreen1() }
     this.nav2.setOnClickListener { this@Fragment3.reduxProp.action.goToScreen2() }
   }

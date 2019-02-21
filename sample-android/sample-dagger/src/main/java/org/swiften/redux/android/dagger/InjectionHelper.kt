@@ -6,7 +6,9 @@
 package org.swiften.redux.android.dagger
 
 import androidx.lifecycle.LifecycleOwner
-import org.swiften.redux.android.dagger.dagger.Fragment1DependencyModule
+import org.swiften.redux.android.dagger.dagger.Fragment1Module
+import org.swiften.redux.android.dagger.dagger.Fragment2Module
+import org.swiften.redux.android.dagger.dagger.Fragment3Module
 import org.swiften.redux.android.dagger.dagger.MainComponent
 import org.swiften.redux.android.ui.lifecycle.ILifecycleOwnerInjectionHelper
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
@@ -17,13 +19,23 @@ class InjectionHelper(val mainComponent: MainComponent) : ILifecycleOwnerInjecti
   override fun inject(injector: IPropInjector<Redux.State>, owner: LifecycleOwner) {
     when (owner) {
       is Fragment1 -> this.inject(injector, owner)
-      is Fragment2 -> injector.injectLifecycle(Unit, owner, Fragment2)
-      is Fragment3 -> injector.injectLifecycle(Unit, owner, Fragment3)
+      is Fragment2 -> this.inject(injector, owner)
+      is Fragment3 -> this.inject(injector, owner)
     }
   }
 
-  private fun inject(injector: IPropInjector<Redux.State>, fragment1: Fragment1) {
-    val component = this.mainComponent.plus(Fragment1DependencyModule())
-    injector.injectLifecycle(component.dependency(), fragment1, Fragment1)
+  private fun inject(injector: IPropInjector<Redux.State>, fragment: Fragment1) {
+    val component = this.mainComponent.plus(Fragment1Module())
+    injector.injectLifecycle(component.dependency(), fragment, Fragment1)
+  }
+
+  private fun inject(injector: IPropInjector<Redux.State>, fragment: Fragment2) {
+    val component = this.mainComponent.plus(Fragment2Module())
+    injector.injectLifecycle(component.dependency(), fragment, Fragment2)
+  }
+
+  private fun inject(injector: IPropInjector<Redux.State>, fragment: Fragment3) {
+    val component = this.mainComponent.plus(Fragment3Module())
+    injector.injectLifecycle(component.dependency(), fragment, Fragment3)
   }
 }

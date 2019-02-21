@@ -37,5 +37,7 @@ class DependencyLevel2Module {
   DependencyLevel3Module::class
 ])
 interface MainComponent {
-  fun plus(module: Fragment1DependencyModule): Fragment1Component
+  fun plus(module: Fragment1Module): Fragment1Component
+  fun plus(module: Fragment2Module): Fragment2Component
+  fun plus(module: Fragment3Module): Fragment3Component
 }
