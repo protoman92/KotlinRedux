@@ -13,8 +13,9 @@ typealias IActionDispatcher = (IReduxAction) -> IAsyncJob<*>
  * Represents a Redux reducer that reduce a [IReduxAction] onto a previous state to produce a new
  * state.
  * @param GState The global state type.
+ * @param Action The [IReduxAction] type.
  */
-typealias IReducer<GState> = (GState, IReduxAction) -> GState
+typealias IReducer<GState, Action> = (GState, Action) -> GState
 
 /**
  * Get the last internal state.
@@ -46,9 +47,10 @@ interface IReduxActionWithKey : IReduxAction {
 /**
  * Represents an object that provides [IReducer].
  * @param GState The global state type.
+ * @param Action The [IReduxAction] type.
  */
-interface IReducerProvider<GState> where GState : Any {
-  val reducer: IReducer<GState>
+interface IReducerProvider<GState, Action> where GState : Any, Action : IReduxAction {
+  val reducer: IReducer<GState, Action>
 }
 
 /** Represents an object that provides [IActionDispatcher]. */
@@ -88,7 +90,7 @@ interface IReduxUnsubscriberProvider {
  * @param GState The global state type.
  */
 interface IReduxStore<GState> :
-  IReducerProvider<GState>,
+  IReducerProvider<GState, IReduxAction>,
   IDispatcherProvider,
   IStateGetterProvider<GState>,
   IReduxSubscriberProvider<GState>,

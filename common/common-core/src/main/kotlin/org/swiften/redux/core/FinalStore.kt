@@ -14,7 +14,7 @@ package org.swiften.redux.core
  */
 class FinalStore<GState : Any> private constructor(store: IReduxStore<GState>) :
   IReduxStore<GState> by store {
-  constructor(state: GState, reducer: IReducer<GState>) :
+  constructor(state: GState, reducer: IReducer<GState, IReduxAction>) :
     this(fun (): IReduxStore<GState> {
       return DefaultActionStore(state, reducer)
     }())

@@ -185,7 +185,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       override val key: String get() = "Action2"
     }
 
-    val reducer: IReducer<State> = { state, action ->
+    val reducer: IReducer<State, IReduxAction> = { state, action ->
       when (action) {
         is Action1 -> state.copy(a1 = action.value)
         is Action2 -> state.copy(a2 = action.value)
@@ -193,7 +193,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       }
     }
 
-    val enhancedReducer: IReducer<State> = { s, a -> val newState = reducer(s, a); newState }
+    val enhancedReducer: IReducer<State, IReduxAction> = { s, a -> val newState = reducer(s, a); newState }
     var store: IReduxStore<State>? = null
     val finalValues = synchronizedList(arrayListOf<Pair<State, State>>())
 
