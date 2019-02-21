@@ -10,6 +10,6 @@ import org.swiften.redux.android.ui.lifecycle.ILifecycleOwnerInjectionHelper
 import org.swiften.redux.ui.IPropInjector
 
 /** Created by viethai.pham on 2019/02/21 */
-class InjectionHelper(val mainComponent: MainComponent) : ILifecycleOwnerInjectionHelper<Redux.State> {
+class InjectionHelper(private val component: MainComponent) : ILifecycleOwnerInjectionHelper<Redux.State> {
   override fun inject(injector: IPropInjector<Redux.State>, owner: LifecycleOwner) {}
 }
