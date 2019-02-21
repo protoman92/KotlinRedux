@@ -172,7 +172,6 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
  * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
  * @param diffCallback A [DiffUtil.ItemCallback] instance.
  */
-@Suppress("UNCHECKED_CAST")
 fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
   outProp: OutProp,
   adapter: RecyclerView.Adapter<VH>,
@@ -214,6 +213,45 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
 
   this.inject(outProp, listAdapter, adapterMapper)
   return listAdapter
+}
+
+/**
+ * Instead of [DiffUtil.ItemCallback], use [IDiffItemCallback] to avoid abstract class.
+ * @receiver An [IPropInjector] instance.
+ * @param GState The global state type.
+ * @param LState The local state type that [GState] must extend from.
+ * @param OutProp Property as defined by [lifecycleOwner]'s parent.
+ * @param VH The [RecyclerView.ViewHolder] instance.
+ * @param VHState The [VH] state type. See [ReduxProp.state].
+ * @param VHAction The [VH] action type. See [ReduxProp.action].
+ * @param outProp An [OutProp] instance.
+ * @param adapter The base [RecyclerView.Adapter] instance.
+ * @param adapterMapper An [IPropMapper] instance for [ReduxListAdapter].
+ * @param diffCallback A [IDiffItemCallback] instance.
+ * @return A [ListAdapter] instance.
+ */
+fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injectDiffedAdapter(
+  outProp: OutProp,
+  adapter: RecyclerView.Adapter<VH>,
+  adapterMapper: IPropMapper<LState, OutProp, List<VHState>, VHAction>,
+  diffCallback: IDiffItemCallback<VHState>
+): ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction> where
+  GState : LState,
+  LState : Any,
+  VH : RecyclerView.ViewHolder,
+  VH : IPropContainer<VHState, VHAction>,
+  VH : IPropLifecycleOwner<LState, OutProp>,
+  VHState : Any,
+  VHAction : Any {
+  return this.injectDiffedAdapter(outProp, adapter, adapterMapper, object : DiffUtil.ItemCallback<VHState>() {
+    override fun areItemsTheSame(oldItem: VHState, newItem: VHState): Boolean {
+      return diffCallback.areItemsTheSame(oldItem, newItem)
+    }
+
+    override fun areContentsTheSame(oldItem: VHState, newItem: VHState): Boolean {
+      return diffCallback.areContentsTheSame(oldItem, newItem)
+    }
+  })
 }
 
 /**
