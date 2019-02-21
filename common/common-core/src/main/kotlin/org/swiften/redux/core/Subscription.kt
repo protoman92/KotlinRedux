@@ -13,7 +13,7 @@ import kotlin.concurrent.write
 /** Created by haipham on 2019/01/24/1 */
 /**
  * Represents a subscription object that can be unsubscribed from. Each [IReduxSubscription]
- * must also have an [id] that can be used to perform selective unsubscription.
+ * must also have an [uniqueSubscriberID] that can be used to perform selective unsubscription.
  */
 interface IReduxSubscription : ISubscriberIDProvider {
   /**
@@ -83,7 +83,8 @@ class CompositeReduxSubscription(override val uniqueSubscriberID: String) : IRed
   }
 
   /**
-   * Remove an [IReduxSubscription] instance whose [IReduxSubscription.id] equals [id].
+   * Remove an [IReduxSubscription] instance whose [IReduxSubscription.uniqueSubscriberID] equals
+   * [uniqueSubscriberID].
    * @param subscribeId A [String] value.
    * @return The remove [IReduxSubscription], if any.
    */

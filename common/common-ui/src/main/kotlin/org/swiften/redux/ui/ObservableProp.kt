@@ -15,7 +15,6 @@ import kotlin.reflect.KProperty
 /**
  * Note that [notifier] passes along both the previous and upcoming [T] values
  * @param T The property type to be observed.
- * @param equalChecker Check equality for two [T] instances.
  * @param notifier Broadcast the latest [T] instance.
  */
 open class LateinitObservableProp<T>(private val notifier: (T?, T) -> Unit) : ReadWriteProperty<Any?, T> where T : Any {

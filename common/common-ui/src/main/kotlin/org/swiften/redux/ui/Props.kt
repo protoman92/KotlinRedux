@@ -27,7 +27,7 @@ data class StaticProp<LState, OutProp>(
 ) where LState : Any
 
 /**
- * Container for [subscription], [state] and [action].
+ * Container for [state] and [action].
  * @param State See [IVariableProp.state].
  * @param Action See [IVariableProp.action].
  * @param state A [State] instance.
