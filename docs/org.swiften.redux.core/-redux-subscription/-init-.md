@@ -2,13 +2,13 @@
 
 # &lt;init&gt;
 
-`ReduxSubscription(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, _unsubscribe: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`
+`ReduxSubscription(uniqueSubscriberID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, _unsubscribe: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`
 
 Use this class to perform some [unsubscribe](unsubscribe.md) logic. For e.g.: terminate a [IReduxSubscription](../-i-redux-subscription/index.md)
 from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md).
 
 ### Parameters
 
-`id` - See [IReduxSubscription.id](../-i-redux-subscription/id.md).
+`uniqueSubscriberID` - See [IReduxSubscription.uniqueSubscriberID](../-i-subscriber-i-d-provider/unique-subscriber-i-d.md).
 
 `_unsubscribe` - Function that contains unsubscription logic.

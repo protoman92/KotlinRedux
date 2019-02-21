@@ -30,3 +30,4 @@ A [IReduxStore](../-i-redux-store.md) that handles [DefaultReduxAction](../-defa
 | [reducer](reducer.md) | `val reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`>` |
 | [store](store.md) | `val store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>` |
 | [subscribe](subscribe.md) | `val subscribe: `[`IReduxSubscriber`](../-i-redux-subscriber.md)`<`[`GState`](index.md#GState)`>` |
+| [unsubscribe](unsubscribe.md) | `val unsubscribe: `[`IReduxUnsubscriber`](../-i-redux-unsubscriber.md) |

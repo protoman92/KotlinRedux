@@ -2,7 +2,7 @@
 
 # EMPTY
 
-`val EMPTY: `[`ReduxSubscription`](index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L49)
+`val EMPTY: `[`ReduxSubscription`](index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L46)
 
 Mock [ReduxSubscription](index.md) that is used every time there is no meaningful subscription logic
 to be unsubscribed on.

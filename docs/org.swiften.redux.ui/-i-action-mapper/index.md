@@ -2,7 +2,7 @@
 
 # IActionMapper
 
-`interface IActionMapper<in OutProp, out Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L85)
+`interface IActionMapper<in OutProp, out Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L88)
 
 Maps [IActionDispatcher](../../org.swiften.redux.core/-i-action-dispatcher.md) to [Action](index.md#Action) for a [IPropContainer](../-i-prop-container/index.md). Note that [Action](index.md#Action) can include
 external, non-Redux related dependencies provided by [OutProp](index.md#OutProp).

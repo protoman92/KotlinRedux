@@ -12,4 +12,4 @@ Use this to avoid lateinit modifiers for [ReduxProp](../-redux-prop/index.md).
 
 `Action` - See [ReduxProp.action](../-redux-prop/action.md).
 
-`notifier` - See [VetoableObservableProp.notifier](../-vetoable-observable-prop/notifier.md).
+`notifier` - See [LateinitObservableProp.notifier](../-lateinit-observable-prop/notifier.md).

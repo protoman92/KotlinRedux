@@ -2,7 +2,7 @@
 
 # PositionProp
 
-`class PositionProp<OutProp>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L41)
+`class PositionProp<OutProp>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L43)
 
 Use this as container for outer prop for [DelegateRecyclerAdapter](../-delegate-recycler-adapter/index.md) view holder.
 

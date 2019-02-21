@@ -2,16 +2,16 @@
 
 # IReduxSubscription
 
-`interface IReduxSubscription` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L18)
+`interface IReduxSubscription : `[`ISubscriberIDProvider`](../-i-subscriber-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L18)
 
 Represents a subscription object that can be unsubscribed from. Each [IReduxSubscription](./index.md)
-must also have an [id](id.md) that can be used to perform selective unsubscription.
+must also have an [uniqueSubscriberID](../-i-subscriber-i-d-provider/unique-subscriber-i-d.md) that can be used to perform selective unsubscription.
 
-### Properties
+### Inherited Properties
 
 | Name | Summary |
 |---|---|
-| [id](id.md) | `abstract val id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>The unique identifier of this [IReduxSubscription](./index.md). |
+| [uniqueSubscriberID](../-i-subscriber-i-d-provider/unique-subscriber-i-d.md) | `abstract val uniqueSubscriberID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>The unique ID to pass to [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md) and [IReduxStore.unsubscribe](../-i-redux-unsubscriber-provider/unsubscribe.md). |
 
 ### Functions
 

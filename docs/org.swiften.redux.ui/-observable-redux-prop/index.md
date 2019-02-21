@@ -2,7 +2,7 @@
 
 # ObservableReduxProp
 
-`class ObservableReduxProp<State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/ObservableProp.kt#L44)
+`class ObservableReduxProp<State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/ObservableProp.kt#L40)
 
 Use this to avoid lateinit modifiers for [ReduxProp](../-redux-prop/index.md).
 
@@ -12,7 +12,7 @@ Use this to avoid lateinit modifiers for [ReduxProp](../-redux-prop/index.md).
 
 `Action` - See [ReduxProp.action](../-redux-prop/action.md).
 
-`notifier` - See [VetoableObservableProp.notifier](../-vetoable-observable-prop/notifier.md).
+`notifier` - See [LateinitObservableProp.notifier](../-lateinit-observable-prop/notifier.md).
 
 ### Constructors
 

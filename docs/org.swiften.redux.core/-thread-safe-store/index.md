@@ -33,3 +33,4 @@ modifications. Pass in the initial [state](state.md) and the store's [reducer](r
 | [state](state.md) | `var state: `[`GState`](index.md#GState)<br>The initial default [GState](index.md#GState) instance. |
 | [subscribe](subscribe.md) | `val subscribe: `[`IReduxSubscriber`](../-i-redux-subscriber.md)`<`[`GState`](index.md#GState)`>` |
 | [subscribers](subscribers.md) | `val subscribers: <ERROR CLASS>` |
+| [unsubscribe](unsubscribe.md) | `val unsubscribe: `[`IReduxUnsubscriber`](../-i-redux-unsubscriber.md) |

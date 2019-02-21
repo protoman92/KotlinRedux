@@ -2,7 +2,7 @@
 
 # IVariableProp
 
-`interface IVariableProp<out State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, out Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L16)
+`interface IVariableProp<out State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, out Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L14)
 
 Container for an [IPropContainer](../-i-prop-container/index.md) mutable properties.
 
@@ -23,4 +23,4 @@ Container for an [IPropContainer](../-i-prop-container/index.md) mutable propert
 
 | Name | Summary |
 |---|---|
-| [ReduxProp](../-redux-prop/index.md) | `data class ReduxProp<State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IVariableProp`](./index.md)`<`[`State`](../-redux-prop/index.md#State)`, `[`Action`](../-redux-prop/index.md#Action)`>`<br>Container for [subscription](../-redux-prop/subscription.md), [state](../-redux-prop/state.md) and [action](../-redux-prop/action.md). |
+| [ReduxProp](../-redux-prop/index.md) | `data class ReduxProp<State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IVariableProp`](./index.md)`<`[`State`](../-redux-prop/index.md#State)`, `[`Action`](../-redux-prop/index.md#Action)`>`<br>Container for [state](../-redux-prop/state.md) and [action](../-redux-prop/action.md). |
