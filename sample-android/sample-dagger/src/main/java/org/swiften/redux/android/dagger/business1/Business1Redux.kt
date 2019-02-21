@@ -12,8 +12,8 @@ import java.io.Serializable
 /** Created by viethai.pham on 2019/02/21 */
 object Business1Redux {
   data class State(
-    override val flow1: ParentFragment1.S = ParentFragment1.S()
-  ) : Serializable, ParentFragment1.ILocalState
+    val flow1: ParentFragment1.S = ParentFragment1.S()
+  ) : Serializable
 
   sealed class Action : IReduxAction
 

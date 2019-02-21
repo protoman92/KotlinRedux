@@ -6,6 +6,7 @@
 package org.swiften.redux.android.dagger.business3
 
 import androidx.lifecycle.LifecycleOwner
+import org.swiften.redux.android.dagger.Redux
 import org.swiften.redux.android.ui.lifecycle.ILifecycleOwnerInjectionHelper
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.ui.IPropInjector
@@ -13,14 +14,14 @@ import org.swiften.redux.ui.IPropInjector
 /** Created by viethai.pham on 2019/02/21 */
 class Business3InjectionHelper(
   private val component: Business3Component
-) : ILifecycleOwnerInjectionHelper<Business3Redux.State> {
-  override fun inject(injector: IPropInjector<Business3Redux.State>, owner: LifecycleOwner) {
+) : ILifecycleOwnerInjectionHelper<Redux.State> {
+  override fun inject(injector: IPropInjector<Redux.State>, owner: LifecycleOwner) {
     when (owner) {
       is ParentFragment3 -> this.inject(injector, owner)
     }
   }
 
-  private fun inject(injector: IPropInjector<Business3Redux.State>, fragment: ParentFragment3) {
+  private fun inject(injector: IPropInjector<Redux.State>, fragment: ParentFragment3) {
     val component = this.component.plus(Parent3Module())
     injector.injectLifecycle(component.dependency(), fragment, ParentFragment3)
   }

@@ -30,20 +30,18 @@ import java.io.Serializable
 class ParentFragment2 : Fragment(),
   ISubscriberIDProvider by DefaultSubscriberIDProvider(),
   IPropContainer<ParentFragment2.S, ParentFragment2.A>,
-  IPropLifecycleOwner<ParentFragment2.ILocalState, DependencyLevel1> by NoopPropLifecycleOwner() {
-  companion object : IPropMapper<ILocalState, DependencyLevel1, S, A> {
-    override fun mapState(state: ILocalState, outProp: DependencyLevel1): S =
-      S()
+  IPropLifecycleOwner<Redux.State, DependencyLevel1> by NoopPropLifecycleOwner() {
+  companion object : IPropMapper<Redux.State, DependencyLevel1, S, A> {
+    override fun mapState(state: Redux.State, outProp: DependencyLevel1): S {
+      return state.business2.flow2
+    }
 
-    override fun mapAction(dispatch: IActionDispatcher, outProp: DependencyLevel1): A =
-      A(
+    override fun mapAction(dispatch: IActionDispatcher, outProp: DependencyLevel1): A {
+      return A(
         { dispatch(Redux.Screen.Screen1) },
         { dispatch(Redux.Screen.Screen3) }
       )
-  }
-
-  interface ILocalState {
-    val flow2: S
+    }
   }
 
   class S : Serializable
@@ -60,7 +58,7 @@ class ParentFragment2 : Fragment(),
     return inflater.inflate(R.layout.parent_2, container, false)
   }
 
-  override fun beforePropInjectionStarts(sp: StaticProp<ILocalState, DependencyLevel1>) {
+  override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, DependencyLevel1>) {
     this.nav1.setOnClickListener { this@ParentFragment2.reduxProp.action.goToScreen1() }
     this.nav2.setOnClickListener { this@ParentFragment2.reduxProp.action.goToScreen3() }
   }
