@@ -33,6 +33,13 @@ object SagaEffects {
   }
 
   /**
+   * Create a [NothingEffect] instance.
+   * @param R The result emission type.
+   * @return A [SagaEffect] instance.
+   */
+  fun <R> doNothing(): SagaEffect<R> where R : Any = NothingEffect()
+
+  /**
    * Create a [CallEffect] instance.
    * @param P The source emission type.
    * @param R The result emission type.

@@ -40,7 +40,9 @@ import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapAsync
 import org.swiften.redux.saga.common.thenMightAsWell
 import org.swiften.redux.saga.common.thenNoMatterWhat
+import org.swiften.redux.saga.common.thenSwitchTo
 import org.swiften.redux.saga.rx.SagaEffects.await
+import org.swiften.redux.saga.rx.SagaEffects.doNothing
 import org.swiften.redux.saga.rx.SagaEffects.from
 import org.swiften.redux.saga.rx.SagaEffects.just
 import org.swiften.redux.saga.rx.SagaEffects.mergeAll
@@ -329,6 +331,19 @@ class SagaEffectTest : CommonSagaEffectTest() {
       // Then
       assertEquals(finalValues.sorted(), correctValues)
     }
+  }
+
+  @Test
+  fun `Nothing effect should not emit anything`() {
+    // Setup
+    val value = justEffect(100)
+      .thenSwitchTo(doNothing<Int>())
+      .map { it * 2 }
+      .invoke()
+      .await(200)
+
+    // When && Then
+    assertEquals(value, 200)
   }
 
   @Test
