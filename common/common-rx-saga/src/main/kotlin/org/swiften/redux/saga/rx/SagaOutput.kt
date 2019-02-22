@@ -74,8 +74,8 @@ class SagaOutput<T : Any>(
 
   init {
     val subscriberID = this.uniqueSubscriberID
-    this.monitor.set(subscriberID, this.onAction)
-    this.stream = stream.doOnCancel { this@SagaOutput.monitor.remove(subscriberID) }
+    this.monitor.setOutputDispatcher(subscriberID, this.onAction)
+    this.stream = stream.doOnCancel { this@SagaOutput.monitor.removeOutputDispatcher(subscriberID) }
   }
 
   private fun <T2> with(newStream: Flowable<T2>): ISagaOutput<T2> where T2 : Any {
