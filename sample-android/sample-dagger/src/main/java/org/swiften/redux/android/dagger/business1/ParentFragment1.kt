@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.parent_1.nav1
 import kotlinx.android.synthetic.main.parent_1.nav2
+import kotlinx.android.synthetic.main.parent_1.search_progress_bar
 import kotlinx.android.synthetic.main.parent_1.search_view
 import org.swiften.redux.android.dagger.DependencyLevel1
 import org.swiften.redux.android.dagger.R
@@ -39,17 +40,27 @@ class ParentFragment1 : Fragment(),
 
     override fun mapAction(dispatch: IActionDispatcher, outProp: DependencyLevel1): A {
       return A(
-        { dispatch(Redux.Screen.Screen2) },
-        { dispatch(Redux.Screen.Screen3) }
+        initializeBusiness1 = { dispatch(Business1Redux.Action.Initialize) },
+        deinitializeBusiness1 = { dispatch(Business1Redux.Action.Deinitialize) },
+        goToScreen2 = { dispatch(Redux.Screen.Screen2) },
+        goToScreen3 = { dispatch(Redux.Screen.Screen3) }
       )
     }
   }
 
   data class S(val loading: Boolean = false) : Serializable
 
-  class A(val goToScreen2: () -> Unit, val goToScreen3: () -> Unit)
+  class A(
+    val initializeBusiness1: () -> Unit,
+    val deinitializeBusiness1: () -> Unit,
+    val goToScreen2: () -> Unit,
+    val goToScreen3: () -> Unit
+  )
 
-  override var reduxProp by ObservableReduxProp<S, A> { _, _ -> }
+  override var reduxProp by ObservableReduxProp<S, A> { prev, next ->
+    if (prev == null) next.action.initializeBusiness1()
+    this.search_progress_bar.visibility = if (next.state.loading) View.VISIBLE else View.INVISIBLE
+  }
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -63,5 +74,9 @@ class ParentFragment1 : Fragment(),
     this.nav1.setOnClickListener { this@ParentFragment1.reduxProp.action.goToScreen2() }
     this.nav2.setOnClickListener { this@ParentFragment1.reduxProp.action.goToScreen3() }
     sp.injector.inject(Unit, this.search_view, SearchView1)
+  }
+
+  override fun afterPropInjectionEnds() {
+    this.reduxProp.action.deinitializeBusiness1()
   }
 }

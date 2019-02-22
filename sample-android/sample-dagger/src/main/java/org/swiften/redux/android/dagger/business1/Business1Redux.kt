@@ -13,6 +13,7 @@ import org.swiften.redux.saga.rx.SagaEffects.await
 import org.swiften.redux.saga.rx.SagaEffects.mergeAll
 import org.swiften.redux.saga.rx.SagaEffects.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.takeLatest
+import org.swiften.redux.saga.rx.debounceTake
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21 */
@@ -23,6 +24,8 @@ object Business1Redux {
   ) : Serializable
 
   sealed class Action : IReduxAction {
+    object Initialize : Action()
+    object Deinitialize : Action()
     data class SetLoading(val loading: Boolean) : Action()
     data class SetQuery(val query: String?) : Action()
   }
@@ -32,13 +35,21 @@ object Business1Redux {
       return when (p2) {
         is Action.SetLoading -> p1.copy(parent = p1.parent.copy(loading = p2.loading))
         is Action.SetQuery -> p1.copy(search = p1.search.copy(query = p2.query))
+        is Action.Initialize -> p1
+        is Action.Deinitialize -> p1
       }
     }
   }
 
   object Saga {
     fun allSagas(): SagaEffect<Any> {
-      return takeLatest(Action::class, { Unit }) { activeSagas() }
+      return takeLatest(Action::class, {
+        when (it) {
+          is Action.Initialize -> Unit
+          is Action.Deinitialize -> Unit
+          else -> null
+        }
+      }) { activeSagas() }
     }
 
     private fun activeSagas(): SagaEffect<Any> {
@@ -55,8 +66,8 @@ object Business1Redux {
           } finally {
             putInStore(Action.SetLoading(false)).await(input)
           }
-        }
-      }
+        } }
+        .debounceTake(500)
     }
   }
 }
