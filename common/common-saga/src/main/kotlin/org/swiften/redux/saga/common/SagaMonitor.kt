@@ -14,10 +14,10 @@ import java.util.concurrent.ConcurrentHashMap
 /** Monitors all [ISagaOutput] and calls [ISagaOutput.onAction] when an action arrives. */
 interface ISagaMonitor : IDispatcherProvider {
   /** Store [dispatch] with a unique [id]. */
-  fun set(id: String, dispatch: IActionDispatcher)
+  fun setOutputDispatcher(id: String, dispatch: IActionDispatcher)
 
   /** Remove the associated [IActionDispatcher] instance. */
-  fun remove(id: String)
+  fun removeOutputDispatcher(id: String)
 }
 
 /** Default implementation of [ISagaMonitor]. */
@@ -28,11 +28,11 @@ class SagaMonitor : ISagaMonitor {
     this@SagaMonitor.dispatchers.forEach { it.value(a) }; EmptyJob
   }
 
-  override fun set(id: String, dispatch: IActionDispatcher) {
+  override fun setOutputDispatcher(id: String, dispatch: IActionDispatcher) {
     this.dispatchers[id] = dispatch
   }
 
-  override fun remove(id: String) {
+  override fun removeOutputDispatcher(id: String) {
     this.dispatchers.remove(id)
   }
 }

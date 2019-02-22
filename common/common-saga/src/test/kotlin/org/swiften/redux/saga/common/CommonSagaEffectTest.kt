@@ -130,12 +130,12 @@ abstract class CommonSagaEffectTest {
         dispatchers.forEach { it.value(action) }; EmptyJob
       }
 
-      override fun set(id: String, dispatch: IActionDispatcher) {
+      override fun setOutputDispatcher(id: String, dispatch: IActionDispatcher) {
         dispatchers[id] = dispatch
         setCount.incrementAndGet()
       }
 
-      override fun remove(id: String) {
+      override fun removeOutputDispatcher(id: String) {
         dispatchers.remove(id)
         removeCount.incrementAndGet()
       }
