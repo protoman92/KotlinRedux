@@ -219,8 +219,7 @@ fun <R, R2, R3> SagaEffect<R>.thenSwitchTo(
  * @param effect See [ThenEffect.source2].
  * @return A [SagaEffect] instance.
  */
-fun <R, R2> SagaEffect<R>.thenSwitchTo(effect: ISagaEffect<R2>):
-  SagaEffect<R2> where R : Any, R2 : Any {
+fun <R, R2> SagaEffect<R>.thenSwitchTo(effect: ISagaEffect<R2>): SagaEffect<R2> where R : Any, R2 : Any {
   return this.thenSwitchTo(effect) { _, b -> b }
 }
 
@@ -233,8 +232,7 @@ fun <R, R2> SagaEffect<R>.thenSwitchTo(effect: ISagaEffect<R2>):
  * @param effect See [ThenEffect.source2].
  * @return A [SagaEffect] instance.
  */
-fun <R, R2> SagaEffect<R>.thenMightAsWell(effect: ISagaEffect<R2>):
-  SagaEffect<R> where R : Any, R2 : Any {
+fun <R, R2> SagaEffect<R>.thenMightAsWell(effect: ISagaEffect<R2>): SagaEffect<R> where R : Any, R2 : Any {
   return this.thenSwitchTo(effect) { a, _ -> a }
 }
 
