@@ -25,6 +25,7 @@ abstract class CommonSagaEffectTest {
   protected class State
 
   protected val timeout: Long = 10000
+  protected val iteration = 1000
   abstract fun <T> justEffect(value: T): SagaEffect<T> where T : Any
   abstract fun <T> fromEffect(vararg values: T): SagaEffect<T> where T : Any
 
@@ -37,22 +38,23 @@ abstract class CommonSagaEffectTest {
   ) {
     // Setup
     class Action(val value: Int) : IReduxAction
+    val monitor = SagaMonitor()
+    val finalValues = synchronizedList(arrayListOf<Int>())
 
-    val takeOutput = createTakeEffect(
+    createTakeEffect(
       { when (it) { is Action -> it.value; else -> null } },
       { v -> justEffect(v).mapSuspend { delay(1000); it } }
-    ).invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
-
-    val finalValues = synchronizedList(arrayListOf<Int>())
-    takeOutput.subscribe({ finalValues.add(it as Int) })
+    )
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .subscribe({ finalValues.add(it as Int) })
 
     // When
-    takeOutput.onAction(Action(0))
-    takeOutput.onAction(Action(1))
-    takeOutput.onAction(DefaultReduxAction.Dummy)
-    takeOutput.onAction(Action(2))
-    takeOutput.onAction(DefaultReduxAction.Dummy)
-    takeOutput.onAction(Action(3))
+    monitor.dispatch(Action(0))
+    monitor.dispatch(Action(1))
+    monitor.dispatch(DefaultReduxAction.Dummy)
+    monitor.dispatch(Action(2))
+    monitor.dispatch(DefaultReduxAction.Dummy)
+    monitor.dispatch(Action(3))
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
@@ -64,7 +66,7 @@ abstract class CommonSagaEffectTest {
     }
   }
 
-  fun test_takeEffectWithActionKeys_shouldTakeCorrectActions(
+  fun test_takeEffectWithKeys_shouldTakeCorrectActions(
     createTakeEffect: (
       actionKeys: Set<String>,
       creator: (IReduxActionWithKey) -> ISagaEffect<Any>
@@ -85,21 +87,21 @@ abstract class CommonSagaEffectTest {
       override val key: String get() = "3"
     }
 
+    val monitor = SagaMonitor()
     val keys = setOf("1", "2")
-
-    val takeOutput = createTakeEffect(keys) { v -> justEffect((v as BaseAction).value) }
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
-
     val finalValues = synchronizedList(arrayListOf<Int>())
-    val allValues = 0 until 100
+    val allValues = 0 until this.iteration
     val actualValues = allValues.filter { it % 3 != 0 }
-    takeOutput.subscribe({ finalValues.add(it as Int) })
+
+    createTakeEffect(keys) { v -> justEffect((v as BaseAction).value) }
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .subscribe({ finalValues.add(it as Int) })
 
     // When
     actualValues.forEach {
-      if (it % 3 == 0) takeOutput.onAction(Action3(it))
-      else if (it % 2 == 0) takeOutput.onAction(Action2(it))
-      else takeOutput.onAction(Action1(it))
+      if (it % 3 == 0) monitor.dispatch(Action3(it))
+      else if (it % 2 == 0) monitor.dispatch(Action2(it))
+      else monitor.dispatch(Action1(it))
     }
 
     runBlocking {
@@ -116,6 +118,7 @@ abstract class CommonSagaEffectTest {
   @Suppress("UNREACHABLE_CODE")
   fun `Catch error effect should handle errors gracefully`() {
     // Setup
+    val monitor = SagaMonitor()
     val error = Exception("Oh no!")
     val finalValues = synchronizedList(arrayListOf<Int>())
 
@@ -124,7 +127,7 @@ abstract class CommonSagaEffectTest {
       .map { throw error; 1 }
       .delayUpstreamValue(1000)
       .catchError { 100 }
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -141,6 +144,7 @@ abstract class CommonSagaEffectTest {
   @Suppress("UNREACHABLE_CODE")
   fun `Async catch error effect should handle errors gracefully`() {
     // Setup
+    val monitor = SagaMonitor()
     val error = Exception("Oh no!")
     val finalValues = synchronizedList(arrayListOf<Int>())
 
@@ -149,7 +153,7 @@ abstract class CommonSagaEffectTest {
       .map { throw error; 1 }
       .delayUpstreamValue(1000)
       .catchAsync { this.async { 100 } }
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -166,12 +170,13 @@ abstract class CommonSagaEffectTest {
   @Suppress("UNREACHABLE_CODE")
   fun `Compact map effect should unwrap nullable values`() {
     // Setup
+    val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Int>())
 
     // When
     justEffect(1)
       .mapIgnoringNull { null }
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -185,6 +190,7 @@ abstract class CommonSagaEffectTest {
   @Test
   fun `Filter effect should filter out unwanted values`() {
     // Setup
+    val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Int>())
 
     // When
@@ -192,7 +198,7 @@ abstract class CommonSagaEffectTest {
       .filter { it % 2 == 0 }
       .delayUpstreamValue(100)
       .castValue<Int>()
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -208,6 +214,7 @@ abstract class CommonSagaEffectTest {
   @Test
   fun `If empty effect should emit specified values when upstream is empty`() {
     // Setup
+    val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Int>())
     val defaultValue = 1000
 
@@ -215,7 +222,7 @@ abstract class CommonSagaEffectTest {
     fromEffect(0, 1, 2, 3)
       .filter { false }
       .ifEmptyThenReturn(defaultValue)
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -232,12 +239,13 @@ abstract class CommonSagaEffectTest {
   fun `Put effect should dispatch action`() {
     // Setup
     data class Action(private val value: Int) : IReduxAction
+    val monitor = SagaMonitor()
     val dispatched = synchronizedList(arrayListOf<IReduxAction>())
 
     justEffect(0)
       .map { it }
       .putInStore { Action(it) }
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), {}) { dispatched.add(it); EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, {}) { dispatched.add(it); EmptyJob })
       .subscribe({})
 
     // When
@@ -254,6 +262,7 @@ abstract class CommonSagaEffectTest {
   @Test
   fun `Retry effects should retry asynchronous calls`() {
     // Setup
+    val monitor = SagaMonitor()
     val retryCount = 3
     val retries = AtomicInteger(0)
 
@@ -261,7 +270,7 @@ abstract class CommonSagaEffectTest {
     justEffect(0)
       .mapSuspend { retries.incrementAndGet(); throw RuntimeException("Oh no!") }
       .retryMultipleTimes(retryCount)
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .subscribe({})
 
     runBlocking {
@@ -277,6 +286,7 @@ abstract class CommonSagaEffectTest {
   @Test
   fun `Then effect should enforce ordering`() {
     // Setup
+    val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<String>())
 
     // When
@@ -285,7 +295,7 @@ abstract class CommonSagaEffectTest {
       .thenSwitchTo(justEffect(2).map { it }) { a, b -> "$a$b" }
       .delayUpstreamValue(1000)
       .thenMightAsWell(justEffect("This should be ignored"))
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -301,6 +311,7 @@ abstract class CommonSagaEffectTest {
   @Test
   fun `Force-then effect should enforce ordering when source is empty or erroneous`() {
     // Setup
+    val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Int>())
     val error = "Error!"
 
@@ -308,14 +319,14 @@ abstract class CommonSagaEffectTest {
     justEffect(1)
       .map { throw Exception(error) }
       .thenNoMatterWhat(justEffect(2))
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     justEffect(1)
       .filter { it % 2 == 0 }
       .map { throw Exception(error) }
       .thenNoMatterWhat(justEffect(3))
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -331,11 +342,13 @@ abstract class CommonSagaEffectTest {
   @Test
   fun `Timeout effect should error with timeout`() {
     // Setup
+    val monitor = SagaMonitor()
+
     val finalOutput = justEffect(1)
       .mapSuspend { delay(this@CommonSagaEffectTest.timeout); it }
       .timeoutUntilFailure(1000)
       .catchSuspend { 100 }
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
 
     // When && Then
     assertEquals(finalOutput.awaitFor(this.timeout), 100)

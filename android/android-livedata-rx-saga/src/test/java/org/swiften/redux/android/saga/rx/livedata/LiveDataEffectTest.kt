@@ -36,13 +36,14 @@ class LiveDataEffectTest {
   @Test
   fun test_takeEveryDataEffect_shouldStreamLiveData() {
     // Setup
+    val monitor = SagaMonitor()
     val data = MutableLiveData<Int>()
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
     takeEveryData { data }
       .mapAsync { this.async { delay(1000); it } }
       .filter { it % 2 == 0 }
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     // When

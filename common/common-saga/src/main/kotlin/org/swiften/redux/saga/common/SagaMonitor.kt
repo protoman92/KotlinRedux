@@ -8,9 +8,7 @@ package org.swiften.redux.saga.common
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDispatcherProvider
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.concurrent.read
-import kotlin.concurrent.write
+import java.util.concurrent.ConcurrentHashMap
 
 /** Created by viethai.pham on 2019/02/22 */
 /** Monitors all [ISagaOutput] and calls [ISagaOutput.onAction] when an action arrives. */
@@ -24,18 +22,17 @@ interface ISagaMonitor {
 
 /** Default implementation of [ISagaMonitor]. */
 class SagaMonitor : ISagaMonitor, IDispatcherProvider {
-  private val lock by lazy { ReentrantReadWriteLock() }
-  private val dispatchers by lazy { hashMapOf<String, IActionDispatcher>() }
+  private val dispatchers = ConcurrentHashMap<String, IActionDispatcher>()
 
   override val dispatch: IActionDispatcher = { a ->
-    this@SagaMonitor.lock.read { this@SagaMonitor.dispatchers.forEach { it.value(a) }; EmptyJob }
+    this@SagaMonitor.dispatchers.forEach { it.value(a) }; EmptyJob
   }
 
   override fun set(id: String, dispatch: IActionDispatcher) {
-    this.lock.write { this.dispatchers[id] = dispatch }
+    this.dispatchers[id] = dispatch
   }
 
   override fun remove(id: String) {
-    this.lock.write { this.dispatchers.remove(id) }
+    this.dispatchers.remove(id)
   }
 }
