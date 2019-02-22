@@ -17,6 +17,9 @@ import kotlin.concurrent.write
 interface ISagaMonitor {
   /** Store [dispatch] with a unique [id]. */
   fun set(id: String, dispatch: IActionDispatcher)
+
+  /** Remove the associated [IActionDispatcher] instance. */
+  fun remove(id: String)
 }
 
 /** Default implementation of [ISagaMonitor]. */
@@ -32,7 +35,7 @@ class SagaMonitor : ISagaMonitor, IDispatcherProvider {
     this.lock.write { this.dispatchers[id] = dispatch }
   }
 
-  fun remove(id: String) {
+  override fun remove(id: String) {
     this.lock.write { this.dispatchers.remove(id) }
   }
 }

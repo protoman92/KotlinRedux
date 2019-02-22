@@ -40,6 +40,6 @@ internal class TakeEveryEffect<R>(private val creator: () -> LiveData<R>) : Saga
       .toFlowable(BackpressureStrategy.BUFFER)
       .serialize()
 
-    return SagaOutput(p1.scope, stream) { EmptyJob }
+    return SagaOutput(p1.scope, p1.monitor, stream) { EmptyJob }
   }
 }

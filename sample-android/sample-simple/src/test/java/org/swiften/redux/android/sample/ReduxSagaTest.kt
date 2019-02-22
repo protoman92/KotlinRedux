@@ -14,6 +14,7 @@ import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.SagaInput
 import org.swiften.redux.saga.common.SagaMonitor
+import java.util.Collections.synchronizedList
 
 /** Created by viethai.pham on 2019/02/20 */
 open class ReduxSagaTest {
@@ -28,20 +29,21 @@ class SearchSagaTest : ReduxSagaTest() {
   @Test
   fun `Search saga should work in success case`() {
     // Setup
+    val monitor = SagaMonitor()
     val result = MusicResult(1000, arrayListOf())
-    val dispatched = arrayListOf<IReduxAction>()
+    val dispatched = synchronizedList(arrayListOf<IReduxAction>())
 
     val api = object : ISearchAPI<MusicResult?> {
       override fun searchMusicStore(query: String, limit: Int): MusicResult? = result
     }
 
     val outputStream = Redux.Saga.searchSaga(api, debounce = 0)
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), {state}) { a -> dispatched.add(a); EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { state }) { a -> dispatched.add(a); EmptyJob })
 
     outputStream.subscribe({})
 
     // When
-    outputStream.onAction(Redux.Action.Search.UpdateQuery(null))
+    monitor.dispatch(Redux.Action.Search.UpdateQuery(null))
 
     runBlocking {
       delay(this@SearchSagaTest.delay)
@@ -60,8 +62,9 @@ class SearchSagaTest : ReduxSagaTest() {
   @Test
   fun `Search saga should work in error case`() {
     // Setup
+    val monitor = SagaMonitor()
     val error = Exception("Oops!")
-    val dispatched = arrayListOf<IReduxAction>()
+    val dispatched = synchronizedList(arrayListOf<IReduxAction>())
 
     val api = object : ISearchAPI<MusicResult?> {
       override fun searchMusicStore(query: String, limit: Int): MusicResult? {
@@ -70,12 +73,12 @@ class SearchSagaTest : ReduxSagaTest() {
     }
 
     val outputStream = Redux.Saga.searchSaga(api, debounce = 0)
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), {state}) { a -> dispatched.add(a); EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { state }) { a -> dispatched.add(a); EmptyJob })
 
     outputStream.subscribe({})
 
     // When
-    outputStream.onAction(Redux.Action.Search.UpdateLimit(null))
+    monitor.dispatch(Redux.Action.Search.UpdateLimit(null))
 
     runBlocking {
       delay(this@SearchSagaTest.delay)

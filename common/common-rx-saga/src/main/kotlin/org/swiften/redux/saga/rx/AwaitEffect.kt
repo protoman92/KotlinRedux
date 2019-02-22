@@ -24,6 +24,6 @@ typealias IAwaitCreator<R> = suspend CoroutineScope.(SagaInput) -> R
  */
 internal class AwaitEffect<R>(private val creator: IAwaitCreator<R>) : SingleSagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
-    return SagaOutput.from(p1.scope) { this@AwaitEffect.creator(this, p1) }
+    return SagaOutput.from(p1.scope, p1.monitor) { this@AwaitEffect.creator(this, p1) }
   }
 }

@@ -7,6 +7,7 @@ package org.swiften.redux.saga.rx
 
 import io.reactivex.Flowable.just
 import org.swiften.redux.core.EmptyJob
+import org.swiften.redux.saga.common.ISagaOutput
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaInput
 import org.swiften.redux.saga.common.SingleSagaEffect
@@ -18,5 +19,7 @@ import org.swiften.redux.saga.common.SingleSagaEffect
  * @param value The [R] value to be emitted.
  */
 internal class JustEffect<R>(private val value: R) : SingleSagaEffect<R>() where R : Any {
-  override fun invoke(p1: SagaInput) = SagaOutput(p1.scope, just(this.value)) { EmptyJob }
+  override fun invoke(p1: SagaInput): ISagaOutput<R> {
+    return SagaOutput(p1.scope, p1.monitor, just(this.value)) { EmptyJob }
+  }
 }

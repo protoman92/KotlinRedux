@@ -67,6 +67,6 @@ internal class WatchConnectivityEffect(private val context: Context) : SagaEffec
       }
     }
 
-    return SagaOutput(p1.scope, stream.toFlowable(BackpressureStrategy.BUFFER)) { EmptyJob }
+    return SagaOutput(p1.scope, p1.monitor, stream.toFlowable(BackpressureStrategy.BUFFER)) { EmptyJob }
   }
 }
