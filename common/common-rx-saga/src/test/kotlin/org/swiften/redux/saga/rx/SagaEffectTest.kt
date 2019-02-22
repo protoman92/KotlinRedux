@@ -443,4 +443,11 @@ class SagaEffectTest : CommonSagaEffectTest() {
       ))
     }
   }
+
+  @Test
+  fun `Stream disposition should remove entry from monitor`() {
+    test_streamDisposition_shouldRemoveEntryFromMonitor { creator ->
+      takeLatest(IReduxAction::class, { it }, creator)
+    }
+  }
 }
