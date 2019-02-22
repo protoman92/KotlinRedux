@@ -10,22 +10,31 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.rx2.rxSingle
+import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.saga.common.ISagaMonitor
 import org.swiften.redux.saga.common.ISagaOutput
 import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/22 */
-/** @see [ISagaOutput]. */
+/**
+ * This is the default implementation of [ISagaOutput].
+ * @param T The result emission type.
+ * @param scope A [CoroutineScope] instance.
+ * @param monitor A [ISagaMonitor] instance that is used to track created [ISagaOutput].
+ * @param stream A [Flowable] instance.
+ * @param onAction See [ISagaOutput.onAction].
+ */
 class SagaOutput<T : Any>(
   private val scope: CoroutineScope,
-  private val stream: Flowable<T>,
+  private val monitor: ISagaMonitor,
+  stream: Flowable<T>,
   override val onAction: IActionDispatcher
-) : ISagaOutput<T>, CoroutineScope by scope {
-  internal var source: SagaOutput<*>? = null
-  private var onDispose: () -> Unit = { }
-  private val disposable by lazy { CompositeDisposable() }
-
+) : ISagaOutput<T>,
+  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+  CoroutineScope by scope {
   companion object {
     /**
      * Create a [ISagaOutput] from [creator] using [CoroutineScope.rxSingle].
@@ -36,9 +45,10 @@ class SagaOutput<T : Any>(
      */
     fun <T> from(
       scope: CoroutineScope,
+      monitor: ISagaMonitor,
       creator: suspend CoroutineScope.() -> T
     ): ISagaOutput<T> where T : Any {
-      return SagaOutput(scope, scope.rxSingle { creator() }.toFlowable()) { EmptyJob }
+      return SagaOutput(scope, monitor, scope.rxSingle { creator() }.toFlowable()) { EmptyJob }
     }
 
     /**
@@ -49,16 +59,27 @@ class SagaOutput<T : Any>(
      * @param outputs A [Collection] of [SagaOutput].
      * @return A [SagaOutput] instance.
      */
-    fun <T> merge(scope: CoroutineScope, outputs: Collection<SagaOutput<T>>): SagaOutput<T> where T : Any {
-      return SagaOutput(scope, Flowable.merge(outputs.map { it.stream })) { a ->
-        outputs.forEach { it.onAction(a) }; EmptyJob
-      }
+    fun <T> merge(
+      scope: CoroutineScope,
+      monitor: ISagaMonitor,
+      outputs: Collection<SagaOutput<T>>
+    ): SagaOutput<T> where T : Any {
+      return SagaOutput(scope, monitor, Flowable.merge(outputs.map { it.stream })) { EmptyJob }
     }
   }
 
+  private var onDispose: () -> Unit = { }
+  private val stream: Flowable<T>
+  private val disposable by lazy { CompositeDisposable() }
+
+  init {
+    val subscriberID = this.uniqueSubscriberID
+    this.monitor.set(subscriberID, this.onAction)
+    this.stream = stream.doOnCancel { this@SagaOutput.monitor.remove(subscriberID) }
+  }
+
   private fun <T2> with(newStream: Flowable<T2>): ISagaOutput<T2> where T2 : Any {
-    val result = SagaOutput(this.scope, newStream, this.onAction)
-    result.source = this
+    val result = SagaOutput(this.scope, this.monitor, newStream) { EmptyJob }
     result.onDispose = { this.dispose() }
     return result
   }
@@ -67,15 +88,15 @@ class SagaOutput<T : Any>(
     return this.with(this.stream.map(transform))
   }
 
-  override fun <T2> mapSuspend(transform: suspend CoroutineScope.(T) -> T2): ISagaOutput<T2>
-    where T2 : Any {
+  override fun <T2> mapSuspend(transform: suspend CoroutineScope.(T) -> T2): ISagaOutput<T2> where T2 : Any {
     return this.with(this.stream.flatMap { v ->
       this@SagaOutput.rxSingle { transform(this, v) }.toFlowable()
     })
   }
 
-  override fun <T2> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>):
-    ISagaOutput<T2> where T2 : Any {
+  override fun <T2> mapAsync(
+    transform: suspend CoroutineScope.(T) -> Deferred<T2>
+  ): ISagaOutput<T2> where T2 : Any {
     return this.mapSuspend { transform(it).await() }
   }
 

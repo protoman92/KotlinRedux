@@ -28,15 +28,16 @@ import kotlin.coroutines.CoroutineContext
  * @param context The [CoroutineContext] with which to perform asynchronous work on.
  */
 internal class SagaMiddleware(
-  private val effects: Collection<ISagaEffect<*>>,
-  private val context: CoroutineContext
+  private val context: CoroutineContext,
+  private val monitor: SagaMonitor,
+  private val effects: Collection<ISagaEffect<*>>
 ) : IMiddleware<Any> {
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       val lock = ReentrantLock()
       val context = this@SagaMiddleware.context
+      val monitor = this@SagaMiddleware.monitor
       val scope = object : CoroutineScope { override val coroutineContext = context }
-      val monitor = SagaMonitor()
       val sagaInput = SagaInput(scope, monitor, p1.lastState, p1.dispatch)
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
       outputs.forEach { it.subscribe({}) }
@@ -48,7 +49,6 @@ internal class SagaMiddleware(
        */
       DispatchWrapper.wrap(wrapper, "saga", ThreadSafeDispatcher(lock) { action ->
         wrapper.dispatch(action).await()
-        outputs.forEach { it.onAction(action).await() }
         monitor.dispatch(action).await()
 
         /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [ISagaOutput]. */
@@ -65,15 +65,17 @@ internal class SagaMiddleware(
 
 /**
  * Create a [SagaMiddleware] with [effects].
- * @param effects See [SagaMiddleware.effects].
  * @param context See [SagaMiddleware.context].
+ * @param monitor A [SagaMonitor] instance.
+ * @param effects See [SagaMiddleware.effects].
  * @return A [SagaMiddleware] instance.
  */
 internal fun createSagaMiddleware(
-  effects: Collection<ISagaEffect<*>>,
-  context: CoroutineContext = SupervisorJob()
+  context: CoroutineContext,
+  monitor: SagaMonitor,
+  effects: Collection<ISagaEffect<*>>
 ): IMiddleware<Any> {
-  return SagaMiddleware(effects, context)
+  return SagaMiddleware(context, monitor, effects)
 }
 
 /**
@@ -83,5 +85,5 @@ internal fun createSagaMiddleware(
  * @return A [SagaMiddleware] instance.
  */
 fun createSagaMiddleware(effects: Collection<ISagaEffect<*>>): IMiddleware<Any> {
-  return createSagaMiddleware(effects, SupervisorJob())
+  return createSagaMiddleware(SupervisorJob(), SagaMonitor(), effects)
 }
