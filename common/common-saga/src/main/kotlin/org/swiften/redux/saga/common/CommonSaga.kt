@@ -8,7 +8,6 @@ package org.swiften.redux.saga.common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
-import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IAsyncJob
 import org.swiften.redux.core.IReduxAction
@@ -42,21 +41,10 @@ typealias ISagaEffectTransformer<R, R2> = (SagaEffect<R>) -> SagaEffect<R2>
  */
 class SagaInput(
   val scope: CoroutineScope = GlobalScope,
+  val monitor: ISagaMonitor,
   val lastState: IStateGetter<*>,
   val dispatch: IActionDispatcher
-) {
-  companion object {
-    /** Represents a [SagaInput] that does not have any meaningful functionalities. */
-    val EMPTY = this.withState({})
-
-    /**
-     * Creates a [SagaInput] that simply returns [state] when [SagaInput.lastState] is invoked.
-     * @param state See [SagaInput.lastState].
-     * @return A [SagaInput] instance.
-     */
-    fun withState(state: Any) = SagaInput(GlobalScope, { state }) { EmptyJob }
-  }
-}
+)
 
 /**
  * Stream values for a [ISagaEffect]. This stream has functional operators that can transform
@@ -210,30 +198,6 @@ interface ISagaOutput<T> : IAsyncJob<T> where T : Any {
  * @param R The result emission type.
  */
 abstract class SagaEffect<R> : ISagaEffect<R> where R : Any {
-  /**
-   * Call [ISagaEffect] with convenience parameters for testing.
-   * @param scope A [CoroutineScope] instance.
-   * @param state See [SagaInput.lastState].
-   * @param dispatch See [SagaInput.dispatch].
-   * @return An [ISagaOutput] instance.
-   */
-  fun invoke(scope: CoroutineScope, state: Any, dispatch: IActionDispatcher): ISagaOutput<R> {
-    return this.invoke(SagaInput(scope, { state }, dispatch))
-  }
-
-  /**
-   * Call [ISagaEffect] with convenience parameters for testing.
-   * @param state See [SagaInput.lastState].
-   * @return An [ISagaOutput] instance.
-   */
-  fun invoke(state: Any): ISagaOutput<R> = this.invoke(SagaInput.withState(state))
-
-  /**
-   * Call [ISagaEffect] with convenience parameters for testing.
-   * @return An [ISagaOutput] instance.
-   */
-  fun invoke(): ISagaOutput<R> = this.invoke(SagaInput.EMPTY)
-
   /**
    * Transform into another [SagaEffect] with [transformer].
    * @param R2 The emission type of the resulting [SagaEffect].

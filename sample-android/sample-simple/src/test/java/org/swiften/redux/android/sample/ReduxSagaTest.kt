@@ -12,6 +12,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.saga.common.SagaInput
+import org.swiften.redux.saga.common.SagaMonitor
 
 /** Created by viethai.pham on 2019/02/20 */
 open class ReduxSagaTest {
@@ -34,7 +36,7 @@ class SearchSagaTest : ReduxSagaTest() {
     }
 
     val outputStream = Redux.Saga.searchSaga(api, debounce = 0)
-      .invoke(GlobalScope, state) { a -> dispatched.add(a); EmptyJob }
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), {state}) { a -> dispatched.add(a); EmptyJob })
 
     outputStream.subscribe({})
 
@@ -68,7 +70,7 @@ class SearchSagaTest : ReduxSagaTest() {
     }
 
     val outputStream = Redux.Saga.searchSaga(api, debounce = 0)
-      .invoke(GlobalScope, state) { a -> dispatched.add(a); EmptyJob }
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), {state}) { a -> dispatched.add(a); EmptyJob })
 
     outputStream.subscribe({})
 

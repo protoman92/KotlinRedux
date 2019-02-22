@@ -14,16 +14,13 @@ import kotlin.concurrent.write
 
 /** Created by viethai.pham on 2019/02/22 */
 /** Monitors all [ISagaOutput] and calls [ISagaOutput.onAction] when an action arrives. */
-interface ISagaMonitor : IDispatcherProvider {
+interface ISagaMonitor {
   /** Store [dispatch] with a unique [id]. */
   fun set(id: String, dispatch: IActionDispatcher)
-
-  /** Remove an [IActionDispatcher] with [id]. */
-  fun remove(id: String)
 }
 
 /** Default implementation of [ISagaMonitor]. */
-class SagaMonitor : ISagaMonitor {
+class SagaMonitor : ISagaMonitor, IDispatcherProvider {
   private val lock by lazy { ReentrantReadWriteLock() }
   private val dispatchers by lazy { hashMapOf<String, IActionDispatcher>() }
 
@@ -35,7 +32,7 @@ class SagaMonitor : ISagaMonitor {
     this.lock.write { this.dispatchers[id] = dispatch }
   }
 
-  override fun remove(id: String) {
+  fun remove(id: String) {
     this.lock.write { this.dispatchers.remove(id) }
   }
 }

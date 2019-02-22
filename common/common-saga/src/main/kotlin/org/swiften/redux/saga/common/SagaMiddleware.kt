@@ -36,7 +36,8 @@ internal class SagaMiddleware(
       val lock = ReentrantLock()
       val context = this@SagaMiddleware.context
       val scope = object : CoroutineScope { override val coroutineContext = context }
-      val sagaInput = SagaInput(scope, p1.lastState, p1.dispatch)
+      val monitor = SagaMonitor()
+      val sagaInput = SagaInput(scope, monitor, p1.lastState, p1.dispatch)
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
       outputs.forEach { it.subscribe({}) }
 
@@ -48,6 +49,7 @@ internal class SagaMiddleware(
       DispatchWrapper.wrap(wrapper, "saga", ThreadSafeDispatcher(lock) { action ->
         wrapper.dispatch(action).await()
         outputs.forEach { it.onAction(action).await() }
+        monitor.dispatch(action).await()
 
         /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [ISagaOutput]. */
         if (action == DefaultReduxAction.Deinitialize) {

@@ -30,6 +30,8 @@ import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.saga.common.CommonSagaEffectTest
 import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.common.SagaInput
+import org.swiften.redux.saga.common.SagaMonitor
 import org.swiften.redux.saga.common.TakeEffect
 import org.swiften.redux.saga.common.castValue
 import org.swiften.redux.saga.common.catchError
@@ -80,7 +82,8 @@ class SagaEffectTest : CommonSagaEffectTest() {
       (it as Action).value
     }, { value ->
       this@SagaEffectTest.justEffect(value)
-    }).debounceTake(debounceTime).invoke()
+    }).debounceTake(debounceTime)
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
 
     sourceOutput.subscribe({ finalValues.add(it) })
 
@@ -148,7 +151,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
         .map { if (it % 2 == 0) throw Exception(error) else it }
         .thenNoMatterWhat(just(defaultValue))
         .thenMightAsWell(justEffect(ignoredValue))
-    }.invoke()
+    }.invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
 
     sourceOutput.subscribe({ finalValues.add(it) })
 
@@ -255,7 +258,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
         .mapSingle { Single.just(it) }
         .castValue<Any>()
         .catchError {}
-    }.invoke()
+    }.invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
 
     sourceOutput.subscribe({ finalValues.add(it) })
 
@@ -283,7 +286,8 @@ class SagaEffectTest : CommonSagaEffectTest() {
       justEffect(2),
       justEffect(3),
       justEffect(4)
-    ).invoke().subscribe({ finalValues.add(it) })
+    ).invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .subscribe({ finalValues.add(it) })
 
     runBlocking {
       withTimeoutOrNull(this@SagaEffectTest.timeout) {
@@ -316,7 +320,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       takeLatest(Action::class, { it.value }) { justEffect(it).map { it } },
       takeLatest(Action::class, { it.value }) { justEffect(it).map { it * 2 } },
       takeLatest(Action::class, { it.value }) { justEffect(it).map { it * 3 } }
-    ).invoke()
+    ).invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
 
     sourceOutput.subscribe({ finalValues.add(it) })
 
@@ -339,7 +343,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val value = justEffect(100)
       .thenSwitchTo(doNothing<Int>())
       .map { it * 2 }
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
       .await(200)
 
     // When && Then
@@ -349,8 +353,11 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `Select effect should extract some value from a state`() {
     // Setup
-    val sourceOutput1 = just(1).selectFromState(Any::class, { 2 }, { a, b -> a + b }).invoke()
-    val sourceOutput2 = just(2).selectFromState(State::class) { 4 }.invoke(State())
+    val sourceOutput1 = just(1).selectFromState(Any::class, { 2 }, { a, b -> a + b })
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+
+    val sourceOutput2 = just(2).selectFromState(State::class) { 4 }
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { State() }) { EmptyJob })
 
     // When && Then
     assertEquals(sourceOutput1.awaitFor(this.timeout), 3)
@@ -366,7 +373,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
     val dispatched = arrayListOf<IReduxAction>()
 
-    val source = await { input ->
+    val sourceEffect = await { input ->
       putInStore(ProgressAction(true)).await(input)
       val value = selectFromState(State::class) { it.value }.await(input)
       val newValue = value * 2
@@ -375,7 +382,9 @@ class SagaEffectTest : CommonSagaEffectTest() {
     }
 
     // When
-    source.invoke(GlobalScope, State(10)) { dispatched.add(it); EmptyJob }.subscribe({})
+    sourceEffect
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { State(10) }) { dispatched.add(it); EmptyJob })
+      .subscribe({})
 
     runBlocking {
       delay(1000)
@@ -401,7 +410,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val error = Exception("Oops!")
     val api: suspend (Int) -> Int = { throw error }
 
-    val source = await { input ->
+    val sourceEffect = await { input ->
       putInStore(ProgressAction(true)).await(input)
       val value = selectFromState(State::class) { it.value }.filter { false }.invoke(input).await(0)
 
@@ -416,7 +425,9 @@ class SagaEffectTest : CommonSagaEffectTest() {
     }
 
     // When
-    source.invoke(GlobalScope, State(10)) { dispatched.add(it); EmptyJob }.subscribe({})
+    sourceEffect
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { State(10) }) { dispatched.add(it); EmptyJob })
+      .subscribe({})
 
     runBlocking {
       delay(1000)
