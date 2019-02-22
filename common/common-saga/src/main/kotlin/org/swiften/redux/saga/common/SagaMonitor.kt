@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 /** Created by viethai.pham on 2019/02/22 */
 /** Monitors all [ISagaOutput] and calls [ISagaOutput.onAction] when an action arrives. */
-interface ISagaMonitor {
+interface ISagaMonitor : IDispatcherProvider {
   /** Store [dispatch] with a unique [id]. */
   fun set(id: String, dispatch: IActionDispatcher)
 
@@ -21,7 +21,7 @@ interface ISagaMonitor {
 }
 
 /** Default implementation of [ISagaMonitor]. */
-class SagaMonitor : ISagaMonitor, IDispatcherProvider {
+class SagaMonitor : ISagaMonitor {
   private val dispatchers = ConcurrentHashMap<String, IActionDispatcher>()
 
   override val dispatch: IActionDispatcher = { a ->
