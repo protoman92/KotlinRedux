@@ -41,7 +41,7 @@ abstract class CommonSagaEffectTest {
     val takeOutput = createTakeEffect(
       { when (it) { is Action -> it.value; else -> null } },
       { v -> justEffect(v).mapSuspend { delay(1000); it } }
-    ).invoke()
+    ).invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
 
     val finalValues = synchronizedList(arrayListOf<Int>())
     takeOutput.subscribe({ finalValues.add(it as Int) })
@@ -86,7 +86,10 @@ abstract class CommonSagaEffectTest {
     }
 
     val keys = setOf("1", "2")
-    val takeOutput = createTakeEffect(keys) { v -> justEffect((v as BaseAction).value) }.invoke()
+
+    val takeOutput = createTakeEffect(keys) { v -> justEffect((v as BaseAction).value) }
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+
     val finalValues = synchronizedList(arrayListOf<Int>())
     val allValues = 0 until 100
     val actualValues = allValues.filter { it % 3 != 0 }
@@ -94,12 +97,9 @@ abstract class CommonSagaEffectTest {
 
     // When
     actualValues.forEach {
-      if (it % 3 == 0)
-        takeOutput.onAction(Action3(it))
-      else if (it % 2 == 0)
-        takeOutput.onAction(Action2(it))
-      else
-        takeOutput.onAction(Action1(it))
+      if (it % 3 == 0) takeOutput.onAction(Action3(it))
+      else if (it % 2 == 0) takeOutput.onAction(Action2(it))
+      else takeOutput.onAction(Action1(it))
     }
 
     runBlocking {
@@ -124,7 +124,7 @@ abstract class CommonSagaEffectTest {
       .map { throw error; 1 }
       .delayUpstreamValue(1000)
       .catchError { 100 }
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -149,7 +149,7 @@ abstract class CommonSagaEffectTest {
       .map { throw error; 1 }
       .delayUpstreamValue(1000)
       .catchAsync { this.async { 100 } }
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -171,7 +171,7 @@ abstract class CommonSagaEffectTest {
     // When
     justEffect(1)
       .mapIgnoringNull { null }
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -192,7 +192,7 @@ abstract class CommonSagaEffectTest {
       .filter { it % 2 == 0 }
       .delayUpstreamValue(100)
       .castValue<Int>()
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -215,7 +215,7 @@ abstract class CommonSagaEffectTest {
     fromEffect(0, 1, 2, 3)
       .filter { false }
       .ifEmptyThenReturn(defaultValue)
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -237,7 +237,7 @@ abstract class CommonSagaEffectTest {
     justEffect(0)
       .map { it }
       .putInStore { Action(it) }
-      .invoke(GlobalScope, {}) { dispatched.add(it); EmptyJob }
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), {}) { dispatched.add(it); EmptyJob })
       .subscribe({})
 
     // When
@@ -261,7 +261,7 @@ abstract class CommonSagaEffectTest {
     justEffect(0)
       .mapSuspend { retries.incrementAndGet(); throw RuntimeException("Oh no!") }
       .retryMultipleTimes(retryCount)
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
       .subscribe({})
 
     runBlocking {
@@ -285,7 +285,7 @@ abstract class CommonSagaEffectTest {
       .thenSwitchTo(justEffect(2).map { it }) { a, b -> "$a$b" }
       .delayUpstreamValue(1000)
       .thenMightAsWell(justEffect("This should be ignored"))
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -308,14 +308,14 @@ abstract class CommonSagaEffectTest {
     justEffect(1)
       .map { throw Exception(error) }
       .thenNoMatterWhat(justEffect(2))
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     justEffect(1)
       .filter { it % 2 == 0 }
       .map { throw Exception(error) }
       .thenNoMatterWhat(justEffect(3))
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -335,7 +335,7 @@ abstract class CommonSagaEffectTest {
       .mapSuspend { delay(this@CommonSagaEffectTest.timeout); it }
       .timeoutUntilFailure(1000)
       .catchSuspend { 100 }
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
 
     // When && Then
     assertEquals(finalOutput.awaitFor(this.timeout), 100)

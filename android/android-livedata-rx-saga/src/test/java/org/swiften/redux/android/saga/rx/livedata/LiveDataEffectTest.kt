@@ -7,6 +7,7 @@ package org.swiften.redux.android.saga.rx.livedata
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -18,6 +19,9 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeEveryData
+import org.swiften.redux.core.EmptyJob
+import org.swiften.redux.saga.common.SagaInput
+import org.swiften.redux.saga.common.SagaMonitor
 import org.swiften.redux.saga.common.filter
 import org.swiften.redux.saga.common.mapAsync
 import java.util.Collections
@@ -38,7 +42,7 @@ class LiveDataEffectTest {
     takeEveryData { data }
       .mapAsync { this.async { delay(1000); it } }
       .filter { it % 2 == 0 }
-      .invoke()
+      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     // When
