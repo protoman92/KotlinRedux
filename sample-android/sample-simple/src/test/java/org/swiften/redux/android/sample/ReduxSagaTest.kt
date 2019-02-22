@@ -5,7 +5,6 @@
 
 package org.swiften.redux.android.sample
 
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -37,10 +36,9 @@ class SearchSagaTest : ReduxSagaTest() {
       override fun searchMusicStore(query: String, limit: Int): MusicResult? = result
     }
 
-    val outputStream = Redux.Saga.searchSaga(api, debounce = 0)
-      .invoke(SagaInput(GlobalScope, monitor, { state }) { a -> dispatched.add(a); EmptyJob })
-
-    outputStream.subscribe({})
+    Redux.Saga.searchSaga(api, debounce = 0)
+      .invoke(SagaInput(monitor, { state }) { a -> dispatched.add(a); EmptyJob })
+      .subscribe({})
 
     // When
     monitor.dispatch(Redux.Action.Search.UpdateQuery(null))
@@ -72,10 +70,9 @@ class SearchSagaTest : ReduxSagaTest() {
       }
     }
 
-    val outputStream = Redux.Saga.searchSaga(api, debounce = 0)
-      .invoke(SagaInput(GlobalScope, monitor, { state }) { a -> dispatched.add(a); EmptyJob })
-
-    outputStream.subscribe({})
+    Redux.Saga.searchSaga(api, debounce = 0)
+      .invoke(SagaInput(monitor, { state }) { a -> dispatched.add(a); EmptyJob })
+      .subscribe({})
 
     // When
     monitor.dispatch(Redux.Action.Search.UpdateLimit(null))

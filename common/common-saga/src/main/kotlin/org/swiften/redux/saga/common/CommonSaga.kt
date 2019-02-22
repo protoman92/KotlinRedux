@@ -8,6 +8,7 @@ package org.swiften.redux.saga.common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
+import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IAsyncJob
 import org.swiften.redux.core.IReduxAction
@@ -45,7 +46,16 @@ class SagaInput(
   val monitor: ISagaMonitor,
   val lastState: IStateGetter<*>,
   val dispatch: IActionDispatcher
-)
+) {
+  constructor(
+    monitor: ISagaMonitor,
+    lastState: IStateGetter<*>,
+    dispatch: IActionDispatcher
+  ) : this(GlobalScope, monitor, lastState, dispatch)
+
+  constructor(monitor: ISagaMonitor, dispatch: IActionDispatcher) : this(monitor, {}, dispatch)
+  constructor(monitor: ISagaMonitor) : this(monitor, { EmptyJob })
+}
 
 /**
  * Stream values for a [ISagaEffect]. This stream has functional operators that can transform

@@ -81,7 +81,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
     createTakeEffect({ (it as Action).value }, { value -> this@SagaEffectTest.justEffect(value) })
       .debounceTake(debounceTime)
-      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
 
     // When
@@ -152,7 +152,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
         .thenNoMatterWhat(just(defaultValue))
         .thenMightAsWell(justEffect(ignoredValue))
     }
-      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
 
     // When
@@ -262,7 +262,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
         .castValue<Any>()
         .catchError {}
     }
-      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
 
     // When
@@ -291,7 +291,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       justEffect(3),
       justEffect(4)
     )
-      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -322,7 +322,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       takeLatest(Action::class, { it.value }) { justEffect(it).map { it * 2 } },
       takeLatest(Action::class, { it.value }) { justEffect(it).map { it * 3 } }
     )
-      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
 
     // When
@@ -346,7 +346,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val value = justEffect(100)
       .thenSwitchTo(doNothing<Int>())
       .map { it * 2 }
-      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .invoke(SagaInput(monitor))
       .await(200)
 
     // When && Then
@@ -359,10 +359,10 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val monitor = SagaMonitor()
 
     val sourceOutput1 = just(1).selectFromState(Any::class, { 2 }, { a, b -> a + b })
-      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .invoke(SagaInput(monitor))
 
     val sourceOutput2 = just(2).selectFromState(State::class) { 4 }
-      .invoke(SagaInput(GlobalScope, monitor, { State() }) { EmptyJob })
+      .invoke(SagaInput(monitor, { State() }) { EmptyJob })
 
     // When && Then
     assertEquals(sourceOutput1.awaitFor(this.timeout), 3)
@@ -387,7 +387,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       putInStore(ValueAction(newValue)).await(input)
       putInStore(ProgressAction(false)).await(input)
     }
-      .invoke(SagaInput(GlobalScope, monitor, { State(10) }) { dispatched.add(it); EmptyJob })
+      .invoke(SagaInput(monitor, { State(10) }) { dispatched.add(it); EmptyJob })
       .subscribe({})
 
     runBlocking {
@@ -429,7 +429,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
         putInStore(ProgressAction(false)).await(input)
       }
     }
-      .invoke(SagaInput(GlobalScope, monitor, { State(10) }) { dispatched.add(it); EmptyJob })
+      .invoke(SagaInput(monitor, { State(10) }) { dispatched.add(it); EmptyJob })
       .subscribe({})
 
     runBlocking {
