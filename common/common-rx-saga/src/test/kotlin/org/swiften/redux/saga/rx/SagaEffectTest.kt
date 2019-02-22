@@ -75,31 +75,28 @@ class SagaEffectTest : CommonSagaEffectTest() {
   ) {
     // Setup
     data class Action(val value: Int) : IReduxAction
+    val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Int>())
     val debounceTime = 500L
 
-    val sourceOutput = createTakeEffect({
-      (it as Action).value
-    }, { value ->
-      this@SagaEffectTest.justEffect(value)
-    }).debounceTake(debounceTime)
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
-
-    sourceOutput.subscribe({ finalValues.add(it) })
+    createTakeEffect({ (it as Action).value }, { value -> this@SagaEffectTest.justEffect(value) })
+      .debounceTake(debounceTime)
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .subscribe({ finalValues.add(it) })
 
     // When
     runBlocking {
-      sourceOutput.onAction(Action(0))
+      monitor.dispatch(Action(0))
       delay(debounceTime - 100)
-      sourceOutput.onAction(Action(1))
+      monitor.dispatch(Action(1))
       delay(debounceTime + 100)
-      sourceOutput.onAction(Action(2))
+      monitor.dispatch(Action(2))
       delay(debounceTime - 100)
-      sourceOutput.onAction(Action(3))
+      monitor.dispatch(Action(3))
       delay(debounceTime + 100)
-      sourceOutput.onAction(Action(4))
+      monitor.dispatch(Action(4))
       delay(debounceTime - 100)
-      sourceOutput.onAction(Action(5))
+      monitor.dispatch(Action(5))
 
       val correctValues = arrayListOf(1, 3, 5)
 
@@ -114,49 +111,52 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
   @Test
   fun `Take every effect should take all actions`() {
-    test_takeEffect_shouldTakeCorrectActions(
-      { a, b -> takeEvery(IReduxAction::class, a, creator = b) }, arrayListOf(0, 1, 2, 3))
+    test_takeEffect_shouldTakeCorrectActions({ a, b ->
+      takeEvery(IReduxAction::class, a, creator = b)
+    }, arrayListOf(0, 1, 2, 3))
   }
 
   @Test
   fun `Take latest effect should take latest actions`() {
-    test_takeEffect_shouldTakeCorrectActions(
-      { a, b -> takeLatest(IReduxAction::class, a, creator = b) }, arrayListOf(3))
+    test_takeEffect_shouldTakeCorrectActions({ a, b ->
+      takeLatest(IReduxAction::class, a, creator = b)
+    }, arrayListOf(3))
   }
 
   @Test
   fun `Take every effect with keys should take correct actions`() {
-    test_takeEffectWithActionKeys_shouldTakeCorrectActions { a, b -> takeEveryForKeys(a, creator = b) }
+    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeEveryForKeys(a, creator = b) }
   }
 
   @Test
   fun `Take latest effect with keys should take correct actions`() {
-    test_takeEffectWithActionKeys_shouldTakeCorrectActions { a, b -> takeLatestForKeys(a, creator = b) }
+    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeLatestForKeys(a, creator = b) }
   }
 
   @Test
   fun `Take latest with forceful then should work correctly`() {
     // Setup
     data class Action(val value: Int) : IReduxAction
+    val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Int>())
     val defaultValue = -1
     val ignoredValue = -2
     val error = "Error!"
-    val allActionValues = (0 until 100)
+    val allActionValues = 0 until this.iteration
     val correctValues = allActionValues.map { defaultValue }
 
-    val sourceOutput = takeEvery(Action::class, { it.value }) { value ->
+    takeEvery(Action::class, { it.value }) { value ->
       this@SagaEffectTest.justEffect(value)
         .filter { it % 3 == 0 }
         .map { if (it % 2 == 0) throw Exception(error) else it }
         .thenNoMatterWhat(just(defaultValue))
         .thenMightAsWell(justEffect(ignoredValue))
-    }.invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
-
-    sourceOutput.subscribe({ finalValues.add(it) })
+    }
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .subscribe({ finalValues.add(it) })
 
     // When
-    allActionValues.forEach { sourceOutput.onAction(Action(it)) }
+    allActionValues.forEach { monitor.dispatch(Action(it)) }
 
     runBlocking {
       withTimeoutOrNull(this@SagaEffectTest.timeout) {
@@ -198,7 +198,10 @@ class SagaEffectTest : CommonSagaEffectTest() {
       }
     }
 
-    val enhancedReducer: IReducer<State, IReduxAction> = { s, a -> val newState = reducer(s, a); newState }
+    val enhancedReducer: IReducer<State, IReduxAction> = { s, a ->
+      val newState = reducer(s, a); newState
+    }
+
     var store: IReduxStore<State>? = null
     val finalValues = synchronizedList(arrayListOf<Pair<State, State>>())
 
@@ -218,9 +221,8 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
     // When
     val rand = Random()
-    val iteration = 1000
 
-    val jobs = (0 until iteration).map { _ ->
+    val jobs = (0 until this.iteration).map { _ ->
       GlobalScope.launch(Dispatchers.IO, CoroutineStart.LAZY) {
         if (rand.nextBoolean()) {
           store.dispatch(Action1(rand.nextInt(100))).await()
@@ -234,7 +236,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       jobs.forEach { it.join() }
 
       // Then
-      assertEquals(finalValues.size, iteration)
+      assertEquals(finalValues.size, this@SagaEffectTest.iteration)
       finalValues.forEach { assertEquals(it.first, it.second) }
     }
   }
@@ -243,6 +245,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
   fun `Take latest should work in real life scenarios`() {
     // Setup
     data class Action(val query: String) : IReduxAction
+    val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Any>())
 
     fun CoroutineScope.searchMusicStore(q: String) = this.async {
@@ -251,19 +254,19 @@ class SagaEffectTest : CommonSagaEffectTest() {
       "Input: $q, Result: $result"
     }
 
-    val sourceOutput = takeLatest(Action::class, { it.query }) { query ->
+    takeLatest(Action::class, { it.query }) { query ->
       just(query)
         .map { "unavailable$it" }
         .mapAsync { this.searchMusicStore(it) }
         .mapSingle { Single.just(it) }
         .castValue<Any>()
         .catchError {}
-    }.invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
-
-    sourceOutput.subscribe({ finalValues.add(it) })
+    }
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .subscribe({ finalValues.add(it) })
 
     // When
-    for (i in 0 until 20) { sourceOutput.onAction(Action("$i")) }
+    for (i in 0 until 20) { monitor.dispatch(Action("$i")) }
 
     runBlocking {
       withTimeoutOrNull(this@SagaEffectTest.timeout) {
@@ -278,6 +281,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `All effect should merge emissions from all sources`() {
     // Setup
+    val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Int>())
 
     // When
@@ -286,7 +290,8 @@ class SagaEffectTest : CommonSagaEffectTest() {
       justEffect(2),
       justEffect(3),
       justEffect(4)
-    ).invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+    )
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -308,24 +313,20 @@ class SagaEffectTest : CommonSagaEffectTest() {
       }
     }
 
+    val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Int>())
-    val iteration = 1000
+    val correctValues = (0 until this.iteration).map { arrayListOf(it, it * 2, it * 3) }.flatten().sorted()
 
-    val correctValues = (0 until iteration)
-      .map { arrayListOf(it, it * 2, it * 3) }
-      .flatten()
-      .sorted()
-
-    val sourceOutput = mergeAll(
+    mergeAll(
       takeLatest(Action::class, { it.value }) { justEffect(it).map { it } },
       takeLatest(Action::class, { it.value }) { justEffect(it).map { it * 2 } },
       takeLatest(Action::class, { it.value }) { justEffect(it).map { it * 3 } }
-    ).invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
-
-    sourceOutput.subscribe({ finalValues.add(it) })
+    )
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
+      .subscribe({ finalValues.add(it) })
 
     // When
-    (0 until iteration).forEach { sourceOutput.onAction(Action(it)) }
+    (0 until this.iteration).forEach { monitor.dispatch(Action(it)) }
 
     runBlocking {
       withTimeoutOrNull(this@SagaEffectTest.timeout) {
@@ -340,10 +341,12 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `Nothing effect should not emit anything`() {
     // Setup
+    val monitor = SagaMonitor()
+
     val value = justEffect(100)
       .thenSwitchTo(doNothing<Int>())
       .map { it * 2 }
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
       .await(200)
 
     // When && Then
@@ -353,11 +356,13 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `Select effect should extract some value from a state`() {
     // Setup
+    val monitor = SagaMonitor()
+
     val sourceOutput1 = just(1).selectFromState(Any::class, { 2 }, { a, b -> a + b })
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { Unit }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { Unit }) { EmptyJob })
 
     val sourceOutput2 = just(2).selectFromState(State::class) { 4 }
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { State() }) { EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { State() }) { EmptyJob })
 
     // When && Then
     assertEquals(sourceOutput1.awaitFor(this.timeout), 3)
@@ -371,19 +376,18 @@ class SagaEffectTest : CommonSagaEffectTest() {
     data class ProgressAction(val progress: Boolean) : IReduxAction
     data class ValueAction(val value: Int) : IReduxAction
 
+    val monitor = SagaMonitor()
     val dispatched = arrayListOf<IReduxAction>()
 
-    val sourceEffect = await { input ->
+    // When
+    await { input ->
       putInStore(ProgressAction(true)).await(input)
       val value = selectFromState(State::class) { it.value }.await(input)
       val newValue = value * 2
       putInStore(ValueAction(newValue)).await(input)
       putInStore(ProgressAction(false)).await(input)
     }
-
-    // When
-    sourceEffect
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { State(10) }) { dispatched.add(it); EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { State(10) }) { dispatched.add(it); EmptyJob })
       .subscribe({})
 
     runBlocking {
@@ -406,11 +410,13 @@ class SagaEffectTest : CommonSagaEffectTest() {
     data class ValueAction(val value: Int) : IReduxAction
     data class ErrorAction(val error: Throwable) : IReduxAction
 
+    val monitor = SagaMonitor()
     val dispatched = arrayListOf<IReduxAction>()
     val error = Exception("Oops!")
     val api: suspend (Int) -> Int = { throw error }
 
-    val sourceEffect = await { input ->
+    // When
+    await { input ->
       putInStore(ProgressAction(true)).await(input)
       val value = selectFromState(State::class) { it.value }.filter { false }.invoke(input).await(0)
 
@@ -423,10 +429,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
         putInStore(ProgressAction(false)).await(input)
       }
     }
-
-    // When
-    sourceEffect
-      .invoke(SagaInput(GlobalScope, SagaMonitor(), { State(10) }) { dispatched.add(it); EmptyJob })
+      .invoke(SagaInput(GlobalScope, monitor, { State(10) }) { dispatched.add(it); EmptyJob })
       .subscribe({})
 
     runBlocking {
