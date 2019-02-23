@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
@@ -94,8 +95,8 @@ abstract class BaseStoreTest : CoroutineScope {
     for (dispatch in allDispatches) { dispatch.start() }
 
     runBlocking(this.coroutineContext) {
-      withTimeoutOrNull(100000) {
-        while (store.lastState() != currentState) { }; 1
+      withTimeoutOrNull(1000) {
+        while (store.lastState() != currentState && this.isActive) { delay(500) }; Unit
       }
 
       // Then

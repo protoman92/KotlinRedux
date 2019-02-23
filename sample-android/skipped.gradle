@@ -4,6 +4,7 @@
  */
 afterEvaluate { project ->
   project.tasks.lint { onlyIf { return false } }
+  project.tasks.lintVitalRelease { onlyIf { return false } }
   project.tasks.connectedDebugAndroidTest { onlyIf { return false } }
   project.tasks.compileDebugAndroidTestKotlin { onlyIf { return false } }
 }

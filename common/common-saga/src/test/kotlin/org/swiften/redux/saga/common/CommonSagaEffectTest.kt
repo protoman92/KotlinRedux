@@ -7,18 +7,16 @@ package org.swiften.redux.saga.common
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.EmptyJob
-import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
 import java.util.Collections.synchronizedList
-import java.util.Random
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/07 */
@@ -60,7 +58,7 @@ abstract class CommonSagaEffectTest {
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues.sorted() != actualValues.sorted()) { }; Unit
+        while (finalValues.sorted() != actualValues.sorted() && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -108,7 +106,7 @@ abstract class CommonSagaEffectTest {
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues.sorted() != actualValues.sorted()) { }; Unit
+        while (finalValues.sorted() != actualValues.sorted() && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -134,7 +132,7 @@ abstract class CommonSagaEffectTest {
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(100)) { }; Unit
+        while (finalValues != arrayListOf(100) && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -160,7 +158,7 @@ abstract class CommonSagaEffectTest {
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(100)) { }; Unit
+        while (finalValues != arrayListOf(100) && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -205,7 +203,7 @@ abstract class CommonSagaEffectTest {
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(0, 2)) { }; Unit
+        while (finalValues != arrayListOf(0, 2) && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -229,7 +227,7 @@ abstract class CommonSagaEffectTest {
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(defaultValue)) { }; Unit
+        while (finalValues != arrayListOf(defaultValue) && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -253,7 +251,7 @@ abstract class CommonSagaEffectTest {
     // When
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (dispatched != arrayListOf(Action(0))) { }; Unit
+        while (dispatched != arrayListOf(Action(0)) && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -277,7 +275,7 @@ abstract class CommonSagaEffectTest {
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (retries.get() != retryCount + 1) { }; Unit
+        while (retries.get() != retryCount + 1 && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -302,7 +300,7 @@ abstract class CommonSagaEffectTest {
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf("12")) { }; Unit
+        while (finalValues != arrayListOf("12") && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -333,7 +331,7 @@ abstract class CommonSagaEffectTest {
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(2, 3)) { }; Unit
+        while (finalValues != arrayListOf(2, 3) && this.isActive) { delay(500) }; Unit
       }
 
       // Then

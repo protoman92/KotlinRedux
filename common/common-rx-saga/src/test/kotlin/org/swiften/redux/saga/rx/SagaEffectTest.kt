@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxFlowable
@@ -110,7 +111,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       val correctValues = arrayListOf(1, 3, 5)
 
       withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues.sorted() != correctValues.sorted()) { }; Unit
+        while (finalValues.sorted() != correctValues.sorted() && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -169,7 +170,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
     runBlocking {
       withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues.sorted() != correctValues.sorted()) { }; Unit
+        while (finalValues.sorted() != correctValues.sorted() && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -279,7 +280,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
     runBlocking {
       withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues.size != 1) { delay(100) }; Unit
+        while (finalValues.size != 1 && this.isActive) { delay(500) }; Unit
       }
 
       // Then
@@ -339,7 +340,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
     runBlocking {
       withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues.sorted() != correctValues) { }; Unit
+        while (finalValues.sorted() != correctValues && this.isActive) { delay(500) }; Unit
       }
 
       // Then
