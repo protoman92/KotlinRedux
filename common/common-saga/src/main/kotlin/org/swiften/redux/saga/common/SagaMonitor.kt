@@ -11,10 +11,13 @@ import org.swiften.redux.core.IDispatcherProvider
 import java.util.concurrent.ConcurrentHashMap
 
 /** Created by viethai.pham on 2019/02/22 */
-/** Monitors all [ISagaOutput] and calls [ISagaOutput.onAction] when an action arrives. */
+/**
+ * Monitors all [ISagaOutput] and calls [ISagaOutput.onAction] when an action arrives. This is
+ * the only way to notify all [ISagaOutput] of new actions.
+ */
 interface ISagaMonitor : IDispatcherProvider {
   /** Store [dispatch] with a unique [id]. */
-  fun setOutputDispatcher(id: String, dispatch: IActionDispatcher)
+  fun addOutputDispatcher(id: String, dispatch: IActionDispatcher)
 
   /** Remove the associated [IActionDispatcher] instance. */
   fun removeOutputDispatcher(id: String)
@@ -28,7 +31,7 @@ class SagaMonitor : ISagaMonitor {
     this@SagaMonitor.dispatchers.forEach { it.value(a) }; EmptyJob
   }
 
-  override fun setOutputDispatcher(id: String, dispatch: IActionDispatcher) {
+  override fun addOutputDispatcher(id: String, dispatch: IActionDispatcher) {
     this.dispatchers[id] = dispatch
   }
 

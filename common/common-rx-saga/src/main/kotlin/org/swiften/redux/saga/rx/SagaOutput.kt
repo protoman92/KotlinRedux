@@ -20,12 +20,19 @@ import java.util.concurrent.TimeUnit
 
 /** Created by haipham on 2018/12/22 */
 /**
- * This is the default implementation of [ISagaOutput].
+ * This is the default implementation of [ISagaOutput]. Every time a new [SagaOutput] is created,
+ * [monitor] will keep track of its [onAction] to call on [ISagaMonitor.dispatch], and when said
+ * [SagaOutput] is disposed of, [monitor] will remove the reference.
+ *
+ * We do not call [onAction] directly on action because [onAction] is not actually passed down
+ * from [SagaOutput] to its children (e.g. via transformation methods such as [map]). Each
+ * [SagaOutput] instance has its own [onAction] that is not related to any other.
+ * [ISagaMonitor.dispatch] is the only way to call all stored [onAction].
  * @param T The result emission type.
  * @param scope A [CoroutineScope] instance.
  * @param monitor A [ISagaMonitor] instance that is used to track created [ISagaOutput]. This
  * [ISagaMonitor] implementation must be able to handle multi-threaded
- * [ISagaMonitor.setOutputDispatcher] and [ISagaMonitor.removeOutputDispatcher] events.
+ * [ISagaMonitor.addOutputDispatcher] and [ISagaMonitor.removeOutputDispatcher] events.
  * @param stream A [Flowable] instance.
  * @param onAction See [ISagaOutput.onAction].
  */
@@ -77,7 +84,7 @@ class SagaOutput<T : Any>(
   init {
     val monitor = this.monitor
     val subscriberID = this.uniqueSubscriberID
-    monitor.setOutputDispatcher(subscriberID, this.onAction)
+    monitor.addOutputDispatcher(subscriberID, this.onAction)
 
     this.stream = stream
       /** This will handle onError/onComplete. */

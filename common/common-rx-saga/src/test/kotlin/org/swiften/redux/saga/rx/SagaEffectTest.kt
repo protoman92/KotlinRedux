@@ -467,7 +467,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
         dispatchers.forEach { it.value(action) }; EmptyJob
       }
 
-      override fun setOutputDispatcher(id: String, dispatch: IActionDispatcher) {
+      override fun addOutputDispatcher(id: String, dispatch: IActionDispatcher) {
         dispatchers[id] = dispatch
         setCount.incrementAndGet()
       }
