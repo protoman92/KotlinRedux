@@ -20,7 +20,8 @@ import java.io.Serializable
 object Business1Redux {
   data class State(
     val parent: ParentFragment1.S = ParentFragment1.S(),
-    val search: SearchView1.S = SearchView1.S()
+    val search: SearchView1.S = SearchView1.S(),
+    val result: SearchResultList1.S = SearchResultList1.S()
   ) : Serializable
 
   sealed class Action : IReduxAction {
@@ -36,6 +37,7 @@ object Business1Redux {
       return when (p2) {
         is Action.SetLoading -> p1.copy(parent = p1.parent.copy(loading = p2.loading))
         is Action.SetQuery -> p1.copy(search = p1.search.copy(query = p2.query))
+        is Action.SetResult -> p1.copy(result = p1.result.copy(result = p2.result))
         else -> p1
       }
     }
@@ -71,7 +73,7 @@ object Business1Redux {
 
           try {
             val result = repository.searchMusicStore(query, 5)
-            putInStore(Action.SetResult(result))
+            putInStore(Action.SetResult(result)).await(input)
           } finally {
             putInStore(Action.SetLoading(false)).await(input)
           }

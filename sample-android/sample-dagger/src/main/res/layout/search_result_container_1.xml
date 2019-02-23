@@ -10,7 +10,8 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <androidx.recyclerview.widget.RecyclerView
+  <org.swiften.redux.android.dagger.business1.SearchResultList1
+    android:id="@+id/result_list"
     android:layout_width="0dp"
     android:layout_height="0dp"
     app:layout_constraintTop_toTopOf="parent"

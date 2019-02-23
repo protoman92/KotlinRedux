@@ -8,6 +8,7 @@ package org.swiften.redux.android.dagger.business1
 import android.content.Context
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
+import kotlinx.android.synthetic.main.search_result_container_1.view.result_list
 import org.swiften.redux.android.dagger.R
 import org.swiften.redux.android.dagger.Redux
 import org.swiften.redux.core.DefaultSubscriberIDProvider
@@ -18,6 +19,7 @@ import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
+import org.swiften.redux.ui.StaticProp
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/23 */
@@ -41,5 +43,13 @@ class SearchResultContainer1 @JvmOverloads constructor (
 
   init {
     inflate(this.context, R.layout.search_result_container_1, this)
+  }
+
+  override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, Unit>) {
+    sp.injector.inject(Unit, this.result_list, SearchResultList1)
+  }
+
+  override fun afterPropInjectionEnds(sp: StaticProp<Redux.State, Unit>) {
+    sp.injector.unsubscribe(this.result_list.uniqueSubscriberID)
   }
 }
