@@ -6,7 +6,6 @@
 package org.swiften.redux.ui
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.core.DefaultSubscriberIDProvider
@@ -17,7 +16,6 @@ import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.core.ThreadSafeStore
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2018/12/20 */
@@ -48,12 +46,9 @@ open class PropInjectorTest {
     ISubscriberIDProvider by DefaultSubscriberIDProvider(),
     IPropContainer<S, A>,
     IPropLifecycleOwner<S, Unit> {
-    private val propInitialized = AtomicBoolean(false)
-
     override var reduxProp by ObservableReduxProp<S, A> { prev, next ->
       this.propCallback?.invoke(prev, next)
       this.propInjectionCount.incrementAndGet()
-      this.propInitialized.set(true)
     }
 
     var propCallback: ((IVariableProp<S, A>?, IVariableProp<S, A>) -> Unit)? = null
@@ -62,18 +57,17 @@ open class PropInjectorTest {
     val afterInjectionCount = AtomicInteger()
 
     override fun beforePropInjectionStarts(sp: StaticProp<S, Unit>) {
-      assertFalse(this.propInitialized.get())
       this.beforeInjectionCount.incrementAndGet()
     }
 
     override fun afterPropInjectionEnds(sp: StaticProp<S, Unit>) {
       this.afterInjectionCount.incrementAndGet()
-      this.propInitialized.set(false)
     }
   }
 
   protected lateinit var store: StoreWrapper
   protected lateinit var mapper: IPropMapper<S, Unit, S, A>
+  protected val timeout = 10000L
 
   @Before
   open fun beforeMethod() {

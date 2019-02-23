@@ -6,11 +6,9 @@
 package org.swiften.redux.android.ui
 
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.android.util.AndroidUtil
@@ -24,7 +22,6 @@ import org.swiften.redux.ui.LateinitObservableProp
 import org.swiften.redux.ui.PropInjectorTest
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/28 */
@@ -52,11 +49,8 @@ class AndroidInjectorTest : PropInjectorTest() {
     ISubscriberIDProvider by DefaultSubscriberIDProvider(),
     IPropContainer<S, A>,
     IPropLifecycleOwner<S, Unit> {
-    private val propInitialized = AtomicBoolean(false)
-
     override var reduxProp by LateinitObservableProp<ReduxProp<S, A>> { _, _ ->
       this.propInjectionCount.incrementAndGet()
-      this.propInitialized.set(true)
     }
 
     val propInjectionCount = AtomicInteger()
@@ -64,13 +58,11 @@ class AndroidInjectorTest : PropInjectorTest() {
     val afterInjectionCount = AtomicInteger()
 
     override fun beforePropInjectionStarts(sp: StaticProp<S, Unit>) {
-      assertFalse(this.propInitialized.get())
       this.beforeInjectionCount.incrementAndGet()
     }
 
     override fun afterPropInjectionEnds(sp: StaticProp<S, Unit>) {
       this.afterInjectionCount.incrementAndGet()
-      this.propInitialized.set(false)
     }
   }
 
@@ -83,20 +75,25 @@ class AndroidInjectorTest : PropInjectorTest() {
     // Setup
     val injector = this.createInjector(this.store)
     val view = AndroidView()
-    val mapper = this.mapper
+    val iteration = 100000
+
+    // When
+    val jobs = (0 until iteration).map {
+      GlobalScope.launch { injector.inject(Unit, view, this@AndroidInjectorTest.mapper) }
+    }
 
     runBlocking {
-      // When
-      repeat(5) { GlobalScope.launch { injector.inject(Unit, view, mapper) } }
-      delay(1000)
-
-      // Then
-      /** By now, [runner] should have been called upon as many times as specified. */
-      assertEquals(this@AndroidInjectorTest.runner.runCount,
+      val getRunCount: () -> Int = {
         view.propInjectionCount.get() +
           view.beforeInjectionCount.get() +
           view.afterInjectionCount.get()
-      )
+      }
+
+      jobs.forEach { it.join() }
+
+      // Then
+      /** By now, [runner] should have been called upon as many times as specified. */
+      assertEquals(this@AndroidInjectorTest.runner.runCount, getRunCount())
     }
   }
 }

@@ -14,7 +14,7 @@ import org.swiften.redux.core.IReduxUnsubscriberProvider
 import org.swiften.redux.core.IStateGetterProvider
 import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
-import java.util.Collections
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -78,7 +78,7 @@ open class PropInjector<GState : Any> protected constructor(
   IStateGetterProvider<GState> by store,
   IReduxUnsubscriberProvider,
   IDeinitializerProvider by store {
-  private val subscriptions = Collections.synchronizedMap(hashMapOf<String, IReduxSubscription>())
+  private val subscriptions = ConcurrentHashMap<String, IReduxSubscription>()
 
   override val unsubscribe: IReduxUnsubscriber = { id ->
     this.subscriptions.remove(id)?.unsubscribe()
