@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.parent_1.nav1
 import kotlinx.android.synthetic.main.parent_1.nav2
+import kotlinx.android.synthetic.main.parent_1.result_container
 import kotlinx.android.synthetic.main.parent_1.search_progress_bar
 import kotlinx.android.synthetic.main.parent_1.search_view
 import org.swiften.redux.android.dagger.DependencyLevel1
@@ -74,10 +75,12 @@ class ParentFragment1 : Fragment(),
     this.nav1.setOnClickListener { this@ParentFragment1.reduxProp.action.goToScreen2() }
     this.nav2.setOnClickListener { this@ParentFragment1.reduxProp.action.goToScreen3() }
     sp.injector.inject(Unit, this.search_view, SearchView1)
+    sp.injector.inject(Unit, this.result_container, SearchResultContainer1)
   }
 
   override fun afterPropInjectionEnds(sp: StaticProp<Redux.State, DependencyLevel1>) {
     this.reduxProp.action.deinitializeBusiness1()
     sp.injector.unsubscribe(this.search_view.uniqueSubscriberID)
+    sp.injector.unsubscribe(this.result_container.uniqueSubscriberID)
   }
 }

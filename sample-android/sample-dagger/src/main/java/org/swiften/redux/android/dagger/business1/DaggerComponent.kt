@@ -13,8 +13,8 @@ import org.swiften.redux.android.dagger.DependencyLevel1
 @Subcomponent(modules = [
   Business1SagaModule::class,
   Business1APIModule::class,
-  Business1RepositoryModule::class]
-)
+  Business1RepositoryModule::class
+])
 interface Business1SagaComponent : ISearchRepositoryProvider
 
 interface Business1SagaComponentProvider {

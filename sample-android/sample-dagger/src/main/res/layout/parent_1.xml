@@ -87,4 +87,17 @@
     app:layout_constraintEnd_toEndOf="@id/nav2"
     app:layout_constraintBottom_toTopOf="@id/nav2"/>
 
+  <org.swiften.redux.android.dagger.business1.SearchResultContainer1
+    android:id="@+id/result_container"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_marginTop="@dimen/spacing1"
+    android:layout_marginBottom="@dimen/spacing1"
+    app:layout_constraintTop_toBottomOf="@id/search_view"
+    app:layout_constraintLeft_toLeftOf="@id/search_view"
+    app:layout_constraintStart_toStartOf="@id/search_view"
+    app:layout_constraintRight_toRightOf="@id/search_view"
+    app:layout_constraintEnd_toEndOf="@id/search_view"
+    app:layout_constraintBottom_toTopOf="@id/nav1"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
