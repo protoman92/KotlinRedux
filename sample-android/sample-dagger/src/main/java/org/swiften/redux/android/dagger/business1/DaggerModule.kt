@@ -52,4 +52,7 @@ class Parent1Module {
 }
 
 @Module
+class Business1SagaModule
+
+@Module
 class Business1Module

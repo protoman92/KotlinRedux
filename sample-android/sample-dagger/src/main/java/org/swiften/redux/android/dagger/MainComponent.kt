@@ -10,6 +10,7 @@ import dagger.Module
 import dagger.Provides
 import org.swiften.redux.android.dagger.business1.Business1Component
 import org.swiften.redux.android.dagger.business1.Business1Module
+import org.swiften.redux.android.dagger.business1.Business1SagaComponentProvider
 import org.swiften.redux.android.dagger.business2.Business2Component
 import org.swiften.redux.android.dagger.business2.Business2Module
 import org.swiften.redux.android.dagger.business3.Business3Component
@@ -40,7 +41,7 @@ class DependencyLevel2Module {
   DependencyLevel2Module::class,
   DependencyLevel3Module::class
 ])
-interface MainComponent {
+interface MainComponent : Business1SagaComponentProvider {
   fun plus(module: Business1Module): Business1Component
   fun plus(module: Business2Module): Business2Component
   fun plus(module: Business3Module): Business3Component

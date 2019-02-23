@@ -5,11 +5,11 @@
 
 package org.swiften.redux.android.dagger.business1
 
-import org.swiften.redux.android.dagger.MainComponent
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.rx.SagaEffects.await
+import org.swiften.redux.saga.rx.SagaEffects.doNothing
 import org.swiften.redux.saga.rx.SagaEffects.mergeAll
 import org.swiften.redux.saga.rx.SagaEffects.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.takeLatest
@@ -42,15 +42,21 @@ object Business1Redux {
   }
 
   object Saga {
-    fun allSagas(component: MainComponent): SagaEffect<Any> {
+    fun allSagas(provider: Business1SagaComponentProvider): SagaEffect<Any> {
       return takeLatest(Action::class, {
         when (it) {
-          is Action.Initialize -> Unit
-          is Action.Deinitialize -> Unit
+          is Action.Initialize -> true
+          is Action.Deinitialize -> false
           else -> null
         }
       }) {
-        activeSagas(component.plus(Business1Module()).searchRepository())
+        if (it) {
+          val module = Business1SagaModule()
+          val component = provider.plus(module)
+          activeSagas(component.searchRepository())
+        } else {
+          doNothing()
+        }
       }
     }
 
