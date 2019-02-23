@@ -100,7 +100,8 @@ open class PropInjector<GState : Any> protected constructor(
 
     /** If [view] has received an injection before, unsubscribe from that. */
     this.unsubscribe(subscriberId)
-    view.beforePropInjectionStarts(StaticProp(this as IPropInjector<LState>, outProp))
+    val staticProp = StaticProp(this as IPropInjector<LState>, outProp)
+    view.beforePropInjectionStarts(staticProp)
     val lock = ReentrantReadWriteLock()
     var previousState: State? = null
 
@@ -130,7 +131,7 @@ open class PropInjector<GState : Any> protected constructor(
     /** Wrap a [ReduxSubscription] to perform [IPropLifecycleOwner.afterPropInjectionEnds] */
     val wrappedSubscription = ReduxSubscription(subscription.uniqueSubscriberID) {
       subscription.unsubscribe()
-      view.afterPropInjectionEnds()
+      view.afterPropInjectionEnds(staticProp)
     }
 
     this.subscriptions[subscriberId] = wrappedSubscription

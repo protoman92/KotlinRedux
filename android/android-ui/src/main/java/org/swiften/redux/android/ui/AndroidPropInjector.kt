@@ -51,8 +51,8 @@ class AndroidPropInjector<GState>(
         this@AndroidPropInjector.runner { view.beforePropInjectionStarts(sp) }
       }
 
-      override fun afterPropInjectionEnds() {
-        this@AndroidPropInjector.runner { view.afterPropInjectionEnds() }
+      override fun afterPropInjectionEnds(sp: StaticProp<LState, OutProp>) {
+        this@AndroidPropInjector.runner { view.afterPropInjectionEnds(sp) }
       }
 
       override fun toString() = view.toString()

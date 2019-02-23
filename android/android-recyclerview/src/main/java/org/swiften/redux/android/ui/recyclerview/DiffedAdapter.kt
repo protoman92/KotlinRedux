@@ -193,9 +193,10 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
        * [ReduxListAdapter.composite] in [RecyclerView.Adapter.onViewRecycled] to allow reuse.
        */
       val subscribeId = "$position"
-      val subscription = ReduxSubscription(subscribeId) { holder.afterPropInjectionEnds() }
+      val sp = this.staticProp
+      val subscription = ReduxSubscription(subscribeId) { holder.afterPropInjectionEnds(sp) }
       this.composite.add(subscription)
-      holder.beforePropInjectionStarts(this.staticProp)
+      holder.beforePropInjectionStarts(sp)
       holder.reduxProp = ReduxProp(this.getItem(position), this.reduxProp.action)
     }
 

@@ -8,6 +8,7 @@ package org.swiften.redux.android.ui.lifecycle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDeinitializer
@@ -16,7 +17,6 @@ import org.swiften.redux.core.IReduxUnsubscriber
 import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
-import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -81,10 +81,11 @@ open class BaseLifecycleTest {
       State : Any,
       Action : Any {
       val lastState = this.lastState()
-      val subscription = ReduxSubscription(view.uniqueSubscriberID) { view.afterPropInjectionEnds() }
+      val sp = StaticProp(this as IFullPropInjector<LState>, outProp)
+      val subscription = ReduxSubscription(view.uniqueSubscriberID) { view.afterPropInjectionEnds(sp) }
       val state = mapper.mapState(lastState as LState, outProp)
       val action = mapper.mapAction(this.dispatch, outProp)
-      view.beforePropInjectionStarts(StaticProp(this as IFullPropInjector<LState>, outProp))
+      view.beforePropInjectionStarts(sp)
       view.reduxProp = ReduxProp(state, action)
       this.subscriptions[view.uniqueSubscriberID] = subscription
       return subscription

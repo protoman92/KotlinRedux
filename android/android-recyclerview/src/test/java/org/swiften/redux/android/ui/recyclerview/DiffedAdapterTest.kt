@@ -45,7 +45,7 @@ class DiffedAdapterTest : BaseLifecycleTest() {
       this.beforeInjection.incrementAndGet()
     }
 
-    override fun afterPropInjectionEnds() {
+    override fun afterPropInjectionEnds(sp: StaticProp<Int, Unit>) {
       this.afterInjection.incrementAndGet()
     }
   }

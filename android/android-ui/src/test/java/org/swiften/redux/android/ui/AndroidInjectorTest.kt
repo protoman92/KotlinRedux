@@ -14,9 +14,9 @@ import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.android.util.AndroidUtil
+import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.ISubscriberIDProvider
-import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -68,7 +68,7 @@ class AndroidInjectorTest : PropInjectorTest() {
       this.beforeInjectionCount.incrementAndGet()
     }
 
-    override fun afterPropInjectionEnds() {
+    override fun afterPropInjectionEnds(sp: StaticProp<S, Unit>) {
       this.afterInjectionCount.incrementAndGet()
       this.propInitialized.set(false)
     }
