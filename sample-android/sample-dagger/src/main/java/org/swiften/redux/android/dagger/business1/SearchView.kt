@@ -24,13 +24,13 @@ import org.swiften.redux.ui.StaticProp
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/22 */
-class SearchView1 @JvmOverloads constructor (
+class SearchView @JvmOverloads constructor (
   context: Context,
   attrs: AttributeSet? = null,
   style: Int = R.attr.editTextStyle
 ) : AppCompatEditText(context, attrs, style),
   ISubscriberIDProvider by DefaultSubscriberIDProvider(),
-  IPropContainer<SearchView1.S, SearchView1.A>,
+  IPropContainer<SearchView.S, SearchView.A>,
   IPropLifecycleOwner<Redux.State, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<Redux.State, Unit, S, A> {
     override fun mapState(state: Redux.State, outProp: Unit): S {
@@ -53,7 +53,7 @@ class SearchView1 @JvmOverloads constructor (
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        this@SearchView1.reduxProp.action.updateQuery(s?.toString())
+        this@SearchView.reduxProp.action.updateQuery(s?.toString())
       }
     })
   }

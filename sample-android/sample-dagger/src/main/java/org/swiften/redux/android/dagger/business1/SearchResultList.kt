@@ -30,13 +30,13 @@ import org.swiften.redux.ui.StaticProp
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/23 */
-class SearchResultList1 @JvmOverloads constructor (
+class SearchResultList @JvmOverloads constructor (
   context: Context,
   attrs: AttributeSet? = null,
   style: Int = 0
 ) : RecyclerView(context, attrs, style),
   ISubscriberIDProvider by DefaultSubscriberIDProvider(),
-  IPropContainer<SearchResultList1.S, SearchResultList1.A>,
+  IPropContainer<SearchResultList.S, SearchResultList.A>,
   IPropLifecycleOwner<Redux.State, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<Redux.State, Unit, S, A> {
     override fun mapState(state: Redux.State, outProp: Unit): S = state.business1.result
@@ -103,7 +103,7 @@ class SearchResultListAdapter1 : ReduxRecyclerViewAdapter<SearchResultListAdapte
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     val inflater = LayoutInflater.from(parent.context)
-    val itemView = inflater.inflate(R.layout.search_item_view_1, parent, false)
+    val itemView = inflater.inflate(R.layout.search_item_view, parent, false)
     return ViewHolder(itemView)
   }
 }

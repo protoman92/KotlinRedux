@@ -23,9 +23,9 @@ object Redux {
   ) : Serializable
 
   sealed class Screen : IRouterScreen {
-    object Screen1 : Screen()
-    object Screen2 : Screen()
-    object Screen3 : Screen()
+    object Business1 : Screen()
+    object Business2 : Screen()
+    object Business3 : Screen()
   }
 
   object Reducer : IReducer<State, IReduxAction> {

@@ -17,12 +17,11 @@ class Business2InjectionHelper(
 ) : ILifecycleOwnerInjectionHelper<Redux.State> {
   override fun inject(injector: IPropInjector<Redux.State>, owner: LifecycleOwner) {
     when (owner) {
-      is ParentFragment2 -> this.inject(injector, owner)
+      is Business2HostFragment -> this.inject(injector, owner)
     }
   }
 
-  private fun inject(injector: IPropInjector<Redux.State>, fragment: ParentFragment2) {
-    val component = this.component.plus(Parent2Module())
-    injector.injectLifecycle(component.dependency(), fragment, ParentFragment2)
+  private fun inject(injector: IPropInjector<Redux.State>, fragment: Business2HostFragment) {
+    injector.injectLifecycle(this.component.hostDependency(), fragment, Business2HostFragment)
   }
 }

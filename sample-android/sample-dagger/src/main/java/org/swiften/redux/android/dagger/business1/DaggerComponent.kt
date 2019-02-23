@@ -22,7 +22,10 @@ interface Business1SagaComponentProvider {
 }
 
 @Business1Scope
-@Subcomponent(modules = [Parent1Module::class, Business1Module::class])
+@Subcomponent(modules = [
+  Business1HostModule::class,
+  Business1Module::class
+])
 interface Business1Component {
-  fun parent1Dependency(): DependencyLevel1
+  fun hostDependency(): DependencyLevel1
 }

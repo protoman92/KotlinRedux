@@ -12,7 +12,7 @@ import java.io.Serializable
 /** Created by viethai.pham on 2019/02/21 */
 object Business2Redux {
   data class State(
-    val flow2: ParentFragment2.S = ParentFragment2.S()
+    val flow2: Business2HostFragment.S = Business2HostFragment.S()
   ) : Serializable
 
   sealed class Action : IReduxAction

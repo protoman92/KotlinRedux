@@ -10,11 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.parent_1.nav1
-import kotlinx.android.synthetic.main.parent_1.nav2
-import kotlinx.android.synthetic.main.parent_1.result_container
-import kotlinx.android.synthetic.main.parent_1.search_progress_bar
-import kotlinx.android.synthetic.main.parent_1.search_view
+import kotlinx.android.synthetic.main.business_1_host.nav1
+import kotlinx.android.synthetic.main.business_1_host.nav2
+import kotlinx.android.synthetic.main.business_1_host.result_container
+import kotlinx.android.synthetic.main.business_1_host.search_progress_bar
+import kotlinx.android.synthetic.main.business_1_host.search_view
 import org.swiften.redux.android.dagger.DependencyLevel1
 import org.swiften.redux.android.dagger.R
 import org.swiften.redux.android.dagger.Redux
@@ -30,9 +30,9 @@ import org.swiften.redux.ui.StaticProp
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21 */
-class ParentFragment1 : Fragment(),
+class Business1HostFragment : Fragment(),
   ISubscriberIDProvider by DefaultSubscriberIDProvider(),
-  IPropContainer<ParentFragment1.S, ParentFragment1.A>,
+  IPropContainer<Business1HostFragment.S, Business1HostFragment.A>,
   IPropLifecycleOwner<Redux.State, DependencyLevel1> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<Redux.State, DependencyLevel1, S, A> {
     override fun mapState(state: Redux.State, outProp: DependencyLevel1): S {
@@ -43,8 +43,8 @@ class ParentFragment1 : Fragment(),
       return A(
         initializeBusiness1 = { dispatch(Business1Redux.Action.Initialize) },
         deinitializeBusiness1 = { dispatch(Business1Redux.Action.Deinitialize) },
-        goToScreen2 = { dispatch(Redux.Screen.Screen2) },
-        goToScreen3 = { dispatch(Redux.Screen.Screen3) }
+        goToScreen2 = { dispatch(Redux.Screen.Business2) },
+        goToScreen3 = { dispatch(Redux.Screen.Business3) }
       )
     }
   }
@@ -68,14 +68,14 @@ class ParentFragment1 : Fragment(),
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return inflater.inflate(R.layout.parent_1, container, false)
+    return inflater.inflate(R.layout.business_1_host, container, false)
   }
 
   override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, DependencyLevel1>) {
-    this.nav1.setOnClickListener { this@ParentFragment1.reduxProp.action.goToScreen2() }
-    this.nav2.setOnClickListener { this@ParentFragment1.reduxProp.action.goToScreen3() }
-    sp.injector.inject(Unit, this.search_view, SearchView1)
-    sp.injector.inject(Unit, this.result_container, SearchResultContainer1)
+    this.nav1.setOnClickListener { this@Business1HostFragment.reduxProp.action.goToScreen2() }
+    this.nav2.setOnClickListener { this@Business1HostFragment.reduxProp.action.goToScreen3() }
+    sp.injector.inject(Unit, this.search_view, SearchView)
+    sp.injector.inject(Unit, this.result_container, SearchResultContainer)
   }
 
   override fun afterPropInjectionEnds(sp: StaticProp<Redux.State, DependencyLevel1>) {

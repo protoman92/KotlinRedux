@@ -7,7 +7,7 @@ package org.swiften.redux.android.dagger
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import org.swiften.redux.android.dagger.business1.ParentFragment1
+import org.swiften.redux.android.dagger.business1.Business1HostFragment
 
 /** Created by haipham on 26/1/19 */
 class MainActivity : AppCompatActivity() {
@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     if (savedInstanceState == null) {
       this.supportFragmentManager
         .beginTransaction()
-        .replace(R.id.fragment, ParentFragment1())
+        .replace(R.id.fragment, Business1HostFragment())
         .commit()
     }
   }

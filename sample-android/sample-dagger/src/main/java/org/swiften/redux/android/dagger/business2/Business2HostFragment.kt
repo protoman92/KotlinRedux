@@ -10,8 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.parent_2.nav1
-import kotlinx.android.synthetic.main.parent_2.nav2
+import kotlinx.android.synthetic.main.business_2_host.nav1
+import kotlinx.android.synthetic.main.business_2_host.nav2
 import org.swiften.redux.android.dagger.DependencyLevel1
 import org.swiften.redux.android.dagger.R
 import org.swiften.redux.android.dagger.Redux
@@ -27,9 +27,9 @@ import org.swiften.redux.ui.StaticProp
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21 */
-class ParentFragment2 : Fragment(),
+class Business2HostFragment : Fragment(),
   ISubscriberIDProvider by DefaultSubscriberIDProvider(),
-  IPropContainer<ParentFragment2.S, ParentFragment2.A>,
+  IPropContainer<Business2HostFragment.S, Business2HostFragment.A>,
   IPropLifecycleOwner<Redux.State, DependencyLevel1> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<Redux.State, DependencyLevel1, S, A> {
     override fun mapState(state: Redux.State, outProp: DependencyLevel1): S {
@@ -38,8 +38,8 @@ class ParentFragment2 : Fragment(),
 
     override fun mapAction(dispatch: IActionDispatcher, outProp: DependencyLevel1): A {
       return A(
-        { dispatch(Redux.Screen.Screen1) },
-        { dispatch(Redux.Screen.Screen3) }
+        { dispatch(Redux.Screen.Business1) },
+        { dispatch(Redux.Screen.Business3) }
       )
     }
   }
@@ -55,11 +55,11 @@ class ParentFragment2 : Fragment(),
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return inflater.inflate(R.layout.parent_2, container, false)
+    return inflater.inflate(R.layout.business_2_host, container, false)
   }
 
   override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, DependencyLevel1>) {
-    this.nav1.setOnClickListener { this@ParentFragment2.reduxProp.action.goToScreen1() }
-    this.nav2.setOnClickListener { this@ParentFragment2.reduxProp.action.goToScreen3() }
+    this.nav1.setOnClickListener { this@Business2HostFragment.reduxProp.action.goToScreen1() }
+    this.nav2.setOnClickListener { this@Business2HostFragment.reduxProp.action.goToScreen3() }
   }
 }

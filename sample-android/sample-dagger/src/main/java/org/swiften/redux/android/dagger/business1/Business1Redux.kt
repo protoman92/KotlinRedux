@@ -19,9 +19,9 @@ import java.io.Serializable
 /** Created by viethai.pham on 2019/02/21 */
 object Business1Redux {
   data class State(
-    val parent: ParentFragment1.S = ParentFragment1.S(),
-    val search: SearchView1.S = SearchView1.S(),
-    val result: SearchResultList1.S = SearchResultList1.S()
+    val parent: Business1HostFragment.S = Business1HostFragment.S(),
+    val search: SearchView.S = SearchView.S(),
+    val result: SearchResultList.S = SearchResultList.S()
   ) : Serializable
 
   sealed class Action : IReduxAction {
@@ -68,7 +68,7 @@ object Business1Redux {
 
     private fun searchSaga(repository: ISearchRepository): SagaEffect<Any> {
       return takeLatest(Action.SetQuery::class, { it.query }) { query ->
-        await<Any> { input ->
+        await { input ->
           putInStore(Action.SetLoading(true)).await(input)
 
           try {

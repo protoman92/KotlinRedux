@@ -43,11 +43,11 @@ class Business1RepositoryModule {
 }
 
 @Module
-class Parent1Module {
+class Business1HostModule {
   @Provides
   @Business1Scope
   fun dependencyLevel1(sd: DependencyLevel2): DependencyLevel1 {
-    return DependencyLevel1(ParentFragment1::class.java.simpleName, sd)
+    return DependencyLevel1(Business1HostFragment::class.java.simpleName, sd)
   }
 }
 
