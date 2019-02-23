@@ -33,7 +33,7 @@ internal abstract class RxTakeEffect<Action, P, R>(
   override operator fun invoke(p1: SagaInput): ISagaOutput<R> {
     val subject = PublishProcessor.create<P>().toSerialized()
 
-    val nested = SagaOutput(p1.scope, p1.monitor, subject) { a ->
+    val nested = SagaOutput(p1.scope, p1.monitor, subject, { subject.onComplete() }) { a ->
       if (cls.isInstance(a)) {
         this@RxTakeEffect.extractor(cls.cast(a))?.also { subject.onNext(it) }
       }

@@ -18,9 +18,12 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxFlowable
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.FinalStore
+import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
@@ -29,6 +32,7 @@ import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.saga.common.CommonSagaEffectTest
 import org.swiften.redux.saga.common.ISagaEffect
+import org.swiften.redux.saga.common.ISagaMonitor
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaInput
 import org.swiften.redux.saga.common.SagaMonitor
@@ -36,10 +40,13 @@ import org.swiften.redux.saga.common.TakeEffect
 import org.swiften.redux.saga.common.castValue
 import org.swiften.redux.saga.common.catchError
 import org.swiften.redux.saga.common.createSagaMiddleware
+import org.swiften.redux.saga.common.delayUpstreamValue
 import org.swiften.redux.saga.common.doOnValue
 import org.swiften.redux.saga.common.filter
+import org.swiften.redux.saga.common.ifEmptyThenReturn
 import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapAsync
+import org.swiften.redux.saga.common.putInStore
 import org.swiften.redux.saga.common.thenMightAsWell
 import org.swiften.redux.saga.common.thenNoMatterWhat
 import org.swiften.redux.saga.common.thenSwitchTo
@@ -57,6 +64,8 @@ import org.swiften.redux.saga.rx.SagaEffects.takeLatestForKeys
 import java.net.URL
 import java.util.Collections.synchronizedList
 import java.util.Random
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2018/12/23 */
 class SagaEffectTest : CommonSagaEffectTest() {
@@ -442,6 +451,60 @@ class SagaEffectTest : CommonSagaEffectTest() {
         ProgressAction(false)
       ))
     }
+  }
+
+  private fun test_streamDisposition_shouldRemoveEntryFromMonitor(createTakeEffect: (
+    creator: (IReduxAction) -> ISagaEffect<Any>
+  ) -> SagaEffect<Any>) {
+    // Setup
+    class Action(val value: Int) : IReduxAction
+    val dispatchers = ConcurrentHashMap<String, IActionDispatcher>()
+    val setCount = AtomicInteger(0)
+    val removeCount = AtomicInteger(0)
+
+    val monitor = object : ISagaMonitor {
+      override val dispatch: IActionDispatcher = { action ->
+        dispatchers.forEach { it.value(action) }; EmptyJob
+      }
+
+      override fun setOutputDispatcher(id: String, dispatch: IActionDispatcher) {
+        dispatchers[id] = dispatch
+        setCount.incrementAndGet()
+      }
+
+      override fun removeOutputDispatcher(id: String) {
+        /** If no id found, do not increment remove count. */
+        dispatchers.remove(id)?.also { removeCount.incrementAndGet() }
+      }
+    }
+
+    val sourceOutput = createTakeEffect { a ->
+      justEffect((a as Action).value)
+        .map { if (it % 2 == 0) it else { throw Exception("Oops!") } }
+        .catchError { 10 }
+        .delayUpstreamValue(500)
+        .mapSingle { Single.just(1000) }
+        .mapAsync { this.async { it } }
+        .putInStore { DefaultReduxAction.Dummy }
+        .ifEmptyThenReturn(100)
+    }.invoke(SagaInput(monitor))
+
+    sourceOutput.subscribe({}, {})
+
+    // When
+    (0 until this.iteration).forEach { monitor.dispatch(Action(it)) }
+
+    runBlocking {
+      delay(1000)
+
+      // Clear the take publisher to register a remove event for it as well.
+      sourceOutput.dispose()
+
+      // Then
+      assertTrue(setCount.get() > 0)
+      assertEquals(setCount.get(), removeCount.get())
+    }
+
   }
 
   @Test

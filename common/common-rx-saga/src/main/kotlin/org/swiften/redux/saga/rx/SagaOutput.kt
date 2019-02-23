@@ -23,7 +23,9 @@ import java.util.concurrent.TimeUnit
  * This is the default implementation of [ISagaOutput].
  * @param T The result emission type.
  * @param scope A [CoroutineScope] instance.
- * @param monitor A [ISagaMonitor] instance that is used to track created [ISagaOutput].
+ * @param monitor A [ISagaMonitor] instance that is used to track created [ISagaOutput]. This
+ * [ISagaMonitor] implementation must be able to handle multi-threaded
+ * [ISagaMonitor.setOutputDispatcher] and [ISagaMonitor.removeOutputDispatcher] events.
  * @param stream A [Flowable] instance.
  * @param onAction See [ISagaOutput.onAction].
  */
@@ -31,6 +33,7 @@ class SagaOutput<T : Any>(
   private val scope: CoroutineScope,
   private val monitor: ISagaMonitor,
   stream: Flowable<T>,
+  private val onDispose: () -> Unit = {},
   override val onAction: IActionDispatcher
 ) : ISagaOutput<T>,
   ISubscriberIDProvider by DefaultSubscriberIDProvider(),
@@ -68,20 +71,23 @@ class SagaOutput<T : Any>(
     }
   }
 
-  private var onDispose: () -> Unit = { }
   private val stream: Flowable<T>
   private val disposable by lazy { CompositeDisposable() }
 
   init {
+    val monitor = this.monitor
     val subscriberID = this.uniqueSubscriberID
-    this.monitor.setOutputDispatcher(subscriberID, this.onAction)
-    this.stream = stream.doOnCancel { this@SagaOutput.monitor.removeOutputDispatcher(subscriberID) }
+    monitor.setOutputDispatcher(subscriberID, this.onAction)
+
+    this.stream = stream
+      /** This will handle onError/onComplete. */
+      .doOnTerminate { monitor.removeOutputDispatcher(subscriberID) }
+      /** This will handle cancel events (e.g. take effect publisher calling onComplete. */
+      .doOnCancel { monitor.removeOutputDispatcher(subscriberID) }
   }
 
   private fun <T2> with(newStream: Flowable<T2>): ISagaOutput<T2> where T2 : Any {
-    val result = SagaOutput(this.scope, this.monitor, newStream) { EmptyJob }
-    result.onDispose = { this.dispose() }
-    return result
+    return SagaOutput(this.scope, this.monitor, newStream, { this.dispose() }) { EmptyJob }
   }
 
   override fun <T2> map(transform: (T) -> T2): ISagaOutput<T2> where T2 : Any {

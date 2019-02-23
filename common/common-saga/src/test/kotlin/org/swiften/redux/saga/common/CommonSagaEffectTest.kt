@@ -17,6 +17,7 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
 import java.util.Collections.synchronizedList
+import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -113,52 +114,6 @@ abstract class CommonSagaEffectTest {
       // Then
       assertEquals(finalValues.sorted(), actualValues.sorted())
     }
-  }
-
-  fun test_streamDisposition_shouldRemoveEntryFromMonitor(createTakeEffect: (
-    creator: (IReduxAction) -> ISagaEffect<Int>
-  ) -> SagaEffect<Int>) {
-    // Setup
-    class Action(val value: Int) : IReduxAction
-    val dispatchers = ConcurrentHashMap<String, IActionDispatcher>()
-    val setCount = AtomicInteger(0)
-    val removeCount = AtomicInteger(0)
-
-    val monitor = object : ISagaMonitor {
-      override val dispatch: IActionDispatcher = { action ->
-        dispatchers.forEach { it.value(action) }; EmptyJob
-      }
-
-      override fun setOutputDispatcher(id: String, dispatch: IActionDispatcher) {
-        dispatchers[id] = dispatch
-        setCount.incrementAndGet()
-      }
-
-      override fun removeOutputDispatcher(id: String) {
-        dispatchers.remove(id)
-        removeCount.incrementAndGet()
-      }
-    }
-
-    createTakeEffect { a ->
-      justEffect((a as Action).value).map { it * 2 }.delayUpstreamValue(500)
-    }
-      .invoke(SagaInput(monitor))
-      .subscribe({})
-
-    // When
-    (0 until this.iteration).forEach { monitor.dispatch(Action(it)) }
-
-    runBlocking {
-      delay(1000)
-
-      // Then - there is one more set event due to flatMap/switchMap in take effect.
-      assertEquals(setCount.get(), (this@CommonSagaEffectTest.iteration + 1) * 3)
-
-      // Then - there is one less set event due to take effect not being disposed of.
-      assertEquals(removeCount.get(), (this@CommonSagaEffectTest.iteration - 1) * 3)
-    }
-
   }
 
   @Test
