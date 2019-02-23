@@ -79,7 +79,6 @@ class AndroidInjectorTest : PropInjectorTest() {
   }
 
   @Test
-  @Suppress("ForEachParameterNotUsed")
   fun `Injecting prop with Android injector should set prop on main thread`() {
     // Setup
     val injector = this.createInjector(this.store)

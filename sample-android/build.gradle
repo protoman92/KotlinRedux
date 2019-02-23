@@ -120,7 +120,7 @@ configure(project(':sample-android:sample-sunflower')) {
 
     defaultConfig {
       applicationId "com.google.samples.apps.sunflower"
-      minSdkVersion project.ext.minSdk
+      minSdkVersion 18
       targetSdkVersion project.ext.targetSdk
       testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
       versionCode 1
