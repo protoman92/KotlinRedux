@@ -2,7 +2,7 @@
 
 # IPropInjector
 
-`interface IPropInjector<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IStateGetterProvider`](../../org.swiften.redux.core/-i-state-getter-provider/index.md)`<`[`GState`](index.md#GState)`>, `[`IReduxUnsubscriberProvider`](../../org.swiften.redux.core/-i-redux-unsubscriber-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L119)
+`interface IPropInjector<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IStateGetterProvider`](../../org.swiften.redux.core/-i-state-getter-provider/index.md)`<`[`GState`](index.md#GState)`>, `[`IReduxUnsubscriberProvider`](../../org.swiften.redux.core/-i-redux-unsubscriber-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L27)
 
 Inject state and actions into an [IPropContainer](../-i-prop-container/index.md).
 

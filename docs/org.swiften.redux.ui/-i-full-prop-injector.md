@@ -2,7 +2,7 @@
 
 # IFullPropInjector
 
-`interface IFullPropInjector<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IPropInjector`](-i-prop-injector/index.md)`<`[`GState`](-i-full-prop-injector.md#GState)`>, `[`IDispatcherProvider`](../org.swiften.redux.core/-i-dispatcher-provider/index.md)`, `[`IDeinitializerProvider`](../org.swiften.redux.core/-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L154)
+`interface IFullPropInjector<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IPropInjector`](-i-prop-injector/index.md)`<`[`GState`](-i-full-prop-injector.md#GState)`>, `[`IDispatcherProvider`](../org.swiften.redux.core/-i-dispatcher-provider/index.md)`, `[`IDeinitializerProvider`](../org.swiften.redux.core/-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L62)
 
 An [IPropInjector](-i-prop-injector/index.md) that also implements [IDispatcherProvider](../org.swiften.redux.core/-i-dispatcher-provider/index.md), [IStateGetterProvider](../org.swiften.redux.core/-i-state-getter-provider/index.md) and
 [IDeinitializerProvider](../org.swiften.redux.core/-i-deinitializer-provider/index.md) to handle lifecycle and state saving in the relevant platforms.

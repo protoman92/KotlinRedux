@@ -32,7 +32,7 @@ inheritance here to ensure [StaticProp.injector](../../org.swiften.redux.ui/-sta
 | Name | Summary |
 |---|---|
 | [store](../../org.swiften.redux.ui/-prop-injector/store.md) | `val store: `[`IReduxStore`](../../org.swiften.redux.core/-i-redux-store.md)`<`[`GState`](../../org.swiften.redux.ui/-prop-injector/index.md#GState)`>`<br>An [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md) instance. |
-| [subscriptions](../../org.swiften.redux.ui/-prop-injector/subscriptions.md) | `val subscriptions: <ERROR CLASS>` |
+| [subscriptions](../../org.swiften.redux.ui/-prop-injector/subscriptions.md) | `val subscriptions: `[`ConcurrentHashMap`](http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ConcurrentHashMap.html)`<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`>` |
 | [unsubscribe](../../org.swiften.redux.ui/-prop-injector/unsubscribe.md) | `open val unsubscribe: `[`IReduxUnsubscriber`](../../org.swiften.redux.core/-i-redux-unsubscriber.md) |
 
 ### Functions

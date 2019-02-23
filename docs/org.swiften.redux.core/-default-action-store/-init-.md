@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`DefaultActionStore(state: `[`GState`](index.md#GState)`, reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`>)`
+`DefaultActionStore(state: `[`GState`](index.md#GState)`, reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`, `[`IReduxAction`](../-i-redux-action.md)`>)`
 
 A [IReduxStore](../-i-redux-store.md) that handles [DefaultReduxAction](../-default-redux-action/index.md).
 

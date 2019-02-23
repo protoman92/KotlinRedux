@@ -2,27 +2,46 @@
 
 # SagaOutput
 
-`class SagaOutput<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L20)
+`class SagaOutput<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](index.md#T)`>, `[`ISubscriberIDProvider`](../../org.swiften.redux.core/-i-subscriber-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L39)
 
-**See Also**
+This is the default implementation of [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md). Every time a new [SagaOutput](./index.md) is created,
+[monitor](monitor.md) will keep track of its [onAction](on-action.md) to call on [ISagaMonitor.dispatch](../../org.swiften.redux.core/-i-dispatcher-provider/dispatch.md), and when said
+[SagaOutput](./index.md) is disposed of, [monitor](monitor.md) will remove the reference.
 
-[ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md)
+We do not call [onAction](on-action.md) directly on action because [onAction](on-action.md) is not actually passed down
+from [SagaOutput](./index.md) to its children (e.g. via transformation methods such as [map](map.md)). Each
+[SagaOutput](./index.md) instance has its own [onAction](on-action.md) that is not related to any other.
+[ISagaMonitor.dispatch](../../org.swiften.redux.core/-i-dispatcher-provider/dispatch.md) is the only way to call all stored [onAction](on-action.md).
+
+### Parameters
+
+`T` - The result emission type.
+
+`scope` - A [CoroutineScope](#) instance.
+
+`monitor` - A [ISagaMonitor](../../org.swiften.redux.saga.common/-i-saga-monitor/index.md) instance that is used to track created [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md). This
+[ISagaMonitor](../../org.swiften.redux.saga.common/-i-saga-monitor/index.md) implementation must be able to handle multi-threaded
+[ISagaMonitor.addOutputDispatcher](../../org.swiften.redux.saga.common/-i-saga-monitor/add-output-dispatcher.md) and [ISagaMonitor.removeOutputDispatcher](../../org.swiften.redux.saga.common/-i-saga-monitor/remove-output-dispatcher.md) events.
+
+`stream` - A [Flowable](#) instance.
+
+`onAction` - See [ISagaOutput.onAction](../../org.swiften.redux.saga.common/-i-saga-output/on-action.md).
 
 ### Constructors
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `SagaOutput(scope: <ERROR CLASS>, stream: <ERROR CLASS><`[`T`](index.md#T)`>, onAction: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`)` |
+| [&lt;init&gt;](-init-.md) | `SagaOutput(scope: <ERROR CLASS>, monitor: `[`ISagaMonitor`](../../org.swiften.redux.saga.common/-i-saga-monitor/index.md)`, stream: <ERROR CLASS><`[`T`](index.md#T)`>, onDispose: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)` = {}, onAction: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`)`<br>This is the default implementation of [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md). Every time a new [SagaOutput](./index.md) is created, [monitor](monitor.md) will keep track of its [onAction](on-action.md) to call on [ISagaMonitor.dispatch](../../org.swiften.redux.core/-i-dispatcher-provider/dispatch.md), and when said [SagaOutput](./index.md) is disposed of, [monitor](monitor.md) will remove the reference. |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
 | [disposable](disposable.md) | `val disposable: <ERROR CLASS>` |
-| [onAction](on-action.md) | `val onAction: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)<br>Trigger every time an [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) arrives. |
-| [onDispose](on-dispose.md) | `var onDispose: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
-| [scope](scope.md) | `val scope: <ERROR CLASS>` |
-| [source](source.md) | `internal var source: `[`SagaOutput`](./index.md)`<*>?` |
+| [monitor](monitor.md) | `val monitor: `[`ISagaMonitor`](../../org.swiften.redux.saga.common/-i-saga-monitor/index.md)<br>A [ISagaMonitor](../../org.swiften.redux.saga.common/-i-saga-monitor/index.md) instance that is used to track created [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md). This [ISagaMonitor](../../org.swiften.redux.saga.common/-i-saga-monitor/index.md) implementation must be able to handle multi-threaded [ISagaMonitor.addOutputDispatcher](../../org.swiften.redux.saga.common/-i-saga-monitor/add-output-dispatcher.md) and [ISagaMonitor.removeOutputDispatcher](../../org.swiften.redux.saga.common/-i-saga-monitor/remove-output-dispatcher.md) events. |
+| [onAction](on-action.md) | `val onAction: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)<br>See [ISagaOutput.onAction](../../org.swiften.redux.saga.common/-i-saga-output/on-action.md). |
+| [onDispose](on-dispose.md) | `val onDispose: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
+| [scope](scope.md) | `val scope: <ERROR CLASS>`<br>A [CoroutineScope](#) instance. |
 | [stream](stream.md) | `val stream: <ERROR CLASS><`[`T`](index.md#T)`>` |
 
 ### Functions
@@ -63,4 +82,5 @@
 
 | Name | Summary |
 |---|---|
-| [from](from.md) | `fun <T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> from(scope: <ERROR CLASS>, creator: suspend <ERROR CLASS>.() -> `[`T`](from.md#T)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](from.md#T)`>`<br>Create a [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) from [creator](from.md#org.swiften.redux.saga.rx.SagaOutput.Companion$from(, kotlin.SuspendFunction1((, org.swiften.redux.saga.rx.SagaOutput.Companion.from.T)))/creator) using [CoroutineScope.rxSingle](#). |
+| [from](from.md) | `fun <T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> from(scope: <ERROR CLASS>, monitor: `[`ISagaMonitor`](../../org.swiften.redux.saga.common/-i-saga-monitor/index.md)`, creator: suspend <ERROR CLASS>.() -> `[`T`](from.md#T)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](from.md#T)`>`<br>Create a [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) from [creator](from.md#org.swiften.redux.saga.rx.SagaOutput.Companion$from(, org.swiften.redux.saga.common.ISagaMonitor, kotlin.SuspendFunction1((, org.swiften.redux.saga.rx.SagaOutput.Companion.from.T)))/creator) using [CoroutineScope.rxSingle](#). |
+| [merge](merge.md) | `fun <T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> merge(scope: <ERROR CLASS>, monitor: `[`ISagaMonitor`](../../org.swiften.redux.saga.common/-i-saga-monitor/index.md)`, outputs: `[`Collection`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)`<`[`SagaOutput`](./index.md)`<`[`T`](merge.md#T)`>>): `[`SagaOutput`](./index.md)`<`[`T`](merge.md#T)`>`<br>See [Flowable.merge](#). Produces a [SagaOutput](./index.md) whose [SagaOutput.stream](stream.md) triggers any time a [SagaOutput.stream](stream.md) from [outputs](merge.md#org.swiften.redux.saga.rx.SagaOutput.Companion$merge(, org.swiften.redux.saga.common.ISagaMonitor, kotlin.collections.Collection((org.swiften.redux.saga.rx.SagaOutput((org.swiften.redux.saga.rx.SagaOutput.Companion.merge.T)))))/outputs) emits a value. |

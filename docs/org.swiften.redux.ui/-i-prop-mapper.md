@@ -2,7 +2,7 @@
 
 # IPropMapper
 
-`interface IPropMapper<in LState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, in OutProp, out State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, out Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IStateMapper`](-i-state-mapper/index.md)`<`[`LState`](-i-prop-mapper.md#LState)`, `[`OutProp`](-i-prop-mapper.md#OutProp)`, `[`State`](-i-prop-mapper.md#State)`>, `[`IActionMapper`](-i-action-mapper/index.md)`<`[`OutProp`](-i-prop-mapper.md#OutProp)`, `[`Action`](-i-prop-mapper.md#Action)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L110)
+`interface IPropMapper<in LState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, in OutProp, out State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, out Action : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IStateMapper`](-i-state-mapper/index.md)`<`[`LState`](-i-prop-mapper.md#LState)`, `[`OutProp`](-i-prop-mapper.md#OutProp)`, `[`State`](-i-prop-mapper.md#State)`>, `[`IActionMapper`](-i-action-mapper/index.md)`<`[`OutProp`](-i-prop-mapper.md#OutProp)`, `[`Action`](-i-prop-mapper.md#Action)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Mapper.kt#L59)
 
 Maps [LState](-i-prop-mapper.md#LState) to [State](-i-prop-mapper.md#State) and [Action](-i-prop-mapper.md#Action) for a [IPropContainer](-i-prop-container/index.md). [OutProp](-i-prop-mapper.md#OutProp) is the view's immutable
 property as dictated by its parent.

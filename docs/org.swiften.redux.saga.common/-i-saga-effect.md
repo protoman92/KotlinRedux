@@ -2,7 +2,7 @@
 
 # ISagaEffect
 
-`typealias ISagaEffect<R> = (`[`SagaInput`](-saga-input/index.md)`) -> `[`ISagaOutput`](-i-saga-output/index.md)`<`[`R`](-i-saga-effect.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L25)
+`typealias ISagaEffect<R> = (`[`SagaInput`](-saga-input/index.md)`) -> `[`ISagaOutput`](-i-saga-output/index.md)`<`[`R`](-i-saga-effect.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L26)
 
 Abstraction for Redux saga that handles [IReduxAction](../org.swiften.redux.core/-i-redux-action.md) in the pipeline. Faithful to the original
 redux-saga for React.js, classes that implement [ISagaEffect](./-i-saga-effect.md) should be able to intercept

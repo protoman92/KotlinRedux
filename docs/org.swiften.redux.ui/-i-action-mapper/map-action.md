@@ -2,7 +2,7 @@
 
 # mapAction
 
-`abstract fun mapAction(dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`, outProp: `[`OutProp`](index.md#OutProp)`): `[`Action`](index.md#Action) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L95)
+`abstract fun mapAction(dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`, outProp: `[`OutProp`](index.md#OutProp)`): `[`Action`](index.md#Action) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Mapper.kt#L44)
 
 Map [IActionDispatcher](../../org.swiften.redux.core/-i-action-dispatcher.md) to [Action](index.md#Action) using [OutProp](index.md#OutProp).
 

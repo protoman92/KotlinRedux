@@ -2,7 +2,7 @@
 
 # map
 
-`fun <T2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> map(transform: (`[`T`](index.md#T)`) -> `[`T2`](map.md#T2)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T2`](map.md#T2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L51)
+`fun <T2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> map(transform: (`[`T`](index.md#T)`) -> `[`T2`](map.md#T2)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T2`](map.md#T2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L100)
 
 Overrides [ISagaOutput.map](../../org.swiften.redux.saga.common/-i-saga-output/map.md)
 

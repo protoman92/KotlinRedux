@@ -2,7 +2,7 @@
 
 # mapState
 
-`abstract fun mapState(state: `[`LState`](index.md#LState)`, outProp: `[`OutProp`](index.md#OutProp)`): `[`State`](index.md#State) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L75)
+`abstract fun mapState(state: `[`LState`](index.md#LState)`, outProp: `[`OutProp`](index.md#OutProp)`): `[`State`](index.md#State) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Mapper.kt#L24)
 
 Map [LState](index.md#LState) to [State](index.md#State) using [OutProp](index.md#OutProp)
 

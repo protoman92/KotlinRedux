@@ -2,11 +2,13 @@
 
 # from
 
-`fun <T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> from(scope: <ERROR CLASS>, creator: suspend <ERROR CLASS>.() -> `[`T`](from.md#T)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](from.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L36)
+`fun <T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> from(scope: <ERROR CLASS>, monitor: `[`ISagaMonitor`](../../org.swiften.redux.saga.common/-i-saga-monitor/index.md)`, creator: suspend <ERROR CLASS>.() -> `[`T`](from.md#T)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`T`](from.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L56)
 
-Create a [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) from [creator](from.md#org.swiften.redux.saga.rx.SagaOutput.Companion$from(, kotlin.SuspendFunction1((, org.swiften.redux.saga.rx.SagaOutput.Companion.from.T)))/creator) using [CoroutineScope.rxSingle](#).
+Create a [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) from [creator](from.md#org.swiften.redux.saga.rx.SagaOutput.Companion$from(, org.swiften.redux.saga.common.ISagaMonitor, kotlin.SuspendFunction1((, org.swiften.redux.saga.rx.SagaOutput.Companion.from.T)))/creator) using [CoroutineScope.rxSingle](#).
 
 ### Parameters
+
+`T` - The emission value type.
 
 `scope` - A [CoroutineScope](#) instance.
 

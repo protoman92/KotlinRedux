@@ -2,7 +2,7 @@
 
 # await
 
-`fun await(): `[`T`](index.md#T) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L127)
+`fun await(): `[`T`](index.md#T) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L176)
 
 Overrides [IAsyncJob.await](../../org.swiften.redux.core/-i-async-job/await.md)
 
@@ -11,7 +11,7 @@ Wait until some asynchronous action finishes.
 **Return**
 A [T](../../org.swiften.redux.core/-i-async-job/index.md#T) instance.
 
-`fun await(defaultValue: `[`T`](index.md#T)`): `[`T`](index.md#T) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L129)
+`fun await(defaultValue: `[`T`](index.md#T)`): `[`T`](index.md#T) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaOutput.kt#L178)
 
 Overrides [IAsyncJob.await](../../org.swiften.redux.core/-i-async-job/await.md)
 

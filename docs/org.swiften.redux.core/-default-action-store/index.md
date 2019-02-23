@@ -18,7 +18,7 @@ A [IReduxStore](../-i-redux-store.md) that handles [DefaultReduxAction](../-defa
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `DefaultActionStore(state: `[`GState`](index.md#GState)`, reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`>)`<br>A [IReduxStore](../-i-redux-store.md) that handles [DefaultReduxAction](../-default-redux-action/index.md). |
+| [&lt;init&gt;](-init-.md) | `DefaultActionStore(state: `[`GState`](index.md#GState)`, reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`, `[`IReduxAction`](../-i-redux-action.md)`>)`<br>A [IReduxStore](../-i-redux-store.md) that handles [DefaultReduxAction](../-default-redux-action/index.md). |
 
 ### Properties
 
@@ -27,7 +27,7 @@ A [IReduxStore](../-i-redux-store.md) that handles [DefaultReduxAction](../-defa
 | [deinitialize](deinitialize.md) | `val deinitialize: `[`IDeinitializer`](../-i-deinitializer.md) |
 | [dispatch](dispatch.md) | `val dispatch: `[`IActionDispatcher`](../-i-action-dispatcher.md) |
 | [lastState](last-state.md) | `val lastState: `[`IStateGetter`](../-i-state-getter.md)`<`[`GState`](index.md#GState)`>` |
-| [reducer](reducer.md) | `val reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`>` |
+| [reducer](reducer.md) | `val reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`, `[`IReduxAction`](../-i-redux-action.md)`>` |
 | [store](store.md) | `val store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>` |
 | [subscribe](subscribe.md) | `val subscribe: `[`IReduxSubscriber`](../-i-redux-subscriber.md)`<`[`GState`](index.md#GState)`>` |
 | [unsubscribe](unsubscribe.md) | `val unsubscribe: `[`IReduxUnsubscriber`](../-i-redux-unsubscriber.md) |

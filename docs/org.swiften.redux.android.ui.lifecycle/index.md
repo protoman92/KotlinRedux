@@ -10,6 +10,7 @@
 | [IAppCompatActivity](-i-app-compat-activity/index.md) | `internal interface IAppCompatActivity`<br>Interface to wrap some functionalities for [AppCompatActivity](#). |
 | [IBundleStateSaver](-i-bundle-state-saver/index.md) | `interface IBundleStateSaver<GState>`<br>Handle saving/restoring [GState](-i-bundle-state-saver/index.md#GState) instances. |
 | [ILifecycleCallback](-i-lifecycle-callback/index.md) | `interface ILifecycleCallback`<br>Callback for use with [LifecycleObserver](#). |
+| [ILifecycleOwnerInjectionHelper](-i-lifecycle-owner-injection-helper/index.md) | `interface ILifecycleOwnerInjectionHelper<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>`<br>Helps with [IPropInjector.inject](../org.swiften.redux.ui/-i-prop-injector/inject.md) for [LifecycleOwner](#) instances. Use this to integrate with Dagger. |
 | [ReduxLifecycleObserver](-redux-lifecycle-observer/index.md) | `open class ReduxLifecycleObserver : `[`ILifecycleCallback`](-i-lifecycle-callback/index.md)<br>Use this [LifecycleObserver](#) to unsubscribe from a [IReduxSubscription](../org.swiften.redux.core/-i-redux-subscription/index.md). |
 
 ### Functions

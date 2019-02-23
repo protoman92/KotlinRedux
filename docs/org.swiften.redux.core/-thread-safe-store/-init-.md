@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`ThreadSafeStore(state: `[`GState`](index.md#GState)`, reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`>)`
+`ThreadSafeStore(state: `[`GState`](index.md#GState)`, reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`, `[`IReduxAction`](../-i-redux-action.md)`>)`
 
 [ThreadSafeStore](index.md) is a [IReduxStore](../-i-redux-store.md) implementation that supports thread-safe accesses and
 modifications. Pass in the initial [state](state.md) and the store's [reducer](reducer.md) in the constructor.

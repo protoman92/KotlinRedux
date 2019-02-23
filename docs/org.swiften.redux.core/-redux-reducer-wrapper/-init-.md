@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`ReduxReducerWrapper(reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`>)`
+`ReduxReducerWrapper(reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`, `[`IReduxAction`](../-i-redux-action.md)`>)`
 
 Default wrapper to handle [DefaultReduxAction](../-default-redux-action/index.md). Pass in a [reducer](reducer.md) instance to handle non-
 [DefaultReduxAction](../-default-redux-action/index.md).

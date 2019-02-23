@@ -17,4 +17,4 @@ provide a full suite of functionalities.
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `FinalStore(state: `[`GState`](index.md#GState)`, reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`>)``FinalStore(store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>)`<br>[FinalStore](./index.md) is a [IReduxStore](../-i-redux-store.md) that combines all crucial [IReduxStore](../-i-redux-store.md) implementations to provide a full suite of functionalities. |
+| [&lt;init&gt;](-init-.md) | `FinalStore(state: `[`GState`](index.md#GState)`, reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`, `[`IReduxAction`](../-i-redux-action.md)`>)``FinalStore(store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>)`<br>[FinalStore](./index.md) is a [IReduxStore](../-i-redux-store.md) that combines all crucial [IReduxStore](../-i-redux-store.md) implementations to provide a full suite of functionalities. |

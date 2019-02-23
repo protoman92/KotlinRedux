@@ -2,7 +2,7 @@
 
 # PropInjector
 
-`open class PropInjector<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IFullPropInjector`](../-i-full-prop-injector.md)`<`[`GState`](index.md#GState)`>, `[`IDispatcherProvider`](../../org.swiften.redux.core/-i-dispatcher-provider/index.md)`, `[`IStateGetterProvider`](../../org.swiften.redux.core/-i-state-getter-provider/index.md)`<`[`GState`](index.md#GState)`>, `[`IReduxUnsubscriberProvider`](../../org.swiften.redux.core/-i-redux-unsubscriber-provider/index.md)`, `[`IDeinitializerProvider`](../../org.swiften.redux.core/-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L166)
+`open class PropInjector<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IFullPropInjector`](../-i-full-prop-injector.md)`<`[`GState`](index.md#GState)`>, `[`IDispatcherProvider`](../../org.swiften.redux.core/-i-dispatcher-provider/index.md)`, `[`IStateGetterProvider`](../../org.swiften.redux.core/-i-state-getter-provider/index.md)`<`[`GState`](index.md#GState)`>, `[`IReduxUnsubscriberProvider`](../../org.swiften.redux.core/-i-redux-unsubscriber-provider/index.md)`, `[`IDeinitializerProvider`](../../org.swiften.redux.core/-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Injector.kt#L74)
 
 A [IFullPropInjector](../-i-full-prop-injector.md) implementation that handles [inject](inject.md) in a thread-safe manner. It also
 invokes [IPropLifecycleOwner.beforePropInjectionStarts](../-i-prop-lifecycle-owner/before-prop-injection-starts.md) and
@@ -25,7 +25,7 @@ invokes [IPropLifecycleOwner.beforePropInjectionStarts](../-i-prop-lifecycle-own
 | Name | Summary |
 |---|---|
 | [store](store.md) | `val store: `[`IReduxStore`](../../org.swiften.redux.core/-i-redux-store.md)`<`[`GState`](index.md#GState)`>`<br>An [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md) instance. |
-| [subscriptions](subscriptions.md) | `val subscriptions: <ERROR CLASS>` |
+| [subscriptions](subscriptions.md) | `val subscriptions: `[`ConcurrentHashMap`](http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ConcurrentHashMap.html)`<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`>` |
 | [unsubscribe](unsubscribe.md) | `open val unsubscribe: `[`IReduxUnsubscriber`](../../org.swiften.redux.core/-i-redux-unsubscriber.md) |
 
 ### Functions

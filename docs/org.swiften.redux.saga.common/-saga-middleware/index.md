@@ -17,7 +17,7 @@
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `SagaMiddleware(effects: `[`Collection`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)`<`[`ISagaEffect`](../-i-saga-effect.md)`<*>>, context: <ERROR CLASS>)`<br>[IMiddleware](../../org.swiften.redux.core/-i-middleware.md) implementation for [ISagaEffect](../-i-saga-effect.md). Every time an [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) is received, call [ISagaOutput.onAction](../-i-saga-output/on-action.md). |
+| [&lt;init&gt;](-init-.md) | `SagaMiddleware(context: <ERROR CLASS>, monitor: `[`SagaMonitor`](../-saga-monitor/index.md)`, effects: `[`Collection`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)`<`[`ISagaEffect`](../-i-saga-effect.md)`<*>>)`<br>[IMiddleware](../../org.swiften.redux.core/-i-middleware.md) implementation for [ISagaEffect](../-i-saga-effect.md). Every time an [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) is received, call [ISagaOutput.onAction](../-i-saga-output/on-action.md). |
 
 ### Properties
 
@@ -25,6 +25,7 @@
 |---|---|
 | [context](context.md) | `val context: <ERROR CLASS>`<br>The [CoroutineContext](#) with which to perform asynchronous work on. |
 | [effects](effects.md) | `val effects: `[`Collection`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)`<`[`ISagaEffect`](../-i-saga-effect.md)`<*>>`<br>The [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html) of [ISagaEffect](../-i-saga-effect.md) to run. |
+| [monitor](monitor.md) | `val monitor: `[`SagaMonitor`](../-saga-monitor/index.md) |
 
 ### Functions
 

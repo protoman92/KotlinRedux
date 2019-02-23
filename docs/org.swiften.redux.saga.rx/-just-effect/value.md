@@ -2,7 +2,7 @@
 
 # value
 
-`private val value: `[`R`](index.md#R) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/JustEffect.kt#L20)
+`private val value: `[`R`](index.md#R) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/JustEffect.kt#L21)
 
 The [R](index.md#R) value to be emitted.
 

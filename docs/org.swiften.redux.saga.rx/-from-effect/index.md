@@ -2,7 +2,7 @@
 
 # FromEffect
 
-`internal class FromEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/FromEffect.kt#L19)
+`internal class FromEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/FromEffect.kt#L20)
 
 [SagaEffect](../../org.swiften.redux.saga.common/-saga-effect/index.md) whose [SagaOutput](../-saga-output/index.md) is provided via [stream](stream.md).
 
@@ -28,13 +28,12 @@
 
 | Name | Summary |
 |---|---|
-| [invoke](invoke.md) | `fun invoke(p1: `[`SagaInput`](../../org.swiften.redux.saga.common/-saga-input/index.md)`): <ERROR CLASS>` |
+| [invoke](invoke.md) | `fun invoke(p1: `[`SagaInput`](../../org.swiften.redux.saga.common/-saga-input/index.md)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`R`](index.md#R)`>` |
 
 ### Inherited Functions
 
 | Name | Summary |
 |---|---|
-| [invoke](../../org.swiften.redux.saga.common/-saga-effect/invoke.md) | `fun invoke(scope: <ERROR CLASS>, state: `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, dispatch: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`R`](../../org.swiften.redux.saga.common/-saga-effect/index.md#R)`>`<br>`fun invoke(state: `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`R`](../../org.swiften.redux.saga.common/-saga-effect/index.md#R)`>`<br>`fun invoke(): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`R`](../../org.swiften.redux.saga.common/-saga-effect/index.md#R)`>`<br>Call [ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) with convenience parameters for testing. |
 | [transform](../../org.swiften.redux.saga.common/-saga-effect/transform.md) | `fun <R2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> transform(transformer: `[`ISagaEffectTransformer`](../../org.swiften.redux.saga.common/-i-saga-effect-transformer.md)`<`[`R`](../../org.swiften.redux.saga.common/-saga-effect/index.md#R)`, `[`R2`](../../org.swiften.redux.saga.common/-saga-effect/transform.md#R2)`>): `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R2`](../../org.swiften.redux.saga.common/-saga-effect/transform.md#R2)`>`<br>Transform into another [SagaEffect](../../org.swiften.redux.saga.common/-saga-effect/index.md) with [transformer](../../org.swiften.redux.saga.common/-saga-effect/transform.md#org.swiften.redux.saga.common.SagaEffect$transform(kotlin.Function1((org.swiften.redux.saga.common.SagaEffect((org.swiften.redux.saga.common.SagaEffect.R)), org.swiften.redux.saga.common.SagaEffect((org.swiften.redux.saga.common.SagaEffect.transform.R2)))))/transformer). |
 
 ### Extension Functions

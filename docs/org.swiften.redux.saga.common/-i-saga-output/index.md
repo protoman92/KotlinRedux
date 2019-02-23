@@ -2,7 +2,7 @@
 
 # ISagaOutput
 
-`interface ISagaOutput<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IAsyncJob`](../../org.swiften.redux.core/-i-async-job/index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L66)
+`interface ISagaOutput<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IAsyncJob`](../../org.swiften.redux.core/-i-async-job/index.md)`<`[`T`](index.md#T)`>, `[`ISubscriberIDProvider`](../../org.swiften.redux.core/-i-subscriber-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L65)
 
 Stream values for a [ISagaEffect](../-i-saga-effect.md). This stream has functional operators that can transform
 emitted values.
@@ -16,6 +16,12 @@ emitted values.
 | Name | Summary |
 |---|---|
 | [onAction](on-action.md) | `abstract val onAction: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)<br>Trigger every time an [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) arrives. |
+
+### Inherited Properties
+
+| Name | Summary |
+|---|---|
+| [uniqueSubscriberID](../../org.swiften.redux.core/-i-subscriber-i-d-provider/unique-subscriber-i-d.md) | `abstract val uniqueSubscriberID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>The unique ID to pass to [IReduxStore.subscribe](../../org.swiften.redux.core/-i-redux-subscriber-provider/subscribe.md) and [IReduxStore.unsubscribe](../../org.swiften.redux.core/-i-redux-unsubscriber-provider/unsubscribe.md). |
 
 ### Functions
 
@@ -50,4 +56,4 @@ emitted values.
 
 | Name | Summary |
 |---|---|
-| [SagaOutput](../../org.swiften.redux.saga.rx/-saga-output/index.md) | `class SagaOutput<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`ISagaOutput`](./index.md)`<`[`T`](../../org.swiften.redux.saga.rx/-saga-output/index.md#T)`>` |
+| [SagaOutput](../../org.swiften.redux.saga.rx/-saga-output/index.md) | `class SagaOutput<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`ISagaOutput`](./index.md)`<`[`T`](../../org.swiften.redux.saga.rx/-saga-output/index.md#T)`>, `[`ISubscriberIDProvider`](../../org.swiften.redux.core/-i-subscriber-i-d-provider/index.md)<br>This is the default implementation of [ISagaOutput](./index.md). Every time a new [SagaOutput](../../org.swiften.redux.saga.rx/-saga-output/index.md) is created, [monitor](../../org.swiften.redux.saga.rx/-saga-output/monitor.md) will keep track of its [onAction](../../org.swiften.redux.saga.rx/-saga-output/on-action.md) to call on [ISagaMonitor.dispatch](../../org.swiften.redux.core/-i-dispatcher-provider/dispatch.md), and when said [SagaOutput](../../org.swiften.redux.saga.rx/-saga-output/index.md) is disposed of, [monitor](../../org.swiften.redux.saga.rx/-saga-output/monitor.md) will remove the reference. |
