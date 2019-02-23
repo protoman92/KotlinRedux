@@ -5,7 +5,7 @@
 
 package org.swiften.redux.android.dagger.business1
 
-import kotlinx.coroutines.delay
+import org.swiften.redux.android.dagger.MainComponent
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.SagaEffect
@@ -28,6 +28,7 @@ object Business1Redux {
     object Deinitialize : Action()
     data class SetLoading(val loading: Boolean) : Action()
     data class SetQuery(val query: String?) : Action()
+    data class SetResult(val result: MusicResult?) : Action()
   }
 
   object Reducer : IReducer<State, Action> {
@@ -35,34 +36,36 @@ object Business1Redux {
       return when (p2) {
         is Action.SetLoading -> p1.copy(parent = p1.parent.copy(loading = p2.loading))
         is Action.SetQuery -> p1.copy(search = p1.search.copy(query = p2.query))
-        is Action.Initialize -> p1
-        is Action.Deinitialize -> p1
+        else -> p1
       }
     }
   }
 
   object Saga {
-    fun allSagas(): SagaEffect<Any> {
+    fun allSagas(component: MainComponent): SagaEffect<Any> {
       return takeLatest(Action::class, {
         when (it) {
           is Action.Initialize -> Unit
           is Action.Deinitialize -> Unit
           else -> null
         }
-      }) { activeSagas() }
+      }) {
+        activeSagas(component.plus(Business1Module()).searchRepository())
+      }
     }
 
-    private fun activeSagas(): SagaEffect<Any> {
-      return mergeAll(searchSaga())
+    private fun activeSagas(repository: ISearchRepository): SagaEffect<Any> {
+      return mergeAll(searchSaga(repository))
     }
 
-    private fun searchSaga(): SagaEffect<Any> {
+    private fun searchSaga(repository: ISearchRepository): SagaEffect<Any> {
       return takeLatest(Action.SetQuery::class, { it.query }) { query ->
         await<Any> { input ->
           putInStore(Action.SetLoading(true)).await(input)
 
           try {
-            delay(2000)
+            val result = repository.searchMusicStore(query, 5)
+            putInStore(Action.SetResult(result))
           } finally {
             putInStore(Action.SetLoading(false)).await(input)
           }

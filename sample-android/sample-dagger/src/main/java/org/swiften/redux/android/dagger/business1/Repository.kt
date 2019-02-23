@@ -10,6 +10,10 @@ import com.beust.klaxon.Klaxon
 /** Created by viethai.pham on 2019/02/23 */
 interface ISearchRepository : ISearchAPI<MusicResult?>
 
+interface ISearchRepositoryProvider {
+  fun searchRepository(): ISearchRepository
+}
+
 class Repository(
   private val decoder: Klaxon,
   private val api: ISearchAPI<String>

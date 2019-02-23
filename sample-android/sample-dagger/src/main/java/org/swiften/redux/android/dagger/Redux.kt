@@ -40,8 +40,8 @@ object Redux {
   }
 
   object Saga {
-    fun allSagas(): Collection<SagaEffect<Any>> {
-      return arrayListOf(Business1Redux.Saga.allSagas())
+    fun allSagas(component: MainComponent): Collection<SagaEffect<Any>> {
+      return arrayListOf(Business1Redux.Saga.allSagas(component))
     }
   }
 }

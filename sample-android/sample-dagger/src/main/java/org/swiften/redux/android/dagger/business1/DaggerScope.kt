@@ -10,8 +10,4 @@ import javax.inject.Scope
 /** Created by viethai.pham on 2019/02/21 */
 @Scope
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Parent1Scope
-
-@Scope
-@Retention(AnnotationRetention.RUNTIME)
 annotation class Business1Scope
