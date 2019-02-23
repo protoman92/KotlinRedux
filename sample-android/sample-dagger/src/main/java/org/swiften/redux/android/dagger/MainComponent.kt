@@ -42,7 +42,7 @@ class DependencyLevel2Module {
   DependencyLevel3Module::class
 ])
 interface MainComponent : Business1SagaComponentProvider {
-  fun plus(module: Business1Module): Business1Component
-  fun plus(module: Business2Module): Business2Component
-  fun plus(module: Business3Module): Business3Component
+  fun provide(module: Business1Module): Business1Component
+  fun provide(module: Business2Module): Business2Component
+  fun provide(module: Business3Module): Business3Component
 }

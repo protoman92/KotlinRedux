@@ -13,16 +13,16 @@ import org.swiften.redux.android.dagger.DependencyLevel2
 
 /** Created by viethai.pham on 2019/02/23 */
 @Module
-class APIModule {
+class Business1APIModule {
   @Provides
   @Business1Scope
   fun searchApi(): ISearchAPI<String> {
-    return API()
+    return Business1API()
   }
 }
 
 @Module
-class RepositoryModule {
+class Business1RepositoryModule {
   @Provides
   @Business1Scope
   fun jsonDecoder(): Klaxon {
@@ -31,13 +31,13 @@ class RepositoryModule {
 
   @Provides
   @Business1Scope
-  fun repository(decoder: Klaxon, api: ISearchAPI<String>): Repository {
-    return Repository(decoder, api)
+  fun repository(decoder: Klaxon, api: ISearchAPI<String>): Business1Repository {
+    return Business1Repository(decoder, api)
   }
 
   @Provides
   @Business1Scope
-  fun searchRepository(repository: Repository): ISearchRepository {
+  fun searchRepository(repository: Business1Repository): ISearchRepository {
     return repository
   }
 }

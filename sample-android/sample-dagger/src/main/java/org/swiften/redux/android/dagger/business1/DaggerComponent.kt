@@ -10,11 +10,15 @@ import org.swiften.redux.android.dagger.DependencyLevel1
 
 /** Created by viethai.pham on 2019/02/21 */
 @Business1Scope
-@Subcomponent(modules = [Business1SagaModule::class, APIModule::class, RepositoryModule::class])
+@Subcomponent(modules = [
+  Business1SagaModule::class,
+  Business1APIModule::class,
+  Business1RepositoryModule::class]
+)
 interface Business1SagaComponent : ISearchRepositoryProvider
 
 interface Business1SagaComponentProvider {
-  fun plus(module: Business1SagaModule): Business1SagaComponent
+  fun provide(module: Business1SagaModule): Business1SagaComponent
 }
 
 @Business1Scope

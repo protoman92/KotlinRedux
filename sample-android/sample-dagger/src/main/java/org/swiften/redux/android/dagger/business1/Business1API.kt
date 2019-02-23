@@ -13,7 +13,7 @@ interface ISearchAPI<Result> {
   fun searchMusicStore(query: String, limit: Int): Result
 }
 
-class API : ISearchAPI<String> {
+class Business1API : ISearchAPI<String> {
   override fun searchMusicStore(query: String, limit: Int): String {
     val url = Uri.Builder()
       .scheme("https")
@@ -26,5 +26,9 @@ class API : ISearchAPI<String> {
       .toString()
 
     return URL(url).readText()
+  }
+
+  fun finalize() {
+    println("Redux: Finalized $this")
   }
 }

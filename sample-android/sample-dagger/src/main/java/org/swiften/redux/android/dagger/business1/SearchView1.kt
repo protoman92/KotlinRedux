@@ -21,6 +21,7 @@ import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
+import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/22 */
 class SearchView1 @JvmOverloads constructor (
@@ -41,7 +42,7 @@ class SearchView1 @JvmOverloads constructor (
     }
   }
 
-  data class S(val query: String? = null)
+  data class S(val query: String? = null) : Serializable
   class A(val updateQuery: (String?) -> Unit)
 
   override var reduxProp by ObservableReduxProp<S, A> { _, _ -> }

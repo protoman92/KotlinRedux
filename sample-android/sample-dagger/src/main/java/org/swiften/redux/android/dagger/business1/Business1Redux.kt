@@ -52,7 +52,7 @@ object Business1Redux {
       }) {
         if (it) {
           val module = Business1SagaModule()
-          val component = provider.plus(module)
+          val component = provider.provide(module)
           activeSagas(component.searchRepository())
         } else {
           doNothing()

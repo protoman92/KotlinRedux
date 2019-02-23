@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.parent_1.search_view
 import org.swiften.redux.android.dagger.DependencyLevel1
 import org.swiften.redux.android.dagger.R
 import org.swiften.redux.android.dagger.Redux
+import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.ISubscriberIDProvider
@@ -73,7 +74,7 @@ class ParentFragment1 : Fragment(),
   override fun beforePropInjectionStarts(sp: StaticProp<Redux.State, DependencyLevel1>) {
     this.nav1.setOnClickListener { this@ParentFragment1.reduxProp.action.goToScreen2() }
     this.nav2.setOnClickListener { this@ParentFragment1.reduxProp.action.goToScreen3() }
-    sp.injector.inject(Unit, this.search_view, SearchView1)
+    sp.injector.injectLifecycle(Unit, this.search_view, SearchView1)
   }
 
   override fun afterPropInjectionEnds() {

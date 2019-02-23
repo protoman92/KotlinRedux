@@ -14,11 +14,15 @@ interface ISearchRepositoryProvider {
   fun searchRepository(): ISearchRepository
 }
 
-class Repository(
+class Business1Repository(
   private val decoder: Klaxon,
   private val api: ISearchAPI<String>
 ) : ISearchRepository {
   override fun searchMusicStore(query: String, limit: Int): MusicResult? {
     return this.api.searchMusicStore(query, limit).let { this.decoder.parse<MusicResult>(it) }
+  }
+
+  fun finalize() {
+    println("Redux: Finalized $this")
   }
 }

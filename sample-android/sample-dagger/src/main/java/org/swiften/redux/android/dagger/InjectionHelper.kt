@@ -24,19 +24,19 @@ class InjectionHelper(private val component: MainComponent) : ILifecycleOwnerInj
     when (owner) {
       is ParentFragment1 -> {
         val module = Business1Module()
-        val childComponent = this@InjectionHelper.component.plus(module)
+        val childComponent = this@InjectionHelper.component.provide(module)
         Business1InjectionHelper(childComponent).inject(injector, owner)
       }
 
       is ParentFragment2 -> {
         val module = Business2Module()
-        val childComponent = this@InjectionHelper.component.plus(module)
+        val childComponent = this@InjectionHelper.component.provide(module)
         Business2InjectionHelper(childComponent).inject(injector, owner)
       }
 
       is ParentFragment3 -> {
         val module = Business3Module()
-        val childComponent = this@InjectionHelper.component.plus(module)
+        val childComponent = this@InjectionHelper.component.provide(module)
         Business3InjectionHelper(childComponent).inject(injector, owner)
       }
     }
