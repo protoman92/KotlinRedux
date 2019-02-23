@@ -9,6 +9,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
+import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
@@ -16,7 +17,6 @@ import org.swiften.redux.core.IReduxSubscriber
 import org.swiften.redux.core.ISubscriberIDProvider
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.core.ThreadSafeStore
-import org.swiften.redux.core.DefaultSubscriberIDProvider
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -66,7 +66,7 @@ open class PropInjectorTest {
       this.beforeInjectionCount.incrementAndGet()
     }
 
-    override fun afterPropInjectionEnds() {
+    override fun afterPropInjectionEnds(sp: StaticProp<S, Unit>) {
       this.afterInjectionCount.incrementAndGet()
       this.propInitialized.set(false)
     }

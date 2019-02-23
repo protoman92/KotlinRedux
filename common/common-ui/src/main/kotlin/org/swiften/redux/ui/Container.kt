@@ -22,8 +22,9 @@ interface IPropLifecycleOwner<LState, OutProp> where LState : Any {
 
   /**
    * This is called after [IReduxSubscription.unsubscribe] is called.
+   * @param sp A [StaticProp] instance.
    */
-  fun afterPropInjectionEnds()
+  fun afterPropInjectionEnds(sp: StaticProp<LState, OutProp>)
 }
 
 /**
@@ -34,7 +35,7 @@ interface IPropLifecycleOwner<LState, OutProp> where LState : Any {
  */
 class NoopPropLifecycleOwner<LState, OutProp> : IPropLifecycleOwner<LState, OutProp> where LState : Any {
   override fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>) {}
-  override fun afterPropInjectionEnds() {}
+  override fun afterPropInjectionEnds(sp: StaticProp<LState, OutProp>) {}
 }
 
 /**

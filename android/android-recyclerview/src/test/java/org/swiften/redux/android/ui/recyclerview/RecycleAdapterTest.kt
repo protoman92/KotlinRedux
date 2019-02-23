@@ -19,9 +19,9 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
+import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.ISubscriberIDProvider
-import org.swiften.redux.core.DefaultSubscriberIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -52,7 +52,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
       this.beforeInjection.incrementAndGet()
     }
 
-    override fun afterPropInjectionEnds() {
+    override fun afterPropInjectionEnds(sp: StaticProp<Int, PositionProp<Unit>>) {
       this.afterInjection.incrementAndGet()
     }
   }
