@@ -131,6 +131,7 @@ data class State(val query: String?)
 class Action(val updateQuery: (String?) -> Unit)
 
 class Fragment1 : Fragment(),
+  IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<State, Action>,
   IPropLifecycleOwner<GlobalState, Unit> {
   override var reduxProps by ObservableReduxProps<State, Action> { _, next ->
@@ -203,7 +204,7 @@ object Redux {
 }
 
 class Fragment1 : Fragment(),
-  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+  IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<State, Action>,
   IPropLifecycleOwner<GlobalState, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<GlobalState, Unit, State, Action> {

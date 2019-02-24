@@ -9,7 +9,7 @@ from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md).
 
 ### Parameters
 
-`uniqueSubscriberID` - See [IReduxSubscription.uniqueSubscriberID](../-i-subscriber-i-d-provider/unique-subscriber-i-d.md).
+`uniqueID` - See [IReduxSubscription.uniqueID](../-i-unique-i-d-provider/unique-i-d.md).
 
 `_unsubscribe` - Function that contains unsubscription logic.
 
@@ -17,7 +17,7 @@ from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md).
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `ReduxSubscription(uniqueSubscriberID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, _unsubscribe: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`<br>Use this class to perform some [unsubscribe](unsubscribe.md) logic. For e.g.: terminate a [IReduxSubscription](../-i-redux-subscription/index.md) from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md). |
+| [&lt;init&gt;](-init-.md) | `ReduxSubscription(uniqueID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, _unsubscribe: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`<br>Use this class to perform some [unsubscribe](unsubscribe.md) logic. For e.g.: terminate a [IReduxSubscription](../-i-redux-subscription/index.md) from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md). |
 
 ### Properties
 
@@ -25,7 +25,7 @@ from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md).
 |---|---|
 | [_isUnsubscribed](_is-unsubscribed.md) | `val _isUnsubscribed: `[`AtomicBoolean`](http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/atomic/AtomicBoolean.html) |
 | [_unsubscribe](_unsubscribe.md) | `val _unsubscribe: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Function that contains unsubscription logic. |
-| [uniqueSubscriberID](unique-subscriber-i-d.md) | `val uniqueSubscriberID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>See [IReduxSubscription.uniqueSubscriberID](../-i-subscriber-i-d-provider/unique-subscriber-i-d.md). |
+| [uniqueID](unique-i-d.md) | `val uniqueID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>See [IReduxSubscription.uniqueID](../-i-unique-i-d-provider/unique-i-d.md). |
 
 ### Functions
 
