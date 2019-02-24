@@ -184,6 +184,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
   }
 
   @Test
+  @Suppress("RedundantLambdaArrow")
   fun `Take with selects should ensure thread-safety and that latest state is used`() {
     // Setup
     data class State(val a1: Int? = null, val a2: Int? = null)
@@ -258,7 +259,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Any>())
 
-    fun CoroutineScope.searchMusicStore(q: String) = this.async {
+    fun CoroutineScope.searchMusicStoreAsync(q: String) = this.async {
       val url = "https://itunes.apple.com/search?term=$q&limit=5&media=music"
       val result = URL(url).readText().replace("\n", "")
       "Input: $q, Result: $result"
@@ -267,7 +268,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     takeLatest(Action::class, { it.query }) { query ->
       just(query)
         .map { "unavailable$it" }
-        .mapAsync { this.searchMusicStore(it) }
+        .mapAsync { this.searchMusicStoreAsync(it) }
         .mapSingle { Single.just(it) }
         .castValue<Any>()
         .catchError {}
@@ -328,9 +329,9 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val correctValues = (0 until this.iteration).map { arrayListOf(it, it * 2, it * 3) }.flatten().sorted()
 
     mergeAll(
-      takeLatest(Action::class, { it.value }) { justEffect(it).map { it } },
-      takeLatest(Action::class, { it.value }) { justEffect(it).map { it * 2 } },
-      takeLatest(Action::class, { it.value }) { justEffect(it).map { it * 3 } }
+      takeLatest(Action::class, { it.value }) { v -> justEffect(v).map { it } },
+      takeLatest(Action::class, { it.value }) { v -> justEffect(v).map { it * 2 } },
+      takeLatest(Action::class, { it.value }) { v -> justEffect(v).map { it * 3 } }
     )
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
@@ -454,9 +455,11 @@ class SagaEffectTest : CommonSagaEffectTest() {
     }
   }
 
-  private fun test_streamDisposition_shouldRemoveEntryFromMonitor(createTakeEffect: (
-    creator: (IReduxAction) -> ISagaEffect<Any>
-  ) -> SagaEffect<Any>) {
+  private fun test_streamDisposition_shouldRemoveEntryFromMonitor(
+    createTakeEffect: (
+      creator: (IReduxAction) -> ISagaEffect<Any>
+    ) -> SagaEffect<Any>
+  ) {
     // Setup
     class Action(val value: Int) : IReduxAction
     val dispatchers = ConcurrentHashMap<String, IActionDispatcher>()
@@ -505,7 +508,6 @@ class SagaEffectTest : CommonSagaEffectTest() {
       assertTrue(setCount.get() > 0)
       assertEquals(setCount.get(), removeCount.get())
     }
-
   }
 
   @Test

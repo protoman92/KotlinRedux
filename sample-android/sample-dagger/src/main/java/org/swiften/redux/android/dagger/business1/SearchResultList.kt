@@ -85,7 +85,7 @@ class SearchResultListAdapter1 : ReduxRecyclerViewAdapter<SearchResultListAdapte
   }
 
   data class S(val track: MusicTrack?) : Serializable
-  class A()
+  class A
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     IPropContainer<S, A>,

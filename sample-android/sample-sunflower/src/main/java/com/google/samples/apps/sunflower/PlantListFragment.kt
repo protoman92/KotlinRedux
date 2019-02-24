@@ -28,9 +28,9 @@ import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IUniqueIDProvider
-import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -73,8 +73,8 @@ class PlantListFragment : Fragment(),
     return view
   }
 
-  override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-    inflater?.inflate(R.menu.menu_plant_list, menu)
+  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    inflater.inflate(R.menu.menu_plant_list, menu)
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {

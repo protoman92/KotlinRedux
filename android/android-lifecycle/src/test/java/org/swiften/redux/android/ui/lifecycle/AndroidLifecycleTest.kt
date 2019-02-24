@@ -27,7 +27,7 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
   class TestFragmentManager : FragmentManager() {
     val callbacks = AtomicReference<FragmentLifecycleCallbacks>()
 
-    override fun saveFragmentInstanceState(f: Fragment?) = null
+    override fun saveFragmentInstanceState(f: Fragment): Fragment.SavedState? = null
     override fun findFragmentById(id: Int) = null
     override fun getFragments() = mutableListOf<Fragment>()
     override fun beginTransaction() = throw RuntimeException()
@@ -46,9 +46,9 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
     override fun addOnBackStackChangedListener(listener: OnBackStackChangedListener) {}
 
     override fun dump(
-      prefix: String?,
+      prefix: String,
       fd: FileDescriptor?,
-      writer: PrintWriter?,
+      writer: PrintWriter,
       args: Array<out String>?
     ) {}
 

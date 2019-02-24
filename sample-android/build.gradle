@@ -64,13 +64,9 @@ configure(subprojects - project(':sample-android:sample-sunflower')) {
     implementation project(':android:android-all')
     implementation "com.github.protoman92:KotlinFP:master-SNAPSHOT"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin"
-    implementation "androidx.appcompat:appcompat:$project.ext.appCompat"
-    implementation "androidx.recyclerview:recyclerview:$project.ext.recyclerView"
     implementation "androidx.constraintlayout:constraintlayout:$project.ext.constraintlayout"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$project.ext.kotlinCoroutines"
     implementation "com.beust:klaxon:5.0.1"
-    implementation 'com.camerakit:camerakit:1.0.0-beta3.10'
-    implementation 'com.camerakit:jpegkit:0.1.0'
     testImplementation "junit:junit:$junit"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$project.ext.leakCanary"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$project.ext.leakCanary"

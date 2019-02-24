@@ -99,9 +99,11 @@ abstract class CommonSagaEffectTest {
 
     // When
     actualValues.forEach {
-      if (it % 3 == 0) monitor.dispatch(Action3(it))
-      else if (it % 2 == 0) monitor.dispatch(Action2(it))
-      else monitor.dispatch(Action1(it))
+      when {
+        it % 3 == 0 -> monitor.dispatch(Action3(it))
+        it % 2 == 0 -> monitor.dispatch(Action2(it))
+        else -> monitor.dispatch(Action1(it))
+      }
     }
 
     runBlocking {

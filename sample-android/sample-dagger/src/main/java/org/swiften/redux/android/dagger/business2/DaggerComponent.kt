@@ -14,4 +14,3 @@ import org.swiften.redux.android.dagger.DependencyLevel1
 interface Business2Component {
   fun hostDependency(): DependencyLevel1
 }
-

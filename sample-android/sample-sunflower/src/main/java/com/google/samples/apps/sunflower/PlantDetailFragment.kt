@@ -44,9 +44,9 @@ import kotlinx.android.synthetic.main.fragment_plant_detail.fab
 import kotlinx.android.synthetic.main.fragment_plant_detail.plant_detail
 import kotlinx.android.synthetic.main.fragment_plant_detail.plant_watering
 import kotlinx.android.synthetic.main.fragment_plant_detail.toolbar_layout
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IUniqueIDProvider
-import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -108,14 +108,15 @@ class PlantDetailFragment : Fragment(),
     return view
   }
 
-  override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-    inflater?.inflate(R.menu.menu_plant_detail, menu)
+  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    super.onCreateOptionsMenu(menu, inflater)
+    inflater.inflate(R.menu.menu_plant_detail, menu)
     super.onCreateOptionsMenu(menu, inflater)
   }
 
   @Suppress("DEPRECATION")
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-    return when (item?.itemId) {
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return when (item.itemId) {
       R.id.action_share -> {
         val shareIntent = ShareCompat.IntentBuilder.from(activity)
           .setText(shareText)
