@@ -10,7 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
@@ -155,7 +155,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : ISubscriberIDProvider,
+  VH : IUniqueIDProvider,
   VH : IPropContainer<VHState, VHAction>,
   VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
   VHState : Any,
@@ -168,13 +168,13 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
     override fun onBindViewHolder(holder: VH, position: Int) {
       val vhOutProp = PositionProp(outProp, position)
       val subscription = this@injectRecyclerAdapter.inject(vhOutProp, holder, vhMapper)
-      viewHolderIDs.add(subscription.uniqueSubscriberID)
+      viewHolderIDs.add(subscription.uniqueID)
     }
 
     override fun onViewRecycled(holder: VH) {
       super.onViewRecycled(holder)
-      this.viewHolderIDs.remove(holder.uniqueSubscriberID)
-      this@injectRecyclerAdapter.unsubscribe(holder.uniqueSubscriberID)
+      this.viewHolderIDs.remove(holder.uniqueID)
+      this@injectRecyclerAdapter.unsubscribe(holder.uniqueID)
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
@@ -211,7 +211,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   GState : LState,
   LState : Any,
   VH : RecyclerView.ViewHolder,
-  VH : ISubscriberIDProvider,
+  VH : IUniqueIDProvider,
   VH : IPropContainer<VHState, VHAction>,
   VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
   VHState : Any,

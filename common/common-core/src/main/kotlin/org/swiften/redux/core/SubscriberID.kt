@@ -9,12 +9,12 @@ import java.util.UUID
 
 /** Created by viethai.pham on 2019/02/21 */
 /** Provide a unique subscriber ID for [IReduxStore.subscribe]. */
-interface ISubscriberIDProvider {
+interface IUniqueIDProvider {
   /** The unique ID to pass to [IReduxStore.subscribe] and [IReduxStore.unsubscribe]. */
-  val uniqueSubscriberID: String
+  val uniqueID: String
 }
 
-/** Default implementation of [ISubscriberIDProvider] that simply uses [UUID.randomUUID]. */
-class DefaultSubscriberIDProvider : ISubscriberIDProvider {
-  override val uniqueSubscriberID: String = UUID.randomUUID().toString()
+/** Default implementation of [IUniqueIDProvider] that simply uses [UUID.randomUUID]. */
+class DefaultUniqueIDProvider : IUniqueIDProvider {
+  override val uniqueID: String = UUID.randomUUID().toString()
 }

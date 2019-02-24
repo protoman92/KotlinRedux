@@ -15,9 +15,9 @@ import kotlinx.android.synthetic.main.business_2_host.nav2
 import org.swiften.redux.android.dagger.DependencyLevel1
 import org.swiften.redux.android.dagger.R
 import org.swiften.redux.android.dagger.Redux
-import org.swiften.redux.core.DefaultSubscriberIDProvider
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -28,7 +28,7 @@ import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21 */
 class Business2HostFragment : Fragment(),
-  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+  IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<Business2HostFragment.S, Business2HostFragment.A>,
   IPropLifecycleOwner<Redux.State, DependencyLevel1> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<Redux.State, DependencyLevel1, S, A> {

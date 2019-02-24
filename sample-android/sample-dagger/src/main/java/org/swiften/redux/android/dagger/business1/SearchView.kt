@@ -12,9 +12,9 @@ import android.util.AttributeSet
 import androidx.appcompat.R
 import androidx.appcompat.widget.AppCompatEditText
 import org.swiften.redux.android.dagger.Redux
-import org.swiften.redux.core.DefaultSubscriberIDProvider
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -29,7 +29,7 @@ class SearchView @JvmOverloads constructor (
   attrs: AttributeSet? = null,
   style: Int = R.attr.editTextStyle
 ) : AppCompatEditText(context, attrs, style),
-  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+  IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<SearchView.S, SearchView.A>,
   IPropLifecycleOwner<Redux.State, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<Redux.State, Unit, S, A> {

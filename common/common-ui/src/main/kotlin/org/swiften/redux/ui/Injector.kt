@@ -12,7 +12,7 @@ import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IReduxUnsubscriber
 import org.swiften.redux.core.IReduxUnsubscriberProvider
 import org.swiften.redux.core.IStateGetterProvider
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.core.ReduxSubscription
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantReadWriteLock
@@ -47,7 +47,7 @@ interface IPropInjector<GState> : IStateGetterProvider<GState>, IReduxUnsubscrib
     mapper: IPropMapper<LState, OutProp, State, Action>
   ): IReduxSubscription where
     LState : Any,
-    View : ISubscriberIDProvider,
+    View : IUniqueIDProvider,
     View : IPropContainer<State, Action>,
     View : IPropLifecycleOwner<LState, OutProp>,
     State : Any,
@@ -91,12 +91,12 @@ open class PropInjector<GState : Any> protected constructor(
     mapper: IPropMapper<LState, OutProp, State, Action>
   ): IReduxSubscription where
     LState : Any,
-    View : ISubscriberIDProvider,
+    View : IUniqueIDProvider,
     View : IPropContainer<State, Action>,
     View : IPropLifecycleOwner<LState, OutProp>,
     State : Any,
     Action : Any {
-    val subscriberId = view.uniqueSubscriberID
+    val subscriberId = view.uniqueID
 
     /** If [view] has received an injection before, unsubscribe from that. */
     this.unsubscribe(subscriberId)
@@ -129,7 +129,7 @@ open class PropInjector<GState : Any> protected constructor(
     val subscription = this.store.subscribe(subscriberId, onStateUpdate)
 
     /** Wrap a [ReduxSubscription] to perform [IPropLifecycleOwner.afterPropInjectionEnds] */
-    val wrappedSubscription = ReduxSubscription(subscription.uniqueSubscriberID) {
+    val wrappedSubscription = ReduxSubscription(subscription.uniqueID) {
       subscription.unsubscribe()
       view.afterPropInjectionEnds(staticProp)
     }

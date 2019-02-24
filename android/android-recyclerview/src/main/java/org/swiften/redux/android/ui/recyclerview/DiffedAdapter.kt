@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
 import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
 import org.swiften.redux.core.CompositeReduxSubscription
-import org.swiften.redux.core.DefaultSubscriberIDProvider
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.DefaultUniqueIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
@@ -53,7 +53,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ) : ListAdapter<VHState, VH>(diffCallback),
-  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+  IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropLifecycleOwner<LState, OutProp> by NoopPropLifecycleOwner(),
   IPropContainer<List<VHState>, VHAction> where
   GState : LState,
@@ -142,7 +142,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
    * @param injector An [IPropInjector] instance.
    */
   internal fun cleanUpSubscriptions(injector: IPropInjector<GState>) {
-    injector.unsubscribe(this.uniqueSubscriberID)
+    injector.unsubscribe(this.uniqueID)
     this.composite.unsubscribe()
   }
 }

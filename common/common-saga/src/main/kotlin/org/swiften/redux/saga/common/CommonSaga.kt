@@ -14,7 +14,7 @@ import org.swiften.redux.core.IAsyncJob
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IStateGetter
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 
 /** Created by haipham on 2019/01/07 */
 /**
@@ -62,7 +62,7 @@ class SagaInput(
  * emitted values.
  * @param T The emission value type.
  */
-interface ISagaOutput<T> : IAsyncJob<T>, ISubscriberIDProvider where T : Any {
+interface ISagaOutput<T> : IAsyncJob<T>, IUniqueIDProvider where T : Any {
   /** Trigger every time an [IReduxAction] arrives. */
   val onAction: IActionDispatcher
 

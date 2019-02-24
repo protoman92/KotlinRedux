@@ -29,8 +29,8 @@ import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.ISubscriberIDProvider
-import org.swiften.redux.core.DefaultSubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -39,7 +39,7 @@ import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
 
 class PlantListFragment : Fragment(),
-  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+  IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<PlantListFragment.S, PlantListFragment.A>,
   IPropLifecycleOwner<Redux.State, PlantListFragment.IDependency> by NoopPropLifecycleOwner() {
   interface IDependency : PlantAdapter.IDependency

@@ -13,8 +13,8 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.detail_fragment.artistName
 import kotlinx.android.synthetic.main.detail_fragment.trackName
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.ISubscriberIDProvider
-import org.swiften.redux.core.DefaultSubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -24,7 +24,7 @@ import java.io.Serializable
 
 /** Created by haipham on 27/1/19 */
 class DetailFragment : Fragment(),
-  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+  IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<DetailFragment.S, Unit>,
   IPropLifecycleOwner<DetailFragment.ILocalState, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<ILocalState, Unit, DetailFragment.S, Unit> {

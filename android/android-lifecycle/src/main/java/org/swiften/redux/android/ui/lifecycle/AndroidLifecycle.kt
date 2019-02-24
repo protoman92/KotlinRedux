@@ -10,7 +10,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import org.swiften.redux.core.IReduxSubscription
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropInjector
@@ -103,7 +103,7 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
   GState : LState,
   LState : Any,
   Owner : LifecycleOwner,
-  Owner : ISubscriberIDProvider,
+  Owner : IUniqueIDProvider,
   Owner : IPropContainer<State, Action>,
   Owner : IPropLifecycleOwner<LState, OutProp>,
   State : Any,
@@ -122,7 +122,7 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
     }
 
     override fun onSafeForEndingLifecycleAwareTasks() {
-      subscription?.also { this@injectLifecycle.unsubscribe(it.uniqueSubscriberID) }
+      subscription?.also { this@injectLifecycle.unsubscribe(it.uniqueID) }
     }
   })
 
