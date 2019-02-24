@@ -18,9 +18,9 @@ import kotlinx.android.synthetic.main.business_1_host.search_view
 import org.swiften.redux.android.dagger.DependencyLevel1
 import org.swiften.redux.android.dagger.R
 import org.swiften.redux.android.dagger.Redux
-import org.swiften.redux.core.DefaultSubscriberIDProvider
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -31,7 +31,7 @@ import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21 */
 class Business1HostFragment : Fragment(),
-  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+  IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<Business1HostFragment.S, Business1HostFragment.A>,
   IPropLifecycleOwner<Redux.State, DependencyLevel1> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<Redux.State, DependencyLevel1, S, A> {
@@ -80,7 +80,7 @@ class Business1HostFragment : Fragment(),
 
   override fun afterPropInjectionEnds(sp: StaticProp<Redux.State, DependencyLevel1>) {
     this.reduxProp.action.deinitializeBusiness1()
-    sp.injector.unsubscribe(this.search_view.uniqueSubscriberID)
-    sp.injector.unsubscribe(this.result_container.uniqueSubscriberID)
+    sp.injector.unsubscribe(this.search_view.uniqueID)
+    sp.injector.unsubscribe(this.result_container.uniqueID)
   }
 }

@@ -13,9 +13,9 @@ import kotlin.concurrent.write
 /** Created by haipham on 2019/01/24/1 */
 /**
  * Represents a subscription object that can be unsubscribed from. Each [IReduxSubscription]
- * must also have an [uniqueSubscriberID] that can be used to perform selective unsubscription.
+ * must also have an [uniqueID] that can be used to perform selective unsubscription.
  */
-interface IReduxSubscription : ISubscriberIDProvider {
+interface IReduxSubscription : IUniqueIDProvider {
   /**
    * Check if this [IReduxSubscription] is unsubscribed.
    * @return The subscription status.
@@ -29,11 +29,11 @@ interface IReduxSubscription : ISubscriberIDProvider {
 /**
  * Use this class to perform some [unsubscribe] logic. For e.g.: terminate a [IReduxSubscription]
  * from [IReduxStore.subscribe].
- * @param uniqueSubscriberID See [IReduxSubscription.uniqueSubscriberID].
+ * @param uniqueID See [IReduxSubscription.uniqueID].
  * @param _unsubscribe Function that contains unsubscription logic.
  */
 class ReduxSubscription(
-  override val uniqueSubscriberID: String,
+  override val uniqueID: String,
   private val _unsubscribe: () -> Unit
 ) : IReduxSubscription {
   companion object {
@@ -55,9 +55,9 @@ class ReduxSubscription(
  * Composite [IReduxSubscription] that may contain other [IReduxSubscription], and when
  * [IReduxSubscription.unsubscribe] is called, all the children [IReduxSubscription] will also
  * be unsubscribed from.
- * @param uniqueSubscriberID See [IReduxSubscription.uniqueSubscriberID].
+ * @param uniqueID See [IReduxSubscription.uniqueID].
  */
-class CompositeReduxSubscription(override val uniqueSubscriberID: String) : IReduxSubscription {
+class CompositeReduxSubscription(override val uniqueID: String) : IReduxSubscription {
   private val subscriptions = mutableMapOf<String, IReduxSubscription>()
   private val lock = ReentrantReadWriteLock()
   private var _isUnsubscribed = false
@@ -79,12 +79,12 @@ class CompositeReduxSubscription(override val uniqueSubscriberID: String) : IRed
    * @param subscription An [IReduxSubscription] instance.
    */
   fun add(subscription: IReduxSubscription) {
-    this.lock.write { this.subscriptions[subscription.uniqueSubscriberID] = subscription }
+    this.lock.write { this.subscriptions[subscription.uniqueID] = subscription }
   }
 
   /**
-   * Remove an [IReduxSubscription] instance whose [IReduxSubscription.uniqueSubscriberID] equals
-   * [uniqueSubscriberID].
+   * Remove an [IReduxSubscription] instance whose [IReduxSubscription.uniqueID] equals
+   * [uniqueID].
    * @param subscribeId A [String] value.
    * @return The remove [IReduxSubscription], if any.
    */
@@ -98,6 +98,6 @@ class CompositeReduxSubscription(override val uniqueSubscriberID: String) : IRed
    * @return The remove [IReduxSubscription], if any.
    */
   fun remove(subscription: IReduxSubscription): IReduxSubscription? {
-    return this.remove(subscription.uniqueSubscriberID)
+    return this.remove(subscription.uniqueID)
   }
 }

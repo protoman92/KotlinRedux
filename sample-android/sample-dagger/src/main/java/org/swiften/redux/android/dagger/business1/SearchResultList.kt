@@ -18,9 +18,9 @@ import org.swiften.redux.android.dagger.Redux
 import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
 import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
-import org.swiften.redux.core.DefaultSubscriberIDProvider
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -35,7 +35,7 @@ class SearchResultList @JvmOverloads constructor (
   attrs: AttributeSet? = null,
   style: Int = 0
 ) : RecyclerView(context, attrs, style),
-  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+  IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<SearchResultList.S, SearchResultList.A>,
   IPropLifecycleOwner<Redux.State, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<Redux.State, Unit, S, A> {
@@ -62,8 +62,8 @@ class SearchResultList @JvmOverloads constructor (
 
   override fun afterPropInjectionEnds(sp: StaticProp<Redux.State, Unit>) {
     this.adapter
-      ?.takeIf { it is ISubscriberIDProvider }
-      ?.also { sp.injector.unsubscribe((it as ISubscriberIDProvider).uniqueSubscriberID) }
+      ?.takeIf { it is IUniqueIDProvider }
+      ?.also { sp.injector.unsubscribe((it as IUniqueIDProvider).uniqueID) }
   }
 }
 

@@ -11,9 +11,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.android.synthetic.main.search_result_container.view.result_list
 import org.swiften.redux.android.dagger.R
 import org.swiften.redux.android.dagger.Redux
-import org.swiften.redux.core.DefaultSubscriberIDProvider
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -28,7 +28,7 @@ class SearchResultContainer @JvmOverloads constructor (
   attrs: AttributeSet?,
   style: Int = 0
 ) : ConstraintLayout(context, attrs, style),
-  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+  IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<SearchResultContainer.S, SearchResultContainer.A>,
   IPropLifecycleOwner<Redux.State, Unit> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<Redux.State, Unit, S, A> {
@@ -50,6 +50,6 @@ class SearchResultContainer @JvmOverloads constructor (
   }
 
   override fun afterPropInjectionEnds(sp: StaticProp<Redux.State, Unit>) {
-    sp.injector.unsubscribe(this.result_list.uniqueSubscriberID)
+    sp.injector.unsubscribe(this.result_list.uniqueID)
   }
 }

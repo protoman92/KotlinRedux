@@ -12,9 +12,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.android.util.AndroidUtil
-import org.swiften.redux.core.DefaultSubscriberIDProvider
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IReduxStore
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -46,7 +46,7 @@ class AndroidInjectorTest : PropInjectorTest() {
   }
 
   internal class AndroidView :
-    ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+    IUniqueIDProvider by DefaultUniqueIDProvider(),
     IPropContainer<S, A>,
     IPropLifecycleOwner<S, Unit> {
     override var reduxProp by LateinitObservableProp<ReduxProp<S, A>> { _, _ ->

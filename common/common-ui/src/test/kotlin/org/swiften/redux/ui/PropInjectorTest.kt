@@ -8,12 +8,12 @@ package org.swiften.redux.ui
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.swiften.redux.core.DefaultSubscriberIDProvider
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IReduxSubscriber
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.core.ThreadSafeStore
 import java.util.concurrent.atomic.AtomicInteger
@@ -43,7 +43,7 @@ open class PropInjectorTest {
   }
 
   internal class View :
-    ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+    IUniqueIDProvider by DefaultUniqueIDProvider(),
     IPropContainer<S, A>,
     IPropLifecycleOwner<S, Unit> {
     override var reduxProp by ObservableReduxProp<S, A> { prev, next ->

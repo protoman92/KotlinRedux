@@ -10,10 +10,10 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.rx2.rxSingle
-import org.swiften.redux.core.DefaultSubscriberIDProvider
+import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.ISubscriberIDProvider
+import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.saga.common.ISagaMonitor
 import org.swiften.redux.saga.common.ISagaOutput
 import java.util.concurrent.TimeUnit
@@ -43,7 +43,7 @@ class SagaOutput<T : Any>(
   private val onDispose: () -> Unit = {},
   override val onAction: IActionDispatcher
 ) : ISagaOutput<T>,
-  ISubscriberIDProvider by DefaultSubscriberIDProvider(),
+  IUniqueIDProvider by DefaultUniqueIDProvider(),
   CoroutineScope by scope {
   companion object {
     /**
@@ -83,7 +83,7 @@ class SagaOutput<T : Any>(
 
   init {
     val monitor = this.monitor
-    val subscriberID = this.uniqueSubscriberID
+    val subscriberID = this.uniqueID
     monitor.addOutputDispatcher(subscriberID, this.onAction)
 
     this.stream = stream
