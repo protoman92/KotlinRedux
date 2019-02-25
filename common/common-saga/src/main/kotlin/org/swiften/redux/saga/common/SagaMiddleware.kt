@@ -27,11 +27,38 @@ import kotlin.coroutines.CoroutineContext
  * @param effects The [List] of [ISagaEffect] to run.
  * @param context The [CoroutineContext] with which to perform asynchronous work on.
  */
-internal class SagaMiddleware(
+class SagaMiddleware private constructor (
   private val context: CoroutineContext,
   private val monitor: SagaMonitor,
   private val effects: Collection<ISagaEffect<*>>
 ) : IMiddleware<Any> {
+  companion object {
+    /**
+     * Create a [SagaMiddleware] with [effects].
+     * @param context See [SagaMiddleware.context].
+     * @param monitor A [SagaMonitor] instance.
+     * @param effects See [SagaMiddleware.effects].
+     * @return A [SagaMiddleware] instance.
+     */
+    internal fun create(
+      context: CoroutineContext,
+      monitor: SagaMonitor,
+      effects: Collection<ISagaEffect<*>>
+    ): IMiddleware<Any> {
+      return SagaMiddleware(context, monitor, effects)
+    }
+
+    /**
+     * Create a [SagaMiddleware] with [effects] and a default [CoroutineContext] so this
+     * [SagaMiddleware] does not have to share its [CoroutineContext] with any other user.
+     * @param effects See [SagaMiddleware.effects].
+     * @return A [SagaMiddleware] instance.
+     */
+    fun create(effects: Collection<ISagaEffect<*>>): IMiddleware<Any> {
+      return this.create(SupervisorJob(), SagaMonitor(), effects)
+    }
+  }
+
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       val lock = ReentrantLock()
@@ -61,29 +88,4 @@ internal class SagaMiddleware(
       })
     }
   }
-}
-
-/**
- * Create a [SagaMiddleware] with [effects].
- * @param context See [SagaMiddleware.context].
- * @param monitor A [SagaMonitor] instance.
- * @param effects See [SagaMiddleware.effects].
- * @return A [SagaMiddleware] instance.
- */
-internal fun createSagaMiddleware(
-  context: CoroutineContext,
-  monitor: SagaMonitor,
-  effects: Collection<ISagaEffect<*>>
-): IMiddleware<Any> {
-  return SagaMiddleware(context, monitor, effects)
-}
-
-/**
- * Create a [SagaMiddleware] with [effects] and a default [CoroutineContext] so this
- * [SagaMiddleware] does not have to share its [CoroutineContext] with any other user.
- * @param effects See [SagaMiddleware.effects].
- * @return A [SagaMiddleware] instance.
- */
-fun createSagaMiddleware(effects: Collection<ISagaEffect<*>>): IMiddleware<Any> {
-  return createSagaMiddleware(SupervisorJob(), SagaMonitor(), effects)
 }

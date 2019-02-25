@@ -15,11 +15,11 @@ import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivityParcelable
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
+import org.swiften.redux.core.AsyncMiddleware
 import org.swiften.redux.core.FinalStore
+import org.swiften.redux.core.RouterMiddleware
 import org.swiften.redux.core.applyMiddlewares
-import org.swiften.redux.core.createAsyncMiddleware
-import org.swiften.redux.core.createRouterMiddleware
-import org.swiften.redux.saga.common.createSagaMiddleware
+import org.swiften.redux.saga.common.SagaMiddleware
 import org.swiften.redux.thunk.createThunkMiddleware
 
 /** Created by haipham on 2019/01/17 */
@@ -34,9 +34,9 @@ class GardenApplication : Application() {
     }
 
     val store = applyMiddlewares<Redux.State>(
-      createAsyncMiddleware(),
-      createRouterMiddleware(Router(this)),
-      createSagaMiddleware(
+      AsyncMiddleware.create(),
+      RouterMiddleware.create(Router(this)),
+      SagaMiddleware.create(
         arrayListOf(
           arrayListOf(Redux.Saga.CoreSaga.watchNetworkConnectivity(this)),
           Redux.Saga.GardenPlantingSaga.allSagas(InjectorUtils.getGardenPlantingRepository(this)),

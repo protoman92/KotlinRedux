@@ -9,11 +9,11 @@ import android.app.Application
 import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
+import org.swiften.redux.core.AsyncMiddleware
 import org.swiften.redux.core.FinalStore
+import org.swiften.redux.core.RouterMiddleware
 import org.swiften.redux.core.applyMiddlewares
-import org.swiften.redux.core.createAsyncMiddleware
-import org.swiften.redux.core.createRouterMiddleware
-import org.swiften.redux.saga.common.createSagaMiddleware
+import org.swiften.redux.saga.common.SagaMiddleware
 
 /** Created by haipham on 26/1/19 */
 class MainApplication : Application() {
@@ -28,9 +28,9 @@ class MainApplication : Application() {
       .build()
 
     val store = applyMiddlewares<Redux.State>(
-      createAsyncMiddleware(),
-      createRouterMiddleware(Router(this)),
-      createSagaMiddleware(Redux.Saga.allSagas(component))
+      AsyncMiddleware.create(),
+      RouterMiddleware.create(Router(this)),
+      SagaMiddleware.create(Redux.Saga.allSagas(component))
     )(FinalStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)
