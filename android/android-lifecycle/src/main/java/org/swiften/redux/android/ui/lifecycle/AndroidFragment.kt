@@ -34,11 +34,12 @@ class AppCompatActivityWrapper(private val activity: AppCompatActivity) : IAppCo
  * @param GState The global state type.
  * @param activity An [IAppCompatActivity] instance.
  * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
+ * @return A [FragmentManager.FragmentLifecycleCallbacks] instance.
  */
 internal fun <GState> IPropInjector<GState>.injectFragment(
   activity: IAppCompatActivity,
   inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
-) where GState : Any {
+): FragmentManager.FragmentLifecycleCallbacks where GState : Any {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
       inject(this@injectFragment, f)
@@ -59,6 +60,8 @@ internal fun <GState> IPropInjector<GState>.injectFragment(
       activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
     }
   }
+
+  return callback
 }
 
 /**
@@ -67,10 +70,11 @@ internal fun <GState> IPropInjector<GState>.injectFragment(
  * @param GState The global state type.
  * @param activity An [AppCompatActivity] instance.
  * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
+ * @return A [FragmentManager.FragmentLifecycleCallbacks] instance.
  */
-internal fun <GState> IPropInjector<GState>.injectFragment(
+fun <GState> IPropInjector<GState>.injectFragment(
   activity: AppCompatActivity,
   inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
-) where GState : Any {
+): FragmentManager.FragmentLifecycleCallbacks where GState : Any {
   return this.injectFragment(AppCompatActivityWrapper(activity), inject)
 }
