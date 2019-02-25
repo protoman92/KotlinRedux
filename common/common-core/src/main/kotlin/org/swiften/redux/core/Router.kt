@@ -31,7 +31,7 @@ interface IRouter<in Screen> : IDeinitializerProvider where Screen : IRouterScre
  * true for [navigate] performs the navigation.
  * @param Screen The app [IRouterScreen] type.
  */
-interface IVetoableRouter<in Screen> : IDeinitializerProvider where Screen : IRouterScreen {
+interface IVetoableRouter<in Screen> where Screen : IRouterScreen {
   /**
    * Navigate to an [IRouterScreen]. How this is done is left to the app's specific implementation.
    * @param screen The incoming [Screen] instance.
