@@ -22,7 +22,7 @@ class NestedRouter private constructor (private val navigator: (IRouterScreen) -
      * @param navigator See [NestedRouter.navigator].
      * @return An [IRouter] instance.
      */
-    fun create(navigator: (IRouterScreen) -> Boolean) : IRouter<IRouterScreen> {
+    fun create(navigator: (IRouterScreen) -> Boolean): IRouter<IRouterScreen> {
       return object : IRouter<IRouterScreen> {
         private val lock = ReentrantLock()
         private val router = NestedRouter(navigator)

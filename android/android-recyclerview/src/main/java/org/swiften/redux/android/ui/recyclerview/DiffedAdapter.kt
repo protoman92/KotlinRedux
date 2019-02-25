@@ -197,7 +197,12 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
       val subscription = ReduxSubscription(subscribeId) { holder.afterPropInjectionEnds(sp) }
       this.composite.add(subscription)
       holder.beforePropInjectionStarts(sp)
-      holder.reduxProp = ReduxProp(this.getItem(position), this.reduxProp.action)
+
+      /**
+       * [ReduxProp.firstTime] is always true because [onBindViewHolder] is only called when
+       * [holder] is recreated due to diffing.
+       */
+      holder.reduxProp = ReduxProp(true, this.getItem(position), this.reduxProp.action)
     }
 
     override fun onViewRecycled(holder: VH) {

@@ -126,7 +126,7 @@ class CompositeReduxSubscription private constructor(override val uniqueID: Stri
 }
 
 /**
- * Remove an [IReduxSubscription] from [subscriptions].
+ * Remove an [IReduxSubscription].
  * @receiver An [ICompositeReduxSubscription] instance.
  * @param subscription An [IReduxSubscription] instance.
  * @return The remove [IReduxSubscription], if any.
