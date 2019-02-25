@@ -2,9 +2,11 @@
 
 # add
 
-`fun add(subscription: `[`IReduxSubscription`](../-i-redux-subscription/index.md)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L81)
+`fun add(subscription: `[`IReduxSubscription`](../-i-redux-subscription/index.md)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L119)
 
-Add an [IReduxSubscription](../-i-redux-subscription/index.md) to [subscriptions](subscriptions.md).
+Overrides [ICompositeReduxSubscription.add](../-i-composite-redux-subscription/add.md)
+
+Add an [IReduxSubscription](../-i-redux-subscription/index.md).
 
 ### Parameters
 

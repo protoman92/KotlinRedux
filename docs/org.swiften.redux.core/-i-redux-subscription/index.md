@@ -2,7 +2,7 @@
 
 # IReduxSubscription
 
-`interface IReduxSubscription : `[`IUniqueIDProvider`](../-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L18)
+`interface IReduxSubscription : `[`IUniqueIDProvider`](../-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L17)
 
 Represents a subscription object that can be unsubscribed from. Each [IReduxSubscription](./index.md)
 must also have an [uniqueID](../-i-unique-i-d-provider/unique-i-d.md) that can be used to perform selective unsubscription.
@@ -24,5 +24,5 @@ must also have an [uniqueID](../-i-unique-i-d-provider/unique-i-d.md) that can b
 
 | Name | Summary |
 |---|---|
-| [CompositeReduxSubscription](../-composite-redux-subscription/index.md) | `class CompositeReduxSubscription : `[`IReduxSubscription`](./index.md)<br>Composite [IReduxSubscription](./index.md) that may contain other [IReduxSubscription](./index.md), and when [IReduxSubscription.unsubscribe](unsubscribe.md) is called, all the children [IReduxSubscription](./index.md) will also be unsubscribed from. |
+| [ICompositeReduxSubscription](../-i-composite-redux-subscription/index.md) | `interface ICompositeReduxSubscription : `[`IReduxSubscription`](./index.md) |
 | [ReduxSubscription](../-redux-subscription/index.md) | `class ReduxSubscription : `[`IReduxSubscription`](./index.md)<br>Use this class to perform some [unsubscribe](../-redux-subscription/unsubscribe.md) logic. For e.g.: terminate a [IReduxSubscription](./index.md) from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md). |

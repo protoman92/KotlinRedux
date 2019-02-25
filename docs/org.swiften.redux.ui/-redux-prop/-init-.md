@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`ReduxProp(state: `[`State`](index.md#State)`, action: `[`Action`](index.md#Action)`)`
+`ReduxProp(firstTime: `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)`, state: `[`State`](index.md#State)`, action: `[`Action`](index.md#Action)`)`
 
 Container for [state](state.md) and [action](action.md).
 
@@ -11,6 +11,8 @@ Container for [state](state.md) and [action](action.md).
 `State` - See [IVariableProp.state](../-i-variable-prop/state.md).
 
 `Action` - See [IVariableProp.action](../-i-variable-prop/action.md).
+
+`firstTime` - Whether this [ReduxProp](index.md) is the first one to be injected.
 
 `state` - A [State](index.md#State) instance.
 

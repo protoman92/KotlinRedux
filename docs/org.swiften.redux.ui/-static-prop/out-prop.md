@@ -2,4 +2,4 @@
 
 # outProp
 
-`val outProp: `[`OutProp`](index.md#OutProp) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L26)
+`val outProp: `[`OutProp`](index.md#OutProp) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Props.kt#L27)

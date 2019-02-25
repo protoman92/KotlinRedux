@@ -2,7 +2,7 @@
 
 # RouterMiddleware
 
-`@PublishedApi internal class RouterMiddleware<Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IMiddleware`](../-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/RouterMiddleware.kt#L37)
+`class RouterMiddleware<out Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IMiddleware`](../-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/RouterMiddleware.kt#L17)
 
 [IMiddleware](../-i-middleware.md) implementation for [IRouter](../-i-router/index.md) middleware.
 
@@ -24,11 +24,17 @@
 
 | Name | Summary |
 |---|---|
-| [cls](cls.md) | `val cls: `[`Class`](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html)`<`[`Screen`](index.md#Screen)`>`<br>The [Class](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html) of the [Screen](index.md#Screen) type to check type for [IReduxAction](../-i-redux-action.md). |
-| [router](router.md) | `val router: `[`IRouter`](../-i-router/index.md)`<`[`Screen`](index.md#Screen)`>`<br>An [IRouter](../-i-router/index.md) instance. |
+| [cls](cls.md) | `private/*private to this*/ val cls: `[`Class`](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html)`<`[`Screen`](index.md#Screen)`>`<br>The [Class](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html) of the [Screen](index.md#Screen) type to check type for [IReduxAction](../-i-redux-action.md). |
+| [router](router.md) | `private/*private to this*/ val router: `[`IRouter`](../-i-router/index.md)`<`[`Screen`](index.md#Screen)`>`<br>An [IRouter](../-i-router/index.md) instance. |
 
 ### Functions
 
 | Name | Summary |
 |---|---|
 | [invoke](invoke.md) | `fun invoke(p1: `[`MiddlewareInput`](../-middleware-input/index.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>): `[`DispatchMapper`](../-dispatch-mapper.md) |
+
+### Companion Object Functions
+
+| Name | Summary |
+|---|---|
+| [create](create.md) | `fun <Screen : `[`IRouterScreen`](../-i-router-screen.md)`> create(router: `[`IRouter`](../-i-router/index.md)`<`[`Screen`](create.md#Screen)`>): `[`IMiddleware`](../-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>`<br>Create a [RouterMiddleware](./index.md) with [router](create.md#org.swiften.redux.core.RouterMiddleware.Companion$create(org.swiften.redux.core.IRouter((org.swiften.redux.core.RouterMiddleware.Companion.create.Screen)))/router). |

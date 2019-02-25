@@ -17,6 +17,7 @@ Container for an [IPropContainer](../-i-prop-container/index.md) mutable propert
 | Name | Summary |
 |---|---|
 | [action](action.md) | `abstract val action: `[`Action`](index.md#Action) |
+| [firstTime](first-time.md) | `abstract val firstTime: `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
 | [state](state.md) | `abstract val state: `[`State`](index.md#State) |
 
 ### Inheritors

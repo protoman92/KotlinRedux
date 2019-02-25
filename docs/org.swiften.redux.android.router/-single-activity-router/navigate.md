@@ -6,8 +6,7 @@
 
 Overrides [IRouter.navigate](../../org.swiften.redux.core/-i-router/navigate.md)
 
-Navigate to an [IRouterScreen](../../org.swiften.redux.core/-i-router-screen.md). How this is done is left to the app's specific
-implementation.
+Navigate to an [IRouterScreen](../../org.swiften.redux.core/-i-router-screen.md). How this is done is left to the app's specific implementation.
 
 ### Parameters
 
