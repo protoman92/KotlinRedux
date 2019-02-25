@@ -114,7 +114,7 @@ open class PropInjector<GState : Any> protected constructor(
 
         if (next != prev) {
           val action = mapper.mapAction(this@PropInjector.dispatch, outProp)
-          view.reduxProp = ReduxProp(next, action)
+          view.reduxProp = ReduxProp(prev == null, next, action)
         }
       }
     }
