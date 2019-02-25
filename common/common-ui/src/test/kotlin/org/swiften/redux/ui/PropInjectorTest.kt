@@ -6,6 +6,8 @@
 package org.swiften.redux.ui
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.swiften.redux.core.DefaultUniqueIDProvider
@@ -90,6 +92,21 @@ open class PropInjectorTest {
 
   open fun createInjector(store: IReduxStore<S>): IFullPropInjector<S> {
     return TestInjector(store)
+  }
+
+  @Test
+  fun `Injection props multiple times should update firstTime flag`() {
+    // Setup
+    val injector = this.createInjector(this.store)
+    val view = View()
+
+    // When && Then
+    injector.inject(Unit, view, this.mapper)
+    assertTrue(view.reduxProp.firstTime)
+
+    // When && Then
+    this.store.dispatch(Action.SetQuery("1"))
+    assertFalse(view.reduxProp.firstTime)
   }
 
   @Test
