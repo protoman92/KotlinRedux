@@ -9,32 +9,13 @@ import kotlin.reflect.KClass
 
 /** Created by haipham on 2018/12/16 */
 /**
- * Represents a screen that also implements [IReduxAction], so that views can simply dispatch an
- * [IRouterScreen] to navigate to the associated screen.
- */
-interface IRouterScreen : IReduxAction
-
-/**
- * Abstract the necessary work to navigate from one [Screen] to another.
- * @param Screen The app [IRouterScreen] type.
- */
-interface IRouter<Screen> : IDeinitializerProvider where Screen : IRouterScreen {
-  /**
-   * Navigate to an [IRouterScreen]. How this is done is left to the app's specific
-   * implementation.
-   * @param screen The incoming [Screen] instance.
-   */
-  fun navigate(screen: Screen)
-}
-
-/**
  * [IMiddleware] implementation for [IRouter] middleware.
  * @param Screen The app [IRouterScreen] type.
  * @param cls The [Class] of the [Screen] type to check type for [IReduxAction].
  * @param router An [IRouter] instance.
  */
 @PublishedApi
-internal class RouterMiddleware<Screen>(
+internal class RouterMiddleware<out Screen>(
   private val cls: Class<Screen>,
   private val router: IRouter<Screen>
 ) : IMiddleware<Any> where Screen : IRouterScreen {
@@ -71,6 +52,8 @@ internal class RouterMiddleware<Screen>(
  * @param router See [RouterMiddleware.router].
  * @return A [RouterMiddleware] instance.
  */
-inline fun <reified Screen> createRouterMiddleware(router: IRouter<Screen>):
-  IMiddleware<Any> where Screen : IRouterScreen =
-  RouterMiddleware(Screen::class, router)
+inline fun <reified Screen> createRouterMiddleware(
+  router: IRouter<Screen>
+): IMiddleware<Any> where Screen : IRouterScreen {
+  return RouterMiddleware(Screen::class, router)
+}
