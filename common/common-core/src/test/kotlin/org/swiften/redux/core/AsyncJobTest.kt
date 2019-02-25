@@ -22,9 +22,9 @@ class AsyncJobTest {
     class Action(val value: Int) : IReduxAction
 
     val store = applyMiddlewares<Int>(
-      createAsyncMiddleware(),
-      createAsyncMiddleware(),
-      createAsyncMiddleware()
+      AsyncMiddleware.create(),
+      AsyncMiddleware.create(),
+      AsyncMiddleware.create()
     )(FinalStore(-1) { s, a -> when (a) {
       is Action -> a.value
       else -> s

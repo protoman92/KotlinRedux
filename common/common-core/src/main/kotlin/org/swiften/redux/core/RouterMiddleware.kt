@@ -14,11 +14,24 @@ import kotlin.reflect.KClass
  * @param cls The [Class] of the [Screen] type to check type for [IReduxAction].
  * @param router An [IRouter] instance.
  */
-@PublishedApi
-internal class RouterMiddleware<out Screen>(
+class RouterMiddleware<out Screen> private constructor (
   private val cls: Class<Screen>,
   private val router: IRouter<Screen>
 ) : IMiddleware<Any> where Screen : IRouterScreen {
+  companion object {
+    /**
+     * Create a [RouterMiddleware] with [router].
+     * @param Screen The app [IRouterScreen] type.
+     * @param router See [RouterMiddleware.router].
+     * @return A [RouterMiddleware] instance.
+     */
+    inline fun <reified Screen> create(
+      router: IRouter<Screen>
+    ): IMiddleware<Any> where Screen : IRouterScreen {
+      return RouterMiddleware(Screen::class, router)
+    }
+  }
+
   constructor(cls: KClass<Screen>, router: IRouter<Screen>) : this(cls.java, router)
 
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
@@ -44,16 +57,4 @@ internal class RouterMiddleware<out Screen>(
       }
     }
   }
-}
-
-/**
- * Create a [RouterMiddleware] with [router].
- * @param Screen The app [IRouterScreen] type.
- * @param router See [RouterMiddleware.router].
- * @return A [RouterMiddleware] instance.
- */
-inline fun <reified Screen> createRouterMiddleware(
-  router: IRouter<Screen>
-): IMiddleware<Any> where Screen : IRouterScreen {
-  return RouterMiddleware(Screen::class, router)
 }

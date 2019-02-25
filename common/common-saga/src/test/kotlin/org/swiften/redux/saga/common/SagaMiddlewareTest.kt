@@ -42,7 +42,7 @@ class SagaMiddlewareTest : BaseMiddlewareTest() {
     val input = this.mockMiddlewareInput(0)
     outputs.forEachIndexed { i, o -> monitor.addOutputDispatcher("$i", o.onAction) }
 
-    val wrappedDispatch = createSagaMiddleware(EmptyCoroutineContext, monitor, effects)
+    val wrappedDispatch = SagaMiddleware.create(EmptyCoroutineContext, monitor, effects)
       .invoke(input)(this.mockDispatchWrapper())
       .dispatch
 

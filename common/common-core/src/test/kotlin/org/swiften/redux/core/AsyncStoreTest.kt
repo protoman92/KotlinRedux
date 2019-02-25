@@ -8,6 +8,6 @@ package org.swiften.redux.core
 /** Created by haipham on 2018/01/14 */
 class AsyncStoreTest : BaseStoreTest() {
   override fun createStore(): IReduxStore<Int> {
-    return applyMiddlewares<Int>(createAsyncMiddleware())(ThreadSafeStore(0, this.reducer()))
+    return applyMiddlewares<Int>(AsyncMiddleware.create())(ThreadSafeStore(0, this.reducer()))
   }
 }

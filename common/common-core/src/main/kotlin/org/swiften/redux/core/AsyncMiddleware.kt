@@ -16,7 +16,27 @@ import kotlin.coroutines.CoroutineContext
  * [IMiddleware] implementation that calls [DispatchWrapper.dispatch] on another thread.
  * @param context A [CoroutineContext] instance.
  */
-internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddleware<Any> {
+class AsyncMiddleware private constructor (private val context: CoroutineContext) : IMiddleware<Any> {
+  companion object {
+    /**
+     * Create a [AsyncMiddleware] with [context].
+     * @param context See [AsyncMiddleware.context].
+     * @return An [AsyncMiddleware] instance.
+     */
+    internal fun create(context: CoroutineContext): IMiddleware<Any> {
+      return AsyncMiddleware(context)
+    }
+
+    /**
+     * Create a [AsyncMiddleware] with a default [CoroutineContext]. This is made public so that
+     * users of this [AsyncMiddleware] cannot share its [CoroutineContext] with other users.
+     * @return An [AsyncMiddleware] instance.
+     */
+    fun create(): IMiddleware<Any> {
+      return this.create(SupervisorJob())
+    }
+  }
+
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       val context = this@AsyncMiddleware.context
@@ -30,22 +50,4 @@ internal class AsyncMiddleware(private val context: CoroutineContext) : IMiddlew
       }
     }
   }
-}
-
-/**
- * Create a [AsyncMiddleware] with [context].
- * @param context See [AsyncMiddleware.context].
- * @return An [AsyncMiddleware] instance.
- */
-internal fun createAsyncMiddleware(context: CoroutineContext): IMiddleware<Any> {
-  return AsyncMiddleware(context)
-}
-
-/**
- * Create a [AsyncMiddleware] with a default [CoroutineContext]. This is made public so that users
- * of this [AsyncMiddleware] cannot share its [CoroutineContext] with other users.
- * @return An [AsyncMiddleware] instance.
- */
-fun createAsyncMiddleware(): IMiddleware<Any> {
-  return createAsyncMiddleware(SupervisorJob())
 }

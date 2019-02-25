@@ -21,6 +21,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.swiften.redux.core.AsyncMiddleware
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.FinalStore
@@ -30,17 +31,16 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.applyMiddlewares
-import org.swiften.redux.core.createAsyncMiddleware
 import org.swiften.redux.saga.common.CommonSagaEffectTest
 import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.ISagaMonitor
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaInput
+import org.swiften.redux.saga.common.SagaMiddleware
 import org.swiften.redux.saga.common.SagaMonitor
 import org.swiften.redux.saga.common.TakeEffect
 import org.swiften.redux.saga.common.castValue
 import org.swiften.redux.saga.common.catchError
-import org.swiften.redux.saga.common.createSagaMiddleware
 import org.swiften.redux.saga.common.delayUpstreamValue
 import org.swiften.redux.saga.common.doOnValue
 import org.swiften.redux.saga.common.filter
@@ -223,11 +223,11 @@ class SagaEffectTest : CommonSagaEffectTest() {
     }
 
     store = applyMiddlewares<State>(
-      createAsyncMiddleware(),
-      createAsyncMiddleware(),
-      createSagaMiddleware(arrayListOf(takeEffect)),
-      createAsyncMiddleware(),
-      createAsyncMiddleware()
+      AsyncMiddleware.create(),
+      AsyncMiddleware.create(),
+      SagaMiddleware.create(arrayListOf(takeEffect)),
+      AsyncMiddleware.create(),
+      AsyncMiddleware.create()
     )(FinalStore(State(), enhancedReducer))
 
     // When
