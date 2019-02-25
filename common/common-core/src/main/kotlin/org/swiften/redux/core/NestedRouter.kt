@@ -15,7 +15,29 @@ import kotlin.concurrent.withLock
  * move on to the next [IVetoableRouter] until the end.
  * @param navigator The navigation function that will be called before we touch [subRouters].
  */
-class NestedRouter internal constructor (private val navigator: (IRouterScreen) -> Boolean) : IRouter<IRouterScreen> {
+class NestedRouter private constructor (private val navigator: (IRouterScreen) -> Boolean) : IRouter<IRouterScreen> {
+  companion object {
+    /**
+     * Create an [IRouter] instance that provides locking mechanisms for an internal [NestedRouter].
+     * @param navigator See [NestedRouter.navigator].
+     * @return An [IRouter] instance.
+     */
+    fun create(navigator: (IRouterScreen) -> Boolean) : IRouter<IRouterScreen> {
+      return object : IRouter<IRouterScreen> {
+        private val lock = ReentrantLock()
+        private val router = NestedRouter(navigator)
+
+        override fun navigate(screen: IRouterScreen) {
+          this.lock.withLock { this.router.navigate(screen) }
+        }
+
+        override val deinitialize: IDeinitializer get() = {
+          this.lock.withLock { this.router.deinitialize() }
+        }
+      }
+    }
+  }
+
   sealed class Screen : IRouterScreen {
     data class RegisterSubRouter(val subRouter: IVetoableRouter<IRouterScreen>) : Screen()
     data class UnregisterSubRouter(val subRouter: IVetoableRouter<IRouterScreen>) : Screen()
@@ -53,26 +75,6 @@ class NestedRouter internal constructor (private val navigator: (IRouterScreen) 
           return
         }
       }
-    }
-  }
-}
-
-/**
- * Create an [IRouter] instance that provides locking mechanisms for an internal [NestedRouter].
- * @param navigator See [NestedRouter.navigator].
- * @return An [IRouter] instance.
- */
-fun createNestedRouter(navigator: (IRouterScreen) -> Boolean) : IRouter<IRouterScreen> {
-  return object : IRouter<IRouterScreen> {
-    private val lock = ReentrantLock()
-    private val router = NestedRouter(navigator)
-
-    override fun navigate(screen: IRouterScreen) {
-      this.lock.withLock { this.router.navigate(screen) }
-    }
-
-    override val deinitialize: IDeinitializer get() = {
-      this.lock.withLock { this.router.deinitialize() }
     }
   }
 }

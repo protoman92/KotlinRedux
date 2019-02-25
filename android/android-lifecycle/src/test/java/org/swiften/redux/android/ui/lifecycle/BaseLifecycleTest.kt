@@ -25,7 +25,7 @@ import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
-import java.util.Collections.synchronizedMap
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by viethai.pham on 2019/01/28 */
@@ -61,7 +61,7 @@ open class BaseLifecycleTest {
   }
 
   class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IFullPropInjector<Int> {
-    val subscriptions = synchronizedMap(hashMapOf<String, IReduxSubscription>())
+    val subscriptions = ConcurrentHashMap<String, IReduxSubscription>()
     val injectionCount get() = this.subscriptions.size
 
     override val unsubscribe: IReduxUnsubscriber = { id ->

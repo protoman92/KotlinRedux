@@ -39,7 +39,7 @@ class SubscriptionTest {
     // Setup
     var unsubCount = 0
     val subscriptions = (0 until 100).map { ReduxSubscription("$it") { unsubCount += 1 } }
-    val composite = CompositeReduxSubscription("")
+    val composite = CompositeReduxSubscription.create("")
 
     runBlocking {
       // When
@@ -58,7 +58,7 @@ class SubscriptionTest {
     // Setup
     var unsubCount = 0
     val subscription = ReduxSubscription("123") { unsubCount += 1 }
-    val composite = CompositeReduxSubscription("")
+    val composite = CompositeReduxSubscription.create("")
 
     // When
     composite.remove(subscription)

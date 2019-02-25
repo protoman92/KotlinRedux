@@ -72,7 +72,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
    * [IPropLifecycleOwner.afterPropInjectionEnds] is properly called when we do a sweeping
    * unsubscription.
    */
-  internal val composite = CompositeReduxSubscription("${this.adapter}${Date().time}")
+  internal val composite = CompositeReduxSubscription.create("${this.adapter}${Date().time}")
 
   /**
    * Since we are only calling [ListAdapter.submitList] when [reduxProp] arrives, the

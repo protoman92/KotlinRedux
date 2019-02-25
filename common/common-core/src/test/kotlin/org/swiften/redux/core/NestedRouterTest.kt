@@ -31,7 +31,7 @@ class NestedRouterTest {
   @Test
   fun `Sending register or unregister actions should add or remove sub-router`() {
     // Setup
-    val router = createNestedRouter { false }
+    val router = NestedRouter.create { false }
     val subRouter = SubRouter()
 
     // When
@@ -68,7 +68,7 @@ class NestedRouterTest {
   fun `Should use default navigation before going to sub-router`() {
     // Setup
     val defaultNavigationCount = AtomicInteger()
-    val router = createNestedRouter { defaultNavigationCount.incrementAndGet(); true }
+    val router = NestedRouter.create { defaultNavigationCount.incrementAndGet(); true }
     val subRouter = SubRouter()
     router.navigate(NestedRouter.Screen.RegisterSubRouter(subRouter))
 

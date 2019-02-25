@@ -6,9 +6,8 @@
 package org.swiften.redux.core
 
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.concurrent.read
-import kotlin.concurrent.write
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 /** Created by haipham on 2019/01/24/1 */
 /**
@@ -24,6 +23,21 @@ interface IReduxSubscription : IUniqueIDProvider {
 
   /** Unsubscribe from this [IReduxSubscription]. */
   fun unsubscribe()
+}
+
+interface ICompositeReduxSubscription : IReduxSubscription {
+  /**
+   * Add an [IReduxSubscription].
+   * @param subscription An [IReduxSubscription] instance.
+   */
+  fun add(subscription: IReduxSubscription)
+
+  /**
+   * Remove an [IReduxSubscription] instance whose [IReduxSubscription.uniqueID] equals [uniqueID].
+   * @param subscribeId A [String] value.
+   * @return The remove [IReduxSubscription], if any.
+   */
+  fun remove(subscribeId: String): IReduxSubscription?
 }
 
 /**
@@ -57,47 +71,66 @@ class ReduxSubscription(
  * be unsubscribed from.
  * @param uniqueID See [IReduxSubscription.uniqueID].
  */
-class CompositeReduxSubscription(override val uniqueID: String) : IReduxSubscription {
-  private val subscriptions = mutableMapOf<String, IReduxSubscription>()
-  private val lock = ReentrantReadWriteLock()
+class CompositeReduxSubscription private constructor(override val uniqueID: String) : ICompositeReduxSubscription {
+  companion object {
+    /**
+     * Create a [CompositeReduxSubscription] and provide it with locking mechanisms.
+     * @param uniqueID See [CompositeReduxSubscription.uniqueID].
+     * @return An [ICompositeReduxSubscription] instance.
+     */
+    fun create(uniqueID: String): ICompositeReduxSubscription {
+      return object : ICompositeReduxSubscription {
+        private val lock = ReentrantLock()
+        private val subscription = CompositeReduxSubscription(uniqueID)
+        override val uniqueID: String get() = this.subscription.uniqueID
+
+        override fun isUnsubscribed(): Boolean {
+          return this.lock.withLock { this.subscription.isUnsubscribed() }
+        }
+
+        override fun unsubscribe() {
+          return this.lock.withLock { this.subscription.unsubscribe() }
+        }
+
+        override fun add(subscription: IReduxSubscription) {
+          return this.lock.withLock { this.subscription.add(subscription) }
+        }
+
+        override fun remove(subscribeId: String): IReduxSubscription? {
+          return this.lock.withLock { this.subscription.remove(subscribeId) }
+        }
+      }
+    }
+  }
+
+  private val subscriptions = hashMapOf<String, IReduxSubscription>()
   private var _isUnsubscribed = false
 
   override fun isUnsubscribed() = this._isUnsubscribed
 
   override fun unsubscribe() {
-    if (!this.lock.read { this._isUnsubscribed }) {
-      this.lock.write {
-        this.subscriptions.forEach { it.value.unsubscribe() }
-        this.subscriptions.clear()
-        this._isUnsubscribed = true
-      }
+    if (!this._isUnsubscribed) {
+      this.subscriptions.forEach { it.value.unsubscribe() }
+      this.subscriptions.clear()
+      this._isUnsubscribed = true
     }
   }
 
-  /**
-   * Add an [IReduxSubscription] to [subscriptions].
-   * @param subscription An [IReduxSubscription] instance.
-   */
-  fun add(subscription: IReduxSubscription) {
-    this.lock.write { this.subscriptions[subscription.uniqueID] = subscription }
+  override fun add(subscription: IReduxSubscription) {
+    this.subscriptions[subscription.uniqueID] = subscription
   }
 
-  /**
-   * Remove an [IReduxSubscription] instance whose [IReduxSubscription.uniqueID] equals
-   * [uniqueID].
-   * @param subscribeId A [String] value.
-   * @return The remove [IReduxSubscription], if any.
-   */
-  fun remove(subscribeId: String): IReduxSubscription? {
-    return this.lock.write { this.subscriptions.remove(subscribeId) }
+  override fun remove(subscribeId: String): IReduxSubscription? {
+    return this.subscriptions.remove(subscribeId)
   }
+}
 
-  /**
-   * Remove an [IReduxSubscription] from [subscriptions].
-   * @param subscription An [IReduxSubscription] instance.
-   * @return The remove [IReduxSubscription], if any.
-   */
-  fun remove(subscription: IReduxSubscription): IReduxSubscription? {
-    return this.remove(subscription.uniqueID)
-  }
+/**
+ * Remove an [IReduxSubscription] from [subscriptions].
+ * @receiver An [ICompositeReduxSubscription] instance.
+ * @param subscription An [IReduxSubscription] instance.
+ * @return The remove [IReduxSubscription], if any.
+ */
+fun ICompositeReduxSubscription.remove(subscription: IReduxSubscription): IReduxSubscription? {
+  return this.remove(subscription.uniqueID)
 }
