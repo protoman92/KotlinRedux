@@ -59,7 +59,7 @@ internal class SingleActivityRouter<AT, Screen>(
   init { this.application.registerActivityLifecycleCallbacks(this.callbacks) }
 
   override val deinitialize: IDeinitializer get() = {
-    this.application.unregisterActivityLifecycleCallbacks(this.callbacks)
+    this.runner.invoke { this.application.unregisterActivityLifecycleCallbacks(this.callbacks) }
   }
 
   override fun navigate(screen: Screen) {
@@ -80,8 +80,9 @@ inline fun <reified AT, Screen> createSingleActivityRouter(
   application: Application,
   runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner,
   noinline navigate: (AT, Screen) -> Unit
-): IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen =
-  SingleActivityRouter(AT::class.java, application, runner, navigate)
+): IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen {
+  return SingleActivityRouter(AT::class.java, application, runner, navigate)
+}
 
 /**
  * Create a [SingleActivityRouter] with the default [AndroidUtil.MainThreadRunner].
@@ -94,5 +95,6 @@ inline fun <reified AT, Screen> createSingleActivityRouter(
 inline fun <reified AT, Screen> createSingleActivityRouter(
   application: Application,
   noinline navigate: (AT, Screen) -> Unit
-): IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen =
-  SingleActivityRouter(AT::class.java, application, AndroidUtil.MainThreadRunner, navigate)
+): IRouter<Screen> where AT : AppCompatActivity, Screen : IRouterScreen {
+  return SingleActivityRouter(AT::class.java, application, AndroidUtil.MainThreadRunner, navigate)
+}
