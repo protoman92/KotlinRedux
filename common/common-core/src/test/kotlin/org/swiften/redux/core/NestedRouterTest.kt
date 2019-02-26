@@ -11,16 +11,23 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.util.Random
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by viethai.pham on 2019/02/26 */
 class NestedRouterTest {
-  class SubRouter : IVetoableRouter<IRouterScreen> {
+  class SubRouter(
+    private val navigator: (IRouterScreen) -> Boolean = { true }
+  ) : IVetoableRouter<IRouterScreen> {
     val navigationCount = AtomicInteger()
 
     override fun navigate(screen: IRouterScreen): Boolean {
-      this.navigationCount.incrementAndGet()
-      return true
+      if (this.navigator(screen)) {
+        this.navigationCount.incrementAndGet()
+        return true
+      }
+
+      return false
     }
   }
 
@@ -83,6 +90,37 @@ class NestedRouterTest {
       // Then
       assertEquals(defaultNavigationCount.get(), this@NestedRouterTest.iteration)
       assertEquals(subRouter.navigationCount.get(), 0)
+    }
+  }
+
+  @Test
+  fun `Should go through sub-routers sequentially`() {
+    // Setup
+    val rand = Random()
+    val mainSubRouterCount = AtomicInteger()
+    val router = NestedRouter.create { false }
+    val subRouter = SubRouter { mainSubRouterCount.incrementAndGet(); true }
+    val otherSubRouters = (0 until 1000).map { SubRouter { rand.nextBoolean() } }
+
+    val batch1 = (0 until otherSubRouters.size).map { i ->
+      GlobalScope.launch(Dispatchers.IO) {
+        router.navigate(NestedRouter.Screen.RegisterSubRouter(otherSubRouters[i]))
+      }
+    }
+
+    runBlocking {
+      batch1.forEach { it.join() }
+      router.navigate(NestedRouter.Screen.RegisterSubRouter(subRouter))
+
+      // When
+      val batch2 = (0 until this@NestedRouterTest.iteration).map { i ->
+        GlobalScope.launch(Dispatchers.IO) { router.navigate(Screen("$i")) }
+      }
+
+      batch2.forEach { it.join() }
+
+      // Then
+      assertEquals(mainSubRouterCount.get(), this@NestedRouterTest.iteration)
     }
   }
 }

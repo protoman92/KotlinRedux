@@ -13,6 +13,10 @@ import kotlin.concurrent.withLock
  * [IRouter] implementation that holds on to a [List] of [IVetoableRouter], each of which will
  * call [IVetoableRouter.navigate] to check if it can perform a successful navigation. If not, we
  * move on to the next [IVetoableRouter] until the end.
+ *
+ * For this [IRouter] implementation, we are not overly worried about performance because there
+ * won't be a situation whereby the user has gone through thousands of [IVetoableRouter]-enabled
+ * screens, thus significantly increasing the size of [subRouters].
  * @param navigator The navigation function that will be called before we touch [subRouters].
  */
 class NestedRouter private constructor (private val navigator: (IRouterScreen) -> Boolean) : IRouter<IRouterScreen> {
@@ -43,7 +47,7 @@ class NestedRouter private constructor (private val navigator: (IRouterScreen) -
     data class UnregisterSubRouter(val subRouter: IVetoableRouter<IRouterScreen>) : Screen()
   }
 
-  private val subRouters = mutableSetOf<IVetoableRouter<IRouterScreen>>()
+  private val subRouters = arrayListOf<IVetoableRouter<IRouterScreen>>()
 
   override val deinitialize: IDeinitializer get() = {
     this@NestedRouter.subRouters.clear()
@@ -52,7 +56,10 @@ class NestedRouter private constructor (private val navigator: (IRouterScreen) -
   override fun navigate(screen: IRouterScreen) {
     if (when (screen) {
         is Screen.RegisterSubRouter -> {
-          this.subRouters.add(screen.subRouter)
+          if (!this.subRouters.contains(screen.subRouter)) {
+            this.subRouters.add(0, screen.subRouter)
+          }
+
           true
         }
 
