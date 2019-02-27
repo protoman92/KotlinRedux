@@ -30,7 +30,7 @@ internal abstract class RxTakeEffect<Action, P, R>(
 ) : TakeEffect<Action, P, R>(cls, extractor, creator) where Action : IReduxAction, P : Any, R : Any {
   constructor(source: TakeEffect<Action, P, R>) : this(source.cls, source.extractor, source.creator)
 
-  override operator fun invoke(p1: SagaInput): ISagaOutput<R> {
+  override fun invoke(p1: SagaInput): ISagaOutput<R> {
     val subject = PublishProcessor.create<P>().toSerialized()
 
     val nested = SagaOutput(p1.scope, p1.monitor, subject, { subject.onComplete() }) { a ->
