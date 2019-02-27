@@ -42,7 +42,13 @@ internal fun <GState> IPropInjector<GState>.injectFragment(
 ): FragmentManager.FragmentLifecycleCallbacks where GState : Any {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+      super.onFragmentStarted(fm, f)
       injectionHelper.inject(this@injectFragment, f)
+    }
+
+    override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
+      super.onFragmentStopped(fm, f)
+      injectionHelper.deinitialize(f)
     }
   }
 
