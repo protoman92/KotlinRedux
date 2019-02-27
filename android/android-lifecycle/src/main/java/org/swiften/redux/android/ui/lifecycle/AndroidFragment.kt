@@ -28,21 +28,21 @@ class AppCompatActivityWrapper(private val activity: AppCompatActivity) : IAppCo
 }
 
 /**
- * Listen to [Fragment] lifecycle callbacks and perform [inject] when necessary. This injection
+ * Listen to [Fragment] lifecycle callbacks and perform [injectionHelper] when necessary. This injection
  * session automatically disposes of itself when [ReduxLifecycleObserver.onDestroy] is called.
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param activity An [IAppCompatActivity] instance.
- * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
+ * @param injectionHelper An [ILifecycleInjectionHelper] instance.
  * @return A [FragmentManager.FragmentLifecycleCallbacks] instance.
  */
 internal fun <GState> IPropInjector<GState>.injectFragment(
   activity: IAppCompatActivity,
-  inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
+  injectionHelper: ILifecycleInjectionHelper<GState>
 ): FragmentManager.FragmentLifecycleCallbacks where GState : Any {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
-      inject(this@injectFragment, f)
+      injectionHelper.inject(this@injectFragment, f)
     }
   }
 
@@ -69,12 +69,12 @@ internal fun <GState> IPropInjector<GState>.injectFragment(
  * @receiver An [IPropInjector] instance.
  * @param GState The global state type.
  * @param activity An [AppCompatActivity] instance.
- * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
+ * @param injectionHelper An [ILifecycleInjectionHelper] instance.
  * @return A [FragmentManager.FragmentLifecycleCallbacks] instance.
  */
 fun <GState> IPropInjector<GState>.injectFragment(
   activity: AppCompatActivity,
-  inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
+  injectionHelper: ILifecycleInjectionHelper<GState>
 ): FragmentManager.FragmentLifecycleCallbacks where GState : Any {
-  return this.injectFragment(AppCompatActivityWrapper(activity), inject)
+  return this.injectFragment(AppCompatActivityWrapper(activity), injectionHelper)
 }

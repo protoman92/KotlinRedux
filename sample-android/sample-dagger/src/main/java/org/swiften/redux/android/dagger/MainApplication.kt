@@ -35,6 +35,6 @@ class MainApplication : Application() {
 
     val injector = AndroidPropInjector(store)
     val injectionHelper = InjectionHelper(component)
-    injector.injectActivitySerializable(this) { injectionHelper.inject(this, it) }
+    injector.injectActivitySerializable(this, injectionHelper)
   }
 }

@@ -16,6 +16,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.swiften.redux.ui.IPropInjector
 import java.io.FileDescriptor
 import java.io.PrintWriter
 import java.util.concurrent.atomic.AtomicInteger
@@ -155,7 +156,11 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
     val injectionCount = AtomicInteger()
 
     // When
-    injector.injectFragment(activity) { injectionCount.incrementAndGet() }
+    injector.injectFragment(activity, object : ILifecycleInjectionHelper<Int> {
+      override fun inject(injector: IPropInjector<Int>, owner: LifecycleOwner) {
+        injectionCount.incrementAndGet()
+      }
+    })
 
     // When && Then
     activity.registry.markState(Lifecycle.State.CREATED)
