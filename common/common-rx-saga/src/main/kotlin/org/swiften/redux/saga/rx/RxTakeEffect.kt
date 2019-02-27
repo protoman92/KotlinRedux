@@ -44,3 +44,40 @@ internal abstract class RxTakeEffect<Action, P, R>(
     return this.flatten(nested.map { this@RxTakeEffect.creator(it).invoke(p1) })
   }
 }
+
+/**
+ * [RxTakeEffect] whose [SagaOutput] takes all [IReduxAction] that pass some conditions, then
+ * flattens and emits all values. Contrast this with [TakeLatestEffect].
+ * @param Action The [IReduxAction] type to perform param extraction.
+ * @param P The input value extracted from [IReduxAction].
+ * @param R The result emission type.
+ * @param cls The [Class] for [Action].
+ * @param extractor Function that extracts [P] from [IReduxAction].
+ * @param creator Function that creates [ISagaEffect] from [P].
+ */
+internal class TakeEveryEffect<Action, P, R>(
+  cls: Class<Action>,
+  extractor: (Action) -> P?,
+  creator: (P) -> ISagaEffect<R>
+) : RxTakeEffect<Action, P, R>(cls, extractor, creator) where Action : IReduxAction, P : Any, R : Any {
+  override fun flatten(nested: ISagaOutput<ISagaOutput<R>>) = nested.flatMap { it }
+}
+
+/**
+ * [RxTakeEffect] whose output switches to the latest [IReduxAction] every time one arrives. This is
+ * best used for cases whereby we are only interested in the latest value, such as in an
+ * autocomplete search implementation. Contrast this with [TakeEveryEffect].
+ * @param Action The [IReduxAction] type to perform param extraction.
+ * @param P The input value extracted from [IReduxAction].
+ * @param R The result emission type.
+ * @param cls The [Class] for [Action].
+ * @param extractor Function that extracts [P] from [IReduxAction].
+ * @param creator Function that creates [ISagaEffect] from [P].
+ */
+internal class TakeLatestEffect<Action, P, R>(
+  cls: Class<Action>,
+  extractor: (Action) -> P?,
+  creator: Function1<P, ISagaEffect<R>>
+) : RxTakeEffect<Action, P, R>(cls, extractor, creator) where Action : IReduxAction, P : Any, R : Any {
+  override fun flatten(nested: ISagaOutput<ISagaOutput<R>>) = nested.switchMap { it }
+}
