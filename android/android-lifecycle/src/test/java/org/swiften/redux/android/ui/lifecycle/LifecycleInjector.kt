@@ -66,7 +66,7 @@ class LifecycleInjector {
 
     val lifecycleOwner = LifecycleOwner { throw RuntimeException() }
 
-    val vetoable1 = object : IVetoableLifecycleOwnerInjector<GState, IQueryProvider> {
+    val vetoable1 = object : IVetoableLifecycleInjectionHelper<GState, IQueryProvider> {
       override fun inject(injector: IPropInjector<IQueryProvider>, owner: LifecycleOwner): Boolean {
         val passed = rand.nextBoolean()
         if (passed) vetoable1Count.incrementAndGet()
@@ -74,7 +74,7 @@ class LifecycleInjector {
       }
     }
 
-    val vetoable2 = object : IVetoableLifecycleOwnerInjector<GState, IResultProvider> {
+    val vetoable2 = object : IVetoableLifecycleInjectionHelper<GState, IResultProvider> {
       override fun inject(injector: IPropInjector<IResultProvider>, owner: LifecycleOwner): Boolean {
         vetoable2Count.incrementAndGet()
         return true
@@ -82,7 +82,7 @@ class LifecycleInjector {
     }
 
     // When
-    val lcInjector = combineLifecycleOwnerInjectors(vetoable1, vetoable2)
+    val lcInjector = combineLifecycleInjectionHelpers(vetoable1, vetoable2)
 
     val injectionJobs = (0 until iteration).map {
       GlobalScope.launch(Dispatchers.IO) {
