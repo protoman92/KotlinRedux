@@ -24,8 +24,8 @@ abstract class TakeEffect<Action, P, R>(
   val creator: (P) -> ISagaEffect<R>
 ) : SagaEffect<R>() where Action : IReduxAction, P : Any, R : Any {
   /**
-   * Flatten an [ISagaOutput] that streams [ISagaOutput] to access the values streamed by
-   * the inner [ISagaOutput].
+   * Flatten an [ISagaOutput] that streams [ISagaOutput] to access the values streamed by the inner
+   * [ISagaOutput].
    * @param nested The nested [ISagaOutput] instance that emits [ISagaOutput].
    * @return An [ISagaOutput] instance.
    */
