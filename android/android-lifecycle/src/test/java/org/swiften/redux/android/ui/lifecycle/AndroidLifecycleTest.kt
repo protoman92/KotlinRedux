@@ -153,7 +153,10 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
     // Setup
     val injector = TestInjector()
     val activity = TestActivity()
+    val iteration = 1000
     val injectionCount = AtomicInteger()
+    val deinitializeCount = AtomicInteger()
+    val fragments = (0 until iteration).map { Fragment() }
 
     // When
     injector.injectFragment(activity, object : ILifecycleInjectionHelper<Int> {
@@ -161,16 +164,21 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
         injectionCount.incrementAndGet()
       }
 
-      override fun deinitialize(owner: LifecycleOwner) {}
+      override fun deinitialize(owner: LifecycleOwner) {
+        deinitializeCount.incrementAndGet()
+      }
     })
 
     // When && Then
     activity.registry.markState(Lifecycle.State.CREATED)
     assertNotNull(activity.fm.callbacks.get())
-    activity.fm.callbacks.get().onFragmentStarted(activity.fm, Fragment())
-    activity.fm.callbacks.get().onFragmentStarted(activity.fm, Fragment())
-    activity.fm.callbacks.get().onFragmentStarted(activity.fm, Fragment())
-    assertEquals(injectionCount.get(), 3)
+
+    fragments.forEach { activity.fm.callbacks.get().onFragmentStarted(activity.fm, it) }
+    assertEquals(injectionCount.get(), iteration)
+
+    fragments.forEach { activity.fm.callbacks.get().onFragmentStopped(activity.fm, it) }
+    assertEquals(deinitializeCount.get(), iteration)
+
     activity.registry.markState(Lifecycle.State.DESTROYED)
     assertNull(activity.fm.callbacks.get())
   }

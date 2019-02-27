@@ -64,7 +64,6 @@ fun <GState> IFullPropInjector<GState>.injectActivity(
     override fun onActivityPaused(activity: Activity?) {}
     override fun onActivityResumed(activity: Activity?) {}
     override fun onActivityStopped(activity: Activity?) {}
-    override fun onActivityDestroyed(activity: Activity?) {}
 
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
       outState?.also { saver.saveState(it, this@injectActivity.lastState()) }
@@ -85,6 +84,13 @@ fun <GState> IFullPropInjector<GState>.injectActivity(
     }
 
     override fun onActivityStarted(activity: Activity?) {}
+
+    override fun onActivityDestroyed(activity: Activity?) {
+      activity?.also {
+        require(it is AppCompatActivity)
+        injectionHelper.deinitialize(it)
+      }
+    }
   }
 
   application.registerActivityLifecycleCallbacks(callback)
