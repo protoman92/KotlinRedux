@@ -21,6 +21,8 @@ class Business2InjectionHelper(
     }
   }
 
+  override fun deinitialize(owner: LifecycleOwner) {}
+
   private fun inject(injector: IPropInjector<Redux.State>, fragment: Business2HostFragment) {
     injector.injectLifecycle(this.component.hostDependency(), fragment, Business2HostFragment)
   }

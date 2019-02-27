@@ -47,6 +47,7 @@ class LifecycleInjector {
     val iteration = 10000
     val vetoable1Count = AtomicInteger()
     val vetoable2Count = AtomicInteger()
+    val deinitializeCount = AtomicInteger()
 
     val propInjector = object : IPropInjector<GState> {
       override fun <LState : Any, OutProp, View, State : Any, Action : Any> inject(
@@ -72,11 +73,22 @@ class LifecycleInjector {
         if (passed) vetoable1Count.incrementAndGet()
         return passed
       }
+
+      override fun deinitialize(owner: LifecycleOwner): Boolean {
+        val passed = rand.nextBoolean()
+        if (passed) deinitializeCount.incrementAndGet()
+        return passed
+      }
     }
 
     val vetoable2 = object : IVetoableLifecycleInjectionHelper<GState, IResultProvider> {
       override fun inject(injector: IPropInjector<IResultProvider>, owner: LifecycleOwner): Boolean {
         vetoable2Count.incrementAndGet()
+        return true
+      }
+
+      override fun deinitialize(owner: LifecycleOwner): Boolean {
+        deinitializeCount.incrementAndGet()
         return true
       }
     }
@@ -93,10 +105,17 @@ class LifecycleInjector {
     runBlocking {
       injectionJobs.forEach { it.join() }
 
+      val deinitializeJobs = (0 until iteration).map {
+        GlobalScope.launch(Dispatchers.IO) { lcInjector.deinitialize(lifecycleOwner) }
+      }
+
+      deinitializeJobs.forEach { it.join() }
+
       // Then
       assertTrue(vetoable1Count.get() > 0)
       assertTrue(vetoable2Count.get() > 0)
       assertEquals(vetoable1Count.get() + vetoable2Count.get(), iteration)
+      assertEquals(deinitializeCount.get(), iteration)
     }
   }
 }

@@ -59,6 +59,8 @@ class GardenApplication : Application() {
           is PlantListFragment -> injector.injectLifecycle(dependency, owner, PlantListFragment)
         }
       }
+
+      override fun deinitialize(owner: LifecycleOwner) {}
     })
   }
 }
