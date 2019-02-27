@@ -45,6 +45,8 @@ class MainApplication : Application() {
           is DetailFragment -> injector.injectLifecycle(Unit, owner, DetailFragment)
         }
       }
+
+      override fun deinitialize(owner: LifecycleOwner) {}
     })
   }
 }

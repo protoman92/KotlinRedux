@@ -160,6 +160,8 @@ class AndroidLifecycleTest : BaseLifecycleTest() {
       override fun inject(injector: IPropInjector<Int>, owner: LifecycleOwner) {
         injectionCount.incrementAndGet()
       }
+
+      override fun deinitialize(owner: LifecycleOwner) {}
     })
 
     // When && Then

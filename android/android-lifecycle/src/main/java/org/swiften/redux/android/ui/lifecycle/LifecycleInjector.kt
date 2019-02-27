@@ -17,7 +17,18 @@ import kotlin.concurrent.withLock
  * @param GState The global state type.
  */
 interface ILifecycleInjectionHelper<GState> where GState : Any {
+  /**
+   * Perform injection for [owner].
+   * @param injector An [IPropInjector] instance.
+   * @param owner A [LifecycleOwner] instance.
+   */
   fun inject(injector: IPropInjector<GState>, owner: LifecycleOwner)
+
+  /**
+   * Deinitialize injection for [owner].
+   * @param owner A [LifecycleOwner] instance.
+   */
+  fun deinitialize(owner: LifecycleOwner)
 }
 
 /**
@@ -36,6 +47,14 @@ interface IVetoableLifecycleInjectionHelper<GState, LState> where LState : Any, 
    * @return A [Boolean] value.
    */
   fun inject(injector: IPropInjector<LState>, owner: LifecycleOwner): Boolean
+
+  /**
+   * Deinitialize injection for [owner]. Return false if [owner] cannot be un-injected by this
+   * [IVetoableLifecycleInjectionHelper]/
+   * @param owner A [LifecycleOwner] instance.
+   * @return A [Boolean] value.
+   */
+  fun deinitialize(owner: LifecycleOwner): Boolean
 }
 
 /**
@@ -56,6 +75,14 @@ fun <GState> combineLifecycleInjectionHelpers(
           if ((helper as IVetoableLifecycleInjectionHelper<GState, GState>).inject(injector, owner)) {
             return@withLock
           }
+        }
+      }
+    }
+
+    override fun deinitialize(owner: LifecycleOwner) {
+      this.lock.withLock {
+        for (helper in injectionHelpers) {
+          if (helper.deinitialize(owner)) return@withLock
         }
       }
     }
