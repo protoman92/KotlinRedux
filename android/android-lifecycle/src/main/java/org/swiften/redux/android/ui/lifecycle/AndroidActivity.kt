@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.ui.IFullPropInjector
-import org.swiften.redux.ui.IPropInjector
 import java.io.Serializable
 import java.util.Date
 
@@ -42,24 +41,24 @@ interface IBundleStateSaver<GState> {
 }
 
 /**
- * Listen to [Activity] lifecycle callbacks and perform [inject] when necessary. We can also declare
+ * Listen to [Activity] lifecycle callbacks and perform [injectionHelper] when necessary. We can also declare
  * [saveState] and [restoreState] to handle [GState] persistence.
  *
- * When [Application.ActivityLifecycleCallbacks.onActivityCreated] is called, perform [inject]
- * on the [AppCompatActivity] being created, and also call [injectFragment]. This is why
- * [inject] accepts [LifecycleOwner] as its only parameter so that it can handle both
- * [AppCompatActivity] and [Fragment].
+ * When [Application.ActivityLifecycleCallbacks.onActivityCreated] is called, perform
+ * [injectionHelper] on the [AppCompatActivity] being created, and also call [injectFragment]. This
+ * is why [injectionHelper] accepts [LifecycleOwner] as its only parameter so that it can handle
+ * both [AppCompatActivity] and [Fragment].
  * @receiver An [IFullPropInjector] instance.
  * @param GState The global state type.
  * @param application An [Application] instance.
  * @param saver An [IBundleStateSaver] instance.
- * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
+ * @param injectionHelper An [ILifecycleInjectionHelper] instance.
  * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
 fun <GState> IFullPropInjector<GState>.injectActivity(
   application: Application,
   saver: IBundleStateSaver<GState>,
-  inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
+  injectionHelper: ILifecycleInjectionHelper<GState>
 ): Application.ActivityLifecycleCallbacks where GState : Any {
   val callback = object : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity?) {}
@@ -80,8 +79,8 @@ fun <GState> IFullPropInjector<GState>.injectActivity(
 
       activity?.also {
         require(it is AppCompatActivity)
-        inject(this@injectActivity, it)
-        this@injectActivity.injectFragment(it, inject)
+        injectionHelper.inject(this@injectActivity, it)
+        this@injectActivity.injectFragment(it, injectionHelper)
       }
     }
 
@@ -98,12 +97,12 @@ fun <GState> IFullPropInjector<GState>.injectActivity(
  * @receiver An [IFullPropInjector] instance.
  * @param GState The global state type.
  * @param application An [Application] instance.
- * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
+ * @param injectionHelper An [ILifecycleInjectionHelper] instance.
  * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
 inline fun <reified GState> IFullPropInjector<GState>.injectActivitySerializable(
   application: Application,
-  noinline inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
+  injectionHelper: ILifecycleInjectionHelper<GState>
 ): Application.ActivityLifecycleCallbacks where GState : Any, GState : Serializable {
   val key = "REDUX_STATE_${Date().time}"
 
@@ -113,7 +112,7 @@ inline fun <reified GState> IFullPropInjector<GState>.injectActivitySerializable
     override fun restoreState(bundle: Bundle): GState? {
       return bundle.getSerializable(key)?.takeIf { it is GState }?.run { this as GState }
     }
-  }, inject)
+  }, injectionHelper)
 }
 
 /**
@@ -122,17 +121,17 @@ inline fun <reified GState> IFullPropInjector<GState>.injectActivitySerializable
  * @receiver An [IFullPropInjector] instance.
  * @param GState The global state type.
  * @param application An [Application] instance.
- * @param inject Function that performs injections on [LifecycleOwner] instances passing through.
+ * @param injectionHelper An [ILifecycleInjectionHelper] instance.
  * @return An [Application.ActivityLifecycleCallbacks] instance.
  */
 inline fun <reified GState> IFullPropInjector<GState>.injectActivityParcelable(
   application: Application,
-  noinline inject: IPropInjector<GState>.(LifecycleOwner) -> Unit
+  injectionHelper: ILifecycleInjectionHelper<GState>
 ): Application.ActivityLifecycleCallbacks where GState : Any, GState : Parcelable {
   val key = "REDUX_STATE_${Date().time}"
 
   return this.injectActivity(application, object : IBundleStateSaver<GState> {
     override fun saveState(bundle: Bundle, state: GState) = bundle.putParcelable(key, state)
     override fun restoreState(bundle: Bundle) = bundle.getParcelable<GState>(key)
-  }, inject)
+  }, injectionHelper)
 }

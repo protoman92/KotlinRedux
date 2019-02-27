@@ -6,16 +6,19 @@
 package org.swiften.redux.android.sample
 
 import android.app.Application
+import androidx.lifecycle.LifecycleOwner
 import com.beust.klaxon.Klaxon
 import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.sample.Redux.State
 import org.swiften.redux.android.ui.AndroidPropInjector
+import org.swiften.redux.android.ui.lifecycle.ILifecycleInjectionHelper
 import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.core.AsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.saga.common.SagaMiddleware
+import org.swiften.redux.ui.IPropInjector
 
 /** Created by haipham on 26/1/19 */
 class MainApplication : Application() {
@@ -34,12 +37,14 @@ class MainApplication : Application() {
 
     val injector = AndroidPropInjector(store)
 
-    injector.injectActivitySerializable(this) {
-      when (it) {
-        is MainFragment -> this.injectLifecycle(Unit, it, MainFragment)
-        is SearchFragment -> this.injectLifecycle(Unit, it, SearchFragment)
-        is DetailFragment -> this.injectLifecycle(Unit, it, DetailFragment)
+    injector.injectActivitySerializable(this, object : ILifecycleInjectionHelper<Redux.State> {
+      override fun inject(injector: IPropInjector<State>, owner: LifecycleOwner) {
+        when (owner) {
+          is MainFragment -> injector.injectLifecycle(Unit, owner, MainFragment)
+          is SearchFragment -> injector.injectLifecycle(Unit, owner, SearchFragment)
+          is DetailFragment -> injector.injectLifecycle(Unit, owner, DetailFragment)
+        }
       }
-    }
+    })
   }
 }

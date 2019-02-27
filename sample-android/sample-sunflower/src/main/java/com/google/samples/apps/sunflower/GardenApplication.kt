@@ -6,6 +6,7 @@
 package com.google.samples.apps.sunflower
 
 import android.app.Application
+import androidx.lifecycle.LifecycleOwner
 import com.google.samples.apps.sunflower.dependency.IDependency
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.dependency.Router
@@ -13,6 +14,7 @@ import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.AndroidPropInjector
+import org.swiften.redux.android.ui.lifecycle.ILifecycleInjectionHelper
 import org.swiften.redux.android.ui.lifecycle.injectActivityParcelable
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.core.AsyncMiddleware
@@ -21,6 +23,7 @@ import org.swiften.redux.core.RouterMiddleware
 import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.saga.common.SagaMiddleware
 import org.swiften.redux.thunk.createThunkMiddleware
+import org.swiften.redux.ui.IPropInjector
 
 /** Created by haipham on 2019/01/17 */
 class GardenApplication : Application() {
@@ -48,12 +51,14 @@ class GardenApplication : Application() {
 
     val injector = AndroidPropInjector(store)
 
-    injector.injectActivityParcelable(this) {
-      when (it) {
-        is GardenFragment -> this.injectLifecycle(dependency, it, GardenFragment)
-        is PlantDetailFragment -> this.injectLifecycle(dependency, it, PlantDetailFragment)
-        is PlantListFragment -> this.injectLifecycle(dependency, it, PlantListFragment)
+    injector.injectActivityParcelable(this, object : ILifecycleInjectionHelper<Redux.State> {
+      override fun inject(injector: IPropInjector<Redux.State>, owner: LifecycleOwner) {
+        when (owner) {
+          is GardenFragment -> injector.injectLifecycle(dependency, owner, GardenFragment)
+          is PlantDetailFragment -> injector.injectLifecycle(dependency, owner, PlantDetailFragment)
+          is PlantListFragment -> injector.injectLifecycle(dependency, owner, PlantListFragment)
+        }
       }
-    }
+    })
   }
 }
