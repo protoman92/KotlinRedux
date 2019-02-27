@@ -11,7 +11,6 @@ import androidx.lifecycle.LifecycleRegistry
 import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.IDeinitializer
 import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IReduxUnsubscriber
 import org.swiften.redux.core.IStateGetter
@@ -92,6 +91,6 @@ open class BaseLifecycleTest {
     }
 
     override val dispatch: IActionDispatcher = { EmptyJob }
-    override val deinitialize: IDeinitializer = {}
+    override fun deinitialize() {}
   }
 }

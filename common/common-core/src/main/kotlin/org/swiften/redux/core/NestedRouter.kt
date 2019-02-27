@@ -35,7 +35,7 @@ class NestedRouter private constructor (private val navigator: (IRouterScreen) -
           this.lock.withLock { this.router.navigate(screen) }
         }
 
-        override val deinitialize: IDeinitializer get() = {
+        override fun deinitialize() {
           this.lock.withLock { this.router.deinitialize() }
         }
       }
@@ -48,10 +48,6 @@ class NestedRouter private constructor (private val navigator: (IRouterScreen) -
   }
 
   private val subRouters = arrayListOf<IVetoableRouter<IRouterScreen>>()
-
-  override val deinitialize: IDeinitializer get() = {
-    this@NestedRouter.subRouters.clear()
-  }
 
   override fun navigate(screen: IRouterScreen) {
     if (when (screen) {
@@ -83,5 +79,9 @@ class NestedRouter private constructor (private val navigator: (IRouterScreen) -
         }
       }
     }
+  }
+
+  override fun deinitialize() {
+    this@NestedRouter.subRouters.clear()
   }
 }

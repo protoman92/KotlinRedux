@@ -49,7 +49,7 @@ class ThreadSafeStore<GState>(
     this.lock.write { this.subscribers.remove(id) }
   }
 
-  override val deinitialize: IDeinitializer = {
+  override fun deinitialize() {
     this.lock.write { this.subscribers.clear() }
   }
 }

@@ -11,7 +11,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.swiften.redux.android.util.AndroidUtil
-import org.swiften.redux.core.IDeinitializer
 import org.swiften.redux.core.IRouter
 import org.swiften.redux.core.IRouterScreen
 
@@ -58,12 +57,12 @@ internal class SingleActivityRouter<AT, Screen>(
 
   init { this.application.registerActivityLifecycleCallbacks(this.callbacks) }
 
-  override val deinitialize: IDeinitializer get() = {
-    this.runner.invoke { this.application.unregisterActivityLifecycleCallbacks(this.callbacks) }
-  }
-
   override fun navigate(screen: Screen) {
     this.runner.invoke { this.activity?.let { this.navigate(it, screen) } }
+  }
+
+  override fun deinitialize() {
+    this.runner.invoke { this.application.unregisterActivityLifecycleCallbacks(this.callbacks) }
   }
 }
 

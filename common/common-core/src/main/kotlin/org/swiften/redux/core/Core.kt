@@ -33,9 +33,6 @@ typealias IReduxSubscriber<GState> = (String, (GState) -> Unit) -> IReduxSubscri
 /** Unsubscribe from state updates for a specified subscriber id. */
 typealias IReduxUnsubscriber = (String) -> Unit
 
-/** Perform some deinitialization logic. */
-typealias IDeinitializer = () -> Unit
-
 /** Represents a Redux action. */
 interface IReduxAction
 
@@ -66,9 +63,10 @@ interface IStateGetterProvider<out GState> where GState : Any {
   val lastState: IStateGetter<GState>
 }
 
-/** Represents an object that provides [IDeinitializer]. */
+/** Represents an object that can perform some deinitialization logic. */
 interface IDeinitializerProvider {
-  val deinitialize: IDeinitializer
+  /** Perform some deinitialization logic. */
+  fun deinitialize()
 }
 
 /**

@@ -12,8 +12,7 @@ package org.swiften.redux.core
  * @param state See [ThreadSafeStore.state].
  * @param reducer See [ThreadSafeStore.reducer].
  */
-class DefaultActionStore<GState>(state: GState, reducer: IReducer<GState, IReduxAction>) :
-  IReduxStore<GState> where GState : Any {
+class DefaultActionStore<GState>(state: GState, reducer: IReducer<GState, IReduxAction>) : IReduxStore<GState> where GState : Any {
   private val store: IReduxStore<GState>
   init { this.store = ThreadSafeStore(state, ReduxReducerWrapper(reducer)) }
 
@@ -23,7 +22,7 @@ class DefaultActionStore<GState>(state: GState, reducer: IReducer<GState, IRedux
   override val subscribe get() = this.store.subscribe
   override val unsubscribe get() = this.store.unsubscribe
 
-  override val deinitialize: IDeinitializer = {
+  override fun deinitialize() {
     this.dispatch(DefaultReduxAction.Deinitialize)
     this.store.deinitialize()
   }

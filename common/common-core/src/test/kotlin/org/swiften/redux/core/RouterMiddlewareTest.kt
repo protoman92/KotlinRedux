@@ -29,7 +29,9 @@ class RouterMiddlewareTest : BaseMiddlewareTest() {
       this.screens.add(screen)
     }
 
-    override val deinitialize: IDeinitializer get() = { this.deinitialized = true }
+    override fun deinitialize() {
+      this.deinitialized = true
+    }
   }
 
   @Test
