@@ -2,7 +2,7 @@
 
 # IBundleStateSaver
 
-`interface IBundleStateSaver<GState>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidActivity.kt#L28)
+`interface IBundleStateSaver<GState>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidActivity.kt#L27)
 
 Handle saving/restoring [GState](index.md#GState) instances.
 

@@ -2,7 +2,7 @@
 
 # SingleActivityRouter
 
-`@PublishedApi internal class SingleActivityRouter<AT, Screen : `[`IRouterScreen`](../../org.swiften.redux.core/-i-router-screen.md)`> : `[`IRouter`](../../org.swiften.redux.core/-i-router/index.md)`<`[`Screen`](index.md#Screen)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-router/src/main/java/org/swiften/redux/android/router/SingleActivityRouter.kt#L29)
+`@PublishedApi internal class SingleActivityRouter<AT, Screen : `[`IRouterScreen`](../../org.swiften.redux.core/-i-router-screen.md)`> : `[`IRouter`](../../org.swiften.redux.core/-i-router/index.md)`<`[`Screen`](index.md#Screen)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-router/src/main/java/org/swiften/redux/android/router/SingleActivityRouter.kt#L28)
 
 [IRouter](../../org.swiften.redux.core/-i-router/index.md) that works for a single [AppCompatActivity](#) and multiple [Fragment](#).
 
@@ -34,7 +34,6 @@
 | [application](application.md) | `val application: <ERROR CLASS>`<br>The main [Application](#) instance. |
 | [callbacks](callbacks.md) | `val callbacks: <ERROR CLASS>` |
 | [cls](cls.md) | `val cls: `[`Class`](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html)`<`[`AT`](index.md#AT)`>`<br>The [AT](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html) instance. |
-| [deinitialize](deinitialize.md) | `val deinitialize: `[`IDeinitializer`](../../org.swiften.redux.core/-i-deinitializer.md) |
 | [navigate](navigate.md) | `val navigate: (`[`AT`](index.md#AT)`, `[`Screen`](index.md#Screen)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Function that performs the navigation. |
 | [runner](runner.md) | `val runner: `[`IMainThreadRunner`](../../org.swiften.redux.android.util/-android-util/-i-main-thread-runner/index.md)<br>An [AndroidUtil.IMainThreadRunner](../../org.swiften.redux.android.util/-android-util/-i-main-thread-runner/index.md) instance. |
 
@@ -42,4 +41,5 @@
 
 | Name | Summary |
 |---|---|
+| [deinitialize](deinitialize.md) | `fun deinitialize(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Perform some deinitialization logic. |
 | [navigate](navigate.md) | `fun navigate(screen: `[`Screen`](index.md#Screen)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Navigate to an [IRouterScreen](../../org.swiften.redux.core/-i-router-screen.md). How this is done is left to the app's specific implementation. |

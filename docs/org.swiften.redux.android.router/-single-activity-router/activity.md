@@ -2,4 +2,4 @@
 
 # activity
 
-`private var activity: `[`AT`](index.md#AT)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-router/src/main/java/org/swiften/redux/android/router/SingleActivityRouter.kt#L35)
+`private var activity: `[`AT`](index.md#AT)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-router/src/main/java/org/swiften/redux/android/router/SingleActivityRouter.kt#L34)

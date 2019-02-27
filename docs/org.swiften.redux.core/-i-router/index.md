@@ -10,17 +10,17 @@ Abstract the necessary work to navigate from one [Screen](index.md#Screen) to an
 
 `Screen` - The app [IRouterScreen](../-i-router-screen.md) type.
 
-### Inherited Properties
-
-| Name | Summary |
-|---|---|
-| [deinitialize](../-i-deinitializer-provider/deinitialize.md) | `abstract val deinitialize: `[`IDeinitializer`](../-i-deinitializer.md) |
-
 ### Functions
 
 | Name | Summary |
 |---|---|
 | [navigate](navigate.md) | `abstract fun navigate(screen: `[`Screen`](index.md#Screen)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Navigate to an [IRouterScreen](../-i-router-screen.md). How this is done is left to the app's specific implementation. |
+
+### Inherited Functions
+
+| Name | Summary |
+|---|---|
+| [deinitialize](../-i-deinitializer-provider/deinitialize.md) | `abstract fun deinitialize(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Perform some deinitialization logic. |
 
 ### Inheritors
 

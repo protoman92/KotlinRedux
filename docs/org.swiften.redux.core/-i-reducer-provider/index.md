@@ -2,7 +2,7 @@
 
 # IReducerProvider
 
-`interface IReducerProvider<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, Action : `[`IReduxAction`](../-i-redux-action.md)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L52)
+`interface IReducerProvider<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, Action : `[`IReduxAction`](../-i-redux-action.md)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L49)
 
 Represents an object that provides [IReducer](../-i-reducer.md).
 

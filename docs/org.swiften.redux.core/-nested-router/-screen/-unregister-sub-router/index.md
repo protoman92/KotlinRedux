@@ -2,7 +2,7 @@
 
 # UnregisterSubRouter
 
-`data class UnregisterSubRouter : `[`Screen`](../index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L43)
+`data class UnregisterSubRouter : `[`Screen`](../index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L47)
 
 ### Constructors
 

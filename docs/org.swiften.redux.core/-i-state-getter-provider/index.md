@@ -2,7 +2,7 @@
 
 # IStateGetterProvider
 
-`interface IStateGetterProvider<out GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L65)
+`interface IStateGetterProvider<out GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L62)
 
 Represents an object that provides [IStateGetter](../-i-state-getter.md).
 

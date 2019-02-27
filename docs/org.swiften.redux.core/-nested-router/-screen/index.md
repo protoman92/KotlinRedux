@@ -2,7 +2,7 @@
 
 # Screen
 
-`sealed class Screen : `[`IRouterScreen`](../../-i-router-screen.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L41)
+`sealed class Screen : `[`IRouterScreen`](../../-i-router-screen.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L45)
 
 ### Types
 

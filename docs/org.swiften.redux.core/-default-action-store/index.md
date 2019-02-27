@@ -24,10 +24,15 @@ A [IReduxStore](../-i-redux-store.md) that handles [DefaultReduxAction](../-defa
 
 | Name | Summary |
 |---|---|
-| [deinitialize](deinitialize.md) | `val deinitialize: `[`IDeinitializer`](../-i-deinitializer.md) |
 | [dispatch](dispatch.md) | `val dispatch: `[`IActionDispatcher`](../-i-action-dispatcher.md) |
 | [lastState](last-state.md) | `val lastState: `[`IStateGetter`](../-i-state-getter.md)`<`[`GState`](index.md#GState)`>` |
 | [reducer](reducer.md) | `val reducer: `[`IReducer`](../-i-reducer.md)`<`[`GState`](index.md#GState)`, `[`IReduxAction`](../-i-redux-action.md)`>` |
 | [store](store.md) | `val store: `[`IReduxStore`](../-i-redux-store.md)`<`[`GState`](index.md#GState)`>` |
 | [subscribe](subscribe.md) | `val subscribe: `[`IReduxSubscriber`](../-i-redux-subscriber.md)`<`[`GState`](index.md#GState)`>` |
 | [unsubscribe](unsubscribe.md) | `val unsubscribe: `[`IReduxUnsubscriber`](../-i-redux-unsubscriber.md) |
+
+### Functions
+
+| Name | Summary |
+|---|---|
+| [deinitialize](deinitialize.md) | `fun deinitialize(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Perform some deinitialization logic. |

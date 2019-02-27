@@ -2,11 +2,15 @@
 
 # NestedRouter
 
-`class NestedRouter : `[`IRouter`](../-i-router/index.md)`<`[`IRouterScreen`](../-i-router-screen.md)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L18)
+`class NestedRouter : `[`IRouter`](../-i-router/index.md)`<`[`IRouterScreen`](../-i-router-screen.md)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L22)
 
 [IRouter](../-i-router/index.md) implementation that holds on to a [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html) of [IVetoableRouter](../-i-vetoable-router/index.md), each of which will
 call [IVetoableRouter.navigate](../-i-vetoable-router/navigate.md) to check if it can perform a successful navigation. If not, we
 move on to the next [IVetoableRouter](../-i-vetoable-router/index.md) until the end.
+
+For this [IRouter](../-i-router/index.md) implementation, we are not overly worried about performance because there
+won't be a situation whereby the user has gone through thousands of [IVetoableRouter](../-i-vetoable-router/index.md)-enabled
+screens, thus significantly increasing the size of [subRouters](sub-routers.md).
 
 ### Parameters
 
@@ -28,7 +32,6 @@ move on to the next [IVetoableRouter](../-i-vetoable-router/index.md) until the 
 
 | Name | Summary |
 |---|---|
-| [deinitialize](deinitialize.md) | `val deinitialize: `[`IDeinitializer`](../-i-deinitializer.md) |
 | [navigator](navigator.md) | `val navigator: (`[`IRouterScreen`](../-i-router-screen.md)`) -> `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)<br>The navigation function that will be called before we touch [subRouters](sub-routers.md). |
 | [subRouters](sub-routers.md) | `val subRouters: <ERROR CLASS>` |
 
@@ -36,6 +39,7 @@ move on to the next [IVetoableRouter](../-i-vetoable-router/index.md) until the 
 
 | Name | Summary |
 |---|---|
+| [deinitialize](deinitialize.md) | `fun deinitialize(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Perform some deinitialization logic. |
 | [navigate](navigate.md) | `fun navigate(screen: `[`IRouterScreen`](../-i-router-screen.md)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Navigate to an [IRouterScreen](../-i-router-screen.md). How this is done is left to the app's specific implementation. |
 
 ### Companion Object Functions

@@ -2,7 +2,7 @@
 
 # RegisterSubRouter
 
-`data class RegisterSubRouter : `[`Screen`](../index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L42)
+`data class RegisterSubRouter : `[`Screen`](../index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L46)
 
 ### Constructors
 

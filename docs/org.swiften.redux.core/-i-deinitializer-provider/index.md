@@ -2,15 +2,15 @@
 
 # IDeinitializerProvider
 
-`interface IDeinitializerProvider` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L70)
+`interface IDeinitializerProvider` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L67)
 
-Represents an object that provides [IDeinitializer](../-i-deinitializer.md).
+Represents an object that can perform some deinitialization logic.
 
-### Properties
+### Functions
 
 | Name | Summary |
 |---|---|
-| [deinitialize](deinitialize.md) | `abstract val deinitialize: `[`IDeinitializer`](../-i-deinitializer.md) |
+| [deinitialize](deinitialize.md) | `abstract fun deinitialize(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Perform some deinitialization logic. |
 
 ### Inheritors
 

@@ -25,7 +25,6 @@ modifications. Pass in the initial [state](state.md) and the store's [reducer](r
 
 | Name | Summary |
 |---|---|
-| [deinitialize](deinitialize.md) | `val deinitialize: `[`IDeinitializer`](../-i-deinitializer.md) |
 | [dispatch](dispatch.md) | `val dispatch: `[`IActionDispatcher`](../-i-action-dispatcher.md) |
 | [lastState](last-state.md) | `val lastState: () -> <ERROR CLASS>` |
 | [lock](lock.md) | `val lock: `[`ReentrantReadWriteLock`](http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/locks/ReentrantReadWriteLock.html) |
@@ -34,3 +33,9 @@ modifications. Pass in the initial [state](state.md) and the store's [reducer](r
 | [subscribe](subscribe.md) | `val subscribe: `[`IReduxSubscriber`](../-i-redux-subscriber.md)`<`[`GState`](index.md#GState)`>` |
 | [subscribers](subscribers.md) | `val subscribers: <ERROR CLASS>` |
 | [unsubscribe](unsubscribe.md) | `val unsubscribe: `[`IReduxUnsubscriber`](../-i-redux-unsubscriber.md) |
+
+### Functions
+
+| Name | Summary |
+|---|---|
+| [deinitialize](deinitialize.md) | `fun deinitialize(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Perform some deinitialization logic. |

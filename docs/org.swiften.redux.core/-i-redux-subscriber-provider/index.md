@@ -2,7 +2,7 @@
 
 # IReduxSubscriberProvider
 
-`interface IReduxSubscriberProvider<out GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L78)
+`interface IReduxSubscriberProvider<out GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L76)
 
 Represents an object that provides [IReduxSubscriber](../-i-redux-subscriber.md).
 

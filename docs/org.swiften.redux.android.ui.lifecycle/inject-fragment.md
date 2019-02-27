@@ -2,9 +2,9 @@
 
 # injectFragment
 
-`internal fun <GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-fragment.md#GState)`>.injectFragment(activity: `[`IAppCompatActivity`](-i-app-compat-activity/index.md)`, inject: `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-fragment.md#GState)`>.(<ERROR CLASS>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L38)
+`internal fun <GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-fragment.md#GState)`>.injectFragment(activity: `[`IAppCompatActivity`](-i-app-compat-activity/index.md)`, injectionHelper: `[`ILifecycleInjectionHelper`](-i-lifecycle-injection-helper/index.md)`<`[`GState`](inject-fragment.md#GState)`>): <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L39)
 
-Listen to [Fragment](#) lifecycle callbacks and perform [inject](inject-fragment.md#org.swiften.redux.android.ui.lifecycle$injectFragment(org.swiften.redux.ui.IPropInjector((org.swiften.redux.android.ui.lifecycle.injectFragment.GState)), org.swiften.redux.android.ui.lifecycle.IAppCompatActivity, kotlin.Function2((org.swiften.redux.ui.IPropInjector((org.swiften.redux.android.ui.lifecycle.injectFragment.GState)), , kotlin.Unit)))/inject) when necessary. This injection
+Listen to [Fragment](#) lifecycle callbacks and perform [injectionHelper](inject-fragment.md#org.swiften.redux.android.ui.lifecycle$injectFragment(org.swiften.redux.ui.IPropInjector((org.swiften.redux.android.ui.lifecycle.injectFragment.GState)), org.swiften.redux.android.ui.lifecycle.IAppCompatActivity, org.swiften.redux.android.ui.lifecycle.ILifecycleInjectionHelper((org.swiften.redux.android.ui.lifecycle.injectFragment.GState)))/injectionHelper) when necessary. This injection
 session automatically disposes of itself when [ReduxLifecycleObserver.onDestroy](-redux-lifecycle-observer/on-destroy.md) is called.
 
 ### Parameters
@@ -13,12 +13,15 @@ session automatically disposes of itself when [ReduxLifecycleObserver.onDestroy]
 
 `activity` - An [IAppCompatActivity](-i-app-compat-activity/index.md) instance.
 
-`inject` - Function that performs injections on [LifecycleOwner](#) instances passing through.
+`injectionHelper` - An [ILifecycleInjectionHelper](-i-lifecycle-injection-helper/index.md) instance.
 
 **Receiver**
 An [IPropInjector](../org.swiften.redux.ui/-i-prop-injector/index.md) instance.
 
-`internal fun <GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-fragment.md#GState)`>.injectFragment(activity: <ERROR CLASS>, inject: `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-fragment.md#GState)`>.(<ERROR CLASS>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L71)
+**Return**
+A [FragmentManager.FragmentLifecycleCallbacks](#) instance.
+
+`fun <GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`IPropInjector`](../org.swiften.redux.ui/-i-prop-injector/index.md)`<`[`GState`](inject-fragment.md#GState)`>.injectFragment(activity: <ERROR CLASS>, injectionHelper: `[`ILifecycleInjectionHelper`](-i-lifecycle-injection-helper/index.md)`<`[`GState`](inject-fragment.md#GState)`>): <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L81)
 
 Call [injectFragment](./inject-fragment.md) with an [AppCompatActivity](#).
 
@@ -28,8 +31,11 @@ Call [injectFragment](./inject-fragment.md) with an [AppCompatActivity](#).
 
 `activity` - An [AppCompatActivity](#) instance.
 
-`inject` - Function that performs injections on [LifecycleOwner](#) instances passing through.
+`injectionHelper` - An [ILifecycleInjectionHelper](-i-lifecycle-injection-helper/index.md) instance.
 
 **Receiver**
 An [IPropInjector](../org.swiften.redux.ui/-i-prop-injector/index.md) instance.
+
+**Return**
+A [FragmentManager.FragmentLifecycleCallbacks](#) instance.
 
