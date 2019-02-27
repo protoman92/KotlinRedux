@@ -15,11 +15,11 @@ import org.swiften.redux.android.dagger.business2.Business2HostFragment
 import org.swiften.redux.android.dagger.business3.Business3InjectionHelper
 import org.swiften.redux.android.dagger.business3.Business3Module
 import org.swiften.redux.android.dagger.business3.Business3HostFragment
-import org.swiften.redux.android.ui.lifecycle.ILifecycleOwnerInjector
+import org.swiften.redux.android.ui.lifecycle.ILifecycleInjectionHelper
 import org.swiften.redux.ui.IPropInjector
 
 /** Created by viethai.pham on 2019/02/21 */
-class InjectionHelper(private val component: MainComponent) : ILifecycleOwnerInjector<Redux.State> {
+class InjectionHelper(private val component: MainComponent) : ILifecycleInjectionHelper<Redux.State> {
   override fun inject(injector: IPropInjector<Redux.State>, owner: LifecycleOwner) {
     when (owner) {
       is Business1HostFragment -> {

@@ -16,21 +16,21 @@ import kotlin.concurrent.withLock
  * Dagger.
  * @param GState The global state type.
  */
-interface ILifecycleOwnerInjector<GState> where GState : Any {
+interface ILifecycleInjectionHelper<GState> where GState : Any {
   fun inject(injector: IPropInjector<GState>, owner: LifecycleOwner)
 }
 
 /**
- * A variant of [ILifecycleOwnerInjector] whose [inject] invocation can be vetoed.
+ * A variant of [ILifecycleInjectionHelper] whose [inject] invocation can be vetoed.
  * @param GState The global state type.
  * @param LState The local state type that [GState] must extend from. This is useful for when we
  * develop an app using multiple modules that do not have access to [GState]. [LState] can therefore
  * be an interface that [GState] extends from.
  */
-interface IVetoableLifecycleOwnerInjector<GState, LState> where LState : Any, GState : LState {
+interface IVetoableLifecycleInjectionHelper<GState, LState> where LState : Any, GState : LState {
   /**
    * Perform injection for [owner]. Return false if [owner] cannot receive injection from this
-   * [IVetoableLifecycleOwnerInjector].
+   * [IVetoableLifecycleInjectionHelper].
    * @param injector An [IPropInjector] instance.
    * @param owner A [LifecycleOwner] instance.
    * @return A [Boolean] value.
@@ -39,21 +39,21 @@ interface IVetoableLifecycleOwnerInjector<GState, LState> where LState : Any, GS
 }
 
 /**
- * Combine a [Collection] of [IVetoableLifecycleOwnerInjector] into a [ILifecycleOwnerInjector].
- * @param injectionHelpers A [Collection] of [IVetoableLifecycleOwnerInjector].
- * @return An [ILifecycleOwnerInjector] instance.
+ * Combine a [Collection] of [IVetoableLifecycleInjectionHelper] into a [ILifecycleInjectionHelper].
+ * @param injectionHelpers A [Collection] of [IVetoableLifecycleInjectionHelper].
+ * @return An [ILifecycleInjectionHelper] instance.
  */
-fun <GState> combineLifecycleOwnerInjectors(
-  injectionHelpers: Collection<IVetoableLifecycleOwnerInjector<GState, *>>
-): ILifecycleOwnerInjector<GState> where GState : Any {
-  return object : ILifecycleOwnerInjector<GState> {
+fun <GState> combineLifecycleInjectionHelpers(
+  injectionHelpers: Collection<IVetoableLifecycleInjectionHelper<GState, *>>
+): ILifecycleInjectionHelper<GState> where GState : Any {
+  return object : ILifecycleInjectionHelper<GState> {
     private val lock = ReentrantLock()
 
     @Suppress("UNCHECKED_CAST")
     override fun inject(injector: IPropInjector<GState>, owner: LifecycleOwner) {
       this.lock.withLock {
         for (helper in injectionHelpers) {
-          if ((helper as IVetoableLifecycleOwnerInjector<GState, GState>).inject(injector, owner)) {
+          if ((helper as IVetoableLifecycleInjectionHelper<GState, GState>).inject(injector, owner)) {
             return@withLock
           }
         }
@@ -63,13 +63,13 @@ fun <GState> combineLifecycleOwnerInjectors(
 }
 
 /**
- * Same as [combineLifecycleOwnerInjectors], but handles vararg of
- * [IVetoableLifecycleOwnerInjector].
- * @param injectionHelpers Vararg of [IVetoableLifecycleOwnerInjector].
- * @return An [ILifecycleOwnerInjector] instance.
+ * Same as [combineLifecycleInjectionHelpers], but handles vararg of
+ * [IVetoableLifecycleInjectionHelper].
+ * @param injectionHelpers Vararg of [IVetoableLifecycleInjectionHelper].
+ * @return An [ILifecycleInjectionHelper] instance.
  */
-fun <GState> combineLifecycleOwnerInjectors(
-  vararg injectionHelpers: IVetoableLifecycleOwnerInjector<GState, *>
-): ILifecycleOwnerInjector<GState> where GState : Any {
-  return combineLifecycleOwnerInjectors(injectionHelpers.asList())
+fun <GState> combineLifecycleInjectionHelpers(
+  vararg injectionHelpers: IVetoableLifecycleInjectionHelper<GState, *>
+): ILifecycleInjectionHelper<GState> where GState : Any {
+  return combineLifecycleInjectionHelpers(injectionHelpers.asList())
 }
