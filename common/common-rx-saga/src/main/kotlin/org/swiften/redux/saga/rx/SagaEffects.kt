@@ -17,6 +17,7 @@ import org.swiften.redux.saga.common.PutEffect
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SingleSagaEffect
 import org.swiften.redux.saga.common.TakeEffect
+import org.swiften.redux.saga.common.TakeStateEffect
 import kotlin.reflect.KClass
 
 /** Created by haipham on 2019/01/13 */
@@ -260,6 +261,34 @@ object SagaEffects {
     return this.takeLatest(IReduxActionWithKey::class, { action ->
       if (actionKeys.contains(action.key)) action else null
     }, creator)
+  }
+
+  /**
+   * Create a [TakeEveryStateEffect] instance.
+   * @param cls See [TakeEveryStateEffect.cls].
+   * @param creator See [TakeEveryStateEffect.creator].
+   * @return A [TakeStateEffect] instance.
+   */
+  @JvmStatic
+  fun <State, R> takeEveryState(
+    cls: Class<State>,
+    creator: (State) -> ISagaEffect<R>
+  ): TakeStateEffect<State, R> where State : Any, R : Any {
+    return TakeEveryStateEffect(cls, creator)
+  }
+
+  /**
+   * Create a [TakeLatestStateEffect] instance.
+   * @param cls See [TakeEveryStateEffect.cls].
+   * @param creator See [TakeEveryStateEffect.creator].
+   * @return A [TakeStateEffect] instance.
+   */
+  @JvmStatic
+  fun <State, R> takeLatestState(
+    cls: Class<State>,
+    creator: (State) -> ISagaEffect<R>
+  ): TakeStateEffect<State, R> where State : Any, R : Any {
+    return TakeLatestStateEffect(cls, creator)
   }
 
   /**

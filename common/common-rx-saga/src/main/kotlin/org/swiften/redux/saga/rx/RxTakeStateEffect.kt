@@ -38,3 +38,35 @@ internal abstract class RxTakeStateEffect<State, R>(
     return this.flatten(nested.map { this@RxTakeStateEffect.creator(it).invoke(p1) })
   }
 }
+
+/**
+ * [RxTakeStateEffect] whose [SagaOutput] takes all [State] then flattens and emits all values.
+ * Contrast this with [TakeLatestStateEffect].
+ * @param State The [State] type to be emitted.
+ * @param R The result emission type.
+ * @param cls See [TakeStateEffect.cls].
+ * @param creator See [TakeStateEffect.creator].
+ */
+internal class TakeEveryStateEffect<State, R>(
+  cls: Class<State>,
+  creator: (State) -> ISagaEffect<R>
+) : RxTakeStateEffect<State, R>(cls, creator) where State : Any, R : Any {
+  override fun flatten(nested: ISagaOutput<ISagaOutput<R>>) = nested.flatMap { it }
+}
+
+/**
+ * [RxTakeStateEffect] whose output switches to the latest [State] every time one arrives. This
+ * is best used for cases whereby we are only interested in the latest value (the concept is
+ * similar to [TakeLatestEffect]). Contrast this with [TakeEveryEffect].
+ * @param State The [State] type to be emitted.
+ * @param R The result emission type.
+ * @param cls See [TakeStateEffect.cls].
+ * @param creator See [TakeStateEffect.creator].
+ */
+internal class TakeLatestStateEffect<State, R>(
+  cls: Class<State>,
+  creator: (State) -> ISagaEffect<R>
+) : RxTakeStateEffect<State, R>(cls, creator) where State : Any, R : Any {
+  override fun flatten(nested: ISagaOutput<ISagaOutput<R>>) = nested.switchMap { it }
+}
+
