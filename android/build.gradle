@@ -109,6 +109,7 @@ project(':android:android-lifecycle') {
     api project(':common:common-core')
     api project(':common:common-ui')
     implementation "androidx.appcompat:appcompat:$appCompat"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
   }
 }
 

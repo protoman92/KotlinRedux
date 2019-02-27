@@ -7,6 +7,8 @@ package org.swiften.redux.android.ui.lifecycle
 
 import androidx.lifecycle.LifecycleOwner
 import org.swiften.redux.ui.IPropInjector
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 /** Created by viethai.pham on 2019/02/27 */
 /**
@@ -45,10 +47,16 @@ fun <GState> combineLifecycleOwnerInjectors(
   injectionHelpers: Collection<IVetoableLifecycleOwnerInjector<GState, *>>
 ): ILifecycleOwnerInjector<GState> where GState : Any {
   return object : ILifecycleOwnerInjector<GState> {
+    private val lock = ReentrantLock()
+
     @Suppress("UNCHECKED_CAST")
     override fun inject(injector: IPropInjector<GState>, owner: LifecycleOwner) {
-      for (helper in injectionHelpers) {
-        if ((helper as IVetoableLifecycleOwnerInjector<GState, GState>).inject(injector, owner)) return
+      this.lock.withLock {
+        for (helper in injectionHelpers) {
+          if ((helper as IVetoableLifecycleOwnerInjector<GState, GState>).inject(injector, owner)) {
+            return@withLock
+          }
+        }
       }
     }
   }
