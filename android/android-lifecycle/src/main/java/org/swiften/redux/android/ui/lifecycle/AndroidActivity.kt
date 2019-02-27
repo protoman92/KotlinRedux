@@ -42,15 +42,6 @@ interface IBundleStateSaver<GState> {
 }
 
 /**
- * Helps with [IPropInjector.inject] for [LifecycleOwner] instances. Use this to integrate with
- * Dagger.
- * @param GState The global state type.
- */
-interface ILifecycleOwnerInjectionHelper<GState> where GState : Any {
-  fun inject(injector: IPropInjector<GState>, owner: LifecycleOwner)
-}
-
-/**
  * Listen to [Activity] lifecycle callbacks and perform [inject] when necessary. We can also declare
  * [saveState] and [restoreState] to handle [GState] persistence.
  *
