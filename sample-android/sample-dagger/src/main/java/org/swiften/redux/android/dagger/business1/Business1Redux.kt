@@ -12,7 +12,7 @@ import org.swiften.redux.saga.rx.SagaEffects.await
 import org.swiften.redux.saga.rx.SagaEffects.doNothing
 import org.swiften.redux.saga.rx.SagaEffects.mergeAll
 import org.swiften.redux.saga.rx.SagaEffects.putInStore
-import org.swiften.redux.saga.rx.SagaEffects.takeLatest
+import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.debounceTake
 import java.io.Serializable
 
@@ -45,7 +45,7 @@ object Business1Redux {
 
   object Saga {
     fun allSagas(provider: Business1SagaComponentProvider): SagaEffect<Any> {
-      return takeLatest(Action::class, {
+      return takeLatestAction(Action::class, {
         when (it) {
           is Action.Initialize -> true
           is Action.Deinitialize -> false
@@ -67,7 +67,7 @@ object Business1Redux {
     }
 
     private fun searchSaga(repository: ISearchRepository): SagaEffect<Any> {
-      return takeLatest(Action.SetQuery::class, { it.query }) { query ->
+      return takeLatestAction(Action.SetQuery::class, { it.query }) { query ->
         await { input ->
           putInStore(Action.SetLoading(true)).await(input)
 

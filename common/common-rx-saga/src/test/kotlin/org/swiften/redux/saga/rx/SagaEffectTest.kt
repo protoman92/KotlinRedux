@@ -39,7 +39,7 @@ import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaInput
 import org.swiften.redux.saga.common.SagaMiddleware
 import org.swiften.redux.saga.common.SagaMonitor
-import org.swiften.redux.saga.common.TakeEffect
+import org.swiften.redux.saga.common.TakeActionEffect
 import org.swiften.redux.saga.common.castValue
 import org.swiften.redux.saga.common.catchError
 import org.swiften.redux.saga.common.delayUpstreamValue
@@ -59,11 +59,11 @@ import org.swiften.redux.saga.rx.SagaEffects.just
 import org.swiften.redux.saga.rx.SagaEffects.mergeAll
 import org.swiften.redux.saga.rx.SagaEffects.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.selectFromState
-import org.swiften.redux.saga.rx.SagaEffects.takeEvery
-import org.swiften.redux.saga.rx.SagaEffects.takeEveryForKeys
+import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
+import org.swiften.redux.saga.rx.SagaEffects.takeEveryActionForKeys
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryState
-import org.swiften.redux.saga.rx.SagaEffects.takeLatest
-import org.swiften.redux.saga.rx.SagaEffects.takeLatestForKeys
+import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
+import org.swiften.redux.saga.rx.SagaEffects.takeLatestActionForKeys
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestState
 import java.net.URL
 import java.util.Collections.synchronizedList
@@ -84,7 +84,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     createTakeEffect: (
       extractor: (IReduxAction) -> Int?,
       creator: (Int) -> ISagaEffect<Int>
-    ) -> TakeEffect<IReduxAction, Int, Int>
+    ) -> TakeActionEffect<IReduxAction, Int, Int>
   ) {
     // Setup
     data class Action(val value: Int) : IReduxAction
@@ -125,25 +125,25 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `Take every effect should take all actions`() {
     test_takeEffect_shouldTakeCorrectActions({ a, b ->
-      takeEvery(IReduxAction::class, a, creator = b)
+      takeEveryAction(IReduxAction::class, a, creator = b)
     }, (0 until this.iteration).toList())
   }
 
   @Test
   fun `Take latest effect should take latest actions`() {
     test_takeEffect_shouldTakeCorrectActions({ a, b ->
-      takeLatest(IReduxAction::class, a, creator = b)
+      takeLatestAction(IReduxAction::class, a, creator = b)
     }, arrayListOf(this.iteration - 1))
   }
 
   @Test
   fun `Take every effect with keys should take correct actions`() {
-    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeEveryForKeys(a, creator = b) }
+    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeEveryActionForKeys(a, creator = b) }
   }
 
   @Test
   fun `Take latest effect with keys should take correct actions`() {
-    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeLatestForKeys(a, creator = b) }
+    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeLatestActionForKeys(a, creator = b) }
   }
 
   @Test
@@ -158,7 +158,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val allActionValues = 0 until this.iteration
     val correctValues = allActionValues.map { defaultValue }
 
-    takeEvery(Action::class, { it.value }) { value ->
+    takeEveryAction(Action::class, { it.value }) { value ->
       this@SagaEffectTest.justEffect(value)
         .filter { it % 3 == 0 }
         .map { if (it % 2 == 0) throw Exception(error) else it }
@@ -183,7 +183,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
   @Test
   fun `Take effect debounce should emit correct values`() {
-    test_takeEffectDebounce_shouldEmitCorrectValues { a, b -> takeEvery(IReduxAction::class, a, b) }
+    test_takeEffectDebounce_shouldEmitCorrectValues { a, b -> takeEveryAction(IReduxAction::class, a, b) }
   }
 
   @Test
@@ -219,7 +219,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     var store: IReduxStore<State>? = null
     val finalValues = synchronizedList(arrayListOf<Pair<State, State>>())
 
-    val takeEffect = takeEveryForKeys(setOf("Action1", "Action2")) { action ->
+    val takeEffect = takeEveryActionForKeys(setOf("Action1", "Action2")) { action ->
       val lastState = store!!.lastState()
       val newState = reducer(lastState, action)
       selectFromState(State::class) { s -> s to newState }.doOnValue { finalValues.add(it) }
@@ -268,7 +268,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       "Input: $q, Result: $result"
     }
 
-    takeLatest(Action::class, { it.query }) { query ->
+    takeLatestAction(Action::class, { it.query }) { query ->
       just(query)
         .map { "unavailable$it" }
         .mapAsync { this.searchMusicStoreAsync(it) }
@@ -346,9 +346,9 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val correctValues = (0 until this.iteration).map { arrayListOf(it, it * 2, it * 3) }.flatten().sorted()
 
     mergeAll(
-      takeLatest(Action::class, { it.value }) { v -> justEffect(v).map { it } },
-      takeLatest(Action::class, { it.value }) { v -> justEffect(v).map { it * 2 } },
-      takeLatest(Action::class, { it.value }) { v -> justEffect(v).map { it * 3 } }
+      takeLatestAction(Action::class, { it.value }) { v -> justEffect(v).map { it } },
+      takeLatestAction(Action::class, { it.value }) { v -> justEffect(v).map { it * 2 } },
+      takeLatestAction(Action::class, { it.value }) { v -> justEffect(v).map { it * 3 } }
     )
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
@@ -530,7 +530,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
   @Test
   fun `Stream disposition should remove entry from monitor`() {
     test_streamDisposition_shouldRemoveEntryFromMonitor { creator ->
-      takeLatest(IReduxAction::class, { it }, creator)
+      takeLatestAction(IReduxAction::class, { it }, creator)
     }
   }
 }

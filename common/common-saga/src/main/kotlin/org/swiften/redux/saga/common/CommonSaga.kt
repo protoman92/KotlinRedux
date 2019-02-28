@@ -25,8 +25,8 @@ import org.swiften.redux.core.NoopActionDispatcher
  */
 typealias ISagaEffect<R> = (SagaInput) -> ISagaOutput<R>
 
-/** Map one [TakeEffect] to another, keeping type parameters. */
-typealias ITakeEffectTransformer<A, P, R> = (TakeEffect<A, P, R>) -> (TakeEffect<A, P, R>)
+/** Map one [TakeActionEffect] to another, keeping type parameters. */
+typealias ITakeEffectTransformer<A, P, R> = (TakeActionEffect<A, P, R>) -> (TakeActionEffect<A, P, R>)
 
 /**
  * Transform one [SagaEffect] to another.

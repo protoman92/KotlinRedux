@@ -8,7 +8,7 @@ package org.swiften.redux.saga.rx
 import io.reactivex.Single
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.TakeEffect
+import org.swiften.redux.saga.common.TakeActionEffect
 import org.swiften.redux.saga.common.thenSwitchTo
 import kotlin.reflect.KClass
 
@@ -102,7 +102,7 @@ fun <State, R2> SagaEffect<*>.selectFromState(cls: KClass<State>, selector: (Sta
  * @param R The result emission type.
  * @param millis See [DebounceTakeEffect.millis].
  */
-fun <Action, P, R> TakeEffect<Action, P, R>.debounceTake(millis: Long): TakeEffect<Action, P, R>
+fun <Action, P, R> TakeActionEffect<Action, P, R>.debounceTake(millis: Long): TakeActionEffect<Action, P, R>
   where Action : IReduxAction, P : Any, R : Any {
   return SagaEffects.debounceTake<Action, P, R>(millis)(this)
 }
