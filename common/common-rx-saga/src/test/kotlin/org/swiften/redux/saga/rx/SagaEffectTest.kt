@@ -60,8 +60,10 @@ import org.swiften.redux.saga.rx.SagaEffects.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.selectFromState
 import org.swiften.redux.saga.rx.SagaEffects.takeEvery
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryForKeys
+import org.swiften.redux.saga.rx.SagaEffects.takeEveryState
 import org.swiften.redux.saga.rx.SagaEffects.takeLatest
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestForKeys
+import org.swiften.redux.saga.rx.SagaEffects.takeLatestState
 import java.net.URL
 import java.util.Collections.synchronizedList
 import java.util.Random
@@ -286,6 +288,20 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
       // Then
       assertEquals(finalValues.size, 1)
+    }
+  }
+
+  @Test
+  fun `Take every state should stream correct state`() {
+    this.test_takeStateEffect_shouldSelectCorrectState((0..this.iteration).map { "$it" }) {
+      takeEveryState(String::class, it)
+    }
+  }
+
+  @Test
+  fun `Take latest state should stream correct state`() {
+    this.test_takeStateEffect_shouldSelectCorrectState(arrayListOf("${this.iteration}")) {
+      takeLatestState(String::class, it)
     }
   }
 

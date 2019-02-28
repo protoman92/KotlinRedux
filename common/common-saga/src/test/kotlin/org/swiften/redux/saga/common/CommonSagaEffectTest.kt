@@ -12,10 +12,13 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.swiften.redux.core.AsyncMiddleware
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.EmptyJob
+import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
+import org.swiften.redux.core.applyMiddlewares
 import java.util.Collections.synchronizedList
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -113,6 +116,39 @@ abstract class CommonSagaEffectTest {
 
       // Then
       assertEquals(finalValues.sorted(), actualValues.sorted())
+    }
+  }
+
+  fun test_takeStateEffect_shouldSelectCorrectState(
+    correctValues: Collection<String>,
+    createTakeEffect: (creator: (String) -> ISagaEffect<String>) -> TakeStateEffect<String, String>
+  ) {
+    // Setup
+    data class Action(val value: Int) : IReduxAction
+    val defaultState = "0"
+    val finalValues = synchronizedList(arrayListOf<String>())
+
+    val takeEffect = createTakeEffect { v ->
+      justEffect(v).delayUpstreamValue(500).doOnValue { finalValues.add(it) }
+    }
+
+    val store = applyMiddlewares<String>(
+      AsyncMiddleware.create(),
+      SagaMiddleware.create(arrayListOf(takeEffect))
+    )(FinalStore(defaultState) { s, _ -> "${s.toInt() + 1}" })
+
+    // When
+    (0 until this.iteration).forEach { store.dispatch(Action(it)) }
+
+    runBlocking {
+      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
+        while (finalValues.sorted() != correctValues.sorted() && this.isActive) { }; Unit
+      }
+
+      store.dispatch(DefaultReduxAction.Deinitialize)
+
+      // Then
+      assertEquals(finalValues.sorted(), correctValues.sorted())
     }
   }
 
