@@ -265,8 +265,8 @@ object SagaEffects {
 
   /**
    * Create a [TakeEveryStateEffect] instance.
-   * @param cls See [TakeEveryStateEffect.cls].
-   * @param creator See [TakeEveryStateEffect.creator].
+   * @param cls See [TakeStateEffect.cls].
+   * @param creator See [TakeStateEffect.creator].
    * @return A [TakeStateEffect] instance.
    */
   @JvmStatic
@@ -278,9 +278,23 @@ object SagaEffects {
   }
 
   /**
+   * Same as [takeEveryState], but use [KClass] instead of [Class].
+   * @param cls See [TakeStateEffect.cls].
+   * @param creator See [TakeStateEffect.creator].
+   * @return A [TakeStateEffect] instance.
+   */
+  @JvmStatic
+  fun <State, R> takeEveryState(
+    cls: KClass<State>,
+    creator: (State) -> ISagaEffect<R>
+  ): TakeStateEffect<State, R> where State : Any, R : Any {
+    return this.takeEveryState(cls.java, creator)
+  }
+
+  /**
    * Create a [TakeLatestStateEffect] instance.
-   * @param cls See [TakeEveryStateEffect.cls].
-   * @param creator See [TakeEveryStateEffect.creator].
+   * @param cls See [TakeEveryEffect.cls].
+   * @param creator See [TakeEveryEffect.creator].
    * @return A [TakeStateEffect] instance.
    */
   @JvmStatic
@@ -289,6 +303,20 @@ object SagaEffects {
     creator: (State) -> ISagaEffect<R>
   ): TakeStateEffect<State, R> where State : Any, R : Any {
     return TakeLatestStateEffect(cls, creator)
+  }
+
+  /**
+   * Same as [takeLatestState], but use [KClass] instead of [Class].
+   * @param cls See [TakeStateEffect.cls].
+   * @param creator See [TakeStateEffect.creator].
+   * @return A [TakeStateEffect] instance.
+   */
+  @JvmStatic
+  fun <State, R> takeLatestState(
+    cls: KClass<State>,
+    creator: (State) -> ISagaEffect<R>
+  ): TakeStateEffect<State, R> where State : Any, R : Any {
+    return this.takeLatestState(cls.java, creator)
   }
 
   /**

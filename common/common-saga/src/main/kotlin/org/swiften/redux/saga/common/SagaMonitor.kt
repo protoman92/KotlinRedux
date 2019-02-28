@@ -8,7 +8,6 @@ package org.swiften.redux.saga.common
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDispatcherProvider
-import java.util.concurrent.ConcurrentHashMap
 
 /** Created by viethai.pham on 2019/02/22 */
 /**
@@ -25,7 +24,7 @@ interface ISagaMonitor : IDispatcherProvider {
 
 /** Default implementation of [ISagaMonitor]. */
 class SagaMonitor : ISagaMonitor {
-  private val dispatchers = ConcurrentHashMap<String, IActionDispatcher>()
+  private val dispatchers = HashMap<String, IActionDispatcher>()
 
   override val dispatch: IActionDispatcher = { a ->
     this@SagaMonitor.dispatchers.forEach { it.value(a) }; EmptyJob
