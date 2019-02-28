@@ -12,7 +12,7 @@ package org.swiften.redux.saga.common
  * @param State The [State] type to be emitted.
  * @param R The result emission type.
  * @param cls The [Class] of [State].
- * @param creator Function that creates [ISagaEffect] from [P].
+ * @param creator Function that creates [ISagaEffect] from [State].
  */
 abstract class TakeStateEffect<State, R>(
   protected val cls: Class<State>,

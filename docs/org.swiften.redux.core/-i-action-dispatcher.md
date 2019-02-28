@@ -10,4 +10,5 @@ Represents an [IReduxAction](-i-redux-action.md) dispatcher.
 
 | Name | Summary |
 |---|---|
+| [NoopActionDispatcher](-noop-action-dispatcher/index.md) | `object NoopActionDispatcher : `[`IActionDispatcher`](./-i-action-dispatcher.md)<br>[IActionDispatcher](./-i-action-dispatcher.md) that does not do any dispatching and simply returns [EmptyJob](-empty-job/index.md). |
 | [ThreadSafeDispatcher](-thread-safe-dispatcher/index.md) | `class ThreadSafeDispatcher : `[`IActionDispatcher`](./-i-action-dispatcher.md)<br>Use this [IActionDispatcher](./-i-action-dispatcher.md) to wrap a base [IActionDispatcher](./-i-action-dispatcher.md) and dispatch [IReduxAction](-i-redux-action.md) instances in a thread-safe manner. |

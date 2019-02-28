@@ -2,7 +2,7 @@
 
 # SagaMonitor
 
-`class SagaMonitor : `[`ISagaMonitor`](../-i-saga-monitor/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/SagaMonitor.kt#L27)
+`class SagaMonitor : `[`ISagaMonitor`](../-i-saga-monitor/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/SagaMonitor.kt#L28)
 
 Default implementation of [ISagaMonitor](../-i-saga-monitor/index.md).
 

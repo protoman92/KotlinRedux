@@ -2,10 +2,10 @@
 
 # NothingEffect
 
-`internal class NothingEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/NothingEffect.kt#L20)
+`internal class NothingEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/NothingEffect.kt#L19)
 
 [SagaOutput](../-saga-output/index.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) does not emit anything. This can be used to perform clean-up
-for streams such as [RxTakeEffect](../-rx-take-effect/index.md).
+for streams such as [RxTakeActionEffect](../-rx-take-action-effect/index.md).
 
 ### Parameters
 
@@ -15,7 +15,7 @@ for streams such as [RxTakeEffect](../-rx-take-effect/index.md).
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `NothingEffect()`<br>[SagaOutput](../-saga-output/index.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) does not emit anything. This can be used to perform clean-up for streams such as [RxTakeEffect](../-rx-take-effect/index.md). |
+| [&lt;init&gt;](-init-.md) | `NothingEffect()`<br>[SagaOutput](../-saga-output/index.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) does not emit anything. This can be used to perform clean-up for streams such as [RxTakeActionEffect](../-rx-take-action-effect/index.md). |
 
 ### Functions
 

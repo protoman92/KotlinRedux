@@ -2,9 +2,9 @@
 
 # debounceTake
 
-`fun <Action : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`, P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> debounceTake(millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`ITakeEffectTransformer`](../../org.swiften.redux.saga.common/-i-take-effect-transformer.md)`<`[`Action`](debounce-take.md#Action)`, `[`P`](debounce-take.md#P)`, `[`R`](debounce-take.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaEffects.kt#L273)
+`fun <Action : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`, P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> debounceTake(millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`ITakeEffectTransformer`](../../org.swiften.redux.saga.common/-i-take-effect-transformer.md)`<`[`Action`](debounce-take.md#Action)`, `[`P`](debounce-take.md#P)`, `[`R`](debounce-take.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaEffects.kt#L330)
 
-Create a [DebounceTakeEffect](../-debounce-take-effect/index.md) instance to perform debounce for a [TakeEffect](../../org.swiften.redux.saga.common/-take-effect/index.md).
+Create a [DebounceTakeEffect](../-debounce-take-effect/index.md) instance to perform debounce for a [TakeActionEffect](../../org.swiften.redux.saga.common/-take-action-effect/index.md).
 
 ### Parameters
 

@@ -2,9 +2,9 @@
 
 # DebounceTakeEffect
 
-`internal class DebounceTakeEffect<Action : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`, P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`RxTakeEffect`](../-rx-take-effect/index.md)`<`[`Action`](index.md#Action)`, `[`P`](index.md#P)`, `[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/DebounceTakeEffect.kt#L21)
+`internal class DebounceTakeEffect<Action : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`, P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`RxTakeActionEffect`](../-rx-take-action-effect/index.md)`<`[`Action`](index.md#Action)`, `[`P`](index.md#P)`, `[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/DebounceTakeEffect.kt#L21)
 
-Perform debounce for a [TakeEffect](../../org.swiften.redux.saga.common/-take-effect/index.md) stream.
+Perform debounce for a [TakeActionEffect](../../org.swiften.redux.saga.common/-take-action-effect/index.md) stream.
 
 ### Parameters
 
@@ -14,7 +14,7 @@ Perform debounce for a [TakeEffect](../../org.swiften.redux.saga.common/-take-ef
 
 `R` - The result emission type.
 
-`source` - The source [TakeEffect](../../org.swiften.redux.saga.common/-take-effect/index.md) instance.
+`source` - The source [TakeActionEffect](../../org.swiften.redux.saga.common/-take-action-effect/index.md) instance.
 
 `millis` - The time to debounce by, in milliseconds.
 
@@ -22,14 +22,14 @@ Perform debounce for a [TakeEffect](../../org.swiften.redux.saga.common/-take-ef
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `DebounceTakeEffect(source: `[`TakeEffect`](../../org.swiften.redux.saga.common/-take-effect/index.md)`<`[`Action`](index.md#Action)`, `[`P`](index.md#P)`, `[`R`](index.md#R)`>, millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`)`<br>Perform debounce for a [TakeEffect](../../org.swiften.redux.saga.common/-take-effect/index.md) stream. |
+| [&lt;init&gt;](-init-.md) | `DebounceTakeEffect(source: `[`TakeActionEffect`](../../org.swiften.redux.saga.common/-take-action-effect/index.md)`<`[`Action`](index.md#Action)`, `[`P`](index.md#P)`, `[`R`](index.md#R)`>, millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`)`<br>Perform debounce for a [TakeActionEffect](../../org.swiften.redux.saga.common/-take-action-effect/index.md) stream. |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
 | [millis](millis.md) | `val millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)<br>The time to debounce by, in milliseconds. |
-| [source](source.md) | `val source: `[`TakeEffect`](../../org.swiften.redux.saga.common/-take-effect/index.md)`<`[`Action`](index.md#Action)`, `[`P`](index.md#P)`, `[`R`](index.md#R)`>`<br>The source [TakeEffect](../../org.swiften.redux.saga.common/-take-effect/index.md) instance. |
+| [source](source.md) | `val source: `[`TakeActionEffect`](../../org.swiften.redux.saga.common/-take-action-effect/index.md)`<`[`Action`](index.md#Action)`, `[`P`](index.md#P)`, `[`R`](index.md#R)`>`<br>The source [TakeActionEffect](../../org.swiften.redux.saga.common/-take-action-effect/index.md) instance. |
 
 ### Functions
 
@@ -41,7 +41,7 @@ Perform debounce for a [TakeEffect](../../org.swiften.redux.saga.common/-take-ef
 
 | Name | Summary |
 |---|---|
-| [invoke](../-rx-take-effect/invoke.md) | `open operator fun invoke(p1: `[`SagaInput`](../../org.swiften.redux.saga.common/-saga-input/index.md)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`R`](../-rx-take-effect/index.md#R)`>` |
+| [invoke](../-rx-take-action-effect/invoke.md) | `open fun invoke(p1: `[`SagaInput`](../../org.swiften.redux.saga.common/-saga-input/index.md)`): `[`ISagaOutput`](../../org.swiften.redux.saga.common/-i-saga-output/index.md)`<`[`R`](../-rx-take-action-effect/index.md#R)`>` |
 
 ### Extension Functions
 
@@ -51,7 +51,7 @@ Perform debounce for a [TakeEffect](../../org.swiften.redux.saga.common/-take-ef
 | [catchAsync](../../org.swiften.redux.saga.common/catch-async.md) | `fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/catch-async.md#R)`>.catchAsync(catcher: suspend <ERROR CLASS>.(`[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)`) -> <ERROR CLASS><`[`R`](../../org.swiften.redux.saga.common/catch-async.md#R)`>): `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/catch-async.md#R)`>`<br>Invoke a [AsyncCatchErrorEffect](../../org.swiften.redux.saga.common/-async-catch-error-effect/index.md) on [this](../../org.swiften.redux.saga.common/catch-async/-this-.md). |
 | [catchError](../../org.swiften.redux.saga.common/catch-error.md) | `fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/catch-error.md#R)`>.catchError(catcher: (`[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)`) -> `[`R`](../../org.swiften.redux.saga.common/catch-error.md#R)`): `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/catch-error.md#R)`>`<br>Catch [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html) from upstream with [catcher](../../org.swiften.redux.saga.common/catch-error.md#org.swiften.redux.saga.common$catchError(org.swiften.redux.saga.common.SagaEffect((org.swiften.redux.saga.common.catchError.R)), kotlin.Function1((kotlin.Throwable, org.swiften.redux.saga.common.catchError.R)))/catcher). |
 | [catchSuspend](../../org.swiften.redux.saga.common/catch-suspend.md) | `fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/catch-suspend.md#R)`>.catchSuspend(catcher: suspend <ERROR CLASS>.(`[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)`) -> `[`R`](../../org.swiften.redux.saga.common/catch-suspend.md#R)`): `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/catch-suspend.md#R)`>`<br>Invoke a [SuspendCatchErrorEffect](../../org.swiften.redux.saga.common/-suspend-catch-error-effect/index.md) on [this](../../org.swiften.redux.saga.common/catch-suspend/-this-.md). |
-| [debounceTake](../debounce-take.md) | `fun <Action : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`, P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`TakeEffect`](../../org.swiften.redux.saga.common/-take-effect/index.md)`<`[`Action`](../debounce-take.md#Action)`, `[`P`](../debounce-take.md#P)`, `[`R`](../debounce-take.md#R)`>.debounceTake(millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`TakeEffect`](../../org.swiften.redux.saga.common/-take-effect/index.md)`<`[`Action`](../debounce-take.md#Action)`, `[`P`](../debounce-take.md#P)`, `[`R`](../debounce-take.md#R)`>`<br>Invoke a [DebounceTakeEffect](./index.md) on [this](../debounce-take/-this-.md). |
+| [debounceTake](../debounce-take.md) | `fun <Action : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`, P : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`TakeActionEffect`](../../org.swiften.redux.saga.common/-take-action-effect/index.md)`<`[`Action`](../debounce-take.md#Action)`, `[`P`](../debounce-take.md#P)`, `[`R`](../debounce-take.md#R)`>.debounceTake(millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`TakeActionEffect`](../../org.swiften.redux.saga.common/-take-action-effect/index.md)`<`[`Action`](../debounce-take.md#Action)`, `[`P`](../debounce-take.md#P)`, `[`R`](../debounce-take.md#R)`>`<br>Invoke a [DebounceTakeEffect](./index.md) on [this](../debounce-take/-this-.md). |
 | [delayUpstreamValue](../../org.swiften.redux.saga.common/delay-upstream-value.md) | `fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/delay-upstream-value.md#R)`>.delayUpstreamValue(millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/delay-upstream-value.md#R)`>`<br>Invoke a [DelayEffect](../../org.swiften.redux.saga.common/-delay-effect/index.md) on [this](../../org.swiften.redux.saga.common/delay-upstream-value/-this-.md). |
 | [doOnValue](../../org.swiften.redux.saga.common/do-on-value.md) | `fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/do-on-value.md#R)`>.doOnValue(performer: (`[`R`](../../org.swiften.redux.saga.common/do-on-value.md#R)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/do-on-value.md#R)`>`<br>Invoke a [DoOnValueEffect](../../org.swiften.redux.saga.common/-do-on-value-effect/index.md) on [this](../../org.swiften.redux.saga.common/do-on-value/-this-.md). |
 | [filter](../../org.swiften.redux.saga.common/filter.md) | `fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/filter.md#R)`>.filter(predicate: (`[`R`](../../org.swiften.redux.saga.common/filter.md#R)`) -> `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)`): `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`R`](../../org.swiften.redux.saga.common/filter.md#R)`>`<br>Invoke a [FilterEffect](../../org.swiften.redux.saga.common/-filter-effect/index.md) on [this](../../org.swiften.redux.saga.common/filter/-this-.md). |

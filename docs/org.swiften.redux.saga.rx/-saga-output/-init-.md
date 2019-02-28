@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`SagaOutput(scope: <ERROR CLASS>, monitor: `[`ISagaMonitor`](../../org.swiften.redux.saga.common/-i-saga-monitor/index.md)`, stream: <ERROR CLASS><`[`T`](index.md#T)`>, onDispose: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)` = {}, onAction: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)`)`
+`SagaOutput(scope: <ERROR CLASS>, monitor: `[`ISagaMonitor`](../../org.swiften.redux.saga.common/-i-saga-monitor/index.md)`, stream: <ERROR CLASS><`[`T`](index.md#T)`>, onDispose: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)` = {}, onAction: `[`IActionDispatcher`](../../org.swiften.redux.core/-i-action-dispatcher.md)` = NoopActionDispatcher)`
 
 This is the default implementation of [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md). Every time a new [SagaOutput](index.md) is created,
 [monitor](monitor.md) will keep track of its [onAction](on-action.md) to call on [ISagaMonitor.dispatch](../../org.swiften.redux.core/-i-dispatcher-provider/dispatch.md), and when said

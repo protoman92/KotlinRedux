@@ -2,9 +2,9 @@
 
 # &lt;init&gt;
 
-`DebounceTakeEffect(source: `[`TakeEffect`](../../org.swiften.redux.saga.common/-take-effect/index.md)`<`[`Action`](index.md#Action)`, `[`P`](index.md#P)`, `[`R`](index.md#R)`>, millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`)`
+`DebounceTakeEffect(source: `[`TakeActionEffect`](../../org.swiften.redux.saga.common/-take-action-effect/index.md)`<`[`Action`](index.md#Action)`, `[`P`](index.md#P)`, `[`R`](index.md#R)`>, millis: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`)`
 
-Perform debounce for a [TakeEffect](../../org.swiften.redux.saga.common/-take-effect/index.md) stream.
+Perform debounce for a [TakeActionEffect](../../org.swiften.redux.saga.common/-take-action-effect/index.md) stream.
 
 ### Parameters
 
@@ -14,6 +14,6 @@ Perform debounce for a [TakeEffect](../../org.swiften.redux.saga.common/-take-ef
 
 `R` - The result emission type.
 
-`source` - The source [TakeEffect](../../org.swiften.redux.saga.common/-take-effect/index.md) instance.
+`source` - The source [TakeActionEffect](../../org.swiften.redux.saga.common/-take-action-effect/index.md) instance.
 
 `millis` - The time to debounce by, in milliseconds.
