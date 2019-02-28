@@ -28,8 +28,8 @@ import org.swiften.redux.saga.common.mapSuspend
 import org.swiften.redux.saga.common.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.just
 import org.swiften.redux.saga.rx.SagaEffects.selectFromState
-import org.swiften.redux.saga.rx.SagaEffects.takeEvery
-import org.swiften.redux.saga.rx.SagaEffects.takeLatest
+import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
+import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.selectFromState
 import org.swiften.redux.thunk.IReduxThunkAction
 import org.swiften.redux.thunk.ThunkFunction
@@ -153,7 +153,7 @@ object Redux {
        * a [Plant] to the garden.
        */
       private fun addPlantToGarden(api: GardenPlantingRepository): SagaEffect<Any> {
-        return takeLatest(Action.AddPlantToGarden::class, { it.plantId }) { plantId ->
+        return takeLatestAction(Action.AddPlantToGarden::class, { it.plantId }) { plantId ->
           just(plantId)
             .mapSuspend { api.createGardenPlanting(it) }
             .putInStore { Action.UpdateSelectedPlantStatus(true) }
@@ -166,7 +166,7 @@ object Redux {
        */
       @Suppress("SENSELESS_COMPARISON")
       fun checkSelectedPlantStatus(api: GardenPlantingRepository): SagaEffect<Any> {
-        return takeLatest(Screen::class, {
+        return takeLatestAction(Screen::class, {
           when (it) {
             is Screen.GardenToPlantDetail -> it.plantId
             is Screen.PlantListToPlantDetail -> it.plantId
@@ -180,7 +180,7 @@ object Redux {
       }
 
       private fun selectPlantFromGarden(): SagaEffect<Any> {
-        return takeEvery(Action.SelectPlantFromGarden::class, { it.index }) { index ->
+        return takeEveryAction(Action.SelectPlantFromGarden::class, { it.index }) { index ->
           selectFromState(State::class) { Option.wrap(it.plantAndGardenPlantings) }
             .mapIgnoringNull { it.value?.elementAtOrNull(index) }
             .map { it.plant }
@@ -215,7 +215,7 @@ object Redux {
 
     object PlantSaga {
       private fun selectPlantFromPlantList(): SagaEffect<Any> {
-        return takeEvery(Action.SelectPlantFromPlantList::class, { it.index }) { index ->
+        return takeEveryAction(Action.SelectPlantFromPlantList::class, { it.index }) { index ->
           selectFromState(State::class) { Option.wrap(it.plants) }
             .mapIgnoringNull { it.value?.elementAtOrNull(index) }
             .map { it.plantId }
@@ -240,7 +240,7 @@ object Redux {
        * [Action.SelectGrowZone.zone].
        */
       private fun syncPlantsOnGrowZone(api: PlantRepository): SagaEffect<Any> {
-        return takeLatest(Action.SelectGrowZone::class, { it.zone }) { zone ->
+        return takeLatestAction(Action.SelectGrowZone::class, { it.zone }) { zone ->
           if (zone == NO_GROW_ZONE) {
             takeEveryData { api.getPlants() }
           } else {

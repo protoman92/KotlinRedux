@@ -13,7 +13,7 @@ import org.swiften.redux.saga.common.SagaInput
 /** Created by viethai.pham on 2019/02/22 */
 /**
  * [SagaOutput] whose [ISagaOutput] does not emit anything. This can be used to perform clean-up
- * for streams such as [RxTakeEffect].
+ * for streams such as [RxTakeActionEffect].
  * @param R The result emission type.
  */
 internal class NothingEffect<R> : SagaEffect<R>() where R : Any {

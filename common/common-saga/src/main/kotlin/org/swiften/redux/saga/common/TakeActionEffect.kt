@@ -9,7 +9,7 @@ import org.swiften.redux.core.IReduxAction
 
 /** Created by haipham on 2018/12/23 */
 /**
- * [TakeEffect] instances produces streams that filter [IReduxAction] with [extractor] and pluck out
+ * [TakeActionEffect] instances produces streams that filter [IReduxAction] with [extractor] and pluck out
  * the appropriate ones to perform additional work on with [creator].
  * @param Action The [IReduxAction] type to perform param extraction.
  * @param P The input value extracted from [IReduxAction].
@@ -18,7 +18,7 @@ import org.swiften.redux.core.IReduxAction
  * @param extractor Function that extracts [P] from [IReduxAction].
  * @param creator Function that creates [ISagaEffect] from [P].
  */
-abstract class TakeEffect<Action, P, R>(
+abstract class TakeActionEffect<Action, P, R>(
   val cls: Class<Action>,
   val extractor: (Action) -> P?,
   val creator: (P) -> ISagaEffect<R>

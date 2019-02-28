@@ -57,7 +57,7 @@ internal class TakeEveryStateEffect<State, R>(
 /**
  * [RxTakeStateEffect] whose output switches to the latest [State] every time one arrives. This
  * is best used for cases whereby we are only interested in the latest value (the concept is
- * similar to [TakeLatestEffect]). Contrast this with [TakeEveryEffect].
+ * similar to [TakeLatestActionEffect]). Contrast this with [TakeEveryActionEffect].
  * @param State The [State] type to be emitted.
  * @param R The result emission type.
  * @param cls See [TakeStateEffect.cls].
