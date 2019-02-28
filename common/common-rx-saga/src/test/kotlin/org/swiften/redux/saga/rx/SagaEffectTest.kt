@@ -61,10 +61,8 @@ import org.swiften.redux.saga.rx.SagaEffects.putInStore
 import org.swiften.redux.saga.rx.SagaEffects.selectFromState
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryAction
 import org.swiften.redux.saga.rx.SagaEffects.takeEveryActionForKeys
-import org.swiften.redux.saga.rx.SagaEffects.takeEveryState
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
 import org.swiften.redux.saga.rx.SagaEffects.takeLatestActionForKeys
-import org.swiften.redux.saga.rx.SagaEffects.takeLatestState
 import java.net.URL
 import java.util.Collections.synchronizedList
 import java.util.Random
@@ -72,7 +70,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2018/12/23 */
-class SagaEffectTest : CommonSagaEffectTest() {
+abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
   override fun <T> justEffect(value: T) where T : Any = just(value)
 
   @ExperimentalCoroutinesApi
@@ -80,7 +78,49 @@ class SagaEffectTest : CommonSagaEffectTest() {
     return from(GlobalScope.rxFlowable { values.forEach { this.send(it) } })
   }
 
-  private fun test_takeEffectDebounce_shouldEmitCorrectValues(
+  @Test
+  fun `Take every effect should take all actions`() {
+    val actualValues = (0 until this.iteration).toList()
+
+    test_takeEffect_shouldTakeCorrectActions({ a, b ->
+      takeEveryAction(IReduxAction::class, a, creator = b)
+    }) { it == actualValues.sorted() }
+  }
+
+  @Test
+  fun `Take latest effect should take latest actions`() {
+    test_takeEffect_shouldTakeCorrectActions({ a, b ->
+      takeLatestAction(IReduxAction::class, a, creator = b)
+    }) { it.size == 1 }
+  }
+
+  @Test
+  fun `Take every effect with keys should take correct actions`() {
+    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeEveryActionForKeys(a, creator = b) }
+  }
+
+  @Test
+  fun `Take latest effect with keys should take correct actions`() {
+    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeLatestActionForKeys(a, creator = b) }
+  }
+
+  @Test
+  fun `Take every state should stream correct state`() {
+    val actualValues = (0..this.iteration).map { "$it" }
+
+    this.test_takeStateEffect_shouldSelectCorrectState({
+      SagaEffects.takeEveryState(String::class, it)
+    }) { it == actualValues.sorted() }
+  }
+
+  @Test
+  fun `Take latest state should stream correct state`() {
+    this.test_takeStateEffect_shouldSelectCorrectState({
+      SagaEffects.takeLatestState(String::class, it)
+    }) { it.size == 1 }
+  }
+
+  protected fun test_takeEffectDebounce_shouldEmitCorrectValues(
     createTakeEffect: (
       extractor: (IReduxAction) -> Int?,
       creator: (Int) -> ISagaEffect<Int>
@@ -92,7 +132,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
     val finalValues = synchronizedList(arrayListOf<Int>())
     val debounceTime = 500L
 
-    createTakeEffect({ (it as Action).value }, { value -> this@SagaEffectTest.justEffect(value) })
+    createTakeEffect({ (it as Action).value }, { value -> justEffect(value) })
       .debounceTake(debounceTime)
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
@@ -113,7 +153,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
       val correctValues = arrayListOf(1, 3, 5)
 
-      withTimeoutOrNull(this@SagaEffectTest.timeout) {
+      withTimeoutOrNull(this@OverridableSagaEffectTest.timeout) {
         while (finalValues.sorted() != correctValues.sorted() && this.isActive) { delay(500) }; Unit
       }
 
@@ -122,30 +162,63 @@ class SagaEffectTest : CommonSagaEffectTest() {
     }
   }
 
-  @Test
-  fun `Take every effect should take all actions`() {
-    test_takeEffect_shouldTakeCorrectActions({ a, b ->
-      takeEveryAction(IReduxAction::class, a, creator = b)
-    }, (0 until this.iteration).toList())
-  }
+  protected fun test_streamDisposition_shouldRemoveEntryFromMonitor(
+    createTakeEffect: (
+      creator: (IReduxAction) -> ISagaEffect<Any>
+    ) -> SagaEffect<Any>
+  ) {
+    // Setup
+    class Action(val value: Int) : IReduxAction
+    val dispatchers = ConcurrentHashMap<String, IActionDispatcher>()
+    val setCount = AtomicInteger(0)
+    val removeCount = AtomicInteger(0)
 
-  @Test
-  fun `Take latest effect should take latest actions`() {
-    test_takeEffect_shouldTakeCorrectActions({ a, b ->
-      takeLatestAction(IReduxAction::class, a, creator = b)
-    }, arrayListOf(this.iteration - 1))
-  }
+    val monitor = object : ISagaMonitor {
+      override val dispatch: IActionDispatcher = { action ->
+        dispatchers.forEach { it.value(action) }; EmptyJob
+      }
 
-  @Test
-  fun `Take every effect with keys should take correct actions`() {
-    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeEveryActionForKeys(a, creator = b) }
-  }
+      override fun addOutputDispatcher(id: String, dispatch: IActionDispatcher) {
+        dispatchers[id] = dispatch
+        setCount.incrementAndGet()
+      }
 
-  @Test
-  fun `Take latest effect with keys should take correct actions`() {
-    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeLatestActionForKeys(a, creator = b) }
-  }
+      override fun removeOutputDispatcher(id: String) {
+        /** If no id found, do not increment remove count. */
+        dispatchers.remove(id)?.also { removeCount.incrementAndGet() }
+      }
+    }
 
+    val sourceOutput = createTakeEffect { a ->
+      justEffect((a as Action).value)
+        .map { if (it % 2 == 0) it else { throw Exception("Oops!") } }
+        .catchError { 10 }
+        .delayUpstreamValue(500)
+        .mapSingle { Single.just(1000) }
+        .mapAsync { this.async { it } }
+        .putInStore { DefaultReduxAction.Dummy }
+        .ifEmptyThenReturn(100)
+    }.invoke(SagaInput(monitor))
+
+    sourceOutput.subscribe({}, {})
+
+    // When
+    (0 until this.iteration).forEach { monitor.dispatch(Action(it)) }
+
+    runBlocking {
+      delay(1000)
+
+      // Clear the take publisher to register a remove event for it as well.
+      sourceOutput.dispose()
+
+      // Then
+      assertTrue(setCount.get() > 0)
+      assertEquals(setCount.get(), removeCount.get())
+    }
+  }
+}
+
+class SagaEffectTest : OverridableSagaEffectTest() {
   @Test
   fun `Take latest with forceful then should work correctly`() {
     // Setup
@@ -289,20 +362,6 @@ class SagaEffectTest : CommonSagaEffectTest() {
 
       // Then
       assertEquals(finalValues.size, 1)
-    }
-  }
-
-  @Test
-  fun `Take every state should stream correct state`() {
-    this.test_takeStateEffect_shouldSelectCorrectState((0..this.iteration).map { "$it" }) {
-      takeEveryState(String::class, it)
-    }
-  }
-
-  @Test
-  fun `Take latest state should stream correct state`() {
-    this.test_takeStateEffect_shouldSelectCorrectState(arrayListOf("${this.iteration}")) {
-      takeLatestState(String::class, it)
     }
   }
 
@@ -469,61 +528,6 @@ class SagaEffectTest : CommonSagaEffectTest() {
         ErrorAction(error),
         ProgressAction(false)
       ))
-    }
-  }
-
-  private fun test_streamDisposition_shouldRemoveEntryFromMonitor(
-    createTakeEffect: (
-      creator: (IReduxAction) -> ISagaEffect<Any>
-    ) -> SagaEffect<Any>
-  ) {
-    // Setup
-    class Action(val value: Int) : IReduxAction
-    val dispatchers = ConcurrentHashMap<String, IActionDispatcher>()
-    val setCount = AtomicInteger(0)
-    val removeCount = AtomicInteger(0)
-
-    val monitor = object : ISagaMonitor {
-      override val dispatch: IActionDispatcher = { action ->
-        dispatchers.forEach { it.value(action) }; EmptyJob
-      }
-
-      override fun addOutputDispatcher(id: String, dispatch: IActionDispatcher) {
-        dispatchers[id] = dispatch
-        setCount.incrementAndGet()
-      }
-
-      override fun removeOutputDispatcher(id: String) {
-        /** If no id found, do not increment remove count. */
-        dispatchers.remove(id)?.also { removeCount.incrementAndGet() }
-      }
-    }
-
-    val sourceOutput = createTakeEffect { a ->
-      justEffect((a as Action).value)
-        .map { if (it % 2 == 0) it else { throw Exception("Oops!") } }
-        .catchError { 10 }
-        .delayUpstreamValue(500)
-        .mapSingle { Single.just(1000) }
-        .mapAsync { this.async { it } }
-        .putInStore { DefaultReduxAction.Dummy }
-        .ifEmptyThenReturn(100)
-    }.invoke(SagaInput(monitor))
-
-    sourceOutput.subscribe({}, {})
-
-    // When
-    (0 until this.iteration).forEach { monitor.dispatch(Action(it)) }
-
-    runBlocking {
-      delay(1000)
-
-      // Clear the take publisher to register a remove event for it as well.
-      sourceOutput.dispose()
-
-      // Then
-      assertTrue(setCount.get() > 0)
-      assertEquals(setCount.get(), removeCount.get())
     }
   }
 

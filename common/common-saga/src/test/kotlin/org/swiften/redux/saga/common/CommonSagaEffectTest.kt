@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.swiften.redux.core.AsyncMiddleware
 import org.swiften.redux.core.DefaultReduxAction
@@ -26,8 +27,7 @@ import java.util.Collections.synchronizedList
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/07 */
-/** Use this test class for common [ISagaEffect] tests */
-abstract class CommonSagaEffectTest {
+abstract class OverridableCommonSagaEffectTest {
   protected class State
 
   protected val timeout: Long = 10000
@@ -40,7 +40,7 @@ abstract class CommonSagaEffectTest {
       extractor: (IReduxAction) -> Int?,
       creator: (Int) -> ISagaEffect<Any>
     ) -> SagaEffect<Any>,
-    actualValues: List<Int>
+    verifyValues: (Collection<Int>) -> Boolean
   ) {
     // Setup
     class Action(val value: Int) : IReduxAction
@@ -61,12 +61,12 @@ abstract class CommonSagaEffectTest {
     }
 
     runBlocking {
-      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues.sorted() != actualValues.sorted() && this.isActive) { delay(500) }; Unit
+      withTimeoutOrNull(this@OverridableCommonSagaEffectTest.timeout) {
+        while (!verifyValues(finalValues.sorted()) && this.isActive) { delay(500) }; Unit
       }
 
       // Then
-      assertEquals(finalValues.sorted(), actualValues.sorted())
+      assertTrue(verifyValues(finalValues.sorted()))
     }
   }
 
@@ -111,7 +111,7 @@ abstract class CommonSagaEffectTest {
     }
 
     runBlocking {
-      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
+      withTimeoutOrNull(this@OverridableCommonSagaEffectTest.timeout) {
         while (finalValues.sorted() != actualValues.sorted() && this.isActive) { delay(500) }; Unit
       }
 
@@ -121,8 +121,8 @@ abstract class CommonSagaEffectTest {
   }
 
   fun test_takeStateEffect_shouldSelectCorrectState(
-    correctValues: Collection<String>,
-    createTakeEffect: (creator: (String) -> ISagaEffect<String>) -> TakeStateEffect<String, String>
+    createTakeEffect: (creator: (String) -> ISagaEffect<String>) -> TakeStateEffect<String, String>,
+    verifyValues: (Collection<String>) -> Boolean
   ) {
     // Setup
     data class Action(val value: Int) : IReduxAction
@@ -139,20 +139,25 @@ abstract class CommonSagaEffectTest {
     )(FinalStore(defaultState) { s, _ -> "${s.toInt() + 1}" })
 
     // When
-    (0 until this.iteration).forEach { store.dispatch(Action(it)) }
+    (0 until this.iteration).forEach { i ->
+      GlobalScope.launch(Dispatchers.IO) { store.dispatch(Action(i)) }
+    }
 
     runBlocking {
-      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues.sorted() != correctValues.sorted() && this.isActive) { delay(500) }; Unit
+      withTimeoutOrNull(this@OverridableCommonSagaEffectTest.timeout) {
+        while (!verifyValues(finalValues.sorted()) && this.isActive) { delay(500) }; Unit
       }
 
       store.dispatch(DefaultReduxAction.Deinitialize)
 
       // Then
-      assertEquals(finalValues.sorted(), correctValues.sorted())
+      verifyValues(finalValues.sorted())
     }
   }
+}
 
+/** Use this test class for common [ISagaEffect] tests */
+abstract class CommonSagaEffectTest : OverridableCommonSagaEffectTest() {
   @Test
   @Suppress("UNREACHABLE_CODE")
   fun `Catch error effect should handle errors gracefully`() {
