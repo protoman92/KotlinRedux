@@ -27,7 +27,7 @@ internal abstract class RxTakeStateEffect<State, R>(
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
     val subject = BehaviorProcessor.createDefault(this.cls.cast(p1.lastState())).toSerialized()
 
-    val nested = SagaOutput(p1.scope, p1.monitor, subject, { subject.onComplete() }) { a ->
+    val nested = SagaOutput(p1.scope, p1.monitor, subject.onBackpressureBuffer(), { subject.onComplete() }) {
       /**
        * By the time [ISagaOutput.onAction] is called, the store would have reduced a new [State]
        * so [SagaInput.lastState] here will produce the latest [State].

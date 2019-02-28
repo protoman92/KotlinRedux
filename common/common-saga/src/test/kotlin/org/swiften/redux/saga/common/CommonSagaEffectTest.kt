@@ -5,9 +5,12 @@
 
 package org.swiften.redux.saga.common
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
@@ -52,12 +55,10 @@ abstract class CommonSagaEffectTest {
       .subscribe({ finalValues.add(it as Int) })
 
     // When
-    monitor.dispatch(Action(0))
-    monitor.dispatch(Action(1))
-    monitor.dispatch(DefaultReduxAction.Dummy)
-    monitor.dispatch(Action(2))
-    monitor.dispatch(DefaultReduxAction.Dummy)
-    monitor.dispatch(Action(3))
+    (0 until this.iteration).forEach { i ->
+      GlobalScope.launch(Dispatchers.IO) { monitor.dispatch(Action(i)) }
+      GlobalScope.launch(Dispatchers.IO) { monitor.dispatch(DefaultReduxAction.Dummy) }
+    }
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
@@ -142,7 +143,7 @@ abstract class CommonSagaEffectTest {
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues.sorted() != correctValues.sorted() && this.isActive) { }; Unit
+        while (finalValues.sorted() != correctValues.sorted() && this.isActive) { delay(500) }; Unit
       }
 
       store.dispatch(DefaultReduxAction.Deinitialize)

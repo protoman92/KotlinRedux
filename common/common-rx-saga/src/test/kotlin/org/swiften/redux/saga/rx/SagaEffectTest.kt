@@ -126,14 +126,14 @@ class SagaEffectTest : CommonSagaEffectTest() {
   fun `Take every effect should take all actions`() {
     test_takeEffect_shouldTakeCorrectActions({ a, b ->
       takeEvery(IReduxAction::class, a, creator = b)
-    }, arrayListOf(0, 1, 2, 3))
+    }, (0 until this.iteration).toList())
   }
 
   @Test
   fun `Take latest effect should take latest actions`() {
     test_takeEffect_shouldTakeCorrectActions({ a, b ->
       takeLatest(IReduxAction::class, a, creator = b)
-    }, arrayListOf(3))
+    }, arrayListOf(this.iteration - 1))
   }
 
   @Test
