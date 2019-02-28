@@ -30,6 +30,7 @@ import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
 import org.swiften.redux.core.IReduxStore
+import org.swiften.redux.core.NoopActionDispatcher
 import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.saga.common.CommonSagaEffectTest
 import org.swiften.redux.saga.common.ISagaEffect
@@ -389,7 +390,7 @@ class SagaEffectTest : CommonSagaEffectTest() {
       .invoke(SagaInput(monitor))
 
     val sourceOutput2 = just(2).selectFromState(State::class) { 4 }
-      .invoke(SagaInput(monitor, { State() }) { EmptyJob })
+      .invoke(SagaInput(monitor, { State() }, NoopActionDispatcher))
 
     // When && Then
     assertEquals(sourceOutput1.awaitFor(this.timeout), 3)

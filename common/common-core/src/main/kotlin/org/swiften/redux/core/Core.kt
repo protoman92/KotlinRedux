@@ -95,3 +95,8 @@ interface IReduxStore<GState> :
   IReduxUnsubscriberProvider,
   IDeinitializerProvider
   where GState : Any
+
+/** [IActionDispatcher] that does not do any dispatching and simply returns [EmptyJob]. */
+object NoopActionDispatcher : IActionDispatcher {
+  override fun invoke(p1: IReduxAction): IAsyncJob<*> = EmptyJob
+}

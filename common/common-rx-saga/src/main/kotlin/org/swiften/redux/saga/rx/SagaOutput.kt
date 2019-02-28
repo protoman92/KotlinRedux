@@ -11,9 +11,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.rx2.rxSingle
 import org.swiften.redux.core.DefaultUniqueIDProvider
-import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IUniqueIDProvider
+import org.swiften.redux.core.NoopActionDispatcher
 import org.swiften.redux.saga.common.ISagaMonitor
 import org.swiften.redux.saga.common.ISagaOutput
 import java.util.concurrent.TimeUnit
@@ -41,7 +41,7 @@ class SagaOutput<T : Any>(
   private val monitor: ISagaMonitor,
   stream: Flowable<T>,
   private val onDispose: () -> Unit = {},
-  override val onAction: IActionDispatcher
+  override val onAction: IActionDispatcher = NoopActionDispatcher
 ) : ISagaOutput<T>,
   IUniqueIDProvider by DefaultUniqueIDProvider(),
   CoroutineScope by scope {
@@ -58,7 +58,7 @@ class SagaOutput<T : Any>(
       monitor: ISagaMonitor,
       creator: suspend CoroutineScope.() -> T
     ): ISagaOutput<T> where T : Any {
-      return SagaOutput(scope, monitor, scope.rxSingle { creator() }.toFlowable()) { EmptyJob }
+      return SagaOutput(scope, monitor, scope.rxSingle { creator() }.toFlowable())
     }
 
     /**
@@ -74,7 +74,7 @@ class SagaOutput<T : Any>(
       monitor: ISagaMonitor,
       outputs: Collection<SagaOutput<T>>
     ): SagaOutput<T> where T : Any {
-      return SagaOutput(scope, monitor, Flowable.merge(outputs.map { it.stream })) { EmptyJob }
+      return SagaOutput(scope, monitor, Flowable.merge(outputs.map { it.stream }))
     }
   }
 
@@ -94,7 +94,7 @@ class SagaOutput<T : Any>(
   }
 
   private fun <T2> with(newStream: Flowable<T2>): ISagaOutput<T2> where T2 : Any {
-    return SagaOutput(this.scope, this.monitor, newStream, { this.dispose() }) { EmptyJob }
+    return SagaOutput(this.scope, this.monitor, newStream, { this.dispose() })
   }
 
   override fun <T2> map(transform: (T) -> T2): ISagaOutput<T2> where T2 : Any {

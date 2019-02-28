@@ -9,12 +9,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import org.swiften.redux.core.DefaultUniqueIDProvider
-import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxSubscription
 import org.swiften.redux.core.IReduxUnsubscriber
 import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.IUniqueIDProvider
+import org.swiften.redux.core.NoopActionDispatcher
 import org.swiften.redux.core.ReduxSubscription
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer
@@ -90,7 +90,7 @@ open class BaseLifecycleTest {
       return subscription
     }
 
-    override val dispatch: IActionDispatcher = { EmptyJob }
+    override val dispatch: IActionDispatcher = NoopActionDispatcher
     override fun deinitialize() {}
   }
 }

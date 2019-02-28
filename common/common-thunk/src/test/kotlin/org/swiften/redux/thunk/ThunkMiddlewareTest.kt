@@ -20,6 +20,7 @@ import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.EnhancedReduxStore
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.NoopActionDispatcher
 import org.swiften.redux.core.ThreadSafeStore
 import org.swiften.redux.core.combineMiddlewares
 import java.util.Collections.synchronizedList
@@ -49,11 +50,11 @@ class ThunkMiddlewareTest : BaseMiddlewareTest() {
     // Then
     runBlocking {
       assertTrue(thunkAction is IReduxThunkAction<*, *, *>)
-      assertTrue(successCast.payload(GlobalScope, { EmptyJob }, { 0 }, object :
+      assertTrue(successCast.payload(GlobalScope, NoopActionDispatcher, { 0 }, object :
         IDependency {}) is Unit)
 
       try {
-        failureCast.payload(GlobalScope, { EmptyJob }, {}, 0)
+        failureCast.payload(GlobalScope, NoopActionDispatcher, {}, 0)
         fail("Should not have completed")
       } catch (e: Throwable) { }
     }

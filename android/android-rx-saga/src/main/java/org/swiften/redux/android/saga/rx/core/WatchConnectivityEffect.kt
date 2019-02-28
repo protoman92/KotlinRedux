@@ -16,7 +16,6 @@ import android.net.NetworkRequest
 import android.os.Build
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
-import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.ISagaOutput
 import org.swiften.redux.saga.common.SagaEffect
@@ -67,6 +66,6 @@ internal class WatchConnectivityEffect(private val context: Context) : SagaEffec
       }
     }
 
-    return SagaOutput(p1.scope, p1.monitor, stream.toFlowable(BackpressureStrategy.BUFFER)) { EmptyJob }
+    return SagaOutput(p1.scope, p1.monitor, stream.toFlowable(BackpressureStrategy.BUFFER))
   }
 }

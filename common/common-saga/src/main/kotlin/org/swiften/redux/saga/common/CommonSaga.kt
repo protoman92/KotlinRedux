@@ -8,13 +8,13 @@ package org.swiften.redux.saga.common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
-import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IAsyncJob
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.IUniqueIDProvider
+import org.swiften.redux.core.NoopActionDispatcher
 
 /** Created by haipham on 2019/01/07 */
 /**
@@ -54,7 +54,7 @@ class SagaInput(
   ) : this(GlobalScope, monitor, lastState, dispatch)
 
   constructor(monitor: ISagaMonitor, dispatch: IActionDispatcher) : this(monitor, {}, dispatch)
-  constructor(monitor: ISagaMonitor) : this(monitor, { EmptyJob })
+  constructor(monitor: ISagaMonitor) : this(monitor, NoopActionDispatcher)
 }
 
 /**
