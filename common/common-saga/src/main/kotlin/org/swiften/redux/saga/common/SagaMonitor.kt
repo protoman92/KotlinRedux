@@ -8,6 +8,8 @@ package org.swiften.redux.saga.common
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IDispatcherProvider
+import org.swiften.redux.core.NoopActionDispatcher
+import java.util.concurrent.ConcurrentHashMap
 
 /** Created by viethai.pham on 2019/02/22 */
 /**
@@ -24,14 +26,16 @@ interface ISagaMonitor : IDispatcherProvider {
 
 /** Default implementation of [ISagaMonitor]. */
 class SagaMonitor : ISagaMonitor {
-  private val dispatchers = HashMap<String, IActionDispatcher>()
+  private val dispatchers = ConcurrentHashMap<String, IActionDispatcher>()
 
   override val dispatch: IActionDispatcher = { a ->
     this@SagaMonitor.dispatchers.forEach { it.value(a) }; EmptyJob
   }
 
   override fun addOutputDispatcher(id: String, dispatch: IActionDispatcher) {
-    this.dispatchers[id] = dispatch
+    if (dispatch != NoopActionDispatcher) {
+      this.dispatchers[id] = dispatch
+    }
   }
 
   override fun removeOutputDispatcher(id: String) {

@@ -6,7 +6,6 @@
 package org.swiften.redux.saga.rx
 
 import io.reactivex.Single
-import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.saga.common.ISagaEffect
 import org.swiften.redux.saga.common.ISagaOutput
 import org.swiften.redux.saga.common.SagaEffect
@@ -25,6 +24,6 @@ internal class CallEffect<P, R>(
   private val transformer: (P) -> Single<R>
 ) : SagaEffect<R>() where P : Any, R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).flatMap {
-    SagaOutput(p1.scope, p1.monitor, this.transformer(it).toFlowable()) { EmptyJob }
+    SagaOutput(p1.scope, p1.monitor, this.transformer(it).toFlowable())
   }
 }
