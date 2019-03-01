@@ -22,7 +22,7 @@ class ThreadSafeStore<GState>(
   override val reducer: IReducer<GState, IReduxAction>
 ) : IReduxStore<GState> where GState : Any {
   private val lock = ReentrantReadWriteLock()
-  private val subscribers = HashMap<String, (GState) -> Unit>()
+  private val subscribers = HashMap<Long, (GState) -> Unit>()
 
   override val lastState = { this.lock.read { this.state } }
 

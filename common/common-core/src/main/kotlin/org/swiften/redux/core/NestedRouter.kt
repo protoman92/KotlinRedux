@@ -65,6 +65,7 @@ class NestedRouter private constructor (private val navigator: (IRouterScreen) -
       return
     }
 
+    println("Redux ${this.subRouters}")
     if (this.navigator(screen)) return
     for (subRouter in this.subRouters) { if (subRouter.navigate(screen)) return }
   }

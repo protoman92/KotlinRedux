@@ -37,7 +37,7 @@ interface ICompositeReduxSubscription : IReduxSubscription {
    * @param subscribeId A [String] value.
    * @return The remove [IReduxSubscription], if any.
    */
-  fun remove(subscribeId: String): IReduxSubscription?
+  fun remove(subscribeId: Long): IReduxSubscription?
 }
 
 /**
@@ -47,17 +47,15 @@ interface ICompositeReduxSubscription : IReduxSubscription {
  * @param _unsubscribe Function that contains unsubscription logic.
  */
 class ReduxSubscription(
-  override val uniqueID: String,
+  override val uniqueID: Long,
   private val _unsubscribe: () -> Unit
 ) : IReduxSubscription {
-  companion object {
-    private const val EMPTY_ID = "EMPTY"
-
+  companion object : IUniqueIDProvider by DefaultUniqueIDProvider() {
     /**
      * Mock [ReduxSubscription] that is used every time there is no meaningful subscription logic
      * to be unsubscribed on.
      */
-    val EMPTY = ReduxSubscription(this.EMPTY_ID) {}
+    val EMPTY = ReduxSubscription(this.uniqueID) {}
   }
 
   private val _isUnsubscribed = AtomicBoolean()
@@ -71,18 +69,18 @@ class ReduxSubscription(
  * be unsubscribed from.
  * @param uniqueID See [IReduxSubscription.uniqueID].
  */
-class CompositeReduxSubscription private constructor(override val uniqueID: String) : ICompositeReduxSubscription {
+class CompositeReduxSubscription private constructor(override val uniqueID: Long) : ICompositeReduxSubscription {
   companion object {
     /**
      * Create a [CompositeReduxSubscription] and provide it with locking mechanisms.
      * @param uniqueID See [CompositeReduxSubscription.uniqueID].
      * @return An [ICompositeReduxSubscription] instance.
      */
-    fun create(uniqueID: String): ICompositeReduxSubscription {
+    fun create(uniqueID: Long): ICompositeReduxSubscription {
       return object : ICompositeReduxSubscription {
         private val lock = ReentrantLock()
         private val subscription = CompositeReduxSubscription(uniqueID)
-        override val uniqueID: String get() = this.subscription.uniqueID
+        override val uniqueID: Long get() = this.subscription.uniqueID
 
         override fun isUnsubscribed(): Boolean {
           return this.lock.withLock { this.subscription.isUnsubscribed() }
@@ -96,14 +94,14 @@ class CompositeReduxSubscription private constructor(override val uniqueID: Stri
           return this.lock.withLock { this.subscription.add(subscription) }
         }
 
-        override fun remove(subscribeId: String): IReduxSubscription? {
+        override fun remove(subscribeId: Long): IReduxSubscription? {
           return this.lock.withLock { this.subscription.remove(subscribeId) }
         }
       }
     }
   }
 
-  private val subscriptions = hashMapOf<String, IReduxSubscription>()
+  private val subscriptions = hashMapOf<Long, IReduxSubscription>()
   private var _isUnsubscribed = false
 
   override fun isUnsubscribed() = this._isUnsubscribed
@@ -120,7 +118,7 @@ class CompositeReduxSubscription private constructor(override val uniqueID: Stri
     this.subscriptions[subscription.uniqueID] = subscription
   }
 
-  override fun remove(subscribeId: String): IReduxSubscription? {
+  override fun remove(subscribeId: Long): IReduxSubscription? {
     return this.subscriptions.remove(subscribeId)
   }
 }

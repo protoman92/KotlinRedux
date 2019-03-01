@@ -169,7 +169,7 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
   ) {
     // Setup
     class Action(val value: Int) : IReduxAction
-    val dispatchers = ConcurrentHashMap<String, IActionDispatcher>()
+    val dispatchers = ConcurrentHashMap<Long, IActionDispatcher>()
     val setCount = AtomicInteger(0)
     val removeCount = AtomicInteger(0)
 
@@ -178,12 +178,12 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
         dispatchers.forEach { it.value(action) }; EmptyJob
       }
 
-      override fun addOutputDispatcher(id: String, dispatch: IActionDispatcher) {
+      override fun addOutputDispatcher(id: Long, dispatch: IActionDispatcher) {
         dispatchers[id] = dispatch
         setCount.incrementAndGet()
       }
 
-      override fun removeOutputDispatcher(id: String) {
+      override fun removeOutputDispatcher(id: Long) {
         /** If no id found, do not increment remove count. */
         dispatchers.remove(id)?.also { removeCount.incrementAndGet() }
       }

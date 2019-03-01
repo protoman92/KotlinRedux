@@ -78,7 +78,7 @@ open class PropInjector<GState : Any> protected constructor(
   IStateGetterProvider<GState> by store,
   IReduxUnsubscriberProvider,
   IDeinitializerProvider by store {
-  private val subscriptions = ConcurrentHashMap<String, IReduxSubscription>()
+  private val subscriptions = ConcurrentHashMap<Long, IReduxSubscription>()
 
   override val unsubscribe: IReduxUnsubscriber = { id ->
     this.subscriptions.remove(id)?.unsubscribe()

@@ -5,7 +5,6 @@
 
 package org.swiften.redux.core
 
-import java.util.UUID
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
@@ -18,14 +17,13 @@ import kotlin.concurrent.withLock
  */
 internal class LoggingMiddleware<GState>(
   private val logger: (GState, IReduxAction?) -> Unit
-) : IMiddleware<GState> {
+) : IMiddleware<GState>, IUniqueIDProvider by DefaultUniqueIDProvider() {
   override fun invoke(p1: MiddlewareInput<GState>): DispatchMapper {
     return { wrapper ->
       val lock = ReentrantLock()
-      val subscriberId = "${this@LoggingMiddleware}${UUID.randomUUID()}"
       var lastAction: IReduxAction? = null
 
-      val subscription = p1.subscriber(subscriberId) {
+      val subscription = p1.subscriber(this@LoggingMiddleware.uniqueID) {
         lock.withLock { this@LoggingMiddleware.logger(it, lastAction) }
       }
 
