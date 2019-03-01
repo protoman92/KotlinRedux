@@ -16,6 +16,8 @@ import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
 import org.swiften.redux.core.AsyncMiddleware
 import org.swiften.redux.core.FinalStore
+import org.swiften.redux.core.NestedRouter
+import org.swiften.redux.core.RouterMiddleware
 import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.saga.common.SagaMiddleware
 import org.swiften.redux.ui.IPropInjector
@@ -32,6 +34,7 @@ class MainApplication : Application() {
     val store = applyMiddlewares<Redux.State>(
       AsyncMiddleware.create(),
       SagaMiddleware.create(Redux.Saga.allSagas(repository)),
+      RouterMiddleware.create(NestedRouter.create { false }),
       AsyncMiddleware.create()
     )(FinalStore(State(), Redux.Reducer))
 
@@ -40,6 +43,7 @@ class MainApplication : Application() {
     injector.injectActivitySerializable(this, object : ILifecycleInjectionHelper<Redux.State> {
       override fun inject(injector: IPropInjector<State>, owner: LifecycleOwner) {
         when (owner) {
+          is MainActivity -> injector.injectLifecycle(Unit, owner, MainActivity)
           is MainFragment -> injector.injectLifecycle(Unit, owner, MainFragment)
           is SearchFragment -> injector.injectLifecycle(Unit, owner, SearchFragment)
           is DetailFragment -> injector.injectLifecycle(Unit, owner, DetailFragment)

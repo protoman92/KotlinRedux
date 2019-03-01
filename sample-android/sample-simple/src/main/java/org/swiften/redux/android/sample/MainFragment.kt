@@ -13,9 +13,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.main_fragment.view_pager
-import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.core.DefaultUniqueIDProvider
+import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.core.IRouterScreen
+import org.swiften.redux.core.IUniqueIDProvider
+import org.swiften.redux.core.IVetoableRouter
+import org.swiften.redux.core.NestedRouter
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
@@ -28,10 +31,15 @@ import java.io.Serializable
 class MainFragment : Fragment(),
   IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<MainFragment.S, MainFragment.A>,
-  IPropLifecycleOwner<MainFragment.ILocalState, Unit> by NoopPropLifecycleOwner() {
+  IPropLifecycleOwner<MainFragment.ILocalState, Unit> by NoopPropLifecycleOwner(),
+  IVetoableRouter<IRouterScreen> {
   companion object : IPropMapper<ILocalState, Unit, S, A> {
     override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): A {
-      return A { dispatch(Redux.Action.Main.UpdateSelectedPage(it)) }
+      return A(
+        registerSubRouter = { dispatch(NestedRouter.Screen.RegisterSubRouter(it)) },
+        unregisterSubRouter = { dispatch(NestedRouter.Screen.UnregisterSubRouter(it)) },
+        selectPage = { dispatch(Redux.Action.Main.UpdateSelectedPage(it)) }
+      )
     }
 
     override fun mapState(state: ILocalState, outProp: Unit) = S(state.main.selectedPage)
@@ -42,9 +50,14 @@ class MainFragment : Fragment(),
   }
 
   data class S(val selectedPage: Int = 0) : Serializable
-  class A(val selectPage: (Int) -> Unit)
+  class A(
+    val registerSubRouter: (IVetoableRouter<IRouterScreen>) -> Unit,
+    val unregisterSubRouter: (IVetoableRouter<IRouterScreen>) -> Unit,
+    val selectPage: (Int) -> Unit
+  )
 
   override var reduxProp by ObservableReduxProp<S, A> { _, next ->
+    if (next.firstTime) next.action.registerSubRouter(this)
     next.state.also { this.view_pager.currentItem = it.selectedPage }
   }
 
@@ -77,5 +90,21 @@ class MainFragment : Fragment(),
         this@MainFragment.reduxProp.action.selectPage(position)
       }
     })
+  }
+
+  override fun afterPropInjectionEnds(sp: StaticProp<ILocalState, Unit>) {
+    this.reduxProp.action.unregisterSubRouter(this)
+  }
+
+  override fun navigate(screen: IRouterScreen): Boolean {
+    return when (screen) {
+      is Redux.Screen.Back -> {
+        if (this.reduxProp.state.selectedPage == 1) {
+          this.reduxProp.action.selectPage(0); true
+        } else false
+      }
+
+      else -> false
+    }
   }
 }

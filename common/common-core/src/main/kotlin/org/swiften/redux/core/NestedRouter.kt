@@ -59,26 +59,14 @@ class NestedRouter private constructor (private val navigator: (IRouterScreen) -
           true
         }
 
-        is Screen.UnregisterSubRouter -> {
-          this.subRouters.remove(screen.subRouter)
-          true
-        }
-
+        is Screen.UnregisterSubRouter -> { this.subRouters.remove(screen.subRouter); true }
         else -> false
     }) {
       return
     }
 
     if (this.navigator(screen)) return
-    val subRouterSize = this.subRouters.size
-
-    if (subRouterSize > 0) {
-      for (subRouter in this.subRouters) {
-        if (subRouter.navigate(screen)) {
-          return
-        }
-      }
-    }
+    for (subRouter in this.subRouters) { if (subRouter.navigate(screen)) return }
   }
 
   override fun deinitialize() {

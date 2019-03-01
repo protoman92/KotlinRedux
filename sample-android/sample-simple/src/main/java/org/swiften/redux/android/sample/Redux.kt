@@ -8,6 +8,7 @@ package org.swiften.redux.android.sample
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
+import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.rx.SagaEffects.await
 import org.swiften.redux.saga.rx.SagaEffects.putInStore
@@ -64,6 +65,11 @@ object Redux {
 
     data class UpdateMusicResult(val result: MusicResult?) : Action()
     data class UpdateSelectedTrack(val index: Int?) : Action()
+  }
+
+  sealed class Screen : IRouterScreen {
+    object MainFragment: Screen()
+    object Back : Screen()
   }
 
   object Reducer : IReducer<State, IReduxAction> {
