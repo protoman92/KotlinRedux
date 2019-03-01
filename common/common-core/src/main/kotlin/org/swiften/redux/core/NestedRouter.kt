@@ -60,6 +60,7 @@ class NestedRouter private constructor (
 
   private val subRouters = arrayListOf<IVetoableRouter>()
 
+  @Suppress("SENSELESS_COMPARISON")
   override fun navigate(screen: IRouterScreen) {
     if (when (screen) {
         is Screen.RegisterSubRouter -> {
@@ -72,13 +73,8 @@ class NestedRouter private constructor (
         }
 
         is Screen.UnregisterSubRouter -> {
-          for (i in 0 until this.subRouters.size) {
-            if (this.subRouters.elementAtOrNull(i)?.uniqueID == screen.subRouter.uniqueID) {
-              this.subRouters.removeAt(i)
-              break
-            }
-          }
-
+          val subRouterIndex = this.subRouters.binarySearch(screen.subRouter, this.comparator)
+          if (subRouterIndex != null) this.subRouters.removeAt(subRouterIndex)
           true
         }
 
