@@ -29,13 +29,12 @@ interface IRouter<in Screen> : IDeinitializerProvider where Screen : IRouterScre
  * navigation happened. This can be used in a main-sub router set-up whereby there is a [Collection]
  * of [IVetoableRouter], and every time a [Screen] arrives, the first [IVetoableRouter] that returns
  * true for [navigate] performs the navigation.
- * @param Screen The app [IRouterScreen] type.
  */
-interface IVetoableRouter<in Screen> where Screen : IRouterScreen {
+interface IVetoableRouter : IUniqueIDProvider {
   /**
    * Navigate to an [IRouterScreen]. How this is done is left to the app's specific implementation.
-   * @param screen The incoming [Screen] instance.
+   * @param screen The incoming [IRouterScreen] instance.
    * @return A [Boolean] value.
    */
-  fun navigate(screen: Screen): Boolean
+  fun navigate(screen: IRouterScreen): Boolean
 }

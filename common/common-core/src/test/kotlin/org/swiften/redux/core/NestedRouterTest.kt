@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class NestedRouterTest {
   class SubRouter(
     private val navigator: (IRouterScreen) -> Boolean = { true }
-  ) : IVetoableRouter<IRouterScreen> {
+  ) : IUniqueIDProvider by DefaultUniqueIDProvider(), IVetoableRouter {
     val navigationCount = AtomicInteger()
 
     override fun navigate(screen: IRouterScreen): Boolean {
@@ -33,7 +33,7 @@ class NestedRouterTest {
 
   class Screen(@Suppress("unused") val path: String) : IRouterScreen
 
-  private val iteration = 1000
+  private val iteration = 10
 
   @Test
   fun `Sending register or unregister actions should add or remove sub-router`() {
@@ -99,8 +99,8 @@ class NestedRouterTest {
     val rand = Random()
     val mainSubRouterCount = AtomicInteger()
     val router = NestedRouter.create { false }
-    val subRouter = SubRouter { mainSubRouterCount.incrementAndGet(); true }
     val otherSubRouters = (0 until 1000).map { SubRouter { rand.nextBoolean() } }
+    val mainSubRouter = SubRouter { mainSubRouterCount.incrementAndGet(); true }
 
     val batch1 = (0 until otherSubRouters.size).map { i ->
       GlobalScope.launch(Dispatchers.IO) {
@@ -110,7 +110,7 @@ class NestedRouterTest {
 
     runBlocking {
       batch1.forEach { it.join() }
-      router.navigate(NestedRouter.Screen.RegisterSubRouter(subRouter))
+      router.navigate(NestedRouter.Screen.RegisterSubRouter(mainSubRouter))
 
       // When
       val batch2 = (0 until this@NestedRouterTest.iteration).map { i ->
