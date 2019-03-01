@@ -32,7 +32,7 @@ class MainFragment : Fragment(),
   IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<MainFragment.S, MainFragment.A>,
   IPropLifecycleOwner<MainFragment.ILocalState, Unit> by NoopPropLifecycleOwner(),
-  IVetoableRouter<IRouterScreen> {
+  IVetoableRouter {
   companion object : IPropMapper<ILocalState, Unit, S, A> {
     override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): A {
       return A(
@@ -51,8 +51,8 @@ class MainFragment : Fragment(),
 
   data class S(val selectedPage: Int = 0) : Serializable
   class A(
-    val registerSubRouter: (IVetoableRouter<IRouterScreen>) -> Unit,
-    val unregisterSubRouter: (IVetoableRouter<IRouterScreen>) -> Unit,
+    val registerSubRouter: (IVetoableRouter) -> Unit,
+    val unregisterSubRouter: (IVetoableRouter) -> Unit,
     val selectPage: (Int) -> Unit
   )
 

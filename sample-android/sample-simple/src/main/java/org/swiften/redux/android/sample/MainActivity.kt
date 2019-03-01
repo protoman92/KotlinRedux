@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(),
   IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<Unit, MainActivity.Action>,
   IPropLifecycleOwner<Redux.State, Unit> by NoopPropLifecycleOwner(),
-  IVetoableRouter<IRouterScreen> {
+  IVetoableRouter {
   companion object : IPropMapper<Redux.State, Unit, Unit, Action> {
     override fun mapState(state: Redux.State, outProp: Unit) = Unit
 
@@ -42,8 +42,8 @@ class MainActivity : AppCompatActivity(),
   }
 
   class Action(
-    val registerSubRouter: (IVetoableRouter<IRouterScreen>) -> Unit,
-    val unregisterSubRouter: (IVetoableRouter<IRouterScreen>) -> Unit,
+    val registerSubRouter: (IVetoableRouter) -> Unit,
+    val unregisterSubRouter: (IVetoableRouter) -> Unit,
     val goToMainFragment: () -> Unit,
     val goBack: () -> Unit
   )
