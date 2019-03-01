@@ -18,27 +18,27 @@ import java.util.concurrent.ConcurrentHashMap
  */
 interface ISagaMonitor : IDispatcherProvider {
   /** Store [dispatch] with a unique [id]. */
-  fun addOutputDispatcher(id: String, dispatch: IActionDispatcher)
+  fun addOutputDispatcher(id: Long, dispatch: IActionDispatcher)
 
   /** Remove the associated [IActionDispatcher] instance. */
-  fun removeOutputDispatcher(id: String)
+  fun removeOutputDispatcher(id: Long)
 }
 
 /** Default implementation of [ISagaMonitor]. */
 class SagaMonitor : ISagaMonitor {
-  private val dispatchers = ConcurrentHashMap<String, IActionDispatcher>()
+  private val dispatchers = ConcurrentHashMap<Long, IActionDispatcher>()
 
   override val dispatch: IActionDispatcher = { a ->
     this@SagaMonitor.dispatchers.forEach { it.value(a) }; EmptyJob
   }
 
-  override fun addOutputDispatcher(id: String, dispatch: IActionDispatcher) {
+  override fun addOutputDispatcher(id: Long, dispatch: IActionDispatcher) {
     if (dispatch != NoopActionDispatcher) {
       this.dispatchers[id] = dispatch
     }
   }
 
-  override fun removeOutputDispatcher(id: String) {
+  override fun removeOutputDispatcher(id: Long) {
     this.dispatchers.remove(id)
   }
 }

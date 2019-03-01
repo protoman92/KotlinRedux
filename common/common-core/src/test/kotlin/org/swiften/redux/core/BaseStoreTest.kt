@@ -110,9 +110,9 @@ abstract class BaseStoreTest : CoroutineScope {
     // Setup
     val store = this.createStore()
     val receivedUpdates = AtomicInteger()
-    store.subscribe("1") { receivedUpdates.incrementAndGet() }
-    store.subscribe("2") { receivedUpdates.incrementAndGet() }
-    store.subscribe("3") { receivedUpdates.incrementAndGet() }
+    store.subscribe(1L) { receivedUpdates.incrementAndGet() }
+    store.subscribe(2L) { receivedUpdates.incrementAndGet() }
+    store.subscribe(3L) { receivedUpdates.incrementAndGet() }
 
     // / When
     runBlocking {

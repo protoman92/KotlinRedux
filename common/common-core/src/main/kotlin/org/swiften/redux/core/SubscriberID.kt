@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong
 /** Provide a unique subscriber ID for [IReduxStore.subscribe]. */
 interface IUniqueIDProvider {
   /** The unique ID to pass to [IReduxStore.subscribe] and [IReduxStore.unsubscribe]. */
-  val uniqueID: String
+  val uniqueID: Long
 }
 
 /** Default implementation of [IUniqueIDProvider] that simply uses incrementing [CURRENT_ID]. */
@@ -21,5 +21,5 @@ class DefaultUniqueIDProvider : IUniqueIDProvider {
     private val CURRENT_ID = AtomicLong()
   }
 
-  override val uniqueID: String = CURRENT_ID.incrementAndGet().toString()
+  override val uniqueID: Long = CURRENT_ID.incrementAndGet()
 }

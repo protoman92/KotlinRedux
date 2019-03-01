@@ -67,7 +67,7 @@ abstract class DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHA
    * [ReduxListAdapter.composite], we need to keep track of these IDs because otherwise there is
    * no way to perform [IPropInjector.unsubscribe] for each [VH] instances.
    */
-  internal val viewHolderIDs = Collections.synchronizedSet(hashSetOf<String>())
+  internal val viewHolderIDs = Collections.synchronizedSet(hashSetOf<Long>())
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
     return this.adapter.onCreateViewHolder(parent, viewType)

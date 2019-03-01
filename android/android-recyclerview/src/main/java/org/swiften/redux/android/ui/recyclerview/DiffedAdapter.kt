@@ -25,7 +25,6 @@ import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.ReduxProp
 import org.swiften.redux.ui.StaticProp
-import java.util.Date
 
 /** Created by haipham on 2019/01/24 */
 /** Callback for [DiffUtil.ItemCallback] since [DiffUtil.ItemCallback] is an abstract class. */
@@ -53,7 +52,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
   private val adapter: RecyclerView.Adapter<VH>,
   diffCallback: DiffUtil.ItemCallback<VHState>
 ) : ListAdapter<VHState, VH>(diffCallback),
-  IUniqueIDProvider by DefaultUniqueIDProvider(),
+  IUniqueIDProvider,
   IPropLifecycleOwner<LState, OutProp> by NoopPropLifecycleOwner(),
   IPropContainer<List<VHState>, VHAction> where
   GState : LState,
@@ -62,6 +61,8 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
   VHState : Any,
   VHAction : Any {
   internal lateinit var staticProp: StaticProp<LState, OutProp>
+  private val uniqueIDProvider = DefaultUniqueIDProvider()
+  final override val uniqueID: Long get() = this.uniqueIDProvider.uniqueID
 
   /**
    * Since we will be manually injecting prop into [VH] instances, we will need to collect their
@@ -72,7 +73,7 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
    * [IPropLifecycleOwner.afterPropInjectionEnds] is properly called when we do a sweeping
    * unsubscription.
    */
-  internal val composite = CompositeReduxSubscription.create("${this.adapter}${Date().time}")
+  internal val composite = CompositeReduxSubscription.create(this.uniqueID)
 
   /**
    * Since we are only calling [ListAdapter.submitList] when [reduxProp] arrives, the
@@ -192,7 +193,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
        * Since [position] is unique for each [VH], we can use it as a key, then remove it from
        * [ReduxListAdapter.composite] in [RecyclerView.Adapter.onViewRecycled] to allow reuse.
        */
-      val subscribeId = "$position"
+      val subscribeId = position.toLong()
       val sp = this.staticProp
       val subscription = ReduxSubscription(subscribeId) { holder.afterPropInjectionEnds(sp) }
       this.composite.add(subscription)
@@ -207,7 +208,7 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
 
     override fun onViewRecycled(holder: VH) {
       super.onViewRecycled(holder)
-      this.composite.remove("${holder.layoutPosition}")?.unsubscribe()
+      this.composite.remove(holder.layoutPosition.toLong())?.unsubscribe()
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {

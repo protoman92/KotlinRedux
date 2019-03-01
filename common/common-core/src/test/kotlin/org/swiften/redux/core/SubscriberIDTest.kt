@@ -31,10 +31,8 @@ class SubscriberIDTest {
       jobs.joinAll()
 
       // Then
-      assertEquals(
-        idProviders.map { it.uniqueID }.sorted(),
-        (1 until iteration + 1).map { "$it" }.sorted()
-      )
+      val generatedIDs = idProviders.map { it.uniqueID }.toSet()
+      assertEquals(generatedIDs.size, iteration)
     }
   }
 }

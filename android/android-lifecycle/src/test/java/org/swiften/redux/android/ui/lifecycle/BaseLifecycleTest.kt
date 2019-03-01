@@ -60,7 +60,7 @@ open class BaseLifecycleTest {
   }
 
   class TestInjector(override val lastState: IStateGetter<Int> = { 0 }) : IFullPropInjector<Int> {
-    val subscriptions = ConcurrentHashMap<String, IReduxSubscription>()
+    val subscriptions = ConcurrentHashMap<Long, IReduxSubscription>()
     val injectionCount get() = this.subscriptions.size
 
     override val unsubscribe: IReduxUnsubscriber = { id ->

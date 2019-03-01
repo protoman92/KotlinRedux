@@ -28,10 +28,10 @@ typealias IStateGetter<GState> = () -> GState
  * identifies that subscriber. The resulting [IReduxSubscription] can be used to unsubscribe.
  * @param GState The global state type.
  */
-typealias IReduxSubscriber<GState> = (String, (GState) -> Unit) -> IReduxSubscription
+typealias IReduxSubscriber<GState> = (Long, (GState) -> Unit) -> IReduxSubscription
 
 /** Unsubscribe from state updates for a specified subscriber id. */
-typealias IReduxUnsubscriber = (String) -> Unit
+typealias IReduxUnsubscriber = (Long) -> Unit
 
 /** Represents a Redux action. */
 interface IReduxAction

@@ -20,7 +20,7 @@ class SubscriptionTest {
   fun `Unsubscribing from multiple threads should perform only once`() {
     // Setup
     val unsubCount = AtomicInteger()
-    val subscription = ReduxSubscription("") { unsubCount.incrementAndGet() }
+    val subscription = ReduxSubscription(-1L) { unsubCount.incrementAndGet() }
 
     // When
     (0 until 100).forEach { GlobalScope.launch { subscription.unsubscribe() } }
@@ -38,8 +38,8 @@ class SubscriptionTest {
   fun `Unsubscribing from composite subscription should perform only once`() {
     // Setup
     var unsubCount = 0
-    val subscriptions = (0 until 100).map { ReduxSubscription("$it") { unsubCount += 1 } }
-    val composite = CompositeReduxSubscription.create("")
+    val subscriptions = (0 until 100).map { ReduxSubscription(it.toLong()) { unsubCount += 1 } }
+    val composite = CompositeReduxSubscription.create(-1L)
 
     runBlocking {
       // When
@@ -57,8 +57,8 @@ class SubscriptionTest {
   fun `Removing subscription from composite should work`() {
     // Setup
     var unsubCount = 0
-    val subscription = ReduxSubscription("123") { unsubCount += 1 }
-    val composite = CompositeReduxSubscription.create("")
+    val subscription = ReduxSubscription(123L) { unsubCount += 1 }
+    val composite = CompositeReduxSubscription.create(-1L)
 
     // When
     composite.remove(subscription)
