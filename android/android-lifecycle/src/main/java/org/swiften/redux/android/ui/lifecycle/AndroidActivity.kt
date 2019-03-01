@@ -63,7 +63,6 @@ fun <GState> IFullPropInjector<GState>.injectActivity(
   val callback = object : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity?) {}
     override fun onActivityResumed(activity: Activity?) {}
-    override fun onActivityStopped(activity: Activity?) {}
 
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
       outState?.also { saver.saveState(it, this@injectActivity.lastState()) }
@@ -78,19 +77,25 @@ fun <GState> IFullPropInjector<GState>.injectActivity(
 
       activity?.also {
         require(it is AppCompatActivity)
-        injectionHelper.inject(this@injectActivity, it)
         this@injectActivity.injectFragment(it, injectionHelper)
       }
     }
 
-    override fun onActivityStarted(activity: Activity?) {}
+    override fun onActivityStarted(activity: Activity?) {
+      activity?.also {
+        require(it is AppCompatActivity)
+        injectionHelper.inject(this@injectActivity, it)
+      }
+    }
 
-    override fun onActivityDestroyed(activity: Activity?) {
+    override fun onActivityStopped(activity: Activity?) {
       activity?.also {
         require(it is AppCompatActivity)
         injectionHelper.deinitialize(it)
       }
     }
+
+    override fun onActivityDestroyed(activity: Activity?) {}
   }
 
   application.registerActivityLifecycleCallbacks(callback)

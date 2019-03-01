@@ -20,7 +20,6 @@ import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
-import java.util.concurrent.atomic.AtomicBoolean
 
 /** Created by haipham on 26/1/19 */
 class MainActivity : AppCompatActivity(),
@@ -35,7 +34,6 @@ class MainActivity : AppCompatActivity(),
       return Action (
         registerSubRouter = { dispatch(NestedRouter.Screen.RegisterSubRouter(it)) },
         unregisterSubRouter = { dispatch(NestedRouter.Screen.UnregisterSubRouter(it)) },
-        goToMainFragment = { dispatch(Redux.Screen.MainFragment) },
         goBack = { dispatch(Redux.Screen.Back) }
       )
     }
@@ -44,17 +42,12 @@ class MainActivity : AppCompatActivity(),
   class Action(
     val registerSubRouter: (IVetoableRouter) -> Unit,
     val unregisterSubRouter: (IVetoableRouter) -> Unit,
-    val goToMainFragment: () -> Unit,
     val goBack: () -> Unit
   )
 
   override var reduxProp by ObservableReduxProp<Unit, Action> { _, next ->
     if (next.firstTime) {
       next.action.registerSubRouter(this)
-
-      if (this.shouldReloadFragment.getAndSet(false)) {
-        next.action.goToMainFragment()
-      }
     }
   }
 
@@ -62,13 +55,18 @@ class MainActivity : AppCompatActivity(),
     this.reduxProp.action.unregisterSubRouter(this)
   }
 
-  private val shouldReloadFragment = AtomicBoolean(false)
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     this.setContentView(R.layout.main_activity)
     this.supportActionBar?.hide()
-    this.shouldReloadFragment.set(savedInstanceState == null)
+
+    if (savedInstanceState == null) {
+      this.supportFragmentManager
+        .beginTransaction()
+        .replace(R.id.fragment, MainFragment())
+        .addToBackStack(null)
+        .commit()
+    }
   }
 
   override fun onBackPressed() {
