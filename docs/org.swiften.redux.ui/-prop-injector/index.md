@@ -25,7 +25,7 @@ invokes [IPropLifecycleOwner.beforePropInjectionStarts](../-i-prop-lifecycle-own
 | Name | Summary |
 |---|---|
 | [store](store.md) | `val store: `[`IReduxStore`](../../org.swiften.redux.core/-i-redux-store.md)`<`[`GState`](index.md#GState)`>`<br>An [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md) instance. |
-| [subscriptions](subscriptions.md) | `val subscriptions: `[`ConcurrentHashMap`](http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ConcurrentHashMap.html)`<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`>` |
+| [subscriptions](subscriptions.md) | `val subscriptions: `[`ConcurrentHashMap`](http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ConcurrentHashMap.html)`<`[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`, `[`IReduxSubscription`](../../org.swiften.redux.core/-i-redux-subscription/index.md)`>` |
 | [unsubscribe](unsubscribe.md) | `open val unsubscribe: `[`IReduxUnsubscriber`](../../org.swiften.redux.core/-i-redux-unsubscriber.md) |
 
 ### Functions

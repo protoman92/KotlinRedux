@@ -13,11 +13,17 @@ from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md).
 
 `_unsubscribe` - Function that contains unsubscription logic.
 
+### Types
+
+| Name | Summary |
+|---|---|
+| [Companion](-companion/index.md) | `companion object Companion : `[`IUniqueIDProvider`](../-i-unique-i-d-provider/index.md) |
+
 ### Constructors
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `ReduxSubscription(uniqueID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, _unsubscribe: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`<br>Use this class to perform some [unsubscribe](unsubscribe.md) logic. For e.g.: terminate a [IReduxSubscription](../-i-redux-subscription/index.md) from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md). |
+| [&lt;init&gt;](-init-.md) | `ReduxSubscription(uniqueID: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`, _unsubscribe: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`<br>Use this class to perform some [unsubscribe](unsubscribe.md) logic. For e.g.: terminate a [IReduxSubscription](../-i-redux-subscription/index.md) from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md). |
 
 ### Properties
 
@@ -25,7 +31,7 @@ from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md).
 |---|---|
 | [_isUnsubscribed](_is-unsubscribed.md) | `val _isUnsubscribed: `[`AtomicBoolean`](http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/atomic/AtomicBoolean.html) |
 | [_unsubscribe](_unsubscribe.md) | `val _unsubscribe: () -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Function that contains unsubscription logic. |
-| [uniqueID](unique-i-d.md) | `val uniqueID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>See [IReduxSubscription.uniqueID](../-i-unique-i-d-provider/unique-i-d.md). |
+| [uniqueID](unique-i-d.md) | `val uniqueID: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)<br>See [IReduxSubscription.uniqueID](../-i-unique-i-d-provider/unique-i-d.md). |
 
 ### Functions
 
@@ -39,4 +45,3 @@ from [IReduxStore.subscribe](../-i-redux-subscriber-provider/subscribe.md).
 | Name | Summary |
 |---|---|
 | [EMPTY](-e-m-p-t-y.md) | `val EMPTY: `[`ReduxSubscription`](./index.md)<br>Mock [ReduxSubscription](./index.md) that is used every time there is no meaningful subscription logic to be unsubscribed on. |
-| [EMPTY_ID](-e-m-p-t-y_-i-d.md) | `const val EMPTY_ID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |

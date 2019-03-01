@@ -2,7 +2,7 @@
 
 # create
 
-`fun create(uniqueID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`): `[`ICompositeReduxSubscription`](../-i-composite-redux-subscription/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L81)
+`fun create(uniqueID: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`ICompositeReduxSubscription`](../-i-composite-redux-subscription/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L79)
 
 Create a [CompositeReduxSubscription](index.md) and provide it with locking mechanisms.
 

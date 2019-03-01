@@ -27,8 +27,8 @@ interface IRouter<in Screen> : IDeinitializerProvider where Screen : IRouterScre
 /**
  * Represents a router whose [navigate] returns a [Boolean] indicating whether a successful
  * navigation happened. This can be used in a main-sub router set-up whereby there is a [Collection]
- * of [IVetoableRouter], and every time a [Screen] arrives, the first [IVetoableRouter] that returns
- * true for [navigate] performs the navigation.
+ * of [IVetoableRouter], and every time a [IRouterScreen] arrives, the first [IVetoableRouter] that
+ * returns true for [navigate] performs the navigation.
  */
 interface IVetoableRouter : IUniqueIDProvider {
   /**

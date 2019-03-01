@@ -2,4 +2,4 @@
 
 # subRouter
 
-`val subRouter: `[`IVetoableRouter`](../../../-i-vetoable-router/index.md)`<`[`IRouterScreen`](../../../-i-router-screen.md)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L46)
+`val subRouter: `[`IVetoableRouter`](../../../-i-vetoable-router/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L57)

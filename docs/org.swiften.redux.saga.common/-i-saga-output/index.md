@@ -21,7 +21,7 @@ emitted values.
 
 | Name | Summary |
 |---|---|
-| [uniqueID](../../org.swiften.redux.core/-i-unique-i-d-provider/unique-i-d.md) | `abstract val uniqueID: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>The unique ID to pass to [IReduxStore.subscribe](../../org.swiften.redux.core/-i-redux-subscriber-provider/subscribe.md) and [IReduxStore.unsubscribe](../../org.swiften.redux.core/-i-redux-unsubscriber-provider/unsubscribe.md). |
+| [uniqueID](../../org.swiften.redux.core/-i-unique-i-d-provider/unique-i-d.md) | `abstract val uniqueID: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)<br>The unique ID to pass to [IReduxStore.subscribe](../../org.swiften.redux.core/-i-redux-subscriber-provider/subscribe.md) and [IReduxStore.unsubscribe](../../org.swiften.redux.core/-i-redux-unsubscriber-provider/unsubscribe.md). |
 
 ### Functions
 

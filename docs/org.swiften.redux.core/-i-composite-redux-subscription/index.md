@@ -9,7 +9,7 @@
 | Name | Summary |
 |---|---|
 | [add](add.md) | `abstract fun add(subscription: `[`IReduxSubscription`](../-i-redux-subscription/index.md)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Add an [IReduxSubscription](../-i-redux-subscription/index.md). |
-| [remove](remove.md) | `abstract fun remove(subscribeId: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`): `[`IReduxSubscription`](../-i-redux-subscription/index.md)`?`<br>Remove an [IReduxSubscription](../-i-redux-subscription/index.md) instance whose [IReduxSubscription.uniqueID](../-i-unique-i-d-provider/unique-i-d.md) equals [uniqueID](#). |
+| [remove](remove.md) | `abstract fun remove(subscribeId: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`IReduxSubscription`](../-i-redux-subscription/index.md)`?`<br>Remove an [IReduxSubscription](../-i-redux-subscription/index.md) instance whose [IReduxSubscription.uniqueID](../-i-unique-i-d-provider/unique-i-d.md) equals [uniqueID](#). |
 
 ### Inherited Functions
 
