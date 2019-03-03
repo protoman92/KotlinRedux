@@ -27,7 +27,7 @@ class SagaMiddlewareTest : BaseMiddlewareTest() {
     val dispatched = AtomicInteger()
 
     val dispatchers: List<IActionDispatcher> = (0 until 100).map {
-      fun(_: IReduxAction): IAsyncJob<*> {
+      fun(_: IReduxAction): IAsyncJob<Any> {
         dispatched.incrementAndGet()
         return EmptyJob
       }

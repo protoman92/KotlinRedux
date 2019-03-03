@@ -11,10 +11,10 @@ sealed class DefaultReduxAction : IReduxAction {
   object Dummy : DefaultReduxAction()
   object Deinitialize : DefaultReduxAction()
 
-  /** Replace the current [State] with [state] */
+  /** Replace the current [State] with [state]. */
   data class ReplaceState<out State>(val state: State) : DefaultReduxAction()
 
-  /** Replace the current [GState] with [fn] */
+  /** Replace the current [GState] with [fn]. */
   class MapState<GState>(val fn: (GState) -> GState) : DefaultReduxAction()
 }
 

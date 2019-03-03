@@ -42,9 +42,9 @@ interface IAsyncJob<T> where T : Any {
 }
 
 /** Represents an empty [IAsyncJob] that does not do anything. */
-object EmptyJob : IAsyncJob<Unit> {
+object EmptyJob : IAsyncJob<Any> {
   override fun await() = Unit
-  override fun await(defaultValue: Unit) = this.await()
+  override fun await(defaultValue: Any) = this.await()
   override fun awaitFor(timeoutMillis: Long) = this.await()
 }
 
