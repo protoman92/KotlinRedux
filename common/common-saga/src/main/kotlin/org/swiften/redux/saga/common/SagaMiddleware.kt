@@ -11,10 +11,10 @@ import kotlinx.coroutines.cancel
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.DispatchMapper
 import org.swiften.redux.core.DispatchWrapper
-import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.IAsyncJob
 import org.swiften.redux.core.IMiddleware
 import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.core.JustJob
 import org.swiften.redux.core.MiddlewareInput
 import org.swiften.redux.core.ThreadSafeDispatcher
 import java.util.concurrent.locks.ReentrantLock
@@ -75,7 +75,7 @@ class SagaMiddleware private constructor (
        * value selection.
        */
       DispatchWrapper.wrap(wrapper, "saga", ThreadSafeDispatcher(lock) { action ->
-        wrapper.dispatch(action).await()
+        val dispatchResults = wrapper.dispatch(action).await()
         monitor.dispatch(action).await()
 
         /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [ISagaOutput]. */
@@ -84,7 +84,7 @@ class SagaMiddleware private constructor (
           scope.coroutineContext.cancel()
         }
 
-        EmptyJob
+        JustJob(dispatchResults)
       })
     }
   }

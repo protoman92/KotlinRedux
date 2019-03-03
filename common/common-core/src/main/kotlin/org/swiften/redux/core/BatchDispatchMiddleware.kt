@@ -23,16 +23,17 @@ class BatchDispatchMiddleware internal constructor() : IMiddleware<Any> {
     fun create(): IMiddleware<Any> = BatchDispatchMiddleware()
   }
 
+  @Suppress("UNCHECKED_CAST")
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       DispatchWrapper.wrap(wrapper, "batch") { action ->
-        wrapper.dispatch(action)
+        val dispatchJobs = arrayListOf(wrapper.dispatch(action))
 
         when (action) {
-          is BatchAction -> action.actions.map { p1.dispatch(it) }
+          is BatchAction -> dispatchJobs.addAll(action.actions.map { p1.dispatch(it) })
         }
 
-        EmptyJob
+        BatchJob(dispatchJobs) as IAsyncJob<Any>
       }
     }
   }

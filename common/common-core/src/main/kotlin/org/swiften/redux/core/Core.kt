@@ -7,7 +7,7 @@ package org.swiften.redux.core
 
 /** Created by haipham on 2018/03/31 */
 /** Represents an [IReduxAction] dispatcher. */
-typealias IActionDispatcher = (IReduxAction) -> IAsyncJob<*>
+typealias IActionDispatcher = (IReduxAction) -> IAsyncJob<Any>
 
 /**
  * Represents a Redux reducer that reduce a [IReduxAction] onto a previous state to produce a new
@@ -98,5 +98,5 @@ interface IReduxStore<GState> :
 
 /** [IActionDispatcher] that does not do any dispatching and simply returns [EmptyJob]. */
 object NoopActionDispatcher : IActionDispatcher {
-  override fun invoke(p1: IReduxAction): IAsyncJob<*> = EmptyJob
+  override fun invoke(p1: IReduxAction): IAsyncJob<Any> = EmptyJob
 }

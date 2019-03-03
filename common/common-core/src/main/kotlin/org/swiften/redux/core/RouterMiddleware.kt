@@ -37,7 +37,7 @@ class RouterMiddleware<out Screen> private constructor (
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       DispatchWrapper.wrap(wrapper, "router") { action ->
-        wrapper.dispatch(action)
+        val dispatchJob = wrapper.dispatch(action)
 
         /**
          * If [action] is an [Screen] instance, use the [router] to navigate to the associated
@@ -53,7 +53,7 @@ class RouterMiddleware<out Screen> private constructor (
           this@RouterMiddleware.router.deinitialize()
         }
 
-        EmptyJob
+        dispatchJob
       }
     }
   }
