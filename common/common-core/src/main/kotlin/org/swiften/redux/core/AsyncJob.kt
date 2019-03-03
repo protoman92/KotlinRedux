@@ -8,8 +8,10 @@ package org.swiften.redux.core
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.yield
 
 /** Created by haipham on 2019/02/16 */
 /**
@@ -69,8 +71,45 @@ class CoroutineJob<T>(private val job: Deferred<T>) : IAsyncJob<T> where T : Any
 
   @Throws(TimeoutCancellationException::class)
   override fun awaitFor(timeoutMillis: Long): T {
+    return runBlocking { withTimeout(timeoutMillis) { this@CoroutineJob.await() } }
+  }
+}
+
+/**
+ * Represents an [IAsyncJob] that waits for all [IAsyncJob] in [jobs] to finish, then return a
+ * [Collection] of [jobs] return values. The [BatchJob] guarantees the order of the final results
+ * based on the corresponding jobs' order.
+ * @param jobs A [Collection] of [IAsyncJob].
+ */
+class BatchJob<T>(private val jobs: Collection<IAsyncJob<T>>) : IAsyncJob<List<T>> where T : Any {
+  constructor(vararg jobs: IAsyncJob<T>) : this(jobs.toList())
+
+  override fun await(): List<T> = this.jobs.map { it.await() }
+
+  override fun await(defaultValue: List<T>): List<T> {
+    return try { this.await() } catch (e: Throwable) { defaultValue }
+  }
+
+  override fun awaitFor(timeoutMillis: Long): List<T> {
     return runBlocking {
-      withTimeout(timeoutMillis) { this@CoroutineJob.await() }
+      withTimeout(timeoutMillis) {
+        val results = arrayListOf<T>()
+
+        for (job in this@BatchJob.jobs) {
+          if (this.isActive) {
+            val jobResult = job.await()
+
+            if (this.isActive) {
+              results.add(jobResult)
+              continue
+            }
+          }
+
+          yield()
+        }
+
+        results
+      }
     }
   }
 }

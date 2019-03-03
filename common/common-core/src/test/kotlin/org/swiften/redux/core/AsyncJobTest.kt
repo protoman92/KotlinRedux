@@ -8,9 +8,14 @@ package org.swiften.redux.core
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import java.util.Random
 
@@ -47,5 +52,38 @@ class AsyncJobTest {
       // Then
       assertNotEquals(store.lastState(), -1)
     }
+  }
+
+  @Test
+  fun `Batch job await with timeout should throw error on time out`() {
+    // Setup
+    val iteration = 10000
+
+    val childJobs = (0 until iteration)
+      .map { i -> GlobalScope.async(Dispatchers.IO, start = CoroutineStart.LAZY) { delay(800); i } }
+      .map { CoroutineJob(it) }
+
+    val batchJob = BatchJob(*childJobs.toTypedArray())
+
+    // When && Then
+    assertThrows(TimeoutCancellationException::class.java) { batchJob.awaitFor(2000L) }
+  }
+
+  @Test
+  fun `Batch job await should wait for all jobs to finish and results should be sequential`() {
+    // Setup
+    val iteration = 100
+
+    val childJobs = (0 until iteration)
+      .map { i -> GlobalScope.async(Dispatchers.IO, start = CoroutineStart.LAZY) { i } }
+      .map { CoroutineJob(it) }
+
+    val batchJob = BatchJob(*childJobs.toTypedArray())
+
+    // When
+    val results = batchJob.await()
+
+    // Then
+    assertEquals(results.sorted(), (0 until iteration).toList())
   }
 }
