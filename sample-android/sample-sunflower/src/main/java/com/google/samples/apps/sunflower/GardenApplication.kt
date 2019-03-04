@@ -22,7 +22,7 @@ import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.RouterMiddleware
 import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.saga.common.SagaMiddleware
-import org.swiften.redux.thunk.createThunkMiddleware
+import org.swiften.redux.thunk.ThunkMiddleware
 import org.swiften.redux.ui.IPropInjector
 
 /** Created by haipham on 2019/01/17 */
@@ -46,7 +46,7 @@ class GardenApplication : Application() {
           Redux.Saga.PlantSaga.allSagas(InjectorUtils.getPlantRepository(this))
         ).flatten()
       ),
-      createThunkMiddleware(dependency)
+      ThunkMiddleware.create(dependency)
     )(FinalStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)
