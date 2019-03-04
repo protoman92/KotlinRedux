@@ -55,10 +55,34 @@ interface IReduxThunkAction<GState, GExt, Param> : IReduxAction {
  * @param external The external [GExt] argument.
  * @param context The [CoroutineContext] with which to perform async work.
  */
-internal class ThunkMiddleware<GExt>(
+class ThunkMiddleware<GExt>(
   private val external: GExt,
   private val context: CoroutineContext
-) : IMiddleware<Any> {
+) : IMiddleware<Any> where GExt : Any {
+  companion object {
+    /**
+     * Create a [ThunkMiddleware] with [context].
+     * @param GExt The external argument type.
+     * @param external The external [GExt] argument.
+     * @param context See [ThunkMiddleware.context].
+     * @return A [ThunkMiddleware] instance.
+     */
+    internal fun <GExt> create(external: GExt, context: CoroutineContext): IMiddleware<Any> where GExt : Any {
+      return ThunkMiddleware(external, context)
+    }
+
+    /**
+     * Create a [ThunkMiddleware] with a default [CoroutineContext]. This is made public so that users
+     * of this [ThunkMiddleware] cannot share its [CoroutineContext] with other users.
+     * @param GExt The external argument type.
+     * @param external The external [GExt] argument.
+     * @return A [ThunkMiddleware] instance.
+     */
+    fun <GExt> create(external: GExt): IMiddleware<Any> where GExt : Any {
+      return this.create(external, SupervisorJob())
+    }
+  }
+
   @Suppress("UNCHECKED_CAST")
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     val context = this@ThunkMiddleware.context
@@ -81,29 +105,4 @@ internal class ThunkMiddleware<GExt>(
       }
     }
   }
-}
-
-/**
- * Create a [ThunkMiddleware] with [context].
- * @param GExt The external argument type.
- * @param external The external [GExt] argument.
- * @param context See [ThunkMiddleware.context].
- * @return A [ThunkMiddleware] instance.
- */
-internal fun <GExt> createThunkMiddleware(
-  external: GExt,
-  context: CoroutineContext = SupervisorJob()
-): IMiddleware<Any> {
-  return ThunkMiddleware(external, context)
-}
-
-/**
- * Create a [ThunkMiddleware] with a default [CoroutineContext]. This is made public so that users
- * of this [ThunkMiddleware] cannot share its [CoroutineContext] with other users.
- * @param GExt The external argument type.
- * @param external The external [GExt] argument.
- * @return A [ThunkMiddleware] instance.
- */
-fun <GExt> createThunkMiddleware(external: GExt): IMiddleware<Any> {
-  return createThunkMiddleware(external, SupervisorJob())
 }

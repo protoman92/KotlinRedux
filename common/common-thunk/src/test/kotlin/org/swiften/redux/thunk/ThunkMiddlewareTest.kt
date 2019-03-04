@@ -84,7 +84,7 @@ class ThunkMiddlewareTest : BaseMiddlewareTest() {
     val dispatch: IActionDispatcher = { dispatched.add(it); EmptyJob }
     val baseStore = ThreadSafeStore(0) { s, _ -> s }
     val enhancedStore = EnhancedReduxStore(baseStore, dispatch)
-    val wrappedDispatch = combineMiddlewares<Int>(createThunkMiddleware(Unit))(enhancedStore)
+    val wrappedDispatch = combineMiddlewares<Int>(ThunkMiddleware.create(Unit))(enhancedStore)
 
     // When
     wrappedDispatch(ThunkAction(1))
@@ -103,7 +103,7 @@ class ThunkMiddlewareTest : BaseMiddlewareTest() {
     // Setup
     val dispatched = AtomicInteger(0)
     val job = Job()
-    val middleware = createThunkMiddleware(Unit, job)
+    val middleware = ThunkMiddleware.create(Unit, job)
     val dispatch: IActionDispatcher = { dispatched.incrementAndGet(); EmptyJob }
     val dispatchWrapper = this.mockDispatchWrapper(dispatch)
     val input = mockMiddlewareInput(0)
