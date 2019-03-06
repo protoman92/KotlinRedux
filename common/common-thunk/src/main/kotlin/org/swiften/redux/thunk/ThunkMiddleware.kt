@@ -17,7 +17,10 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IMiddleware
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IStateGetter
+import org.swiften.redux.core.JustJob
 import org.swiften.redux.core.MiddlewareInput
+import org.swiften.redux.core.ThreadSafeDispatcher
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2019/02/05 */
@@ -85,12 +88,13 @@ class ThunkMiddleware<GExt>(
 
   @Suppress("UNCHECKED_CAST")
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
+    val lock = ReentrantLock()
     val context = this@ThunkMiddleware.context
     val scope = object : CoroutineScope { override val coroutineContext get() = context }
 
     return { wrapper ->
-      DispatchWrapper.wrap(wrapper, "thunk") { action ->
-        val dispatchJob = wrapper.dispatch(action)
+      DispatchWrapper.wrap(wrapper, "thunk", ThreadSafeDispatcher(lock) { action ->
+        val dispatchResult = wrapper.dispatch(action).await()
 
         when (action) {
           is IReduxThunkAction<*, *, *> -> scope.launch {
@@ -101,8 +105,8 @@ class ThunkMiddleware<GExt>(
           is DefaultReduxAction.Deinitialize -> { context.cancel(); EmptyJob }
         }
 
-        dispatchJob
-      }
+        JustJob(dispatchResult)
+      })
     }
   }
 }
