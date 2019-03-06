@@ -17,8 +17,9 @@ import java.util.concurrent.atomic.AtomicInteger
 /** Created by viethai.pham on 2019/02/26 */
 class NestedRouterTest {
   class SubRouter(
+    override val subRouterPriority: Long,
     private val navigator: (IRouterScreen) -> Boolean = { true }
-  ) : IUniqueIDProvider by DefaultUniqueIDProvider(), IVetoableRouter {
+  ) : IUniqueIDProvider by DefaultUniqueIDProvider(), IVetoableSubRouter {
     val navigationCount = AtomicInteger()
 
     override fun navigate(screen: IRouterScreen): Boolean {
@@ -33,13 +34,13 @@ class NestedRouterTest {
 
   class Screen(@Suppress("unused") val path: String) : IRouterScreen
 
-  private val iteration = 10
+  private val iteration = 1000
 
   @Test
   fun `Sending register or unregister actions should add or remove sub-router`() {
     // Setup
     val router = NestedRouter.create { false }
-    val subRouter = SubRouter()
+    val subRouter = SubRouter(0)
 
     // When
     val batch1 = (0 until this.iteration / 2).map {
@@ -76,7 +77,7 @@ class NestedRouterTest {
     // Setup
     val defaultNavigationCount = AtomicInteger()
     val router = NestedRouter.create { defaultNavigationCount.incrementAndGet(); true }
-    val subRouter = SubRouter()
+    val subRouter = SubRouter(0)
     router.navigate(NestedRouter.Screen.RegisterSubRouter(subRouter))
 
     val batch = (0 until this@NestedRouterTest.iteration).map { i ->
@@ -97,10 +98,11 @@ class NestedRouterTest {
   fun `Should go through sub-routers sequentially`() {
     // Setup
     val rand = Random()
+    val iteration = this.iteration.toLong()
     val mainSubRouterCount = AtomicInteger()
     val router = NestedRouter.create { false }
-    val otherSubRouters = (0 until 1000).map { SubRouter { rand.nextBoolean() } }
-    val mainSubRouter = SubRouter { mainSubRouterCount.incrementAndGet(); true }
+    val otherSubRouters = (0 until iteration).map { SubRouter(it) { rand.nextBoolean() } }
+    val mainSubRouter = SubRouter(iteration + 1) { mainSubRouterCount.incrementAndGet(); true }
 
     val batch1 = (0 until otherSubRouters.size).map { i ->
       GlobalScope.launch(Dispatchers.IO) {

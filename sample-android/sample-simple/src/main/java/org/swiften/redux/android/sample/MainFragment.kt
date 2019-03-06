@@ -17,7 +17,7 @@ import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.core.IUniqueIDProvider
-import org.swiften.redux.core.IVetoableRouter
+import org.swiften.redux.core.IVetoableSubRouter
 import org.swiften.redux.core.NestedRouter
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -32,7 +32,7 @@ class MainFragment : Fragment(),
   IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<MainFragment.S, MainFragment.A>,
   IPropLifecycleOwner<MainFragment.ILocalState, Unit> by NoopPropLifecycleOwner(),
-  IVetoableRouter {
+  IVetoableSubRouter {
   companion object : IPropMapper<ILocalState, Unit, S, A> {
     override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): A {
       return A(
@@ -51,8 +51,8 @@ class MainFragment : Fragment(),
 
   data class S(val selectedPage: Int = 0) : Serializable
   class A(
-    val registerSubRouter: (IVetoableRouter) -> Unit,
-    val unregisterSubRouter: (IVetoableRouter) -> Unit,
+    val registerSubRouter: (IVetoableSubRouter) -> Unit,
+    val unregisterSubRouter: (IVetoableSubRouter) -> Unit,
     val selectPage: (Int) -> Unit
   )
 
@@ -95,6 +95,8 @@ class MainFragment : Fragment(),
   override fun afterPropInjectionEnds(sp: StaticProp<ILocalState, Unit>) {
     this.reduxProp.action.unregisterSubRouter(this)
   }
+
+  override val subRouterPriority: Long get() = this.uniqueID
 
   override fun navigate(screen: IRouterScreen): Boolean {
     return when (screen) {

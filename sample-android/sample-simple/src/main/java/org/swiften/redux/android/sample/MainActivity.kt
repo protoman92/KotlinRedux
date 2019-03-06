@@ -12,7 +12,7 @@ import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.core.IUniqueIDProvider
-import org.swiften.redux.core.IVetoableRouter
+import org.swiften.redux.core.IVetoableSubRouter
 import org.swiften.redux.core.NestedRouter
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(),
   IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<Unit, MainActivity.Action>,
   IPropLifecycleOwner<Redux.State, Unit> by NoopPropLifecycleOwner(),
-  IVetoableRouter {
+  IVetoableSubRouter {
   companion object : IPropMapper<Redux.State, Unit, Unit, Action> {
     override fun mapState(state: Redux.State, outProp: Unit) = Unit
 
@@ -40,8 +40,8 @@ class MainActivity : AppCompatActivity(),
   }
 
   class Action(
-    val registerSubRouter: (IVetoableRouter) -> Unit,
-    val unregisterSubRouter: (IVetoableRouter) -> Unit,
+    val registerSubRouter: (IVetoableSubRouter) -> Unit,
+    val unregisterSubRouter: (IVetoableSubRouter) -> Unit,
     val goBack: () -> Unit
   )
 
@@ -72,6 +72,8 @@ class MainActivity : AppCompatActivity(),
   override fun onBackPressed() {
     this.reduxProp.action.goBack()
   }
+
+  override val subRouterPriority: Long get() = this.uniqueID
 
   override fun navigate(screen: IRouterScreen): Boolean {
     return when (screen) {

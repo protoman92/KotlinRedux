@@ -25,12 +25,21 @@ interface IRouter<in Screen> : IDeinitializerProvider where Screen : IRouterScre
 }
 
 /**
+ * Represents a provider for [subRouterPriority] - which is used to sort [NestedRouter.subRouters]
+ * based on priority. This allows us to determine which [IVetoableSubRouter] to be called first.
+ */
+interface ISubRouterPriorityProvider {
+  /** The priority of a [IVetoableSubRouter]. */
+  val subRouterPriority: Long
+}
+
+/**
  * Represents a router whose [navigate] returns a [Boolean] indicating whether a successful
  * navigation happened. This can be used in a main-sub router set-up whereby there is a [Collection]
- * of [IVetoableRouter], and every time a [IRouterScreen] arrives, the first [IVetoableRouter] that
- * returns true for [navigate] performs the navigation.
+ * of [IVetoableSubRouter], and every time a [IRouterScreen] arrives, the first [IVetoableSubRouter]
+ * that returns true for [navigate] performs the navigation.
  */
-interface IVetoableRouter : IUniqueIDProvider {
+interface IVetoableSubRouter : IUniqueIDProvider, ISubRouterPriorityProvider {
   /**
    * Navigate to an [IRouterScreen]. How this is done is left to the app's specific implementation.
    * @param screen The incoming [IRouterScreen] instance.
