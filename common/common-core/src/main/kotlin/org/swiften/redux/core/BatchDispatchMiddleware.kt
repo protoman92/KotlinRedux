@@ -28,11 +28,13 @@ class BatchDispatchMiddleware internal constructor() : IMiddleware<Any> {
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       DispatchWrapper.wrap(wrapper, "batch") { action ->
+        val dispatchJob = wrapper.dispatch(action)
+
         when (action) {
           is BatchAction -> action.actions.map { p1.dispatch(it) }
         }
 
-        wrapper.dispatch(action)
+        dispatchJob
       }
     }
   }
