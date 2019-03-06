@@ -9,7 +9,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.swiften.redux.saga.common.SagaMiddleware
+import org.swiften.redux.thunk.ThunkMiddleware
 import java.util.Collections.synchronizedList
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -98,5 +101,33 @@ class MiddlewareTest : BaseMiddlewareTest() {
     assertEquals(repeatCount.get(), 0)
     wrappedDispatch.dispatch(TriggerAction())
     assertEquals(repeatCount.get(), 1)
+  }
+
+  @Test
+  fun `Middlewares should ensure original dispatch results are returned`() {
+    // Setup
+    data class Action(val value: Int) : IReduxAction
+    val iteration = 1000
+    val baseStore = ThreadSafeStore(0) { s, a -> when (a) { is Action -> a.value; else -> s } }
+
+    val store = applyMiddlewares<Int>(
+      AsyncMiddleware.create(),
+      ThunkMiddleware.create(Unit),
+      BatchDispatchMiddleware.create(),
+      RouterMiddleware.create(object : IRouter<IRouterScreen> {
+        override fun navigate(screen: IRouterScreen) {}
+        override fun deinitialize() {}
+      }),
+      SagaMiddleware.create(arrayListOf()),
+      LoggingMiddleware.create()
+    )(baseStore)
+
+    val wrappedDispatch = store.dispatch
+
+    // When
+    val nextState = wrappedDispatch(BatchAction((0 until iteration).map { Action(it) })).await()
+
+    // Then
+    assertTrue(nextState is Int)
   }
 }

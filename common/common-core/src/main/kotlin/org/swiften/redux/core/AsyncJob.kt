@@ -12,6 +12,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.yield
+import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2019/02/16 */
 /**
@@ -53,7 +54,7 @@ object EmptyJob : IAsyncJob<Any> {
  * @param T The return type of [await].
  * @param value A [T] instance.
  */
-class JustJob<T>(private val value: T) : IAsyncJob<T> where T : Any {
+data class JustJob<T>(private val value: T) : IAsyncJob<T> where T : Any {
   override fun await() = this.value
   override fun await(defaultValue: T) = this.value
   override fun awaitFor(timeoutMillis: Long) = this.value
@@ -63,15 +64,22 @@ class JustJob<T>(private val value: T) : IAsyncJob<T> where T : Any {
  * Represents an [IAsyncJob] that handles [Job]. It waits for [job] to resolve synchronously with
  * [runBlocking]. If [awaitFor] is used, make sure [job] is cooperative with cancellation.
  * @param T The return type of [await].
+ * @param context The [CoroutineContext] to perform waiting on.
  * @param job The [Job] to be resolved.
  */
-class CoroutineJob<T>(private val job: Deferred<T>) : IAsyncJob<T> where T : Any {
-  override fun await() = runBlocking { this@CoroutineJob.job.await() }
+data class CoroutineJob<T>(
+  private val context: CoroutineContext,
+  private val job: Deferred<T>
+) : IAsyncJob<T> where T : Any {
+  override fun await(): T {
+    return runBlocking(this.context) { this@CoroutineJob.job.await() }
+  }
+
   override fun await(defaultValue: T) = try { this.await() } catch (e: Throwable) { defaultValue }
 
   @Throws(TimeoutCancellationException::class)
   override fun awaitFor(timeoutMillis: Long): T {
-    return runBlocking { withTimeout(timeoutMillis) { this@CoroutineJob.await() } }
+    return runBlocking(this.context) { withTimeout(timeoutMillis) { this@CoroutineJob.await() } }
   }
 }
 
@@ -81,7 +89,7 @@ class CoroutineJob<T>(private val job: Deferred<T>) : IAsyncJob<T> where T : Any
  * based on the corresponding jobs' order.
  * @param jobs A [Collection] of [IAsyncJob].
  */
-class BatchJob<T>(private val jobs: Collection<IAsyncJob<T>>) : IAsyncJob<List<T>> where T : Any {
+data class BatchJob<T>(private val jobs: Collection<IAsyncJob<T>>) : IAsyncJob<List<T>> where T : Any {
   constructor(vararg jobs: IAsyncJob<T>) : this(jobs.toList())
 
   override fun await(): List<T> = this.jobs.map { it.await() }
@@ -90,6 +98,7 @@ class BatchJob<T>(private val jobs: Collection<IAsyncJob<T>>) : IAsyncJob<List<T
     return try { this.await() } catch (e: Throwable) { defaultValue }
   }
 
+  @Throws(TimeoutCancellationException::class)
   override fun awaitFor(timeoutMillis: Long): List<T> {
     return runBlocking {
       withTimeout(timeoutMillis) {

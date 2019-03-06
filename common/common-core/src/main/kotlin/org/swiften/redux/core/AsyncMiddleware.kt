@@ -6,6 +6,7 @@
 package org.swiften.redux.core
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
@@ -13,7 +14,8 @@ import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2019/01/26 */
 /**
- * [IMiddleware] implementation that calls [DispatchWrapper.dispatch] on another thread.
+ * [IMiddleware] implementation that calls [DispatchWrapper.dispatch] on another thread. You should
+ * only use one [AsyncMiddleware] in a [IMiddleware] chain to avoid undesirable side effects.
  * @param context A [CoroutineContext] instance.
  */
 class AsyncMiddleware private constructor (private val context: CoroutineContext) : IMiddleware<Any> {
@@ -33,7 +35,7 @@ class AsyncMiddleware private constructor (private val context: CoroutineContext
      * @return An [AsyncMiddleware] instance.
      */
     fun create(): IMiddleware<Any> {
-      return this.create(SupervisorJob())
+      return this.create(Dispatchers.Default + SupervisorJob())
     }
   }
 
@@ -45,7 +47,7 @@ class AsyncMiddleware private constructor (private val context: CoroutineContext
       DispatchWrapper.wrap(wrapper, "async") { action ->
         when (action) {
           is DefaultReduxAction.Deinitialize -> { context.cancel(); EmptyJob }
-          else -> CoroutineJob(scope.async { wrapper.dispatch(action).await() })
+          else -> CoroutineJob(context, scope.async { wrapper.dispatch(action).await() })
         }
       }
     }
