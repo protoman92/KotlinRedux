@@ -9,7 +9,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.swiften.redux.saga.common.SagaMiddleware
 import org.swiften.redux.thunk.ThunkMiddleware
@@ -119,7 +118,8 @@ class MiddlewareTest : BaseMiddlewareTest() {
         override fun deinitialize() {}
       }),
       SagaMiddleware.create(arrayListOf()),
-      LoggingMiddleware.create()
+      LoggingMiddleware.create(),
+      AsyncMiddleware.create()
     )(baseStore)
 
     val wrappedDispatch = store.dispatch
@@ -128,6 +128,6 @@ class MiddlewareTest : BaseMiddlewareTest() {
     val nextState = wrappedDispatch(BatchAction((0 until iteration).map { Action(it) })).await()
 
     // Then
-    assertTrue(nextState is Int)
+    Assert.assertTrue(nextState is Int)
   }
 }
