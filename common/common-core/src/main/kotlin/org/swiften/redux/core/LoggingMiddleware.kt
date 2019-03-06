@@ -15,9 +15,21 @@ import kotlin.concurrent.withLock
  * @param GState The global state type.
  * @param logger Function to specify how [GState] and [IReduxAction] are formatted.
  */
-internal class LoggingMiddleware<GState>(
+class LoggingMiddleware<GState> internal constructor(
   private val logger: (GState, IReduxAction?) -> Unit
 ) : IMiddleware<GState>, IUniqueIDProvider by DefaultUniqueIDProvider() {
+  companion object {
+    /**
+     * Create a [LoggingMiddleware] with [logger].
+     * @param GState The global state type.
+     * @param logger See [LoggingMiddleware.logger].
+     * @return A [LoggingMiddleware] instance.
+     */
+    fun <GState> create(
+      logger: (GState, IReduxAction?) -> Unit = { s, a -> println("Redux: action $a, state $s") }
+    ): IMiddleware<GState> = LoggingMiddleware(logger)
+  }
+
   override fun invoke(p1: MiddlewareInput<GState>): DispatchMapper {
     return { wrapper ->
       val lock = ReentrantLock()
@@ -38,13 +50,3 @@ internal class LoggingMiddleware<GState>(
     }
   }
 }
-
-/**
- * Create a [LoggingMiddleware] with [logger].
- * @param GState The global state type.
- * @param logger See [LoggingMiddleware.logger].
- * @return A [LoggingMiddleware] instance.
- */
-fun <GState> createLoggingMiddleware(
-  logger: (GState, IReduxAction?) -> Unit = { s, a -> println("Redux: action $a, state $s") }
-): IMiddleware<GState> = LoggingMiddleware(logger)
