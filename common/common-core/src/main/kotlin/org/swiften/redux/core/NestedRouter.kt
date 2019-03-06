@@ -10,24 +10,24 @@ import kotlin.concurrent.withLock
 
 /** Created by viethai.pham on 2019/02/25 */
 /**
- * [IRouter] implementation that holds on to a [List] of [IVetoableRouter], each of which will
- * call [IVetoableRouter.navigate] to check if it can perform a successful navigation. If not, we
- * move on to the next [IVetoableRouter] until the end.
+ * [IRouter] implementation that holds on to a [List] of [IVetoableSubRouter], each of which will
+ * call [IVetoableSubRouter.navigate] to check if it can perform a successful navigation. If not, we
+ * move on to the next [IVetoableSubRouter] until the end.
  *
  * For this [IRouter] implementation, we are not overly worried about performance because there
- * won't be a situation whereby the user has gone through thousands of [IVetoableRouter]-enabled
+ * won't be a situation whereby the user has gone through thousands of [IVetoableSubRouter]-enabled
  * screens, thus significantly increasing the size of [subRouters].
  * @param navigator The navigation function that will be called before we touch [subRouters].
  * @param comparator A [Comparator] that will be used to sort [subRouters]. This will be done to
- * determine which [IVetoableRouter] should be invoked first, and should be used in conjunction
+ * determine which [IVetoableSubRouter] should be invoked first, and should be used in conjunction
  * with [DefaultUniqueIDProvider] thanks to its auto-incrementing of provided IDs (so that we know
  * the order of object creation).
  */
 class NestedRouter private constructor (
   private val navigator: (IRouterScreen) -> Boolean,
-  private val comparator: Comparator<IVetoableRouter> = object : Comparator<IVetoableRouter> {
-    override fun compare(p0: IVetoableRouter?, p1: IVetoableRouter?): Int {
-      return if (p0 != null && p1 != null) (p1.uniqueID - p0.uniqueID).toInt() else 0
+  private val comparator: Comparator<IVetoableSubRouter> = object : Comparator<IVetoableSubRouter> {
+    override fun compare(p0: IVetoableSubRouter?, p1: IVetoableSubRouter?): Int {
+      return if (p0 != null && p1 != null) (p1.subRouterPriority - p0.subRouterPriority).toInt() else 0
     }
   }
 ) : IRouter<IRouterScreen> {
@@ -54,11 +54,11 @@ class NestedRouter private constructor (
   }
 
   sealed class Screen : IRouterScreen {
-    data class RegisterSubRouter(val subRouter: IVetoableRouter) : Screen()
-    data class UnregisterSubRouter(val subRouter: IVetoableRouter) : Screen()
+    data class RegisterSubRouter(val subRouter: IVetoableSubRouter) : Screen()
+    data class UnregisterSubRouter(val subRouter: IVetoableSubRouter) : Screen()
   }
 
-  private val subRouters = arrayListOf<IVetoableRouter>()
+  private val subRouters = arrayListOf<IVetoableSubRouter>()
 
   @Suppress("SENSELESS_COMPARISON")
   override fun navigate(screen: IRouterScreen) {
@@ -73,7 +73,8 @@ class NestedRouter private constructor (
         }
 
         is Screen.UnregisterSubRouter -> {
-          val subRouterIndex = this.subRouters.binarySearch(screen.subRouter, this.comparator)
+          val subRouterID = screen.subRouter.uniqueID
+          val subRouterIndex = this.subRouters.indexOfFirst { it.uniqueID == subRouterID }
           if (subRouterIndex != null) this.subRouters.removeAt(subRouterIndex)
           true
         }
