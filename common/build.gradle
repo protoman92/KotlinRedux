@@ -68,6 +68,8 @@ project(':common:common-core') {
   dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    testImplementation project(":common:common-thunk")
+    testImplementation project(":common:common-saga")
   }
 }
 

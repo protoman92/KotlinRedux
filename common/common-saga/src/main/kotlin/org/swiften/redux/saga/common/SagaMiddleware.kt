@@ -75,7 +75,7 @@ class SagaMiddleware private constructor (
        * value selection.
        */
       DispatchWrapper.wrap(wrapper, "saga", ThreadSafeDispatcher(lock) { action ->
-        val dispatchResults = wrapper.dispatch(action).await()
+        val dispatchResult = wrapper.dispatch(action).await()
         monitor.dispatch(action).await()
 
         /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [ISagaOutput]. */
@@ -84,7 +84,7 @@ class SagaMiddleware private constructor (
           scope.coroutineContext.cancel()
         }
 
-        JustJob(dispatchResults)
+        JustJob(dispatchResult)
       })
     }
   }

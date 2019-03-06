@@ -58,10 +58,11 @@ class AsyncJobTest {
   fun `Batch job await with timeout should throw error on time out`() {
     // Setup
     val iteration = 10000
+    val context = Dispatchers.IO
 
     val childJobs = (0 until iteration)
-      .map { i -> GlobalScope.async(Dispatchers.IO, start = CoroutineStart.LAZY) { delay(800); i } }
-      .map { CoroutineJob(it) }
+      .map { i -> GlobalScope.async(context, start = CoroutineStart.LAZY) { delay(800); i } }
+      .map { CoroutineJob(context, it) }
 
     val batchJob = BatchJob(*childJobs.toTypedArray())
 
@@ -73,10 +74,11 @@ class AsyncJobTest {
   fun `Batch job await should wait for all jobs to finish and results should be sequential`() {
     // Setup
     val iteration = 100
+    val context = Dispatchers.IO
 
     val childJobs = (0 until iteration)
-      .map { i -> GlobalScope.async(Dispatchers.IO, start = CoroutineStart.LAZY) { i } }
-      .map { CoroutineJob(it) }
+      .map { i -> GlobalScope.async(context, start = CoroutineStart.LAZY) { i } }
+      .map { CoroutineJob(context, it) }
 
     val batchJob = BatchJob(*childJobs.toTypedArray())
 

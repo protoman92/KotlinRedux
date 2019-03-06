@@ -10,8 +10,9 @@ package org.swiften.redux.core
  * An [IReduxAction] that contains multiple other [IReduxAction] instances that can be dispatched
  * individually.
  */
-class BatchAction(internal val actions: Collection<IReduxAction>) : IReduxAction {
+data class BatchAction(internal val actions: Collection<IReduxAction>) : IReduxAction {
   constructor(vararg actions: IReduxAction) : this(actions.toList())
+  override fun toString(): String = "Batch action, containing ${this.actions.size} child actions"
 }
 
 /**
@@ -27,13 +28,11 @@ class BatchDispatchMiddleware internal constructor() : IMiddleware<Any> {
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       DispatchWrapper.wrap(wrapper, "batch") { action ->
-        val dispatchJobs = arrayListOf(wrapper.dispatch(action))
-
         when (action) {
-          is BatchAction -> dispatchJobs.addAll(action.actions.map { p1.dispatch(it) })
+          is BatchAction -> action.actions.map { p1.dispatch(it) }
         }
 
-        BatchJob(dispatchJobs) as IAsyncJob<Any>
+        wrapper.dispatch(action)
       }
     }
   }
