@@ -15,7 +15,7 @@ class LoggingMiddlewareTest : BaseMiddlewareTest() {
     // Setup
     var logged = 0
     val store = ThreadSafeStore(0) { a, _ -> a }
-    val middleware = createLoggingMiddleware<Int> { _, _ -> logged += 1 }
+    val middleware = LoggingMiddleware.create<Int> { _, _ -> logged += 1 }
     val wrappedDispatch = applyMiddlewares(middleware)(store).dispatch
 
     // When
