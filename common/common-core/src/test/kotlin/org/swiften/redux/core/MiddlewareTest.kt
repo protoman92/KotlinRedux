@@ -5,8 +5,12 @@
 
 package org.swiften.redux.core
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.util.Collections.synchronizedList
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2018/12/16 */
@@ -14,7 +18,7 @@ class MiddlewareTest : BaseMiddlewareTest() {
   @Test
   fun `Applying middlewares to a store should produce correct order`() {
     // Setup
-    val store = ThreadSafeStore(0) { a, _ -> a }
+    val store = ThreadSafeStore(0) { s, _ -> s }
     val order = arrayListOf<Int>()
 
     val wrappedStore = applyMiddlewares<Int>(
@@ -33,7 +37,43 @@ class MiddlewareTest : BaseMiddlewareTest() {
   }
 
   @Test
-  fun `Middleware should has access to the entire dispatch chain`() {
+  fun `Root dispatch should be invoked first before any middleware dispatch wrapper`() {
+    // Setup
+    data class Action(val value: Int) : IReduxAction
+    val iteration = 10
+    val dispatched = synchronizedList(arrayListOf<IReduxAction>())
+    val store = ThreadSafeStore(0) { s, a ->
+      println("Dispatching in store $a")
+      dispatched.add(a); s
+    }
+
+    val wrappedStore = applyMiddlewares<Int>(
+      AsyncMiddleware.create(),
+      {
+        { w ->
+          DispatchWrapper.wrap(w, "1") {
+            w.dispatch(it).await()
+            println("Dispatching in middleware $it")
+            Assert.assertTrue(dispatched.contains(it)); EmptyJob
+          }
+        }
+      },
+      AsyncMiddleware.create()
+    )(store)
+
+    // When
+    (0 until iteration).forEach { wrappedStore.dispatch(Action(it)) }
+
+    runBlocking {
+      delay(1000)
+
+      // Then
+      assertEquals(dispatched.map { (it as Action).value }.sorted(), (0 until iteration).toList())
+    }
+  }
+
+  @Test
+  fun `Middleware input should has access to the entire dispatch chain`() {
     // Setup
     val store = ThreadSafeStore(0) { a, _ -> a }
     class TriggerAction : IReduxAction

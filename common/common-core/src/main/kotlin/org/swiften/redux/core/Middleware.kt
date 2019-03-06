@@ -74,9 +74,7 @@ fun <GState> combineMiddlewares(
     val rootWrapper = DispatchWrapper.root(store.dispatch)
 
     val finalWrapper = if (middlewares.isEmpty()) rootWrapper else {
-      middlewares.reduce { acc, middleware ->
-        { input -> { acc(input)(middleware(input)(it)) } }
-      }(input)(rootWrapper)
+      middlewares.map { it(input) }.reduce { acc, mapper -> { acc(mapper(it)) } }(rootWrapper)
     }
 
     lazyDispatch.dispatch = finalWrapper.dispatch
