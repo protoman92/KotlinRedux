@@ -8,12 +8,12 @@ package org.swiften.redux.android.dagger.business1
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.rx.SagaEffects.await
-import org.swiften.redux.saga.rx.SagaEffects.doNothing
-import org.swiften.redux.saga.rx.SagaEffects.mergeAll
-import org.swiften.redux.saga.rx.SagaEffects.putInStore
-import org.swiften.redux.saga.rx.SagaEffects.takeLatestAction
-import org.swiften.redux.saga.rx.debounceTake
+import org.swiften.redux.saga.common.SagaEffects.await
+import org.swiften.redux.saga.common.SagaEffects.doNothing
+import org.swiften.redux.saga.common.SagaEffects.mergeAll
+import org.swiften.redux.saga.common.SagaEffects.putInStore
+import org.swiften.redux.saga.common.SagaEffects.takeLatestAction
+import org.swiften.redux.saga.common.debounceTake
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21 */

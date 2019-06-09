@@ -6,6 +6,7 @@ project.ext {
   dokkaOutputFormat = "gfm"
   kotlinCoroutines = "1.1.0"
   rxKotlin = "2.3.0"
+  rxJava = "2.2.9"
   junit = "+"
   mockito = "2.1.0"
   testHeapSize = "4g"

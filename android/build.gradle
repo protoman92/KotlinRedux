@@ -9,7 +9,7 @@ buildscript {
 
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
-    classpath 'com.android.tools.build:gradle:3.3.1'
+    classpath 'com.android.tools.build:gradle:3.4.0'
     classpath "com.github.dcendents:android-maven-gradle-plugin:$androidMavenGradle"
     classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka"
   } 
@@ -123,21 +123,21 @@ project(':android:android-recyclerview') {
   }
 }
 
-project(':android:android-rx-saga') {
+project(':android:android-saga') {
   dependencies {
     api project(':common:common-saga')
-    api project(':common:common-rx-saga')
+    implementation "io.reactivex.rxjava2:rxjava:$rxJava"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
   }
 }
 
-project(':android:android-livedata-rx-saga') {
+project(':android:android-livedata-saga') {
   dependencies {
     api project(':common:common-saga')
-    api project(':common:common-rx-saga')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJava"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid"
     testImplementation "androidx.arch.core:core-testing:$androidxCoreTest"
   }
@@ -158,7 +158,7 @@ project(':android:android-all') {
     api project(':android:android-lifecycle')
     api project(':android:android-recyclerview')
     api project(':android:android-router')
-    api project(':android:android-rx-saga')
-    api project(':android:android-livedata-rx-saga')
+    api project(':android:android-saga')
+    api project(':android:android-livedata-saga')
   }
 }

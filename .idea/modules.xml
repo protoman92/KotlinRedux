@@ -5,16 +5,15 @@
       <module fileurl="file://$PROJECT_DIR$/android/android.iml" filepath="$PROJECT_DIR$/android/android.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-all/android-all.iml" filepath="$PROJECT_DIR$/android/android-all/android-all.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-lifecycle/android-lifecycle.iml" filepath="$PROJECT_DIR$/android/android-lifecycle/android-lifecycle.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android/android-livedata-rx-saga/android-livedata-rx-saga.iml" filepath="$PROJECT_DIR$/android/android-livedata-rx-saga/android-livedata-rx-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android-livedata-saga/android-livedata-saga.iml" filepath="$PROJECT_DIR$/android/android-livedata-saga/android-livedata-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-recyclerview/android-recyclerview.iml" filepath="$PROJECT_DIR$/android/android-recyclerview/android-recyclerview.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-router/android-router.iml" filepath="$PROJECT_DIR$/android/android-router/android-router.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android/android-rx-saga/android-rx-saga.iml" filepath="$PROJECT_DIR$/android/android-rx-saga/android-rx-saga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/android-saga/android-saga.iml" filepath="$PROJECT_DIR$/android/android-saga/android-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-ui/android-ui.iml" filepath="$PROJECT_DIR$/android/android-ui/android-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android-util/android-util.iml" filepath="$PROJECT_DIR$/android/android-util/android-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-all/common-all.iml" filepath="$PROJECT_DIR$/common/common-all/common-all.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-core/common-core.iml" filepath="$PROJECT_DIR$/common/common-core/common-core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/common-rx-saga/common-rx-saga.iml" filepath="$PROJECT_DIR$/common/common-rx-saga/common-rx-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-saga/common-saga.iml" filepath="$PROJECT_DIR$/common/common-saga/common-saga.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-thunk/common-thunk.iml" filepath="$PROJECT_DIR$/common/common-thunk/common-thunk.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-ui/common-ui.iml" filepath="$PROJECT_DIR$/common/common-ui/common-ui.iml" />
