@@ -231,30 +231,6 @@ abstract class CommonSagaEffectTest : OverridableCommonSagaEffectTest() {
   }
 
   @Test
-  fun `Filter effect should filter out unwanted values`() {
-    // Setup
-    val monitor = SagaMonitor()
-    val finalValues = synchronizedList(arrayListOf<Int>())
-
-    // When
-    fromEffect(0, 1, 2, 3)
-      .filter { it % 2 == 0 }
-      .delayUpstreamValue(100)
-      .castValue<Int>()
-      .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it) })
-
-    runBlocking {
-      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(0, 2) && this.isActive) { delay(500) }; Unit
-      }
-
-      // Then
-      assertEquals(finalValues, arrayListOf(0, 2))
-    }
-  }
-
-  @Test
   fun `Put effect should dispatch action`() {
     // Setup
     data class Action(private val value: Int) : IReduxAction
@@ -300,37 +276,6 @@ abstract class CommonSagaEffectTest : OverridableCommonSagaEffectTest() {
 
       // Then
       assertEquals(finalValues, arrayListOf("12"))
-    }
-  }
-
-  @Test
-  fun `Force-then effect should enforce ordering when source is empty or erroneous`() {
-    // Setup
-    val monitor = SagaMonitor()
-    val finalValues = synchronizedList(arrayListOf<Int>())
-    val error = "Error!"
-
-    // When
-    justEffect(1)
-      .map { throw Exception(error) }
-      .thenNoMatterWhat(justEffect(2))
-      .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it) })
-
-    justEffect(1)
-      .filter { it % 2 == 0 }
-      .map { throw Exception(error) }
-      .thenNoMatterWhat(justEffect(3))
-      .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it) })
-
-    runBlocking {
-      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(2, 3) && this.isActive) { delay(500) }; Unit
-      }
-
-      // Then
-      assertEquals(finalValues, arrayListOf(2, 3))
     }
   }
 

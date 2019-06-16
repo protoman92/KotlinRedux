@@ -11,27 +11,6 @@ import org.swiften.redux.core.IReduxAction
 
 /** Created by haipham on 2019/01/26/1 */
 /**
- * Cast the emission from the current [ISagaEffect] to [R] if possible.
- * @receiver A [SagaEffect] instance.
- * @param R The result emission type.
- * @param cls The [Class] of [R].
- * @return A [SagaEffect] instance.
- */
-fun <R> SagaEffect<*>.castValue(cls: Class<R>): SagaEffect<R> where R : Any {
-  return this.filter { cls.isInstance(it) }.map { cls.cast(it) }
-}
-
-/**
- * Cast the emission from the current [ISagaEffect] to [R] if possible.
- * @receiver A [SagaEffect] instance.
- * @param R The result emission type.
- * @return A [SagaEffect] instance.
- */
-inline fun <reified R> SagaEffect<*>.castValue(): SagaEffect<R> where R : Any {
-  return this.filter { it is R }.map { it as R }
-}
-
-/**
  * Catch [Throwable] from upstream with [catcher].
  * @receiver See [CatchErrorEffect.source].
  * @param R The result emission type.
@@ -86,17 +65,6 @@ fun <R> SagaEffect<R>.delayUpstreamValue(millis: Long): SagaEffect<R> where R : 
  */
 fun <R> SagaEffect<R>.doOnValue(performer: (R) -> Unit): SagaEffect<R> where R : Any {
   return this.transform(CommonEffects.doOnValue(performer))
-}
-
-/**
- * Invoke a [FilterEffect] on [this].
- * @receiver See [FilterEffect.source].
- * @param R The result emission type.
- * @param predicate See [FilterEffect.predicate].
- * @return A [SagaEffect] instance.
- */
-fun <R> SagaEffect<R>.filter(predicate: (R) -> Boolean): SagaEffect<R> where R : Any {
-  return this.transform(CommonEffects.filter(predicate))
 }
 
 /**

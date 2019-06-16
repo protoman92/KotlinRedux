@@ -70,17 +70,6 @@ object CommonEffects {
   }
 
   /**
-   * Create a [FilterEffect].
-   * @param R The result emission type.
-   * @param predicate See [FilterEffect.predicate].
-   * @return An [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <R> filter(predicate: (R) -> Boolean): ISagaEffectTransformer<R, R> where R : Any {
-    return { FilterEffect(it, predicate) }
-  }
-
-  /**
    * Create a [MapEffect].
    * @param R The result emission type.
    * @param transformer See [MapEffect.transformer].
