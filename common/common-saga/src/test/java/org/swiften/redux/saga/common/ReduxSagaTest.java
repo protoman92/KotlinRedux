@@ -12,7 +12,6 @@ import org.swiften.redux.core.EmptyJob;
 
 import static org.junit.Assert.assertEquals;
 import static org.swiften.redux.saga.common.CommonEffects.map;
-import static org.swiften.redux.saga.common.CommonEffects.retryMultipleTimes;
 import static org.swiften.redux.saga.common.SagaEffects.just;
 import static org.swiften.redux.saga.common.SagaEffects.mapSingle;
 
@@ -26,7 +25,6 @@ public final class ReduxSagaTest {
     Object value = just(1)
       .transform(map(i -> i * 2))
       .transform(mapSingle(i -> Single.just(i * 3)))
-      .transform(retryMultipleTimes(3))
       .invoke(new SagaInput(GlobalScope.INSTANCE, new SagaMonitor(), () -> 0, a -> EmptyJob.INSTANCE))
       .awaitFor(1000);
 
