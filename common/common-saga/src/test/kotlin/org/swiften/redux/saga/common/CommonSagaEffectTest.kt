@@ -255,30 +255,6 @@ abstract class CommonSagaEffectTest : OverridableCommonSagaEffectTest() {
   }
 
   @Test
-  fun `If empty effect should emit specified values when upstream is empty`() {
-    // Setup
-    val monitor = SagaMonitor()
-    val finalValues = synchronizedList(arrayListOf<Int>())
-    val defaultValue = 1000
-
-    // When
-    fromEffect(0, 1, 2, 3)
-      .filter { false }
-      .ifEmptyThenReturn(defaultValue)
-      .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it) })
-
-    runBlocking {
-      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(defaultValue) && this.isActive) { delay(500) }; Unit
-      }
-
-      // Then
-      assertEquals(finalValues, arrayListOf(defaultValue))
-    }
-  }
-
-  @Test
   fun `Put effect should dispatch action`() {
     // Setup
     data class Action(private val value: Int) : IReduxAction

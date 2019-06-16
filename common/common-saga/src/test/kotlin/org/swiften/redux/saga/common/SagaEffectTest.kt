@@ -177,7 +177,6 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
         .mapSingle { Single.just(1000) }
         .mapAsync { this.async { it } }
         .putInStore { DefaultReduxAction.Dummy }
-        .ifEmptyThenReturn(100)
     }.invoke(SagaInput(monitor))
 
     sourceOutput.subscribe({}, {})
