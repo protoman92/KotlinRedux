@@ -19,7 +19,8 @@ import org.swiften.redux.core.IReduxAction
 internal class DebounceTakeEffect<Action, P, R>(
   private val source: TakeActionEffect<Action, P, R>,
   private val millis: Long
-) : RxTakeActionEffect<Action, P, R>(source) where Action : IReduxAction, P : Any, R : Any {
+) : TakeActionEffect<Action, P, R>(source.cls, source.extractor, source.creator)
+  where Action : IReduxAction, P : Any, R : Any {
   override fun flatten(nested: ISagaOutput<ISagaOutput<R>>): ISagaOutput<R> {
     return this.source.flatten(nested.debounce(this.millis))
   }
