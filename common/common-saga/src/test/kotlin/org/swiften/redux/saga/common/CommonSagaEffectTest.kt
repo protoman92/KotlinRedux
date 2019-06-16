@@ -24,7 +24,6 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxActionWithKey
 import org.swiften.redux.core.applyMiddlewares
 import java.util.Collections.synchronizedList
-import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/07 */
 abstract class OverridableCommonSagaEffectTest {
@@ -300,30 +299,6 @@ abstract class CommonSagaEffectTest : OverridableCommonSagaEffectTest() {
 
       // Then
       assertEquals(dispatched, arrayListOf(Action(0)))
-    }
-  }
-
-  @Test
-  fun `Retry effects should retry asynchronous calls`() {
-    // Setup
-    val monitor = SagaMonitor()
-    val retryCount = 3
-    val retries = AtomicInteger(0)
-
-    // When
-    justEffect(0)
-      .mapSuspend { retries.incrementAndGet(); throw RuntimeException("Oh no!") }
-      .retryMultipleTimes(retryCount)
-      .invoke(SagaInput(monitor))
-      .subscribe({})
-
-    runBlocking {
-      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (retries.get() != retryCount + 1 && this.isActive) { delay(500) }; Unit
-      }
-
-      // Then
-      assertEquals(retries.get(), retryCount + 1)
     }
   }
 

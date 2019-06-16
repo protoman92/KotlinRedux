@@ -151,17 +151,6 @@ object CommonEffects {
   }
 
   /**
-   * Create a [RetryEffect].
-   * @param R The result emission type.
-   * @param times See [RetryEffect.times].
-   * @return An [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <R> retryMultipleTimes(times: Long): ISagaEffectTransformer<R, R> where R : Any {
-    return { RetryEffect(it, times) }
-  }
-
-  /**
    * Create a [ThenEffect] instance.
    * @param R The first source emission type.
    * @param R2 The second source emission type.

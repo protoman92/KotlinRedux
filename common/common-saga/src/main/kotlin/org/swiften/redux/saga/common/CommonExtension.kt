@@ -173,28 +173,6 @@ fun <P> SagaEffect<P>.putInStore(actionCreator: (P) -> IReduxAction):
 }
 
 /**
- * Invoke a [RetryEffect] on [this].
- * @receiver See [RetryEffect.source].
- * @param R The result emission type.
- * @param times See [RetryEffect.times].
- * @return A [SagaEffect] instance.
- */
-fun <R> SagaEffect<R>.retryMultipleTimes(times: Long): SagaEffect<R> where R : Any {
-  return this.transform(CommonEffects.retryMultipleTimes(times))
-}
-
-/**
- * Invoke a [RetryEffect] on [this].
- * @receiver See [RetryEffect.source].
- * @param R The result emission type.
- * @param times See [RetryEffect.times].
- * @return A [SagaEffect] instance.
- */
-fun <R> SagaEffect<R>.retryMultipleTimes(times: Int): SagaEffect<R> where R : Any {
-  return this.retryMultipleTimes(times.toLong())
-}
-
-/**
  * Invoke a [ThenEffect] on [this].
  * @receiver See [ThenEffect.source1].
  * @param R The first source emission type.
