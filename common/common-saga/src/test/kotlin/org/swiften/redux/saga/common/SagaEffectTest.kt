@@ -199,41 +199,6 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
 
 class SagaEffectTest : OverridableSagaEffectTest() {
   @Test
-  fun `Take latest with forceful then should work correctly`() {
-    // Setup
-    data class Action(val value: Int) : IReduxAction
-    val monitor = SagaMonitor()
-    val finalValues = synchronizedList(arrayListOf<Int>())
-    val defaultValue = -1
-    val ignoredValue = -2
-    val error = "Error!"
-    val allActionValues = 0 until this.iteration
-    val correctValues = allActionValues.map { defaultValue }
-
-    takeEveryAction(Action::class, { it.value }) { value ->
-      this@SagaEffectTest.justEffect(value)
-        .filter { it % 3 == 0 }
-        .map { if (it % 2 == 0) throw Exception(error) else it }
-        .thenNoMatterWhat(just(defaultValue))
-        .thenMightAsWell(justEffect(ignoredValue))
-    }
-      .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it) })
-
-    // When
-    allActionValues.forEach { monitor.dispatch(Action(it)) }
-
-    runBlocking {
-      withTimeoutOrNull(this@SagaEffectTest.timeout) {
-        while (finalValues.sorted() != correctValues.sorted() && this.isActive) { delay(500) }; Unit
-      }
-
-      // Then
-      assertEquals(finalValues.sorted(), correctValues.sorted())
-    }
-  }
-
-  @Test
   fun `Take effect debounce should emit correct values`() {
     test_takeEffectDebounce_shouldEmitCorrectValues { a, b -> takeEveryAction(IReduxAction::class, a, b) }
   }
@@ -325,8 +290,7 @@ class SagaEffectTest : OverridableSagaEffectTest() {
         .map { "unavailable$it" }
         .mapAsync { this.searchMusicStoreAsync(it) }
         .mapSingle { Single.just(it) }
-        .castValue<Any>()
-        .catchError {}
+        .catchError {""}
     }
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
@@ -463,48 +427,6 @@ class SagaEffectTest : OverridableSagaEffectTest() {
       assertEquals(dispatched, arrayListOf(
         ProgressAction(true),
         ValueAction(20),
-        ProgressAction(false)
-      ))
-    }
-  }
-
-  @Test
-  fun `Await effect should work correctly for erroneous await sequence`() {
-    // Setup
-    class State(val value: Int = 0)
-    data class ProgressAction(val progress: Boolean) : IReduxAction
-    data class ValueAction(val value: Int) : IReduxAction
-    data class ErrorAction(val error: Throwable) : IReduxAction
-
-    val monitor = SagaMonitor()
-    val dispatched = arrayListOf<IReduxAction>()
-    val error = Exception("Oops!")
-    val api: suspend (Int) -> Int = { throw error }
-
-    // When
-    await { input ->
-      putInStore(ProgressAction(true)).await(input)
-      val value = selectFromState(State::class) { it.value }.filter { false }.invoke(input).await(0)
-
-      try {
-        val newValue = api(value)
-        putInStore(ValueAction(newValue)).await(input)
-      } catch (e: Throwable) {
-        putInStore(ErrorAction(e)).await(input)
-      } finally {
-        putInStore(ProgressAction(false)).await(input)
-      }
-    }
-      .invoke(SagaInput(monitor, { State(10) }) { dispatched.add(it); EmptyJob })
-      .subscribe({})
-
-    runBlocking {
-      delay(1000)
-
-      // Then
-      assertEquals(dispatched, arrayListOf(
-        ProgressAction(true),
-        ErrorAction(error),
         ProgressAction(false)
       ))
     }
