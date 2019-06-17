@@ -5,6 +5,7 @@
 
 package org.swiften.redux.saga.common;
 
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import kotlinx.coroutines.GlobalScope;
 import org.junit.Test;
@@ -12,7 +13,7 @@ import org.swiften.redux.core.EmptyJob;
 
 import static org.junit.Assert.assertEquals;
 import static org.swiften.redux.saga.common.CommonEffects.map;
-import static org.swiften.redux.saga.common.SagaEffects.just;
+import static org.swiften.redux.saga.common.SagaEffects.from;
 import static org.swiften.redux.saga.common.SagaEffects.mapSingle;
 
 /**
@@ -22,7 +23,7 @@ public final class ReduxSagaTest {
   @Test
   public void test_invokingSagaWithJava_shouldWork() throws Exception {
     // Setup
-    Object value = just(1)
+    Object value = from(Flowable.just(1))
       .transform(map(i -> i * 2))
       .transform(mapSingle(i -> Single.just(i * 3)))
       .invoke(new SagaInput(GlobalScope.INSTANCE, new SagaMonitor(), () -> 0, a -> EmptyJob.INSTANCE))

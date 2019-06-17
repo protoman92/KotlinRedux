@@ -5,6 +5,8 @@
 
 package org.swiften.redux.saga.common
 
+import io.reactivex.Single
+
 /** Created by haipham on 2019/01/01 */
 /**
  * [SagaEffect] whose [SagaOutput] selects some value from an internal [State] using [selector].
@@ -18,9 +20,12 @@ class SelectEffect<State, R>(
   private val selector: (State) -> R
 ) : SingleSagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
-    val lastState = p1.lastState()
-    require(this.cls.isInstance(lastState))
-    return SagaEffects.just(this.selector(this.cls.cast(lastState))).invoke(p1)
+    return SagaOutput(p1.scope, p1.monitor, Single.create<R> {
+      val lastState = p1.lastState()
+      require(this.cls.isInstance(lastState))
+      val value = this@SelectEffect.selector(this@SelectEffect.cls.cast(lastState))
+      it.onSuccess(value)
+    }.toFlowable())
   }
 
   /**

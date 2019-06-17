@@ -22,6 +22,7 @@ import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.saga.common.CommonEffects.putInStore
+import org.swiften.redux.saga.common.SagaEffects.await
 import java.util.Collections.synchronizedList
 
 /** Created by haipham on 2019/01/07 */
@@ -30,7 +31,6 @@ abstract class OverridableCommonSagaEffectTest {
 
   protected val timeout: Long = 10000
   protected val iteration = 1000
-  abstract fun <T> justEffect(value: T): SagaEffect<T> where T : Any
   abstract fun <T> fromEffect(vararg values: T): SagaEffect<T> where T : Any
 
   fun test_takeEffect_shouldTakeCorrectActions(
@@ -47,7 +47,7 @@ abstract class OverridableCommonSagaEffectTest {
 
     createTakeEffect(
       { when (it) { is Action -> it.value; else -> null } },
-      { v -> justEffect(v).mapSuspend { delay(1000); it } }
+      { v -> await { delay(1000); v } }
     )
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it as Int) })
@@ -76,10 +76,7 @@ abstract class OverridableCommonSagaEffectTest {
     data class Action(val value: Int) : IReduxAction
     val defaultState = "0"
     val finalValues = synchronizedList(arrayListOf<String>())
-
-    val takeEffect = createTakeEffect { v ->
-      justEffect(v).delayUpstreamValue(500).doOnValue { finalValues.add(it) }
-    }
+    val takeEffect = createTakeEffect { v -> await { delay(500); finalValues.add(v); v } }
 
     val store = applyMiddlewares<String>(
       AsyncMiddleware.create(),
@@ -106,27 +103,6 @@ abstract class OverridableCommonSagaEffectTest {
 
 /** Use this test class for common [ISagaEffect] tests */
 abstract class CommonSagaEffectTest : OverridableCommonSagaEffectTest() {
-  @Test
-  @Suppress("UNREACHABLE_CODE")
-  fun `Compact map effect should unwrap nullable values`() {
-    // Setup
-    val monitor = SagaMonitor()
-    val finalValues = synchronizedList(arrayListOf<Int>())
-
-    // When
-    justEffect(1)
-      .mapIgnoringNull { null }
-      .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it) })
-
-    runBlocking {
-      delay(1000)
-
-      // Then
-      assertEquals(finalValues, arrayListOf<Int>())
-    }
-  }
-
   @Test
   fun `Put effect should dispatch action`() {
     // Setup
