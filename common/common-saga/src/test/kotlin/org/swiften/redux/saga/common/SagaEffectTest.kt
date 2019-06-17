@@ -5,7 +5,6 @@
 
 package org.swiften.redux.saga.common
 
-import io.reactivex.Single
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +34,6 @@ import org.swiften.redux.saga.common.CommonEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffects.await
 import org.swiften.redux.saga.common.SagaEffects.doNothing
 import org.swiften.redux.saga.common.SagaEffects.from
-import org.swiften.redux.saga.common.SagaEffects.just
 import org.swiften.redux.saga.common.SagaEffects.mergeAll
 import org.swiften.redux.saga.common.SagaEffects.selectFromState
 import org.swiften.redux.saga.common.SagaEffects.takeAction
@@ -47,8 +45,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2018/12/23 */
 abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
-  override fun <T> justEffect(value: T) where T : Any = just(value)
-
   @ExperimentalCoroutinesApi
   override fun <T : Any> fromEffect(vararg values: T): SagaEffect<T> {
     return from(GlobalScope.rxFlowable { values.forEach { this.send(it) } })
@@ -87,10 +83,7 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
   }
 
   protected fun test_takeEffectDebounce_shouldEmitCorrectValues(
-    createTakeEffect: (
-      extractor: (IReduxAction) -> Int?,
-      creator: (Int) -> SagaEffect<Int>
-    ) -> SagaEffect<Int>
+    createTakeEffect: (extractor: (IReduxAction) -> Int) -> SagaEffect<Int>
   ) {
     // Setup
     data class Action(val value: Int) : IReduxAction
@@ -98,7 +91,7 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
     val finalValues = synchronizedList(arrayListOf<Int>())
     val debounceTime = 500L
 
-    createTakeEffect({ (it as Action).value }, { value -> justEffect(value) })
+    createTakeEffect { (it as Action).value }
       .debounce(debounceTime)
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
@@ -184,9 +177,7 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
 class SagaEffectTest : OverridableSagaEffectTest() {
   @Test
   fun `Take effect debounce should emit correct values`() {
-    test_takeEffectDebounce_shouldEmitCorrectValues { a, b ->
-      takeAction(IReduxAction::class, a).flatMap(b)
-    }
+    test_takeEffectDebounce_shouldEmitCorrectValues { takeAction(IReduxAction::class, it) }
   }
 
   @Test
@@ -267,10 +258,7 @@ class SagaEffectTest : OverridableSagaEffectTest() {
     }
 
     takeAction(Action::class, { it.query }).switchMap { query ->
-      just(query)
-        .map { "unavailable$it" }
-        .mapAsync { this.searchMusicStoreAsync(it) }
-        .mapSingle { Single.just(it) }
+      await { this.searchMusicStoreAsync("unavailable$query").await() }
     }
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
@@ -289,6 +277,7 @@ class SagaEffectTest : OverridableSagaEffectTest() {
   }
 
   @Test
+  @ExperimentalCoroutinesApi
   fun `All effect should merge emissions from all sources`() {
     // Setup
     val monitor = SagaMonitor()
@@ -296,10 +285,10 @@ class SagaEffectTest : OverridableSagaEffectTest() {
 
     // When
     mergeAll(
-      justEffect(1),
-      justEffect(2),
-      justEffect(3),
-      justEffect(4)
+      fromEffect(1),
+      fromEffect(2),
+      fromEffect(3),
+      fromEffect(4)
     )
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
@@ -315,7 +304,7 @@ class SagaEffectTest : OverridableSagaEffectTest() {
   }
 
   @Test
-  fun `Dispatching actions should all effect should call dispatch for all sub-effects`() {
+  fun `Dispatching actions from all effect should call dispatch for all sub-effects`() {
     // Setup
     data class Action(val value: Int) : IReduxAction, Comparable<Action> {
       override fun compareTo(other: Action): Int {
@@ -325,18 +314,18 @@ class SagaEffectTest : OverridableSagaEffectTest() {
 
     val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Int>())
-    val correctValues = (0 until this.iteration).map { arrayListOf(it, it * 2, it * 3) }.flatten().sorted()
+    val correctValues = (0 until 3).map { arrayListOf(it, it * 2, it * 3) }.flatten().sorted()
 
     mergeAll(
-      takeAction(Action::class) { it.value }.switchMap { v -> justEffect(v).map { it } },
-      takeAction(Action::class) { it.value }.switchMap { v -> justEffect(v).map { it * 2 } },
-      takeAction(Action::class) { it.value }.switchMap { v -> justEffect(v).map { it * 3 } }
+      takeAction(Action::class) { it.value }.flatMap { v -> await { v } },
+      takeAction(Action::class) { it.value }.flatMap { v -> await { v * 2 } },
+      takeAction(Action::class) { it.value }.flatMap { v -> await { v * 3 } }
     )
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
 
     // When
-    (0 until this.iteration).forEach { monitor.dispatch(Action(it)) }
+    (0 until 3).forEach { monitor.dispatch(Action(it)) }
 
     runBlocking {
       withTimeoutOrNull(this@SagaEffectTest.timeout) {

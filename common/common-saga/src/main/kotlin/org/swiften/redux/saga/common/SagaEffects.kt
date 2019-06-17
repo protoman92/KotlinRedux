@@ -54,16 +54,6 @@ object SagaEffects {
     FromEffect(stream)
 
   /**
-   * Create a [JustEffect].
-   * @param R The result emission type.
-   * @param value See [JustEffect.value].
-   * @return A [SingleSagaEffect] instance.
-   */
-  @JvmStatic
-  fun <R> just(value: R): SingleSagaEffect<R> where R : Any =
-    JustEffect(value)
-
-  /**
    * Create an [AllEffect] instance.
    * @param R The result emission type.
    * @param sources See [AllEffect.sources].
