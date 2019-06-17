@@ -156,13 +156,11 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
     }
 
     val sourceOutput = createTakeEffect { a ->
-      justEffect((a as Action).value)
-        .map { if (it % 2 == 0) it else { throw Exception("Oops!") } }
-        .catchError { 10 }
-        .delayUpstreamValue(500)
-        .mapSingle { Single.just(1000) }
-        .mapAsync { this.async { it } }
-        .putInStore { DefaultReduxAction.Dummy }
+      await {
+        val value = (a as Action).value
+        this.async { value * 2 }.await()
+        SagaEffects.putInStore(DefaultReduxAction.Dummy).await(it)
+      }
     }.invoke(SagaInput(monitor))
 
     sourceOutput.subscribe({}, {})
@@ -273,7 +271,6 @@ class SagaEffectTest : OverridableSagaEffectTest() {
         .map { "unavailable$it" }
         .mapAsync { this.searchMusicStoreAsync(it) }
         .mapSingle { Single.just(it) }
-        .catchError {""}
     }
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
@@ -331,9 +328,9 @@ class SagaEffectTest : OverridableSagaEffectTest() {
     val correctValues = (0 until this.iteration).map { arrayListOf(it, it * 2, it * 3) }.flatten().sorted()
 
     mergeAll(
-      takeAction(Action::class, { it.value }).switchMap { v -> justEffect(v).map { it } },
-      takeAction(Action::class, { it.value }).switchMap { v -> justEffect(v).map { it * 2 } },
-      takeAction(Action::class, { it.value }).switchMap { v -> justEffect(v).map { it * 3 } }
+      takeAction(Action::class) { it.value }.switchMap { v -> justEffect(v).map { it } },
+      takeAction(Action::class) { it.value }.switchMap { v -> justEffect(v).map { it * 2 } },
+      takeAction(Action::class) { it.value }.switchMap { v -> justEffect(v).map { it * 3 } }
     )
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })

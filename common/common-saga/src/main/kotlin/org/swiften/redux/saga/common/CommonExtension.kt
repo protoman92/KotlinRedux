@@ -11,41 +11,6 @@ import org.swiften.redux.core.IReduxAction
 
 /** Created by haipham on 2019/01/26/1 */
 /**
- * Catch [Throwable] from upstream with [catcher].
- * @receiver See [CatchErrorEffect.source].
- * @param R The result emission type.
- * @param catcher See [CatchErrorEffect.catcher].
- * @return A [SagaEffect] instance.
- */
-fun <R> SagaEffect<R>.catchError(catcher: (Throwable) -> R): SagaEffect<R> where R : Any {
-  return this.transform(CommonEffects.catchError(catcher))
-}
-
-/**
- * Invoke a [SuspendCatchErrorEffect] on [this].
- * @receiver See [SuspendCatchErrorEffect.source].
- * @param R The result emission type.
- * @param catcher See [SuspendCatchErrorEffect.catcher].
- * @return A [SagaEffect] instance.
- */
-fun <R> SagaEffect<R>.catchSuspend(catcher: suspend CoroutineScope.(Throwable) -> R):
-  SagaEffect<R> where R : Any {
-  return this.transform(CommonEffects.catchErrorSuspend(catcher))
-}
-
-/**
- * Invoke a [AsyncCatchErrorEffect] on [this].
- * @receiver See [AsyncCatchErrorEffect.source].
- * @param R The result emission type.
- * @param catcher See [AsyncCatchErrorEffect.catcher].
- * @return A [SagaEffect] instance.
- */
-fun <R> SagaEffect<R>.catchAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>):
-  SagaEffect<R> where R : Any {
-  return this.transform(CommonEffects.catchErrorAsync(catcher))
-}
-
-/**
  * Invoke a [DelayEffect] on [this].
  * @receiver See [DelayEffect.source].
  * @param R The result emission type.
