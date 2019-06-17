@@ -178,15 +178,4 @@ object CommonEffects {
     ISagaEffectTransformer<R, R2> where R : Any, R2 : Any {
     return { ForceThenEffect(it, source2) }
   }
-
-  /**
-   * Create a [TimeoutEffect].
-   * @param R The result emission type.
-   * @param millis See [TimeoutEffect.millis].
-   * @return An [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <R> timeoutUntilFailure(millis: Long): ISagaEffectTransformer<R, R> where R : Any {
-    return { TimeoutEffect(it, millis) }
-  }
 }

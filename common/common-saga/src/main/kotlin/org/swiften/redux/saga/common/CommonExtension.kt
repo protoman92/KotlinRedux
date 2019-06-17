@@ -217,14 +217,3 @@ fun <R, R2> SagaEffect<R>.thenNoMatterWhat(effect: ISagaEffect<R2>):
  * @return A [SagaEffect] instance.
  */
 fun <R, R2> SagaEffect<R>.thenSwitchToValue(value: R2) where R : Any, R2 : Any = this.map { value }
-
-/**
- * Invoke a [TimeoutEffect] on [this].
- * @receiver See [TimeoutEffect.source].
- * @param R The result emission type.
- * @param millis See [TimeoutEffect.millis].
- * @return A [SagaEffect] instance.
- */
-fun <R> SagaEffect<R>.timeoutUntilFailure(millis: Long): SagaEffect<R> where R : Any {
-  return this.transform(CommonEffects.timeoutUntilFailure(millis))
-}
