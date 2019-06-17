@@ -227,19 +227,4 @@ abstract class CommonSagaEffectTest : OverridableCommonSagaEffectTest() {
       assertEquals(finalValues, arrayListOf("12"))
     }
   }
-
-  @Test
-  fun `Timeout effect should error with timeout`() {
-    // Setup
-    val monitor = SagaMonitor()
-
-    val finalOutput = justEffect(1)
-      .mapSuspend { delay(this@CommonSagaEffectTest.timeout); it }
-      .timeoutUntilFailure(1000)
-      .catchSuspend { 100 }
-      .invoke(SagaInput(monitor))
-
-    // When && Then
-    assertEquals(finalOutput.awaitFor(this.timeout), 100)
-  }
 }
