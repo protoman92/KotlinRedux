@@ -7,11 +7,11 @@ package org.swiften.redux.android.dagger.business1
 
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
+import org.swiften.redux.saga.common.CommonEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaEffects.await
 import org.swiften.redux.saga.common.SagaEffects.doNothing
 import org.swiften.redux.saga.common.SagaEffects.mergeAll
-import org.swiften.redux.saga.common.SagaEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffects.takeAction
 import org.swiften.redux.saga.common.debounce
 import org.swiften.redux.saga.common.switchMap

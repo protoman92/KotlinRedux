@@ -5,23 +5,20 @@
 
 package org.swiften.redux.saga.common
 
+import io.reactivex.Single
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.IReduxStore
 
 /** Created by haipham on 2018/12/31 */
 /**
- * [ISagaEffect] whose [ISagaOutput] deposits some values emitted by [source] into a [IReduxStore]
- * using [actionCreator].
- * @param P The source emission type.
- * @param source The source [ISagaEffect].
- * @param actionCreator Function that creates [IReduxAction] from [P].
+ * [ISagaEffect] whose [ISagaOutput] dispatches some [IReduxAction].
+ * @param action The [IReduxAction] to be dispatched.
  */
-class PutEffect<P>(
-  private val source: ISagaEffect<P>,
-  private val actionCreator: (P) -> IReduxAction
-) : SingleSagaEffect<Any>() where P : Any {
+class PutEffect(private val action: IReduxAction) : SingleSagaEffect<Any>() {
   override fun invoke(p1: SagaInput): ISagaOutput<Any> {
-    return this.source.invoke(p1).map { p1.dispatch(this@PutEffect.actionCreator(it)) as Any }
+    return SagaOutput(p1.scope, p1.monitor, Single.create<Any> {
+      p1.dispatch(this@PutEffect.action).await()
+      it.onSuccess(Unit)
+    }.toFlowable())
   }
 
   /**

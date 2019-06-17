@@ -84,31 +84,6 @@ object SagaEffects {
   }
 
   /**
-   * Call [CommonEffects.putInStore] with [SagaEffects.just].
-   * @param P The source emission type.
-   * @param value See [JustEffect.value].
-   * @param actionCreator See [CommonEffects.putInStore].
-   * @return A [PutEffect] instance.
-   */
-  @JvmStatic
-  fun <P> putInStore(value: P, actionCreator: (P) -> IReduxAction): PutEffect<P> where P : Any {
-    return CommonEffects.putInStore(actionCreator)(
-      just(
-        value
-      )
-    )
-  }
-
-  /**
-   * Call [putInStore] with [action].
-   * @param action An [IReduxAction] instance.
-   * @return A [PutEffect] instance.
-   */
-  @JvmStatic
-  fun putInStore(action: IReduxAction): PutEffect<Unit> =
-    putInStore(Unit) { action }
-
-  /**
    * Create a [SelectEffect].
    * @param State The state type to select from.
    * @param R The result emission type.

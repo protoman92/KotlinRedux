@@ -8,9 +8,9 @@ package org.swiften.redux.android.sample
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
+import org.swiften.redux.saga.common.CommonEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaEffects.await
-import org.swiften.redux.saga.common.SagaEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffects.selectFromState
 import org.swiften.redux.saga.common.SagaEffects.takeAction
 import org.swiften.redux.saga.common.debounce

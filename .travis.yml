@@ -37,4 +37,4 @@ before_install:
   - yes | sdkmanager "platforms;android-28"
 
 script:
-  - ./gradlew build --parallel -x :sample-android:sample-simple:build :sample-android:sample-sunflower:build :sample-android:sample-dagger:build
+  - ./gradlew build

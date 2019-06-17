@@ -21,17 +21,12 @@ import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeEveryData
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
+import org.swiften.redux.saga.common.CommonEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaEffects.await
-import org.swiften.redux.saga.common.SagaEffects.just
-import org.swiften.redux.saga.common.SagaEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffects.selectFromState
 import org.swiften.redux.saga.common.SagaEffects.takeAction
 import org.swiften.redux.saga.common.flatMap
-import org.swiften.redux.saga.common.map
-import org.swiften.redux.saga.common.mapIgnoringNull
-import org.swiften.redux.saga.common.mapSuspend
-import org.swiften.redux.saga.common.putInStore
 import org.swiften.redux.saga.common.switchMap
 import org.swiften.redux.thunk.IReduxThunkAction
 import org.swiften.redux.thunk.ThunkFunction
@@ -144,7 +139,7 @@ object Redux {
   object Saga {
     object CoreSaga {
       fun watchNetworkConnectivity(context: Context): SagaEffect<Any> {
-        return watchConnectivity(context).putInStore { Action.UpdateConnectivity(it) }
+        return watchConnectivity(context).switchMap { putInStore(Action.UpdateConnectivity(it)) }
       }
     }
 
@@ -156,9 +151,10 @@ object Redux {
        */
       private fun addPlantToGarden(api: GardenPlantingRepository): SagaEffect<Any> {
         return takeAction(Action.AddPlantToGarden::class) { it.plantId }.switchMap { plantId ->
-          just(plantId)
-            .mapSuspend { api.createGardenPlanting(it) }
-            .putInStore { Action.UpdateSelectedPlantStatus(true) }
+          await {
+            api.createGardenPlanting(plantId)
+            putInStore(Action.UpdateSelectedPlantStatus(true)).await(it)
+          }
         }
       }
 
@@ -174,26 +170,28 @@ object Redux {
             is Screen.PlantListToPlantDetail -> it.plantId
           }
         }.switchMap { plantId ->
-          takeEveryData { Transformations
-            .map(api.getGardenPlantingForPlant(plantId)) { Option.wrap(it) } }
-            .map { it.value != null }
-            .putInStore { Action.UpdateSelectedPlantStatus(it) }
+          takeEveryData {
+            Transformations.map(api.getGardenPlantingForPlant(plantId)) { Option.wrap(it) }
+          }.flatMap { putInStore(Action.UpdateSelectedPlantStatus(it != null)) }
         }
       }
 
       private fun selectPlantFromGarden(): SagaEffect<Any> {
         return takeAction(Action.SelectPlantFromGarden::class) { it.index }.flatMap { index ->
-          selectFromState(State::class) { Option.wrap(it.plantAndGardenPlantings) }
-            .mapIgnoringNull { it.value?.elementAtOrNull(index) }
-            .map { it.plant }
-            .map { it.plantId }
-            .putInStore { Screen.GardenToPlantDetail(it) }
+          await {
+            val plantings = selectFromState(State::class) { Option.wrap(it.plantAndGardenPlantings) }.await(it)
+            val planting = plantings.value?.elementAtOrNull(index)
+
+            if (planting != null) {
+              putInStore(Screen.GardenToPlantDetail(planting.plant.plantId)).await(it)
+            } else { }
+          }
         }
       }
 
       /** Bridge to sync [GardenPlanting] using [GardenPlantingRepository.getGardenPlantings] */
       private fun syncGardenPlantings(api: GardenPlantingRepository): SagaEffect<Any> {
-        return takeEveryData { api.getGardenPlantings() }.putInStore { Action.UpdateGardenPlantings(it) }
+        return takeEveryData { api.getGardenPlantings() }.flatMap { putInStore(Action.UpdateGardenPlantings(it)) }
       }
 
       /**
@@ -201,9 +199,10 @@ object Redux {
        * [GardenPlantingRepository.getPlantAndGardenPlantings]
        */
       private fun syncPlantAndGardenPlantings(api: GardenPlantingRepository): SagaEffect<Any> {
-        return takeEveryData { api.getPlantAndGardenPlantings() }
-          .map { p -> p.filter { it.gardenPlantings.isNotEmpty() } }
-          .putInStore { Action.UpdatePlantAndGardenPlantings(it) }
+        return takeEveryData { api.getPlantAndGardenPlantings() }.flatMap {
+          val plantings = it.filter { it.gardenPlantings.isNotEmpty() }
+          putInStore(Action.UpdatePlantAndGardenPlantings(plantings))
+        }
       }
 
       fun allSagas(api: GardenPlantingRepository) = arrayListOf(
@@ -218,10 +217,14 @@ object Redux {
     object PlantSaga {
       private fun selectPlantFromPlantList(): SagaEffect<Any> {
         return takeAction(Action.SelectPlantFromPlantList::class) { it.index }.flatMap { index ->
-          selectFromState(State::class) { Option.wrap(it.plants) }
-            .mapIgnoringNull { it.value?.elementAtOrNull(index) }
-            .map { it.plantId }
-            .putInStore { Screen.PlantListToPlantDetail(it) }
+          await {
+            val plants = selectFromState(State::class) { Option.wrap(it.plants) }.await(it)
+            val plant = plants.value?.elementAtOrNull(index)
+
+            if (plant != null) {
+              putInStore(Screen.PlantListToPlantDetail(plant.plantId)).await(it)
+            } else { }
+          }
         }
       }
 
@@ -254,7 +257,7 @@ object Redux {
             takeEveryData { api.getPlants() }
           } else {
             takeEveryData { api.getPlantsWithGrowZoneNumber(zone) }
-          }.putInStore { Action.UpdatePlants(it) }
+          }.flatMap { putInStore(Action.UpdatePlants(it)) }
         }
       }
 
