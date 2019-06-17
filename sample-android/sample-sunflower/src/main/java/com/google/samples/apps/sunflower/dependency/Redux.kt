@@ -22,7 +22,9 @@ import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.common.SagaEffects.await
 import org.swiften.redux.saga.common.SagaEffects.just
+import org.swiften.redux.saga.common.SagaEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffects.selectFromState
 import org.swiften.redux.saga.common.SagaEffects.takeAction
 import org.swiften.redux.saga.common.flatMap
@@ -30,7 +32,6 @@ import org.swiften.redux.saga.common.map
 import org.swiften.redux.saga.common.mapIgnoringNull
 import org.swiften.redux.saga.common.mapSuspend
 import org.swiften.redux.saga.common.putInStore
-import org.swiften.redux.saga.common.selectFromState
 import org.swiften.redux.saga.common.switchMap
 import org.swiften.redux.thunk.IReduxThunkAction
 import org.swiften.redux.thunk.ThunkFunction
@@ -230,10 +231,17 @@ object Redux {
        * the selected grow zone.
        */
       private fun syncPlants(api: PlantRepository): SagaEffect<Any> {
-        return takeEveryData { api.getPlants() }
-          .selectFromState(State::class, { it.selectedGrowZone }, { a, b ->
-            if (b == NO_GROW_ZONE) a else a.filter { it.growZoneNumber == b }
-          }).putInStore { Action.UpdatePlants(it) }
+        return takeEveryData { api.getPlants() }.flatMap { plants ->
+          await {
+            val zone = selectFromState(State::class) { it.selectedGrowZone }.await(it)
+
+            if (zone == NO_GROW_ZONE) {
+              putInStore(Action.UpdatePlants(plants)).await(it)
+            } else {
+              putInStore(Action.UpdatePlants(plants.filter { it.growZoneNumber == zone })).await(it)
+            }
+          }
+        }
       }
 
       /**

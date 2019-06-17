@@ -353,13 +353,10 @@ class SagaEffectTest : OverridableSagaEffectTest() {
     // Setup
     val monitor = SagaMonitor()
 
-    val value = justEffect(100)
-      .thenSwitchTo(doNothing<Int>())
-      .map { it * 2 }
-      .invoke(SagaInput(monitor))
-      .await(200)
+    // When
+    val value = doNothing<Int>().map { it * 2 }.invoke(SagaInput(monitor)).await(200)
 
-    // When && Then
+    // Then
     assertEquals(value, 200)
   }
 
@@ -367,15 +364,13 @@ class SagaEffectTest : OverridableSagaEffectTest() {
   fun `Select effect should extract some value from a state`() {
     // Setup
     val monitor = SagaMonitor()
+    val sourceOutput1 = selectFromState(Any::class) { 2 }.invoke(SagaInput(monitor))
 
-    val sourceOutput1 = just(1).selectFromState(Any::class, { 2 }, { a, b -> a + b })
-      .invoke(SagaInput(monitor))
-
-    val sourceOutput2 = just(2).selectFromState(State::class) { 4 }
+    val sourceOutput2 = selectFromState(State::class) { 4 }
       .invoke(SagaInput(monitor, { State() }, NoopActionDispatcher))
 
     // When && Then
-    assertEquals(sourceOutput1.awaitFor(this.timeout), 3)
+    assertEquals(sourceOutput1.awaitFor(this.timeout), 2)
     assertEquals(sourceOutput2.awaitFor(this.timeout), 4)
   }
 

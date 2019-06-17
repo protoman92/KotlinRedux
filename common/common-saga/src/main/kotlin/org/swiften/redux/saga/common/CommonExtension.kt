@@ -119,61 +119,6 @@ fun <P> SagaEffect<P>.putInStore(actionCreator: (P) -> IReduxAction):
 }
 
 /**
- * Invoke a [ThenEffect] on [this].
- * @receiver See [ThenEffect.source1].
- * @param R The first source emission type.
- * @param R2 The second source emission type.
- * @param R3 The result emission type.
- * @param effect See [ThenEffect.source2].
- * @param combiner See [ThenEffect.combiner].
- * @return A [SagaEffect] instance.
- */
-fun <R, R2, R3> SagaEffect<R>.thenSwitchTo(
-  effect: ISagaEffect<R2>,
-  combiner: Function2<R, R2, R3>
-): SagaEffect<R3> where R : Any, R2 : Any, R3 : Any {
-  return CommonEffects.thenSwitchTo(effect, combiner)(this)
-}
-
-/**
- * Invoke a [ThenEffect] but ignore emissions from [this].
- * @receiver See [ThenEffect.source1].
- * @param R The first source emission type.
- * @param R2 The result emission type.
- * @param effect See [ThenEffect.source2].
- * @return A [SagaEffect] instance.
- */
-fun <R, R2> SagaEffect<R>.thenSwitchTo(effect: ISagaEffect<R2>): SagaEffect<R2> where R : Any, R2 : Any {
-  return this.thenSwitchTo(effect) { _, b -> b }
-}
-
-/**
- * Invoke a [ThenEffect] but ignore emissions from [effect]. This is useful in cases such as setting
- * loading flag before a remote API call.
- * @receiver See [ThenEffect.source1].
- * @param R The first source emission type.
- * @param R2 The result emission type.
- * @param effect See [ThenEffect.source2].
- * @return A [SagaEffect] instance.
- */
-fun <R, R2> SagaEffect<R>.thenMightAsWell(effect: ISagaEffect<R2>): SagaEffect<R> where R : Any, R2 : Any {
-  return this.thenSwitchTo(effect) { a, _ -> a }
-}
-
-/**
- * Invoke a [ForceThenEffect] on [this] and [effect].
- * @receiver See [ForceThenEffect.source1].
- * @param R The first source emission type.
- * @param R2 The second source emission type.
- * @param effect See [ForceThenEffect.source2].
- * @return A [SagaEffect] instance.
- */
-fun <R, R2> SagaEffect<R>.thenNoMatterWhat(effect: ISagaEffect<R2>):
-  SagaEffect<R2> where R : Any, R2 : Any {
-  return CommonEffects.thenNoMatterWhat<R, R2>(effect)(this)
-}
-
-/**
  * Invoke [thenSwitchTo] with a single [value].
  * @receiver See [ThenEffect.source1].
  * @param R The first source emission type.

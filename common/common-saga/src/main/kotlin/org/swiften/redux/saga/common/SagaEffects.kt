@@ -135,21 +135,6 @@ object SagaEffects {
   }
 
   /**
-   * Convenience method for [CommonEffects.thenNoMatterWhat] to switch to [defaultValue].
-   * @param R The source emission type.
-   * @param R2 The result emission type.
-   * @param defaultValue A [R2] instance.
-   * @return A [ISagaEffectTransformer] instance.
-   */
-  fun <R, R2> thenNoMatterWhat(defaultValue: R2): ISagaEffectTransformer<R, R2> where R : Any, R2 : Any {
-    return CommonEffects.thenNoMatterWhat(
-      just(
-        defaultValue
-      )
-    )
-  }
-
-  /**
    * Create a [TakeStateEffect] instance.
    * @param cls See [TakeStateEffect.cls].
    * @return A [TakeStateEffect] instance.
