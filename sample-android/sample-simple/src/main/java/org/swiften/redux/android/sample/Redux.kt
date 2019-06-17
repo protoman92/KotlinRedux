@@ -7,14 +7,14 @@ package org.swiften.redux.android.sample
 
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.IReduxActionWithKey
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.SagaEffects.await
 import org.swiften.redux.saga.common.SagaEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffects.selectFromState
-import org.swiften.redux.saga.common.SagaEffects.takeLatestActionForKeys
-import org.swiften.redux.saga.common.debounceTake
+import org.swiften.redux.saga.common.SagaEffects.takeAction
+import org.swiften.redux.saga.common.debounce
+import org.swiften.redux.saga.common.switchMap
 import java.io.Serializable
 
 /** Created by haipham on 26/1/19 */
@@ -47,20 +47,9 @@ object Redux {
     }
 
     sealed class Search : Action() {
-      companion object {
-        const val UPDATE_QUERY = "UPDATE_QUERY"
-        const val UPDATE_LIMIT = "UPDATE_LIMIT"
-      }
-
       data class SetLoading(val loading: Boolean) : Search()
-
-      data class UpdateQuery(val query: String?) : Search(), IReduxActionWithKey {
-        override val key: String get() = Search.UPDATE_QUERY
-      }
-
-      data class UpdateLimit(val limit: ResultLimit?) : Search(), IReduxActionWithKey {
-        override val key: String get() = Search.UPDATE_LIMIT
-      }
+      data class UpdateQuery(val query: String?) : Search()
+      data class UpdateLimit(val limit: ResultLimit?) : Search()
     }
 
     data class UpdateMusicResult(val result: MusicResult?) : Action()
@@ -105,25 +94,33 @@ object Redux {
   object Saga {
     @Suppress("MemberVisibilityCanBePrivate")
     fun searchSaga(api: ISearchAPI<MusicResult?>, debounce: Long = 1000): SagaEffect<Unit> {
-      return takeLatestActionForKeys(setOf(Action.Search.UPDATE_LIMIT, Action.Search.UPDATE_QUERY)) {
-        await { input ->
-          val searchState = selectFromState(ISearchStateProvider::class) { it.search }.await(input)
-          val query = searchState.query
-          val limit = (searchState.limit ?: ResultLimit.FIVE).count
+      return takeAction(Action::class) {
+        when (it) {
+          is Action.Search.UpdateLimit -> true
+          is Action.Search.UpdateQuery -> true
+          else -> null
+        }
+      }
+        .debounce(debounce)
+        .switchMap {
+          await { input ->
+            val searchState = selectFromState(ISearchStateProvider::class) { it.search }.await(input)
+            val query = searchState.query
+            val limit = (searchState.limit ?: ResultLimit.FIVE).count
 
-          try {
-            if (query != null) {
-              putInStore(Action.Search.SetLoading(true)).await(input)
-              val result = api.searchMusicStore(query, limit)
-              putInStore(Action.UpdateMusicResult(result)).await(input)
+            try {
+              if (query != null) {
+                putInStore(Action.Search.SetLoading(true)).await(input)
+                val result = api.searchMusicStore(query, limit)
+                putInStore(Action.UpdateMusicResult(result)).await(input)
+              }
+            } catch (e: Throwable) {
+              println("Redux: not handling $e right now yet")
+            } finally {
+              putInStore(Action.Search.SetLoading(false)).await(input)
             }
-          } catch (e: Throwable) {
-            println("Redux: not handling $e right now yet")
-          } finally {
-            putInStore(Action.Search.SetLoading(false)).await(input)
           }
         }
-      }.debounceTake(debounce)
     }
 
     fun allSagas(api: ISearchAPI<MusicResult?>) = arrayListOf(searchSaga(api))
