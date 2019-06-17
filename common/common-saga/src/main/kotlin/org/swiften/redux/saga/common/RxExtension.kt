@@ -6,7 +6,6 @@
 package org.swiften.redux.saga.common
 
 import io.reactivex.Single
-import org.swiften.redux.core.IReduxAction
 import kotlin.reflect.KClass
 
 /** Created by haipham on 2019/01/26 */
@@ -92,14 +91,12 @@ fun <State, R2> SagaEffect<*>.selectFromState(cls: KClass<State>, selector: (Sta
 }
 
 /**
- * Invoke a [DebounceTakeEffect] on [this].
- * @receiver See [DebounceTakeEffect.source].
- * @param Action The [IReduxAction] type to perform param extraction.
- * @param P The input value extracted from [IReduxAction].
+ * Invoke a [DebounceEffect] on [this].
+ * @receiver See [DebounceEffect.source].
  * @param R The result emission type.
- * @param millis See [DebounceTakeEffect.millis].
+ * @param millis See [DebounceEffect.millis].
+ * @return A [SagaEffect] instance.
  */
-fun <Action, P, R> TakeActionEffect<Action, P, R>.debounceTake(millis: Long): TakeActionEffect<Action, P, R>
-  where Action : IReduxAction, P : Any, R : Any {
-  return (SagaEffects.debounceTake<Action, P, R>(millis))(this)
+fun <R> SagaEffect<R>.debounce(millis: Long): SagaEffect<R> where R : Any {
+  return (SagaEffects.debounce<R>(millis))(this)
 }

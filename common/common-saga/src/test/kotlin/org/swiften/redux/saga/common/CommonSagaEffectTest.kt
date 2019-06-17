@@ -21,7 +21,6 @@ import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.IReduxActionWithKey
 import org.swiften.redux.core.applyMiddlewares
 import java.util.Collections.synchronizedList
 
@@ -37,7 +36,7 @@ abstract class OverridableCommonSagaEffectTest {
   fun test_takeEffect_shouldTakeCorrectActions(
     createTakeEffect: (
       extractor: (IReduxAction) -> Int?,
-      creator: (Int) -> ISagaEffect<Any>
+      creator: (Int) -> SagaEffect<Any>
     ) -> SagaEffect<Any>,
     verifyValues: (Collection<Int>) -> Boolean
   ) {
@@ -66,56 +65,6 @@ abstract class OverridableCommonSagaEffectTest {
 
       // Then
       assertTrue(verifyValues(finalValues.sorted()))
-    }
-  }
-
-  fun test_takeEffectWithKeys_shouldTakeCorrectActions(
-    createTakeEffect: (
-      actionKeys: Set<String>,
-      creator: (IReduxActionWithKey) -> ISagaEffect<Any>
-    ) -> SagaEffect<Any>
-  ) {
-    // Setup
-    abstract class BaseAction(val value: Int)
-
-    class Action1(value: Int) : BaseAction(value), IReduxActionWithKey {
-      override val key: String get() = "1"
-    }
-
-    class Action2(value: Int) : BaseAction(value), IReduxActionWithKey {
-      override val key: String get() = "2"
-    }
-
-    class Action3(value: Int) : BaseAction(value), IReduxActionWithKey {
-      override val key: String get() = "3"
-    }
-
-    val monitor = SagaMonitor()
-    val keys = setOf("1", "2")
-    val finalValues = synchronizedList(arrayListOf<Int>())
-    val allValues = 0 until this.iteration
-    val actualValues = allValues.filter { it % 3 != 0 }
-
-    createTakeEffect(keys) { v -> justEffect((v as BaseAction).value) }
-      .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it as Int) })
-
-    // When
-    actualValues.forEach {
-      when {
-        it % 3 == 0 -> monitor.dispatch(Action3(it))
-        it % 2 == 0 -> monitor.dispatch(Action2(it))
-        else -> monitor.dispatch(Action1(it))
-      }
-    }
-
-    runBlocking {
-      withTimeoutOrNull(this@OverridableCommonSagaEffectTest.timeout) {
-        while (finalValues.sorted() != actualValues.sorted() && this.isActive) { delay(500) }; Unit
-      }
-
-      // Then
-      assertEquals(finalValues.sorted(), actualValues.sorted())
     }
   }
 

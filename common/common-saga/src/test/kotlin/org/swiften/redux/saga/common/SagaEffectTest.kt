@@ -28,7 +28,6 @@ import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.IReduxActionWithKey
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.NoopActionDispatcher
 import org.swiften.redux.core.applyMiddlewares
@@ -39,10 +38,7 @@ import org.swiften.redux.saga.common.SagaEffects.just
 import org.swiften.redux.saga.common.SagaEffects.mergeAll
 import org.swiften.redux.saga.common.SagaEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffects.selectFromState
-import org.swiften.redux.saga.common.SagaEffects.takeEveryAction
-import org.swiften.redux.saga.common.SagaEffects.takeEveryActionForKeys
-import org.swiften.redux.saga.common.SagaEffects.takeLatestAction
-import org.swiften.redux.saga.common.SagaEffects.takeLatestActionForKeys
+import org.swiften.redux.saga.common.SagaEffects.takeAction
 import java.net.URL
 import java.util.Collections.synchronizedList
 import java.util.Random
@@ -63,25 +59,15 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
     val actualValues = (0 until this.iteration).toList()
 
     test_takeEffect_shouldTakeCorrectActions({ a, b ->
-      takeEveryAction(IReduxAction::class, a, creator = b)
+      takeAction(IReduxAction::class, a).flatMap(b)
     }) { it == actualValues.sorted() }
   }
 
   @Test
   fun `Take latest effect should take latest actions`() {
     test_takeEffect_shouldTakeCorrectActions({ a, b ->
-      takeLatestAction(IReduxAction::class, a, creator = b)
+      takeAction(IReduxAction::class, a).switchMap(b)
     }) { it.size == 1 }
-  }
-
-  @Test
-  fun `Take every effect with keys should take correct actions`() {
-    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeEveryActionForKeys(a, creator = b) }
-  }
-
-  @Test
-  fun `Take latest effect with keys should take correct actions`() {
-    test_takeEffectWithKeys_shouldTakeCorrectActions { a, b -> takeLatestActionForKeys(a, creator = b) }
   }
 
   @Test
@@ -103,8 +89,8 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
   protected fun test_takeEffectDebounce_shouldEmitCorrectValues(
     createTakeEffect: (
       extractor: (IReduxAction) -> Int?,
-      creator: (Int) -> ISagaEffect<Int>
-    ) -> TakeActionEffect<IReduxAction, Int, Int>
+      creator: (Int) -> SagaEffect<Int>
+    ) -> SagaEffect<Int>
   ) {
     // Setup
     data class Action(val value: Int) : IReduxAction
@@ -113,7 +99,7 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
     val debounceTime = 500L
 
     createTakeEffect({ (it as Action).value }, { value -> justEffect(value) })
-      .debounceTake(debounceTime)
+      .debounce(debounceTime)
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
 
@@ -144,7 +130,7 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
 
   protected fun test_streamDisposition_shouldRemoveEntryFromMonitor(
     createTakeEffect: (
-      creator: (IReduxAction) -> ISagaEffect<Any>
+      creator: (IReduxAction) -> SagaEffect<Any>
     ) -> SagaEffect<Any>
   ) {
     // Setup
@@ -200,7 +186,9 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
 class SagaEffectTest : OverridableSagaEffectTest() {
   @Test
   fun `Take effect debounce should emit correct values`() {
-    test_takeEffectDebounce_shouldEmitCorrectValues { a, b -> takeEveryAction(IReduxAction::class, a, b) }
+    test_takeEffectDebounce_shouldEmitCorrectValues { a, b ->
+      takeAction(IReduxAction::class, a).flatMap(b)
+    }
   }
 
   @Test
@@ -209,17 +197,12 @@ class SagaEffectTest : OverridableSagaEffectTest() {
     // Setup
     data class State(val a1: Int? = null, val a2: Int? = null)
 
-    abstract class Container(val value: Int) : IReduxActionWithKey {
-      override fun toString(): String = "${this.key}-${this.value}"
+    abstract class Container(val value: Int) : IReduxAction {
+      override fun toString(): String = "${this.value}"
     }
 
-    class Action1(value: Int) : Container(value) {
-      override val key: String get() = "Action1"
-    }
-
-    class Action2(value: Int) : Container(value) {
-      override val key: String get() = "Action2"
-    }
+    class Action1(value: Int) : Container(value)
+    class Action2(value: Int) : Container(value)
 
     val reducer: IReducer<State, IReduxAction> = { state, action ->
       when (action) {
@@ -236,7 +219,7 @@ class SagaEffectTest : OverridableSagaEffectTest() {
     var store: IReduxStore<State>? = null
     val finalValues = synchronizedList(arrayListOf<Pair<State, State>>())
 
-    val takeEffect = takeEveryActionForKeys(setOf("Action1", "Action2")) { action ->
+    val takeEffect = takeAction(Container::class) { it }.switchMap { action ->
       val lastState = store!!.lastState()
       val newState = reducer(lastState, action)
       selectFromState(State::class) { s -> s to newState }.doOnValue { finalValues.add(it) }
@@ -285,7 +268,7 @@ class SagaEffectTest : OverridableSagaEffectTest() {
       "Input: $q, Result: $result"
     }
 
-    takeLatestAction(Action::class, { it.query }) { query ->
+    takeAction(Action::class, { it.query }).switchMap { query ->
       just(query)
         .map { "unavailable$it" }
         .mapAsync { this.searchMusicStoreAsync(it) }
@@ -348,9 +331,9 @@ class SagaEffectTest : OverridableSagaEffectTest() {
     val correctValues = (0 until this.iteration).map { arrayListOf(it, it * 2, it * 3) }.flatten().sorted()
 
     mergeAll(
-      takeLatestAction(Action::class, { it.value }) { v -> justEffect(v).map { it } },
-      takeLatestAction(Action::class, { it.value }) { v -> justEffect(v).map { it * 2 } },
-      takeLatestAction(Action::class, { it.value }) { v -> justEffect(v).map { it * 3 } }
+      takeAction(Action::class, { it.value }).switchMap { v -> justEffect(v).map { it } },
+      takeAction(Action::class, { it.value }).switchMap { v -> justEffect(v).map { it * 2 } },
+      takeAction(Action::class, { it.value }).switchMap { v -> justEffect(v).map { it * 3 } }
     )
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
@@ -435,7 +418,7 @@ class SagaEffectTest : OverridableSagaEffectTest() {
   @Test
   fun `Stream disposition should remove entry from monitor`() {
     test_streamDisposition_shouldRemoveEntryFromMonitor { creator ->
-      takeLatestAction(IReduxAction::class, { it }, creator)
+      takeAction(IReduxAction::class) { it }.switchMap(creator)
     }
   }
 }

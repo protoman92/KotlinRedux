@@ -12,8 +12,9 @@ import org.swiften.redux.saga.common.SagaEffects.await
 import org.swiften.redux.saga.common.SagaEffects.doNothing
 import org.swiften.redux.saga.common.SagaEffects.mergeAll
 import org.swiften.redux.saga.common.SagaEffects.putInStore
-import org.swiften.redux.saga.common.SagaEffects.takeLatestAction
-import org.swiften.redux.saga.common.debounceTake
+import org.swiften.redux.saga.common.SagaEffects.takeAction
+import org.swiften.redux.saga.common.debounce
+import org.swiften.redux.saga.common.switchMap
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21 */
@@ -45,13 +46,13 @@ object Business1Redux {
 
   object Saga {
     fun allSagas(provider: Business1SagaComponentProvider): SagaEffect<Any> {
-      return takeLatestAction(Action::class, {
+      return takeAction(Action::class) {
         when (it) {
           is Action.Initialize -> true
           is Action.Deinitialize -> false
           else -> null
         }
-      }) {
+      }.switchMap {
         if (it) {
           val module = Business1SagaModule()
           val component = provider.provide(module)
@@ -67,18 +68,20 @@ object Business1Redux {
     }
 
     private fun searchSaga(repository: ISearchRepository): SagaEffect<Any> {
-      return takeLatestAction(Action.SetQuery::class, { it.query }) { query ->
-        await { input ->
-          putInStore(Action.SetLoading(true)).await(input)
+      return takeAction(Action.SetQuery::class, { it.query })
+        .debounce(500)
+        .switchMap { query ->
+          await { input ->
+            putInStore(Action.SetLoading(true)).await(input)
 
-          try {
-            val result = repository.searchMusicStore(query, 5)
-            putInStore(Action.SetResult(result)).await(input)
-          } finally {
-            putInStore(Action.SetLoading(false)).await(input)
+            try {
+              val result = repository.searchMusicStore(query, 5)
+              putInStore(Action.SetResult(result)).await(input)
+            } finally {
+              putInStore(Action.SetLoading(false)).await(input)
+            }
           }
-        } }
-        .debounceTake(500)
+        }
     }
   }
 }

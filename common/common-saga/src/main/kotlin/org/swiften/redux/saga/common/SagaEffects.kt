@@ -8,7 +8,6 @@ package org.swiften.redux.saga.common
 import io.reactivex.Flowable
 import io.reactivex.Single
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.IReduxActionWithKey
 import kotlin.reflect.KClass
 
 /** Created by haipham on 2019/01/13 */
@@ -151,129 +150,6 @@ object SagaEffects {
   }
 
   /**
-   * Create a [TakeEveryActionEffect] instance.
-   * @param Action The [IReduxAction] type to perform extraction.
-   * @param P The source emission type.
-   * @param R The result emission type.
-   * @param cls See [TakeActionEffect.cls].
-   * @param extractor See [TakeActionEffect.extractor].
-   * @param creator See [TakeActionEffect.creator].
-   * @return A [SagaEffect] instance.
-   */
-  @JvmStatic
-  fun <Action, P, R> takeEveryAction(
-    cls: Class<Action>,
-    extractor: (Action) -> P?,
-    creator: (P) -> ISagaEffect<R>
-  ): TakeActionEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
-    return TakeEveryActionEffect(cls, extractor, creator)
-  }
-
-  /**
-   * Convenience function to invoke [takeEveryActionForKeys] using [KClass] instead of [Class].
-   * @param Action The [IReduxAction] type to perform param extraction.
-   * @param P The input value extracted from [IReduxAction].
-   * @param R The result emission type.
-   * @param cls The [Class] for [Action].
-   * @param extractor Function that extracts [P] from [IReduxAction].
-   * @param creator Function that creates [ISagaEffect] from [P].
-   */
-  @JvmStatic
-  fun <Action, P, R> takeEveryAction(
-    cls: KClass<Action>,
-    extractor: (Action) -> P?,
-    creator: (P) -> ISagaEffect<R>
-  ): TakeActionEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
-    return takeEveryAction(cls.java, extractor, creator)
-  }
-
-  /**
-   * Instead of specifying the action type, check if [IReduxAction] instances that pass through
-   * the pipeline conform to [IReduxActionWithKey], and whether their [IReduxActionWithKey.key]
-   * values are part of the specified [actionKeys].
-   *
-   * This way, we can catch multiple [IReduxActionWithKey] without having to implement a manual
-   * [TakeActionEffect.extractor] that returns [Unit].
-   * @param actionKeys A [Set] of [IReduxActionWithKey.key].
-   * @param creator See [TakeActionEffect.creator].
-   * @return A [SagaEffect] instance.
-   */
-  @JvmStatic
-  fun <R> takeEveryActionForKeys(
-    actionKeys: Set<String>,
-    creator: (IReduxActionWithKey) -> ISagaEffect<R>
-  ): TakeActionEffect<IReduxActionWithKey, IReduxActionWithKey, R> where R : Any {
-    return takeEveryAction(
-      IReduxActionWithKey::class,
-      { action ->
-        if (actionKeys.contains(action.key)) action else null
-      },
-      creator
-    )
-  }
-
-  /**
-   * Create a [TakeLatestActionEffect] instance.
-   * @param Action The [IReduxAction] type to perform param extraction.
-   * @param P The input value extracted from [IReduxAction].
-   * @param R The result emission type.
-   * @param cls The [Class] for [Action].
-   * @param extractor Function that extracts [P] from [IReduxAction].
-   * @param creator Function that creates [ISagaEffect] from [P].
-   */
-  @JvmStatic
-  fun <Action, P, R> takeLatestAction(
-    cls: Class<Action>,
-    extractor: (Action) -> P?,
-    creator: Function1<P, ISagaEffect<R>>
-  ): TakeActionEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
-    return TakeLatestActionEffect(cls, extractor, creator)
-  }
-
-  /**
-   * Convenience function to invoke [takeLatestActionForKeys] using [KClass] instead of [Class].
-   * @param Action The [IReduxAction] type to check for.
-   * @param P The source emission type.
-   * @param R The result emission type.
-   * @param extractor See [TakeActionEffect.extractor].
-   * @param creator See [TakeActionEffect.creator].
-   * @return A [SagaEffect] instance.
-   */
-  @JvmStatic
-  fun <Action, P, R> takeLatestAction(
-    cls: KClass<Action>,
-    extractor: (Action) -> P?,
-    creator: (P) -> ISagaEffect<R>
-  ): TakeActionEffect<Action, P, R> where Action : IReduxAction, P : Any, R : Any {
-    return takeLatestAction(cls.java, extractor, creator)
-  }
-
-  /**
-   * Instead of specifying the action type, check if [IReduxAction] instances that pass through
-   * the pipeline conform to [IReduxActionWithKey], and whether their [IReduxActionWithKey.key]
-   * values are part of the specified [actionKeys].
-   *
-   * This way, we can catch multiple [IReduxActionWithKey] without having to implement a manual
-   * [TakeActionEffect.extractor] that returns [Unit].
-   * @param actionKeys A [Set] of [IReduxActionWithKey.key].
-   * @param creator See [TakeActionEffect.creator].
-   * @return A [SagaEffect] instance.
-   */
-  @JvmStatic
-  fun <R> takeLatestActionForKeys(
-    actionKeys: Set<String>,
-    creator: (IReduxActionWithKey) -> ISagaEffect<R>
-  ): TakeActionEffect<IReduxActionWithKey, IReduxActionWithKey, R> where R : Any {
-    return takeLatestAction(
-      IReduxActionWithKey::class,
-      { action ->
-        if (actionKeys.contains(action.key)) action else null
-      },
-      creator
-    )
-  }
-
-  /**
    * Create a [TakeEveryStateEffect] instance.
    * @param cls See [TakeStateEffect.cls].
    * @param creator See [TakeStateEffect.creator].
@@ -330,15 +206,41 @@ object SagaEffects {
   }
 
   /**
-   * Create a [DebounceTakeEffect] instance to perform debounce for a [TakeActionEffect].
-   * @param Action The [IReduxAction] type to perform param extraction.
-   * @param P The input value extracted from [IReduxAction].
+   * Create a [DebounceEffect] instance to perform debounce for a [SagaEffect].
    * @param R The result emission type.
-   * @param millis See [DebounceTakeEffect.millis].
+   * @param millis See [DebounceEffect.millis].
+   * @return An [ISagaEffectTransformer] instance.
    */
   @JvmStatic
-  fun <Action, P, R> debounceTake(millis: Long): ITakeEffectTransformer<Action, P, R>
-    where Action : IReduxAction, P : Any, R : Any {
-    return { DebounceTakeEffect(it, millis) }
+  fun <R> debounce(millis: Long): ISagaEffectTransformer<R, R> where R : Any {
+    return { DebounceEffect(it, millis) }
+  }
+
+  /**
+   * Create a [TakeActionEffect] instance.
+   * @param Action The [IReduxAction] type to perform param extraction.
+   * @param R The result emission type.
+   * @param cls See [TakeActionEffect.cls].
+   * @param extractor See [TakeActionEffect.extractor].
+   * @return A [SagaEffect] instance.
+   */
+  @JvmStatic
+  fun <Action, R> takeAction(cls: Class<Action>, extractor: (Action) -> R?): SagaEffect<R>
+    where Action : IReduxAction, R : Any {
+    return TakeActionEffect(cls, extractor)
+  }
+
+  /**
+   * Create a [TakeActionEffect] instance.
+   * @param Action The [IReduxAction] type to perform param extraction.
+   * @param R The result emission type.
+   * @param cls See [TakeActionEffect.cls].
+   * @param extractor See [TakeActionEffect.extractor].
+   * @return A [SagaEffect] instance.
+   */
+  @JvmStatic
+  fun <Action, R> takeAction(cls: KClass<Action>, extractor: (Action) -> R?): SagaEffect<R>
+    where Action : IReduxAction, R : Any {
+    return this.takeAction(cls.java, extractor)
   }
 }
