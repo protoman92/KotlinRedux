@@ -70,6 +70,30 @@ object CommonEffects {
   }
 
   /**
+   * Create a [FlatMapEffect] instance with [FlatMapEffect.Mode.EVERY].
+   * @param P The source emission type.
+   * @param R The result emission type.
+   * @param transformer See [FlatMapEffect.transformer].
+   * @return An [ISagaEffectTransformer] instance.
+   */
+  @JvmStatic
+  fun <P, R> flatMap(transformer: (P) -> SagaEffect<R>): ISagaEffectTransformer<P, R> where P : Any, R : Any {
+    return { FlatMapEffect(it, FlatMapEffect.Mode.EVERY, transformer) }
+  }
+
+  /**
+   * Create a [FlatMapEffect] instance with [FlatMapEffect.Mode.LATEST].
+   * @param P The source emission type.
+   * @param R The result emission type.
+   * @param transformer See [FlatMapEffect.transformer].
+   * @return An [ISagaEffectTransformer] instance.
+   */
+  @JvmStatic
+  fun <P, R> switchMap(transformer: (P) -> SagaEffect<R>): ISagaEffectTransformer<P, R> where P : Any, R : Any {
+    return { FlatMapEffect(it, FlatMapEffect.Mode.LATEST, transformer) }
+  }
+
+  /**
    * Create a [MapEffect].
    * @param R The result emission type.
    * @param transformer See [MapEffect.transformer].
