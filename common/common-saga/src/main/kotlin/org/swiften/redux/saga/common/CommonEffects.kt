@@ -24,41 +24,6 @@ object CommonEffects {
   }
 
   /**
-   * Create a [CatchErrorEffect].
-   * @param R The result emission type.
-   * @param catcher See [CatchErrorEffect.catcher].
-   * @return An [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <R> catchError(catcher: (Throwable) -> R): ISagaEffectTransformer<R, R> where R : Any {
-    return { CatchErrorEffect(it, catcher) }
-  }
-
-  /**
-   * Create a [SuspendCatchErrorEffect].
-   * @param R The result emission type.
-   * @param catcher See [SuspendCatchErrorEffect.catcher].
-   * @return An [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <R> catchErrorSuspend(catcher: suspend CoroutineScope.(Throwable) -> R):
-    ISagaEffectTransformer<R, R> where R : Any {
-    return { SuspendCatchErrorEffect(it, catcher) }
-  }
-
-  /**
-   * Create an [AsyncCatchErrorEffect].
-   * @param R The result emission type.
-   * @param catcher See [AsyncCatchErrorEffect.catcher].
-   * @return An [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <R> catchErrorAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<R>):
-    ISagaEffectTransformer<R, R> where R : Any {
-    return { AsyncCatchErrorEffect(it, catcher) }
-  }
-
-  /**
    * Create a [DoOnValueEffect] instance.
    * @param R The result emission type.
    * @param performer See [DoOnValueEffect.performer].

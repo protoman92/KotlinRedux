@@ -7,7 +7,6 @@ package org.swiften.redux.saga.common
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -106,58 +105,6 @@ abstract class OverridableCommonSagaEffectTest {
 
 /** Use this test class for common [ISagaEffect] tests */
 abstract class CommonSagaEffectTest : OverridableCommonSagaEffectTest() {
-  @Test
-  @Suppress("UNREACHABLE_CODE")
-  fun `Catch error effect should handle errors gracefully`() {
-    // Setup
-    val monitor = SagaMonitor()
-    val error = Exception("Oh no!")
-    val finalValues = synchronizedList(arrayListOf<Int>())
-
-    // When
-    justEffect(1)
-      .map { throw error; 1 }
-      .delayUpstreamValue(1000)
-      .catchError { 100 }
-      .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it) })
-
-    runBlocking {
-      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(100) && this.isActive) { delay(500) }; Unit
-      }
-
-      // Then
-      assertEquals(finalValues, arrayListOf(100))
-    }
-  }
-
-  @Test
-  @Suppress("UNREACHABLE_CODE")
-  fun `Async catch error effect should handle errors gracefully`() {
-    // Setup
-    val monitor = SagaMonitor()
-    val error = Exception("Oh no!")
-    val finalValues = synchronizedList(arrayListOf<Int>())
-
-    // When
-    justEffect(1)
-      .map { throw error; 1 }
-      .delayUpstreamValue(1000)
-      .catchAsync { this.async { 100 } }
-      .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it) })
-
-    runBlocking {
-      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf(100) && this.isActive) { delay(500) }; Unit
-      }
-
-      // Then
-      assertEquals(finalValues, arrayListOf(100))
-    }
-  }
-
   @Test
   @Suppress("UNREACHABLE_CODE")
   fun `Compact map effect should unwrap nullable values`() {
