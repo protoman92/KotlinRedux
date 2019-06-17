@@ -20,7 +20,6 @@ import org.robolectric.annotation.Config
 import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeEveryData
 import org.swiften.redux.saga.common.SagaInput
 import org.swiften.redux.saga.common.SagaMonitor
-import org.swiften.redux.saga.common.filter
 import org.swiften.redux.saga.common.mapAsync
 import java.util.Collections
 
@@ -40,7 +39,6 @@ class LiveDataEffectTest {
 
     takeEveryData { data }
       .mapAsync { this.async { delay(1000); it } }
-      .filter { it % 2 == 0 }
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
 
@@ -51,7 +49,7 @@ class LiveDataEffectTest {
       delay(1500)
 
       // Then
-      assertEquals(finalValues.sorted(), arrayListOf(0, 2, 4))
+      assertEquals(finalValues.sorted(), arrayListOf(0, 1, 2, 3, 4))
     }
   }
 }
