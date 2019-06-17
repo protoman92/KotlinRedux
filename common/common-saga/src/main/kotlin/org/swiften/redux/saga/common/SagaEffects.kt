@@ -150,59 +150,23 @@ object SagaEffects {
   }
 
   /**
-   * Create a [TakeEveryStateEffect] instance.
+   * Create a [TakeStateEffect] instance.
    * @param cls See [TakeStateEffect.cls].
-   * @param creator See [TakeStateEffect.creator].
    * @return A [TakeStateEffect] instance.
    */
   @JvmStatic
-  fun <State, R> takeEveryState(
-    cls: Class<State>,
-    creator: (State) -> ISagaEffect<R>
-  ): TakeStateEffect<State, R> where State : Any, R : Any {
-    return TakeEveryStateEffect(cls, creator)
+  fun <State> takeState(cls: Class<State>): TakeStateEffect<State> where State : Any {
+    return TakeStateEffect(cls)
   }
 
   /**
-   * Same as [takeEveryState], but use [KClass] instead of [Class].
+   * Create a [TakeStateEffect] instance.
    * @param cls See [TakeStateEffect.cls].
-   * @param creator See [TakeStateEffect.creator].
    * @return A [TakeStateEffect] instance.
    */
   @JvmStatic
-  fun <State, R> takeEveryState(
-    cls: KClass<State>,
-    creator: (State) -> ISagaEffect<R>
-  ): TakeStateEffect<State, R> where State : Any, R : Any {
-    return takeEveryState(cls.java, creator)
-  }
-
-  /**
-   * Create a [TakeLatestStateEffect] instance.
-   * @param cls See [TakeEveryActionEffect.cls].
-   * @param creator See [TakeEveryActionEffect.creator].
-   * @return A [TakeStateEffect] instance.
-   */
-  @JvmStatic
-  fun <State, R> takeLatestState(
-    cls: Class<State>,
-    creator: (State) -> ISagaEffect<R>
-  ): TakeStateEffect<State, R> where State : Any, R : Any {
-    return TakeLatestStateEffect(cls, creator)
-  }
-
-  /**
-   * Same as [takeLatestState], but use [KClass] instead of [Class].
-   * @param cls See [TakeStateEffect.cls].
-   * @param creator See [TakeStateEffect.creator].
-   * @return A [TakeStateEffect] instance.
-   */
-  @JvmStatic
-  fun <State, R> takeLatestState(
-    cls: KClass<State>,
-    creator: (State) -> ISagaEffect<R>
-  ): TakeStateEffect<State, R> where State : Any, R : Any {
-    return takeLatestState(cls.java, creator)
+  fun <State> takeState(cls: KClass<State>): TakeStateEffect<State> where State : Any {
+    return this.takeState(cls.java)
   }
 
   /**

@@ -75,14 +75,14 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
     val actualValues = (0..this.iteration).map { "$it" }
 
     this.test_takeStateEffect_shouldSelectCorrectState({
-      SagaEffects.takeEveryState(String::class, it)
+      SagaEffects.takeState(String::class).flatMap(it)
     }) { it == actualValues.sorted() }
   }
 
   @Test
   fun `Take latest state should stream correct state`() {
     this.test_takeStateEffect_shouldSelectCorrectState({
-      SagaEffects.takeLatestState(String::class, it)
+      SagaEffects.takeState(String::class).switchMap(it)
     }) { it.size == 1 }
   }
 

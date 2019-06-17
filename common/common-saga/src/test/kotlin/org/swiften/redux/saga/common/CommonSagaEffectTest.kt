@@ -69,7 +69,7 @@ abstract class OverridableCommonSagaEffectTest {
   }
 
   fun test_takeStateEffect_shouldSelectCorrectState(
-    createTakeEffect: (creator: (String) -> ISagaEffect<String>) -> TakeStateEffect<String, String>,
+    createTakeEffect: (creator: (String) -> SagaEffect<String>) -> SagaEffect<String>,
     verifyValues: (Collection<String>) -> Boolean
   ) {
     // Setup

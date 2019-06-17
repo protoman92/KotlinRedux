@@ -5,24 +5,29 @@
 
 package org.swiften.redux.saga.common
 
+import io.reactivex.processors.PublishProcessor
+import org.swiften.redux.core.EmptyJob
+
 /** Created by viethai.pham on 2019/02/28 */
 /**
- * [TakeStateEffect] instances produces streams that emits [State] - which will be fed to [creator]
- * to perform additional work.
+ * [TakeStateEffect] instances produces streams that emits [State].
  * @param State The [State] type to be emitted.
- * @param R The result emission type.
  * @param cls The [Class] of [State].
- * @param creator Function that creates [ISagaEffect] from [State].
  */
-abstract class TakeStateEffect<State, R>(
-  protected val cls: Class<State>,
-  protected val creator: (State) -> ISagaEffect<R>
-) : SagaEffect<R>() where State : Any, R : Any {
-  /**
-   * Flatten an [ISagaOutput] that streams [ISagaOutput] to access the values streamed by the inner
-   * [ISagaOutput].
-   * @param nested The nested [ISagaOutput] instance that emits [ISagaOutput].
-   * @return An [ISagaOutput] instance.
-   */
-  abstract fun flatten(nested: ISagaOutput<ISagaOutput<R>>): ISagaOutput<R>
+class TakeStateEffect<State>(private val cls: Class<State>) : SagaEffect<State>() where State : Any {
+  override fun invoke(p1: SagaInput): ISagaOutput<State> {
+    val subject = PublishProcessor.create<State>().toSerialized()
+
+    return SagaOutput(
+      p1.scope,
+      p1.monitor,
+      subject.onBackpressureBuffer(),
+      { subject.onComplete() }) {
+      /**
+       * By the time [ISagaOutput.onAction] is called, the store would have reduced a new [State]
+       * so [SagaInput.lastState] here will produce the latest [State].
+       */
+      subject.onNext(this@TakeStateEffect.cls.cast(p1.lastState())); EmptyJob
+    }
+  }
 }
