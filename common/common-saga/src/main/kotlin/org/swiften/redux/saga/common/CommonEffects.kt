@@ -108,12 +108,11 @@ object CommonEffects {
 
   /**
    * Create a [PutEffect].
-   * @param P The source emission type.
-   * @param actionCreator See [PutEffect.actionCreator].
-   * @return An [ISagaEffectTransformer] instance.
+   * @param action See [PutEffect.action].
+   * @return A [PutEffect] instance.
    */
   @JvmStatic
-  fun <P> putInStore(actionCreator: (P) -> IReduxAction): (SagaEffect<P>) -> PutEffect<P> where P : Any {
-    return { PutEffect(it, actionCreator) }
+  fun putInStore(action: IReduxAction): PutEffect {
+    return PutEffect(action)
   }
 }

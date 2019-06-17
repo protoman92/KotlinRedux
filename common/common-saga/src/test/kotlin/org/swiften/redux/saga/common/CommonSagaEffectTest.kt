@@ -21,6 +21,7 @@ import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.applyMiddlewares
+import org.swiften.redux.saga.common.CommonEffects.putInStore
 import java.util.Collections.synchronizedList
 
 /** Created by haipham on 2019/01/07 */
@@ -133,13 +134,9 @@ abstract class CommonSagaEffectTest : OverridableCommonSagaEffectTest() {
     val monitor = SagaMonitor()
     val dispatched = synchronizedList(arrayListOf<IReduxAction>())
 
-    justEffect(0)
-      .map { it }
-      .putInStore { Action(it) }
-      .invoke(SagaInput(monitor) { dispatched.add(it); EmptyJob })
-      .subscribe({})
-
     // When
+    putInStore(Action(0)).invoke(SagaInput(monitor) { dispatched.add(it); EmptyJob }).subscribe({})
+
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
         while (dispatched != arrayListOf(Action(0)) && this.isActive) { delay(500) }; Unit

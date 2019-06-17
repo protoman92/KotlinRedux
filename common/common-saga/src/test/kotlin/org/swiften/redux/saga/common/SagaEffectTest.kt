@@ -31,12 +31,12 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.NoopActionDispatcher
 import org.swiften.redux.core.applyMiddlewares
+import org.swiften.redux.saga.common.CommonEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffects.await
 import org.swiften.redux.saga.common.SagaEffects.doNothing
 import org.swiften.redux.saga.common.SagaEffects.from
 import org.swiften.redux.saga.common.SagaEffects.just
 import org.swiften.redux.saga.common.SagaEffects.mergeAll
-import org.swiften.redux.saga.common.SagaEffects.putInStore
 import org.swiften.redux.saga.common.SagaEffects.selectFromState
 import org.swiften.redux.saga.common.SagaEffects.takeAction
 import java.net.URL
@@ -159,7 +159,7 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
       await {
         val value = (a as Action).value
         this.async { value * 2 }.await()
-        SagaEffects.putInStore(DefaultReduxAction.Dummy).await(it)
+        putInStore(DefaultReduxAction.Dummy).await(it)
       }
     }.invoke(SagaInput(monitor))
 

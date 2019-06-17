@@ -7,7 +7,6 @@ package org.swiften.redux.saga.common
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
-import org.swiften.redux.core.IReduxAction
 
 /** Created by haipham on 2019/01/26/1 */
 /**
@@ -105,25 +104,3 @@ fun <P, R> SagaEffect<P>.mapIgnoringNull(transformer: (P) -> R?):
   SagaEffect<R> where P : Any, R : Any {
   return this.transform(CommonEffects.mapIgnoringNull(transformer))
 }
-
-/**
- * Invoke a [PutEffect] on [this].
- * @receiver See [PutEffect.source].
- * @param P The source emission type.
- * @param actionCreator See [PutEffect.actionCreator].
- * @return A [SagaEffect] instance.
- */
-fun <P> SagaEffect<P>.putInStore(actionCreator: (P) -> IReduxAction):
-  SagaEffect<Any> where P : Any {
-  return this.transform(CommonEffects.putInStore(actionCreator))
-}
-
-/**
- * Invoke [thenSwitchTo] with a single [value].
- * @receiver See [ThenEffect.source1].
- * @param R The first source emission type.
- * @param R2 The result emission type.
- * @param value See [ThenEffect.source2].
- * @return A [SagaEffect] instance.
- */
-fun <R, R2> SagaEffect<R>.thenSwitchToValue(value: R2) where R : Any, R2 : Any = this.map { value }
