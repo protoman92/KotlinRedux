@@ -116,31 +116,4 @@ object CommonEffects {
   fun <P> putInStore(actionCreator: (P) -> IReduxAction): (SagaEffect<P>) -> PutEffect<P> where P : Any {
     return { PutEffect(it, actionCreator) }
   }
-
-  /**
-   * Create a [ThenEffect] instance.
-   * @param R The first source emission type.
-   * @param R2 The second source emission type.
-   * @param R3 The result emission type.
-   * @param source2 See [ThenEffect.source2].
-   * @param combiner See [ThenEffect.combiner].
-   * @return A [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <R, R2, R3> thenSwitchTo(source2: ISagaEffect<R2>, combiner: Function2<R, R2, R3>):
-    ISagaEffectTransformer<R, R3> where R : Any, R2 : Any, R3 : Any {
-    return { ThenEffect(it, source2, combiner) }
-  }
-
-  /**
-   * Create a [ForceThenEffect] instance.
-   * @param R The first source emission type.
-   * @param R2 The second source emission type.
-   * @param source2 See [ThenEffect.source2].
-   * @return A [ISagaEffectTransformer] instance.
-   */
-  fun <R, R2> thenNoMatterWhat(source2: ISagaEffect<R2>):
-    ISagaEffectTransformer<R, R2> where R : Any, R2 : Any {
-    return { ForceThenEffect(it, source2) }
-  }
 }

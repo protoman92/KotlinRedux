@@ -149,29 +149,4 @@ abstract class CommonSagaEffectTest : OverridableCommonSagaEffectTest() {
       assertEquals(dispatched, arrayListOf(Action(0)))
     }
   }
-
-  @Test
-  fun `Then effect should enforce ordering`() {
-    // Setup
-    val monitor = SagaMonitor()
-    val finalValues = synchronizedList(arrayListOf<String>())
-
-    // When
-    justEffect(1)
-      .delayUpstreamValue(500)
-      .thenSwitchTo(justEffect(2).map { it }) { a, b -> "$a$b" }
-      .delayUpstreamValue(1000)
-      .thenMightAsWell(justEffect("This should be ignored"))
-      .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it) })
-
-    runBlocking {
-      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
-        while (finalValues != arrayListOf("12") && this.isActive) { delay(500) }; Unit
-      }
-
-      // Then
-      assertEquals(finalValues, arrayListOf("12"))
-    }
-  }
 }
