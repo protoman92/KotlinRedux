@@ -15,6 +15,7 @@ import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.core.NoopActionDispatcher
+import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2019/01/07 */
 /**
@@ -34,12 +35,12 @@ typealias ISagaEffectTransformer<R, R2> = (SagaEffect<R>) -> SagaEffect<R2>
 
 /**
  * [SagaInput] for an [ISagaEffect], which exposes a [IReduxStore]'s internal functionalities.
- * @param scope A [CoroutineScope] instance.
+ * @param context A [CoroutineScope] instance.
  * @param lastState See [IReduxStore.lastState].
  * @param dispatch See [IReduxStore.dispatch].
  */
 class SagaInput(
-  val scope: CoroutineScope = GlobalScope,
+  val context: CoroutineContext,
   val monitor: ISagaMonitor,
   val lastState: IStateGetter<*>,
   val dispatch: IActionDispatcher
@@ -48,7 +49,7 @@ class SagaInput(
     monitor: ISagaMonitor,
     lastState: IStateGetter<*>,
     dispatch: IActionDispatcher
-  ) : this(GlobalScope, monitor, lastState, dispatch)
+  ) : this(GlobalScope.coroutineContext, monitor, lastState, dispatch)
 
   constructor(monitor: ISagaMonitor, dispatch: IActionDispatcher) : this(monitor, {}, dispatch)
   constructor(monitor: ISagaMonitor) : this(monitor, NoopActionDispatcher)
