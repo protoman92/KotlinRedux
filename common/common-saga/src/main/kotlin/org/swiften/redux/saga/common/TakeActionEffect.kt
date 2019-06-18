@@ -26,7 +26,7 @@ class TakeActionEffect<Action, R>(
     val subject = PublishProcessor.create<R>().toSerialized()
 
     return SagaOutput(
-      p1.scope,
+      p1.context,
       p1.monitor,
       subject.onBackpressureBuffer(),
       { subject.onComplete() }) { a ->

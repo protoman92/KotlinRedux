@@ -15,7 +15,7 @@ import org.swiften.redux.core.IReduxAction
  */
 class PutEffect(private val action: IReduxAction) : SingleSagaEffect<Any>() {
   override fun invoke(p1: SagaInput): ISagaOutput<Any> {
-    return SagaOutput(p1.scope, p1.monitor, Single.create<Any> {
+    return SagaOutput(p1.context, p1.monitor, Single.create<Any> {
       p1.dispatch(this@PutEffect.action).await()
       it.onSuccess(Unit)
     }.toFlowable())

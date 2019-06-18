@@ -5,7 +5,6 @@
 
 package org.swiften.redux.saga.common
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import org.swiften.redux.core.DefaultReduxAction
@@ -62,10 +61,8 @@ class SagaMiddleware private constructor (
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       val lock = ReentrantLock()
-      val context = this@SagaMiddleware.context
       val monitor = this@SagaMiddleware.monitor
-      val scope = object : CoroutineScope { override val coroutineContext = context }
-      val sagaInput = SagaInput(scope, monitor, p1.lastState, p1.dispatch)
+      val sagaInput = SagaInput(this@SagaMiddleware.context, monitor, p1.lastState, p1.dispatch)
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
       outputs.forEach { it.subscribe({}) }
 
@@ -81,7 +78,7 @@ class SagaMiddleware private constructor (
         /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [ISagaOutput]. */
         if (action == DefaultReduxAction.Deinitialize) {
           outputs.forEach { it.dispose() }
-          scope.coroutineContext.cancel()
+          this@SagaMiddleware.context.cancel()
         }
 
         JustJob(dispatchResult)

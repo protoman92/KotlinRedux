@@ -20,6 +20,6 @@ internal class CallEffect<P, R>(
   private val transformer: (P) -> Single<R>
 ) : SagaEffect<R>() where P : Any, R : Any {
   override fun invoke(p1: SagaInput) = this.source.invoke(p1).flatMap {
-    SagaOutput(p1.scope, p1.monitor, this.transformer(it).toFlowable())
+    SagaOutput(p1.context, p1.monitor, this.transformer(it).toFlowable())
   }
 }

@@ -38,6 +38,6 @@ class TakeLiveData<R>(private val creator: () -> LiveData<R>) : SagaEffect<R>() 
       .toFlowable(BackpressureStrategy.BUFFER)
       .serialize()
 
-    return SagaOutput(p1.scope, p1.monitor, stream)
+    return SagaOutput(p1.context, p1.monitor, stream)
   }
 }

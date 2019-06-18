@@ -17,6 +17,6 @@ internal class FromEffect<R>(
   private val stream: Flowable<R>
 ) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
-    return SagaOutput(p1.scope, p1.monitor, this.stream)
+    return SagaOutput(p1.context, p1.monitor, this.stream)
   }
 }
