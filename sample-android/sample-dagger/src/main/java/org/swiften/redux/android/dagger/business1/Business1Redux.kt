@@ -7,12 +7,12 @@ package org.swiften.redux.android.dagger.business1
 
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.common.CommonEffects.putInStore
+import org.swiften.redux.saga.common.CommonEffects.put
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.SagaEffects.await
-import org.swiften.redux.saga.common.SagaEffects.doNothing
-import org.swiften.redux.saga.common.SagaEffects.mergeAll
-import org.swiften.redux.saga.common.SagaEffects.takeAction
+import org.swiften.redux.saga.common.CommonEffects.await
+import org.swiften.redux.saga.common.CommonEffects.doNothing
+import org.swiften.redux.saga.common.CommonEffects.mergeAll
+import org.swiften.redux.saga.common.CommonEffects.takeAction
 import org.swiften.redux.saga.common.debounce
 import org.swiften.redux.saga.common.switchMap
 import java.io.Serializable
@@ -72,13 +72,13 @@ object Business1Redux {
         .debounce(500)
         .switchMap { query ->
           await { input ->
-            putInStore(Action.SetLoading(true)).await(input)
+            put(Action.SetLoading(true)).await(input)
 
             try {
               val result = repository.searchMusicStore(query, 5)
-              putInStore(Action.SetResult(result)).await(input)
+              put(Action.SetResult(result)).await(input)
             } finally {
-              putInStore(Action.SetLoading(false)).await(input)
+              put(Action.SetLoading(false)).await(input)
             }
           }
         }

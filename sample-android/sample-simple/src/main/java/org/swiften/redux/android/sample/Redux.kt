@@ -8,11 +8,11 @@ package org.swiften.redux.android.sample
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
-import org.swiften.redux.saga.common.CommonEffects.putInStore
+import org.swiften.redux.saga.common.CommonEffects.put
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.SagaEffects.await
-import org.swiften.redux.saga.common.SagaEffects.selectFromState
-import org.swiften.redux.saga.common.SagaEffects.takeAction
+import org.swiften.redux.saga.common.CommonEffects.await
+import org.swiften.redux.saga.common.CommonEffects.select
+import org.swiften.redux.saga.common.CommonEffects.takeAction
 import org.swiften.redux.saga.common.debounce
 import org.swiften.redux.saga.common.switchMap
 import java.io.Serializable
@@ -104,20 +104,20 @@ object Redux {
         .debounce(debounce)
         .switchMap {
           await { input ->
-            val searchState = selectFromState(ISearchStateProvider::class) { it.search }.await(input)
+            val searchState = select(ISearchStateProvider::class) { it.search }.await(input)
             val query = searchState.query
             val limit = (searchState.limit ?: ResultLimit.FIVE).count
 
             try {
               if (query != null) {
-                putInStore(Action.Search.SetLoading(true)).await(input)
+                put(Action.Search.SetLoading(true)).await(input)
                 val result = api.searchMusicStore(query, limit)
-                putInStore(Action.UpdateMusicResult(result)).await(input)
+                put(Action.UpdateMusicResult(result)).await(input)
               }
             } catch (e: Throwable) {
               println("Redux: not handling $e right now yet")
             } finally {
-              putInStore(Action.Search.SetLoading(false)).await(input)
+              put(Action.Search.SetLoading(false)).await(input)
             }
           }
         }

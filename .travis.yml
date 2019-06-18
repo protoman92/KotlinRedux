@@ -38,3 +38,7 @@ before_install:
 
 script:
   - ./gradlew build
+
+after_script:
+  - eval "$(ssh-agent -s)"
+  - ssh-agent -k

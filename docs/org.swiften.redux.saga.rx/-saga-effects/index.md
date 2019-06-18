@@ -2,7 +2,7 @@
 
 # SagaEffects
 
-`object SagaEffects` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/SagaEffects.kt#L25)
+`object SagaEffects` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-rx-saga/src/main/kotlin/org/swiften/redux/saga/rx/CommonEffects.kt#L25)
 
 Top-level namespace for Rx-based [ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md)
 
