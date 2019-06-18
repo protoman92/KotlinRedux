@@ -268,7 +268,7 @@ class SagaEffectTest : OverridableSagaEffectTest() {
       }
     }
       .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it) })
+      .subscribe({ finalValues.add(it) }, {println(it)})
 
     // When
     for (i in 0 until 20) { monitor.dispatch(Action("$i")) }
