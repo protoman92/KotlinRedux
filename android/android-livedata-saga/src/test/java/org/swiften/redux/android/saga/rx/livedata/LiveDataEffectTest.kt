@@ -17,7 +17,7 @@ import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeEveryData
+import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeLiveData
 import org.swiften.redux.saga.common.SagaInput
 import org.swiften.redux.saga.common.SagaMonitor
 import org.swiften.redux.saga.common.mapAsync
@@ -31,13 +31,13 @@ class LiveDataEffectTest {
   val rule: TestRule = InstantTaskExecutorRule()
 
   @Test
-  fun test_takeEveryDataEffect_shouldStreamLiveData() {
+  fun test_takeLiveDataEffect_shouldStreamLiveData() {
     // Setup
     val monitor = SagaMonitor()
     val data = MutableLiveData<Int>()
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
-    takeEveryData { data }
+    takeLiveData { data }
       .mapAsync { this.async { delay(1000); it } }
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
