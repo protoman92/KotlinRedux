@@ -7,6 +7,7 @@ package org.swiften.redux.saga.common
 
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.rx2.rxSingle
 import org.swiften.redux.core.DefaultUniqueIDProvider
@@ -35,7 +36,6 @@ import java.util.concurrent.TimeUnit
 class SagaOutput<T : Any>(
   private val monitor: ISagaMonitor,
   stream: Flowable<T>,
-  private val onDispose: () -> Unit = {},
   override val onAction: IActionDispatcher = NoopActionDispatcher
 ) : ISagaOutput<T>, IUniqueIDProvider by DefaultUniqueIDProvider() {
   companion object {
@@ -83,7 +83,7 @@ class SagaOutput<T : Any>(
   }
 
   private fun <T2> with(newStream: Flowable<T2>): ISagaOutput<T2> where T2 : Any {
-    return SagaOutput(this.monitor, newStream, { this.dispose() })
+    return SagaOutput(this.monitor, newStream)
   }
 
   override fun <T2> flatMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any {
@@ -94,18 +94,9 @@ class SagaOutput<T : Any>(
     return this.with(this.stream.switchMap { (transform(it) as SagaOutput<T2>).stream })
   }
 
-  override fun delay(millis: Long): ISagaOutput<T> {
-    if (millis <= 0) { return this }
-    return this.with(this.stream.delay(millis, TimeUnit.MILLISECONDS))
-  }
-
   override fun debounce(millis: Long): ISagaOutput<T> {
     if (millis <= 0) { return this }
     return this.with(this.stream.debounce(millis, TimeUnit.MILLISECONDS))
-  }
-
-  override fun dispose() {
-    this.disposable.clear(); this.onDispose()
   }
 
   override fun await(): T = this.stream.blockingFirst()
@@ -116,7 +107,7 @@ class SagaOutput<T : Any>(
     .timeout(timeoutMillis, TimeUnit.MILLISECONDS)
     .blockingFirst()
 
-  override fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit) {
-    this.disposable.add(this.stream.subscribe(onValue, onError))
+  override fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit): Disposable {
+    return this.stream.subscribe(onValue, onError)
   }
 }

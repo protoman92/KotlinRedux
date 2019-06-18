@@ -5,6 +5,7 @@
 
 package org.swiften.redux.saga.common
 
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import org.swiften.redux.core.DefaultReduxAction
@@ -43,7 +44,7 @@ class SagaMiddleware private constructor (
       context: CoroutineContext,
       monitor: SagaMonitor,
       effects: Collection<ISagaEffect<*>>
-    ): IMiddleware<Any> {
+    ): SagaMiddleware {
       return SagaMiddleware(context, monitor, effects)
     }
 
@@ -58,31 +59,35 @@ class SagaMiddleware private constructor (
     }
   }
 
+  internal val composite = CompositeDisposable()
+
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
       val lock = ReentrantLock()
       val monitor = this@SagaMiddleware.monitor
       val sagaInput = SagaInput(this@SagaMiddleware.context, monitor, p1.lastState, p1.dispatch)
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
-      outputs.forEach { it.subscribe({}) }
 
       /**
        * We use a [ThreadSafeDispatcher] and [IAsyncJob.await] here to ensure the store receives the
        * latest state by the time [ISagaOutput.onAction] happens, so that it is available for state
        * value selection.
        */
-      DispatchWrapper.wrap(wrapper, "saga", ThreadSafeDispatcher(lock) { action ->
+      val newWrapper = DispatchWrapper.wrap(wrapper, "saga", ThreadSafeDispatcher(lock) { action ->
         val dispatchResult = wrapper.dispatch(action).await()
         monitor.dispatch(action).await()
 
         /** If [action] is [DefaultReduxAction.Deinitialize], dispose of all [ISagaOutput]. */
         if (action == DefaultReduxAction.Deinitialize) {
-          outputs.forEach { it.dispose() }
+          this@SagaMiddleware.composite.dispose()
           this@SagaMiddleware.context.cancel()
         }
 
         JustJob(dispatchResult)
       })
+
+      outputs.forEach { this@SagaMiddleware.composite.add(it.subscribe({})) }
+      newWrapper
     }
   }
 }

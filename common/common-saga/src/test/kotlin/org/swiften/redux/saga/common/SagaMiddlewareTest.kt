@@ -5,10 +5,13 @@
 
 package org.swiften.redux.saga.common
 
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import io.reactivex.disposables.Disposables
+import kotlinx.coroutines.SupervisorJob
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.swiften.redux.core.BaseMiddlewareTest
 import org.swiften.redux.core.DefaultReduxAction
@@ -17,7 +20,6 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IAsyncJob
 import org.swiften.redux.core.IReduxAction
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.coroutines.EmptyCoroutineContext
 
 /** Created by haipham on 2019/01/15 */
 class SagaMiddlewareTest : BaseMiddlewareTest() {
@@ -35,16 +37,17 @@ class SagaMiddlewareTest : BaseMiddlewareTest() {
 
     val outputs = dispatchers.map { d -> mock<ISagaOutput<Any>> {
       on { this.onAction } doReturn d
+      on { this.subscribe(any(), any()) } doReturn Disposables.fromAction {}
     } }
 
+    val context = SupervisorJob()
     val monitor = SagaMonitor()
     val effects = outputs.map<ISagaOutput<Any>, ISagaEffect<Any>> { o -> { o } }
     val input = this.mockMiddlewareInput(0)
     outputs.forEachIndexed { i, o -> monitor.addOutputDispatcher(i.toLong(), o.onAction) }
 
-    val wrappedDispatch = SagaMiddleware.create(EmptyCoroutineContext, monitor, effects)
-      .invoke(input)(this.mockDispatchWrapper())
-      .dispatch
+    val middleware = SagaMiddleware.create(context, monitor, effects)
+    val wrappedDispatch = middleware.invoke(input)(this.mockDispatchWrapper()).dispatch
 
     // When
     wrappedDispatch(DefaultReduxAction.Dummy)
@@ -54,6 +57,7 @@ class SagaMiddlewareTest : BaseMiddlewareTest() {
 
     // Then
     assertEquals(dispatched.get(), dispatchers.size * 4)
-    outputs.forEach { verify(it).dispose() }
+    assertTrue(context.isCancelled)
+    assertTrue(middleware.composite.isDisposed)
   }
 }

@@ -156,16 +156,14 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
       }
     }.invoke(SagaInput(monitor))
 
-    sourceOutput.subscribe({}, {})
+    val disposable = sourceOutput.subscribe({}, {})
 
     // When
     (0 until this.iteration).forEach { monitor.dispatch(Action(it)) }
 
     runBlocking {
       delay(1000)
-
-      // Clear the take publisher to register a remove event for it as well.
-      sourceOutput.dispose()
+      disposable.dispose()
 
       // Then
       assertTrue(setCount.get() > 0)
