@@ -5,6 +5,7 @@
 
 package org.swiften.redux.saga.common
 
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.SupervisorJob
@@ -67,16 +68,6 @@ interface ISagaOutput<T> : IAsyncJob<T>, IUniqueIDProvider where T : Any {
   val onAction: IActionDispatcher
 
   /**
-   * Delay each emission by [millis].
-   * @param millis Delay time in milliseconds.
-   * @return An [ISagaOutput] instance.
-   */
-  fun delay(millis: Long): ISagaOutput<T>
-
-  /** Terminate internal stream subscriptions. */
-  fun dispose()
-
-  /**
    * Debounce emissions by [millis], i.e. accepting only values that are [millis] away from their
    * immediate predecessors.
    * @param millis Debounce time in milliseconds.
@@ -105,8 +96,9 @@ interface ISagaOutput<T> : IAsyncJob<T>, IUniqueIDProvider where T : Any {
    * Subscribe to values with [onValue], and error with [onError].
    * @param onValue Function that takes [T] and performs some side effects.
    * @param onError Function that takes [Throwable] and performs some side effects.
+   * @return A [Disposable] instance.
    */
-  fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit = { })
+  fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit = { }): Disposable
 }
 
 /**

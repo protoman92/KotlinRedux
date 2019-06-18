@@ -63,6 +63,7 @@ configure(subprojects - project(':sample-android:sample-sunflower')) {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':android:android-all')
     implementation "com.github.protoman92:KotlinFP:master-SNAPSHOT"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJava"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin"
     implementation "androidx.constraintlayout:constraintlayout:$project.ext.constraintlayout"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$project.ext.kotlinCoroutines"
