@@ -68,7 +68,7 @@ class CommonSagaEffectTest {
       { when (it) { is Action -> it.value; else -> null } },
       { v -> await { delay(1000); v } }
     )
-      .invoke(SagaInput(monitor))
+      .invoke(SagaInput(monitor = monitor))
       .subscribe({ finalValues.add(it as Int) })
 
     // When
@@ -99,7 +99,7 @@ class CommonSagaEffectTest {
 
     val store = applyMiddlewares<String>(
       AsyncMiddleware.create(),
-      SagaMiddleware.create(arrayListOf(takeEffect))
+      SagaMiddleware.create(effects = arrayListOf(takeEffect))
     )(FinalStore(defaultState) { s, _ -> "${s.toInt() + 1}" })
 
     // When
@@ -130,7 +130,7 @@ class CommonSagaEffectTest {
 
     createTakeEffect { (it as Action).value }
       .debounce(debounceTime)
-      .invoke(SagaInput(monitor))
+      .invoke(SagaInput(monitor = monitor))
       .subscribe({ finalValues.add(it) })
 
     // When
@@ -191,7 +191,7 @@ class CommonSagaEffectTest {
         it.async { value * 2 }.await()
         put(DefaultReduxAction.Dummy).await(it)
       }
-    }.invoke(SagaInput(monitor))
+    }.invoke(SagaInput(monitor = monitor))
 
     val disposable = sourceOutput.subscribe({}, {})
 
@@ -212,11 +212,10 @@ class CommonSagaEffectTest {
   fun `Put effect should dispatch action`() {
     // Setup
     data class Action(private val value: Int) : IReduxAction
-    val monitor = SagaMonitor()
     val dispatched = synchronizedList(arrayListOf<IReduxAction>())
 
     // When
-    put(Action(0)).invoke(SagaInput(monitor) { dispatched.add(it); EmptyJob }).subscribe({})
+    put(Action(0)).invoke(SagaInput(dispatch = { dispatched.add(it); EmptyJob })).subscribe({})
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
@@ -273,7 +272,7 @@ class CommonSagaEffectTest {
     store = applyMiddlewares<State>(
       AsyncMiddleware.create(),
       AsyncMiddleware.create(),
-      SagaMiddleware.create(arrayListOf(takeEffect)),
+      SagaMiddleware.create(effects = arrayListOf(takeEffect)),
       AsyncMiddleware.create(),
       AsyncMiddleware.create()
     )(FinalStore(State(), enhancedReducer))
@@ -322,7 +321,7 @@ class CommonSagaEffectTest {
         }
       }
     }
-      .invoke(SagaInput(monitor))
+      .invoke(SagaInput(monitor = monitor))
       .subscribe({ finalValues.add(it) })
 
     // When
@@ -342,12 +341,11 @@ class CommonSagaEffectTest {
   @ExperimentalCoroutinesApi
   fun `All effect should merge emissions from all sources`() {
     // Setup
-    val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Int>())
 
     // When
     mergeAll(fromEffect(1), fromEffect(2), fromEffect(3), fromEffect(4))
-      .invoke(SagaInput(monitor))
+      .invoke(SagaInput())
       .subscribe({ finalValues.add(it) })
 
     runBlocking {
@@ -378,7 +376,7 @@ class CommonSagaEffectTest {
       CommonEffects.takeAction(Action::class) { it.value }.flatMap { v -> await { v * 2 } },
       CommonEffects.takeAction(Action::class) { it.value }.flatMap { v -> await { v * 3 } }
     )
-      .invoke(SagaInput(monitor))
+      .invoke(SagaInput(monitor = monitor))
       .subscribe({ finalValues.add(it) })
 
     // When
@@ -396,11 +394,8 @@ class CommonSagaEffectTest {
 
   @Test
   fun `Nothing effect should not emit anything`() {
-    // Setup
-    val monitor = SagaMonitor()
-
-    // When
-    val value = CommonEffects.doNothing<Int>().invoke(SagaInput(monitor)).await(200)
+    // Setup && When
+    val value = CommonEffects.doNothing<Int>().invoke(SagaInput()).await(200)
 
     // Then
     assertEquals(value, 200)
@@ -409,11 +404,10 @@ class CommonSagaEffectTest {
   @Test
   fun `Select effect should extract some value from a state`() {
     // Setup
-    val monitor = SagaMonitor()
-    val sourceOutput1 = CommonEffects.select(Any::class) { 2 }.invoke(SagaInput(monitor))
+    val sourceOutput1 = CommonEffects.select(Any::class) { 2 }.invoke(SagaInput())
 
     val sourceOutput2 = CommonEffects.select(State::class) { 4 }
-      .invoke(SagaInput(monitor, { State() }, NoopActionDispatcher))
+      .invoke(SagaInput(dispatch = NoopActionDispatcher, lastState = { State() }))
 
     // When && Then
     assertEquals(sourceOutput1.awaitFor(this.timeout), 2)
@@ -438,7 +432,7 @@ class CommonSagaEffectTest {
       put(ValueAction(newValue)).await(input)
       put(ProgressAction(false)).await(input)
     }
-      .invoke(SagaInput(monitor, { State(10) }) { dispatched.add(it); EmptyJob })
+      .invoke(SagaInput(dispatch = { dispatched.add(it); EmptyJob }, lastState = { State(10) }))
       .subscribe({})
 
     runBlocking {

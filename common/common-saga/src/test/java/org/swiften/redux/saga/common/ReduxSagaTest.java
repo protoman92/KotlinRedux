@@ -6,13 +6,14 @@
 package org.swiften.redux.saga.common;
 
 import io.reactivex.Flowable;
-import kotlinx.coroutines.GlobalScope;
+import io.reactivex.schedulers.Schedulers;
+import kotlin.coroutines.EmptyCoroutineContext;
 import org.junit.Test;
 import org.swiften.redux.core.EmptyJob;
 
 import static org.junit.Assert.assertEquals;
-import static org.swiften.redux.saga.common.CommonEffects.flatMap;
 import static org.swiften.redux.saga.common.CommonEffects.await;
+import static org.swiften.redux.saga.common.CommonEffects.flatMap;
 import static org.swiften.redux.saga.common.CommonEffects.from;
 
 /**
@@ -25,10 +26,11 @@ public final class ReduxSagaTest {
     Object value = from(Flowable.just(1))
       .transform(flatMap(v -> await((c, input) -> v * 2)))
       .invoke(new SagaInput(
-        GlobalScope.INSTANCE.getCoroutineContext(),
-        new SagaMonitor(),
+        EmptyCoroutineContext.INSTANCE,
+        a -> EmptyJob.INSTANCE,
         () -> 0,
-        a -> EmptyJob.INSTANCE)
+        new SagaMonitor(),
+        Schedulers.computation())
       )
       .awaitFor(1000);
 
