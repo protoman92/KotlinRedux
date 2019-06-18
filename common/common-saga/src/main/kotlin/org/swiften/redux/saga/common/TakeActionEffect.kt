@@ -25,7 +25,7 @@ class TakeActionEffect<Action, R>(
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
     val subject = PublishProcessor.create<R>().toSerialized()
 
-    return SagaOutput(p1.monitor, subject.onBackpressureBuffer()) { a ->
+    return SagaOutput(p1.monitor, subject.onBackpressureBuffer().observeOn(p1.scheduler)) { a ->
       if (cls.isInstance(a)) {
         this@TakeActionEffect.extractor(cls.cast(a))?.also { subject.onNext(it) }
       }

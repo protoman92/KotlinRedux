@@ -40,7 +40,7 @@ class GardenApplication : Application() {
       AsyncMiddleware.create(),
       RouterMiddleware.create(Router(this)),
       SagaMiddleware.create(
-        arrayListOf(
+        effects = arrayListOf(
           arrayListOf(Redux.Saga.CoreSaga.watchNetworkConnectivity(this)),
           Redux.Saga.GardenPlantingSaga.allSagas(InjectorUtils.getGardenPlantingRepository(this)),
           Redux.Saga.PlantSaga.allSagas(InjectorUtils.getPlantRepository(this))

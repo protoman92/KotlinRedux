@@ -6,6 +6,7 @@
 package org.swiften.redux.saga.common
 
 import io.reactivex.Flowable
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
@@ -94,9 +95,8 @@ class SagaOutput<T : Any>(
     return this.with(this.stream.switchMap { (transform(it) as SagaOutput<T2>).stream })
   }
 
-  override fun debounce(millis: Long): ISagaOutput<T> {
-    if (millis <= 0) { return this }
-    return this.with(this.stream.debounce(millis, TimeUnit.MILLISECONDS))
+  override fun debounce(millis: Long, scheduler: Scheduler): ISagaOutput<T> {
+    return this.with(this.stream.debounce(millis, TimeUnit.MILLISECONDS, scheduler))
   }
 
   override fun await(): T = this.stream.blockingFirst()

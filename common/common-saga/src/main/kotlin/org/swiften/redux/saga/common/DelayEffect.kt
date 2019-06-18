@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit
  */
 class DelayEffect(private val millis: Long) : SagaEffect<Any>() {
   override fun invoke(p1: SagaInput): ISagaOutput<Any> {
-    return SagaOutput(p1.monitor, Flowable.timer(this.millis, TimeUnit.MILLISECONDS).cast(Any::class.java))
+    return SagaOutput(p1.monitor, Flowable
+      .timer(this.millis, TimeUnit.MILLISECONDS, p1.scheduler)
+      .cast(Any::class.java))
   }
 }

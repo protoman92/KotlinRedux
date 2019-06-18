@@ -30,7 +30,7 @@ class MainApplication : Application() {
     val store = applyMiddlewares<Redux.State>(
       AsyncMiddleware.create(),
       RouterMiddleware.create(Router(this)),
-      SagaMiddleware.create(Redux.Saga.allSagas(component))
+      SagaMiddleware.create(effects = Redux.Saga.allSagas(component))
     )(FinalStore(Redux.State(), Redux.Reducer))
 
     val injector = AndroidPropInjector(store)

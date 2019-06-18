@@ -70,6 +70,7 @@ project(':common:common-core') {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     testImplementation project(":common:common-thunk")
     testImplementation project(":common:common-saga")
+    testImplementation "io.reactivex.rxjava2:rxjava:$rxJava"
   }
 }
 

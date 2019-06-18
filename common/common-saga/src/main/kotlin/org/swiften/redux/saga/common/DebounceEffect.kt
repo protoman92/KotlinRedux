@@ -17,6 +17,6 @@ internal class DebounceEffect<R>(
   private val millis: Long
 ) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
-    return this.source.invoke(p1).debounce(this.millis)
+    return this.source.invoke(p1).debounce(this.millis, p1.scheduler)
   }
 }

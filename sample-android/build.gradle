@@ -144,6 +144,7 @@ configure(project(':sample-android:sample-sunflower')) {
 
   dependencies {
     kapt "androidx.room:room-compiler:$project.ext.roomVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJava"
     implementation "android.arch.navigation:navigation-fragment-ktx:$project.ext.navigationVersion"
     implementation "android.arch.navigation:navigation-ui-ktx:$project.ext.navigationVersion"
     implementation "android.arch.work:work-runtime-ktx:$project.ext.workVersion"
