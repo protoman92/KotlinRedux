@@ -52,8 +52,7 @@ object SagaEffects {
    * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <R> from(stream: Flowable<R>): SagaEffect<R> where R : Any =
-    FromEffect(stream)
+  fun <R> from(stream: Flowable<R>): SagaEffect<R> where R : Any = FromEffect(stream)
 
   /**
    * Create an [AllEffect] instance.

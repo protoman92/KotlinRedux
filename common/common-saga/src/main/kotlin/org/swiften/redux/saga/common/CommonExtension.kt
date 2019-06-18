@@ -7,17 +7,6 @@ package org.swiften.redux.saga.common
 
 /** Created by haipham on 2019/01/26/1 */
 /**
- * Invoke a [DelayEffect] on [this].
- * @receiver See [DelayEffect.source].
- * @param R The result emission type.
- * @param millis See [DelayEffect.millis].
- * @return A [SagaEffect] instance.
- */
-fun <R> SagaEffect<R>.delayUpstreamValue(millis: Long): SagaEffect<R> where R : Any {
-  return this.transform(CommonEffects.delayUpstreamValue(millis))
-}
-
-/**
  * Invoke a [FlatMapEffect] on the current [ISagaEffect] with [FlatMapEffect.Mode.EVERY].
  * @receiver See [FlatMapEffect.source].
  * @param P The source emission type.

@@ -12,13 +12,12 @@ import org.swiften.redux.core.IReduxAction
 object CommonEffects {
   /**
    * Create a [DelayEffect].
-   * @param R The result emission type.
    * @param millis See [DelayEffect.millis].
-   * @return An [ISagaEffectTransformer] instance.
+   * @return A [SagaEffect] instance.
    */
   @JvmStatic
-  fun <R> delayUpstreamValue(millis: Long): ISagaEffectTransformer<R, R> where R : Any {
-    return { DelayEffect(it, millis) }
+  fun delay(millis: Long): DelayEffect {
+    return DelayEffect(millis)
   }
 
   /**
