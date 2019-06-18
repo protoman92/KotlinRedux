@@ -5,7 +5,9 @@
 
 package org.swiften.redux.saga.common
 
+import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.SupervisorJob
@@ -42,18 +44,28 @@ typealias ISagaEffectTransformer<R, R2> = (SagaEffect<R>) -> SagaEffect<R2>
  */
 class SagaInput(
   private val context: CoroutineContext,
+  internal val dispatch: IActionDispatcher,
+  internal val lastState: IStateGetter<*>,
   val monitor: ISagaMonitor,
-  val lastState: IStateGetter<*>,
-  val dispatch: IActionDispatcher
+  internal val scheduler: Scheduler = Schedulers.io()
 ) : CoroutineScope {
   constructor(
-    monitor: ISagaMonitor,
+    dispatch: IActionDispatcher,
     lastState: IStateGetter<*>,
-    dispatch: IActionDispatcher
-  ) : this(GlobalScope.coroutineContext, monitor, lastState, dispatch)
+    monitor: ISagaMonitor,
+    scheduler: Scheduler = Schedulers.io()
+  ) : this(GlobalScope.coroutineContext, dispatch, lastState, monitor, scheduler)
 
-  constructor(monitor: ISagaMonitor, dispatch: IActionDispatcher) : this(monitor, {}, dispatch)
-  constructor(monitor: ISagaMonitor) : this(monitor, NoopActionDispatcher)
+  constructor(
+    dispatch: IActionDispatcher,
+    monitor: ISagaMonitor,
+    scheduler: Scheduler = Schedulers.io()
+  ) : this(dispatch, {}, monitor, scheduler)
+
+  constructor(
+    monitor: ISagaMonitor,
+    scheduler: Scheduler = Schedulers.io()
+  ) : this(NoopActionDispatcher, monitor, scheduler)
 
   override val coroutineContext: CoroutineContext get() = this.context + SupervisorJob()
 }
@@ -71,9 +83,10 @@ interface ISagaOutput<T> : IAsyncJob<T>, IUniqueIDProvider where T : Any {
    * Debounce emissions by [millis], i.e. accepting only values that are [millis] away from their
    * immediate predecessors.
    * @param millis Debounce time in milliseconds.
+   * @param scheduler A [Scheduler] instance.
    * @return An [ISagaOutput] instance.
    */
-  fun debounce(millis: Long): ISagaOutput<T>
+  fun debounce(millis: Long, scheduler: Scheduler): ISagaOutput<T>
 
   /**
    * Flatten emissions from [ISagaOutput] produced by [transform].

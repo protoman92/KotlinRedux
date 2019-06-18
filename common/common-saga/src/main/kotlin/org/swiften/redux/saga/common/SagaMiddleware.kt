@@ -5,7 +5,9 @@
 
 package org.swiften.redux.saga.common
 
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import org.swiften.redux.core.DefaultReduxAction
@@ -24,28 +26,33 @@ import kotlin.coroutines.CoroutineContext
 /**
  * [IMiddleware] implementation for [ISagaEffect]. Every time an [IReduxAction] is received, call
  * [ISagaOutput.onAction].
- * @param effects The [List] of [ISagaEffect] to run.
  * @param context The [CoroutineContext] with which to perform asynchronous work on.
+ * @param monitor A [SagaMonitor] instance.
+ * @param scheduler A [Scheduler] instance.
+ * @param effects The [List] of [ISagaEffect] to run.
  */
 class SagaMiddleware private constructor (
   private val context: CoroutineContext,
   private val monitor: SagaMonitor,
+  private val scheduler: Scheduler,
   private val effects: Collection<ISagaEffect<*>>
 ) : IMiddleware<Any> {
   companion object {
     /**
      * Create a [SagaMiddleware] with [effects].
      * @param context See [SagaMiddleware.context].
-     * @param monitor A [SagaMonitor] instance.
+     * @param monitor See [SagaMiddleware.monitor].
+     * @param scheduler See [SagaMiddleware.scheduler].
      * @param effects See [SagaMiddleware.effects].
      * @return A [SagaMiddleware] instance.
      */
     internal fun create(
       context: CoroutineContext,
       monitor: SagaMonitor,
+      scheduler: Scheduler,
       effects: Collection<ISagaEffect<*>>
     ): SagaMiddleware {
-      return SagaMiddleware(context, monitor, effects)
+      return SagaMiddleware(context, monitor, scheduler, effects)
     }
 
     /**
@@ -54,8 +61,11 @@ class SagaMiddleware private constructor (
      * @param effects See [SagaMiddleware.effects].
      * @return A [SagaMiddleware] instance.
      */
-    fun create(effects: Collection<ISagaEffect<*>>): IMiddleware<Any> {
-      return this.create(SupervisorJob(), SagaMonitor(), effects)
+    fun create(
+      scheduler: Scheduler = Schedulers.computation(),
+      effects: Collection<ISagaEffect<*>>
+    ): IMiddleware<Any> {
+      return this.create(SupervisorJob(), SagaMonitor(), scheduler, effects)
     }
   }
 
@@ -65,7 +75,7 @@ class SagaMiddleware private constructor (
     return { wrapper ->
       val lock = ReentrantLock()
       val monitor = this@SagaMiddleware.monitor
-      val sagaInput = SagaInput(this@SagaMiddleware.context, monitor, p1.lastState, p1.dispatch)
+      val sagaInput = SagaInput(this@SagaMiddleware.context, p1.dispatch, p1.lastState, monitor)
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
 
       /**

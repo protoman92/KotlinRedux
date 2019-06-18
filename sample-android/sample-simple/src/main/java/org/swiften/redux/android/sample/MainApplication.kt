@@ -33,7 +33,7 @@ class MainApplication : Application() {
 
     val store = applyMiddlewares<Redux.State>(
       AsyncMiddleware.create(),
-      SagaMiddleware.create(Redux.Saga.allSagas(repository)),
+      SagaMiddleware.create(effects = Redux.Saga.allSagas(repository)),
       RouterMiddleware.create(NestedRouter.create { false }),
       AsyncMiddleware.create()
     )(FinalStore(State(), Redux.Reducer))

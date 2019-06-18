@@ -117,7 +117,7 @@ class MiddlewareTest : BaseMiddlewareTest() {
         override fun navigate(screen: IRouterScreen) {}
         override fun deinitialize() {}
       }),
-      SagaMiddleware.create(arrayListOf()),
+      SagaMiddleware.create(effects = arrayListOf()),
       LoggingMiddleware.create(),
       AsyncMiddleware.create()
     )(baseStore)

@@ -18,7 +18,7 @@ class TakeStateEffect<State>(private val cls: Class<State>) : SagaEffect<State>(
   override fun invoke(p1: SagaInput): ISagaOutput<State> {
     val subject = PublishProcessor.create<State>().toSerialized()
 
-    return SagaOutput(p1.monitor, subject.onBackpressureBuffer()) {
+    return SagaOutput(p1.monitor, subject.onBackpressureBuffer().observeOn(p1.scheduler)) {
       /**
        * By the time [ISagaOutput.onAction] is called, the store would have reduced a new [State]
        * so [SagaInput.lastState] here will produce the latest [State].
