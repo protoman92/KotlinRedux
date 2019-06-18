@@ -23,7 +23,7 @@ public final class ReduxSagaTest {
   public void test_invokingSagaWithJava_shouldWork() throws Exception {
     // Setup
     Object value = from(Flowable.just(1))
-      .transform(flatMap(v -> await((sc, input, c) -> v * 2)))
+      .transform(flatMap(v -> await((c, input) -> v * 2)))
       .invoke(new SagaInput(
         GlobalScope.INSTANCE.getCoroutineContext(),
         new SagaMonitor(),

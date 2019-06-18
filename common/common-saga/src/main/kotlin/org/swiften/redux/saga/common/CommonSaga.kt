@@ -7,6 +7,7 @@ package org.swiften.redux.saga.common
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IAsyncJob
 import org.swiften.redux.core.IReduxAction
@@ -39,11 +40,11 @@ typealias ISagaEffectTransformer<R, R2> = (SagaEffect<R>) -> SagaEffect<R2>
  * @param dispatch See [IReduxStore.dispatch].
  */
 class SagaInput(
-  val context: CoroutineContext,
+  private val context: CoroutineContext,
   val monitor: ISagaMonitor,
   val lastState: IStateGetter<*>,
   val dispatch: IActionDispatcher
-) {
+) : CoroutineScope {
   constructor(
     monitor: ISagaMonitor,
     lastState: IStateGetter<*>,
@@ -52,6 +53,8 @@ class SagaInput(
 
   constructor(monitor: ISagaMonitor, dispatch: IActionDispatcher) : this(monitor, {}, dispatch)
   constructor(monitor: ISagaMonitor) : this(monitor, NoopActionDispatcher)
+
+  override val coroutineContext: CoroutineContext get() = this.context + SupervisorJob()
 }
 
 /**

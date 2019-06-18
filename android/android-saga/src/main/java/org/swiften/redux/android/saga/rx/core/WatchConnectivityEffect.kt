@@ -66,6 +66,6 @@ internal class WatchConnectivityEffect(private val context: Context) : SagaEffec
       }
     }
 
-    return SagaOutput(p1.context, p1.monitor, stream.toFlowable(BackpressureStrategy.BUFFER))
+    return SagaOutput(p1.monitor, stream.toFlowable(BackpressureStrategy.BUFFER))
   }
 }

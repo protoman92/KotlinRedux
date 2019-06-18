@@ -14,7 +14,6 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.core.NoopActionDispatcher
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2018/12/22 */
 /**
@@ -43,19 +42,17 @@ class SagaOutput<T : Any>(
     /**
      * Create a [ISagaOutput] from [creator] using [CoroutineScope.rxSingle].
      * @param T The emission value type.
-     * @param context See [SagaOutput.context].
+     * @param scope A [CoroutineScope] instance.
      * @param monitor See [SagaOutput.monitor].
      * @param creator Suspending function that produces [T].
      * @return An [ISagaOutput] instance.
      */
     fun <T> from(
-      context: CoroutineContext,
+      scope: CoroutineScope,
       monitor: ISagaMonitor,
       creator: suspend CoroutineScope.() -> T
     ): ISagaOutput<T> where T : Any {
-      return SagaOutput(monitor, object : CoroutineScope {
-        override val coroutineContext: CoroutineContext get() = context
-      }.rxSingle { creator() }.toFlowable())
+      return SagaOutput(monitor, scope.rxSingle { creator() }.toFlowable())
     }
 
     /**
