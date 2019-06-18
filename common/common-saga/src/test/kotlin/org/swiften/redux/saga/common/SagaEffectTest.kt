@@ -201,9 +201,7 @@ class SagaEffectTest : OverridableSagaEffectTest() {
       }
     }
 
-    val enhancedReducer: IReducer<State, IReduxAction> = { s, a ->
-      val newState = reducer(s, a); newState
-    }
+    val enhancedReducer: IReducer<State, IReduxAction> = { s, a -> reducer(s, a) }
 
     var store: IReduxStore<State>? = null
     val finalValues = synchronizedList(arrayListOf<Pair<State, State>>())
@@ -257,8 +255,14 @@ class SagaEffectTest : OverridableSagaEffectTest() {
       "Input: $q, Result: $result"
     }
 
-    takeAction(Action::class, { it.query }).switchMap { query ->
-      await { this.searchMusicStoreAsync("unavailable$query").await() }
+    takeAction(Action::class) { it.query }.switchMap { query ->
+      await {
+        try {
+          this.searchMusicStoreAsync("unavailable$query").await()
+        } catch (e: Exception) {
+          "Failed for some reasons"
+        }
+      }
     }
       .invoke(SagaInput(monitor))
       .subscribe({ finalValues.add(it) })
@@ -343,7 +347,7 @@ class SagaEffectTest : OverridableSagaEffectTest() {
     val monitor = SagaMonitor()
 
     // When
-    val value = doNothing<Int>().map { it * 2 }.invoke(SagaInput(monitor)).await(200)
+    val value = doNothing<Int>().invoke(SagaInput(monitor)).await(200)
 
     // Then
     assertEquals(value, 200)

@@ -18,7 +18,7 @@ typealias IAwaitCreator<R> = suspend CoroutineScope.(SagaInput) -> R
  * @param R The result emission type.
  * @param creator An [IAwaitCreator] instance.
  */
-internal class AwaitEffect<R>(private val creator: IAwaitCreator<R>) : SingleSagaEffect<R>() where R : Any {
+class AwaitEffect<R>(private val creator: IAwaitCreator<R>) : SingleSagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
     return SagaOutput.from(p1.scope, p1.monitor) { this@AwaitEffect.creator(this, p1) }
   }
