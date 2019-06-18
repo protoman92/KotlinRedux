@@ -56,11 +56,7 @@ class SagaOutput<T : Any>(
       monitor: ISagaMonitor,
       creator: suspend CoroutineScope.() -> T
     ): ISagaOutput<T> where T : Any {
-      return SagaOutput(
-        scope,
-        monitor,
-        scope.rxSingle { creator() }.toFlowable()
-      )
+      return SagaOutput(scope, monitor, scope.rxSingle { creator() }.toFlowable())
     }
 
     /**
@@ -76,11 +72,7 @@ class SagaOutput<T : Any>(
       monitor: ISagaMonitor,
       outputs: Collection<SagaOutput<T>>
     ): SagaOutput<T> where T : Any {
-      return SagaOutput(
-        scope,
-        monitor,
-        Flowable.merge(outputs.map { it.stream })
-      )
+      return SagaOutput(scope, monitor, Flowable.merge(outputs.map { it.stream }))
     }
   }
 
@@ -100,11 +92,7 @@ class SagaOutput<T : Any>(
   }
 
   private fun <T2> with(newStream: Flowable<T2>): ISagaOutput<T2> where T2 : Any {
-    return SagaOutput(
-      this.scope,
-      this.monitor,
-      newStream,
-      { this.dispose() })
+    return SagaOutput(this.scope, this.monitor, newStream, { this.dispose() })
   }
 
   override fun <T2> map(transform: (T) -> T2): ISagaOutput<T2> where T2 : Any {

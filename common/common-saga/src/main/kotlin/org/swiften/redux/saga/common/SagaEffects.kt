@@ -19,7 +19,8 @@ object SagaEffects {
    * @param creator See [AwaitEffect.creator].
    * @return A [SingleSagaEffect] instance.
    */
-  fun <R> await(creator: IAwaitCreator<R>): SingleSagaEffect<R> where R : Any {
+  @JvmStatic
+  fun <R> await(creator: IAwaitCreator<R>): AwaitEffect<R> where R : Any {
     return AwaitEffect(creator)
   }
 
@@ -28,6 +29,7 @@ object SagaEffects {
    * @param R The result emission type.
    * @return A [SagaEffect] instance.
    */
+  @JvmStatic
   fun <R> doNothing(): SagaEffect<R> where R : Any = NothingEffect()
 
   /**
@@ -59,6 +61,7 @@ object SagaEffects {
    * @param sources See [AllEffect.sources].
    * @return An [AllEffect] instance.
    */
+  @JvmStatic
   fun <R> mergeAll(sources: Collection<SagaEffect<R>>): SagaEffect<R> where R : Any {
     return AllEffect(sources)
   }
@@ -69,6 +72,7 @@ object SagaEffects {
    * @param sources See [AllEffect.sources].
    * @return An [AllEffect] instance.
    */
+  @JvmStatic
   fun <R> mergeAll(vararg sources: SagaEffect<R>): SagaEffect<R> where R : Any {
     return mergeAll(sources.asList())
   }

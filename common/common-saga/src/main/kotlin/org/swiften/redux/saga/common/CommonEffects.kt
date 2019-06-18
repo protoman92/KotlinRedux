@@ -5,8 +5,6 @@
 
 package org.swiften.redux.saga.common
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import org.swiften.redux.core.IReduxAction
 
 /** Created by haipham on 2019/01/07 */
@@ -56,54 +54,6 @@ object CommonEffects {
   @JvmStatic
   fun <P, R> switchMap(transformer: (P) -> SagaEffect<R>): ISagaEffectTransformer<P, R> where P : Any, R : Any {
     return { FlatMapEffect(it, FlatMapEffect.Mode.LATEST, transformer) }
-  }
-
-  /**
-   * Create a [MapEffect].
-   * @param R The result emission type.
-   * @param transformer See [MapEffect.transformer].
-   * @return An [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <P, R> map(transformer: (P) -> R): ISagaEffectTransformer<P, R> where P : Any, R : Any {
-    return { MapEffect(it, transformer) }
-  }
-
-  /**
-   * Create a [SuspendMapEffect].
-   * @param R The result emission type.
-   * @param transformer See [SuspendMapEffect.transformer].
-   * @return An [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <P, R> mapSuspend(transformer: suspend CoroutineScope.(P) -> R):
-    ISagaEffectTransformer<P, R> where P : Any, R : Any {
-    return { SuspendMapEffect(it, transformer) }
-  }
-
-  /**
-   * Create an [AsyncMapEffect].
-   * @param R The result emission type.
-   * @param transformer See [AsyncMapEffect.transformer].
-   * @return An [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <P, R> mapAsync(transformer: suspend CoroutineScope.(P) -> Deferred<R>):
-    ISagaEffectTransformer<P, R> where P : Any, R : Any {
-    return { AsyncMapEffect(it, transformer) }
-  }
-
-  /**
-   * Create a [CompactMapEffect].
-   * @param P The source emission type.
-   * @param R The result emission type.
-   * @param transformer See [CompactMapEffect.transformer].
-   * @return An [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <P, R> mapIgnoringNull(transformer: (P) -> R?):
-    ISagaEffectTransformer<P, R> where P : Any, R : Any {
-    return { CompactMapEffect(it, transformer) }
   }
 
   /**
