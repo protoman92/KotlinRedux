@@ -12,8 +12,8 @@ import org.swiften.redux.core.EmptyJob;
 
 import static org.junit.Assert.assertEquals;
 import static org.swiften.redux.saga.common.CommonEffects.flatMap;
-import static org.swiften.redux.saga.common.SagaEffects.await;
-import static org.swiften.redux.saga.common.SagaEffects.from;
+import static org.swiften.redux.saga.common.CommonEffects.await;
+import static org.swiften.redux.saga.common.CommonEffects.from;
 
 /**
  * Created by haipham on 2019/01/14

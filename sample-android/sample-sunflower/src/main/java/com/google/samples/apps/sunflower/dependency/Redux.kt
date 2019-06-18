@@ -21,11 +21,11 @@ import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeLiveData
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
-import org.swiften.redux.saga.common.CommonEffects.putInStore
+import org.swiften.redux.saga.common.CommonEffects.put
 import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.SagaEffects.await
-import org.swiften.redux.saga.common.SagaEffects.selectFromState
-import org.swiften.redux.saga.common.SagaEffects.takeAction
+import org.swiften.redux.saga.common.CommonEffects.await
+import org.swiften.redux.saga.common.CommonEffects.select
+import org.swiften.redux.saga.common.CommonEffects.takeAction
 import org.swiften.redux.saga.common.flatMap
 import org.swiften.redux.saga.common.switchMap
 import org.swiften.redux.thunk.IReduxThunkAction
@@ -139,7 +139,7 @@ object Redux {
   object Saga {
     object CoreSaga {
       fun watchNetworkConnectivity(context: Context): SagaEffect<Any> {
-        return watchConnectivity(context).switchMap { putInStore(Action.UpdateConnectivity(it)) }
+        return watchConnectivity(context).switchMap { put(Action.UpdateConnectivity(it)) }
       }
     }
 
@@ -153,7 +153,7 @@ object Redux {
         return takeAction(Action.AddPlantToGarden::class) { it.plantId }.switchMap { plantId ->
           await {
             api.createGardenPlanting(plantId)
-            putInStore(Action.UpdateSelectedPlantStatus(true)).await(it)
+            put(Action.UpdateSelectedPlantStatus(true)).await(it)
           }
         }
       }
@@ -172,18 +172,18 @@ object Redux {
         }.switchMap { plantId ->
           takeLiveData {
             Transformations.map(api.getGardenPlantingForPlant(plantId)) { Option.wrap(it) }
-          }.flatMap { putInStore(Action.UpdateSelectedPlantStatus(it != null)) }
+          }.flatMap { put(Action.UpdateSelectedPlantStatus(it != null)) }
         }
       }
 
       private fun selectPlantFromGarden(): SagaEffect<Any> {
         return takeAction(Action.SelectPlantFromGarden::class) { it.index }.flatMap { index ->
           await {
-            val plantings = selectFromState(State::class) { Option.wrap(it.plantAndGardenPlantings) }.await(it)
+            val plantings = select(State::class) { Option.wrap(it.plantAndGardenPlantings) }.await(it)
             val planting = plantings.value?.elementAtOrNull(index)
 
             if (planting != null) {
-              putInStore(Screen.GardenToPlantDetail(planting.plant.plantId)).await(it)
+              put(Screen.GardenToPlantDetail(planting.plant.plantId)).await(it)
             } else { }
           }
         }
@@ -191,7 +191,7 @@ object Redux {
 
       /** Bridge to sync [GardenPlanting] using [GardenPlantingRepository.getGardenPlantings] */
       private fun syncGardenPlantings(api: GardenPlantingRepository): SagaEffect<Any> {
-        return takeLiveData { api.getGardenPlantings() }.flatMap { putInStore(Action.UpdateGardenPlantings(it)) }
+        return takeLiveData { api.getGardenPlantings() }.flatMap { put(Action.UpdateGardenPlantings(it)) }
       }
 
       /**
@@ -201,7 +201,7 @@ object Redux {
       private fun syncPlantAndGardenPlantings(api: GardenPlantingRepository): SagaEffect<Any> {
         return takeLiveData { api.getPlantAndGardenPlantings() }.flatMap {
           val plantings = it.filter { it.gardenPlantings.isNotEmpty() }
-          putInStore(Action.UpdatePlantAndGardenPlantings(plantings))
+          put(Action.UpdatePlantAndGardenPlantings(plantings))
         }
       }
 
@@ -218,11 +218,11 @@ object Redux {
       private fun selectPlantFromPlantList(): SagaEffect<Any> {
         return takeAction(Action.SelectPlantFromPlantList::class) { it.index }.flatMap { index ->
           await {
-            val plants = selectFromState(State::class) { Option.wrap(it.plants) }.await(it)
+            val plants = select(State::class) { Option.wrap(it.plants) }.await(it)
             val plant = plants.value?.elementAtOrNull(index)
 
             if (plant != null) {
-              putInStore(Screen.PlantListToPlantDetail(plant.plantId)).await(it)
+              put(Screen.PlantListToPlantDetail(plant.plantId)).await(it)
             } else { }
           }
         }
@@ -236,12 +236,12 @@ object Redux {
       private fun syncPlants(api: PlantRepository): SagaEffect<Any> {
         return takeLiveData { api.getPlants() }.flatMap { plants ->
           await {
-            val zone = selectFromState(State::class) { it.selectedGrowZone }.await(it)
+            val zone = select(State::class) { it.selectedGrowZone }.await(it)
 
             if (zone == NO_GROW_ZONE) {
-              putInStore(Action.UpdatePlants(plants)).await(it)
+              put(Action.UpdatePlants(plants)).await(it)
             } else {
-              putInStore(Action.UpdatePlants(plants.filter { it.growZoneNumber == zone })).await(it)
+              put(Action.UpdatePlants(plants.filter { it.growZoneNumber == zone })).await(it)
             }
           }
         }
@@ -257,7 +257,7 @@ object Redux {
             takeLiveData { api.getPlants() }
           } else {
             takeLiveData { api.getPlantsWithGrowZoneNumber(zone) }
-          }.flatMap { putInStore(Action.UpdatePlants(it)) }
+          }.flatMap { put(Action.UpdatePlants(it)) }
         }
       }
 
