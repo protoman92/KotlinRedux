@@ -19,7 +19,6 @@ class TakeStateEffect<State>(private val cls: Class<State>) : SagaEffect<State>(
     val subject = PublishProcessor.create<State>().toSerialized()
 
     return SagaOutput(
-      p1.context,
       p1.monitor,
       subject.onBackpressureBuffer(),
       { subject.onComplete() }) {

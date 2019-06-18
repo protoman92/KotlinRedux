@@ -15,6 +15,6 @@ package org.swiften.redux.saga.common
 internal class AllEffect<R>(private val sources: Collection<SagaEffect<R>>) : SagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
     val sourceOutputs = this.sources.map { (it.invoke(p1) as SagaOutput<R>) }
-    return SagaOutput.merge(p1.context, p1.monitor, sourceOutputs)
+    return SagaOutput.merge(p1.monitor, sourceOutputs)
   }
 }

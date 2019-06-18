@@ -20,7 +20,7 @@ class SelectEffect<State, R>(
   private val selector: (State) -> R
 ) : SingleSagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
-    return SagaOutput(p1.context, p1.monitor, Single.create<R> {
+    return SagaOutput(p1.monitor, Single.create<R> {
       val lastState = p1.lastState()
       require(this.cls.isInstance(lastState))
       val value = this@SelectEffect.selector(this@SelectEffect.cls.cast(lastState))

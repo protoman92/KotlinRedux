@@ -27,7 +27,6 @@ import kotlin.coroutines.CoroutineContext
  * [SagaOutput] instance has its own [onAction] that is not related to any other.
  * [ISagaMonitor.dispatch] is the only way to call all stored [onAction].
  * @param T The result emission type.
- * @param context A [CoroutineContext] instance.
  * @param monitor A [ISagaMonitor] instance that is used to track created [ISagaOutput]. This
  * [ISagaMonitor] implementation must be able to handle multi-threaded
  * [ISagaMonitor.addOutputDispatcher] and [ISagaMonitor.removeOutputDispatcher] events.
@@ -35,12 +34,11 @@ import kotlin.coroutines.CoroutineContext
  * @param onAction See [ISagaOutput.onAction].
  */
 class SagaOutput<T : Any>(
-  private val context: CoroutineContext,
   private val monitor: ISagaMonitor,
   stream: Flowable<T>,
   private val onDispose: () -> Unit = {},
   override val onAction: IActionDispatcher = NoopActionDispatcher
-) : ISagaOutput<T>, IUniqueIDProvider by DefaultUniqueIDProvider(), CoroutineScope {
+) : ISagaOutput<T>, IUniqueIDProvider by DefaultUniqueIDProvider() {
   companion object {
     /**
      * Create a [ISagaOutput] from [creator] using [CoroutineScope.rxSingle].
@@ -55,7 +53,7 @@ class SagaOutput<T : Any>(
       monitor: ISagaMonitor,
       creator: suspend CoroutineScope.() -> T
     ): ISagaOutput<T> where T : Any {
-      return SagaOutput(context, monitor, object : CoroutineScope {
+      return SagaOutput(monitor, object : CoroutineScope {
         override val coroutineContext: CoroutineContext get() = context
       }.rxSingle { creator() }.toFlowable())
     }
@@ -64,16 +62,11 @@ class SagaOutput<T : Any>(
      * See [Flowable.merge]. Produces a [SagaOutput] whose [SagaOutput.stream] triggers any time
      * a [SagaOutput.stream] from [outputs] emits a value.
      * @param T The emission value type.
-     * @param context See [SagaOutput.context].
      * @param outputs A [Collection] of [SagaOutput].
      * @return A [SagaOutput] instance.
      */
-    fun <T> merge(
-      context: CoroutineContext,
-      monitor: ISagaMonitor,
-      outputs: Collection<SagaOutput<T>>
-    ): SagaOutput<T> where T : Any {
-      return SagaOutput(context, monitor, Flowable.merge(outputs.map { it.stream }))
+    fun <T> merge(monitor: ISagaMonitor, outputs: Collection<SagaOutput<T>>): SagaOutput<T> where T : Any {
+      return SagaOutput(monitor, Flowable.merge(outputs.map { it.stream }))
     }
   }
 
@@ -93,7 +86,7 @@ class SagaOutput<T : Any>(
   }
 
   private fun <T2> with(newStream: Flowable<T2>): ISagaOutput<T2> where T2 : Any {
-    return SagaOutput(this.context, this.monitor, newStream, { this.dispose() })
+    return SagaOutput(this.monitor, newStream, { this.dispose() })
   }
 
   override fun <T2> flatMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any {
@@ -129,6 +122,4 @@ class SagaOutput<T : Any>(
   override fun subscribe(onValue: (T) -> Unit, onError: (Throwable) -> Unit) {
     this.disposable.add(this.stream.subscribe(onValue, onError))
   }
-
-  override val coroutineContext: CoroutineContext get() = this.context
 }
