@@ -9,6 +9,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import io.reactivex.disposables.Disposables
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.SupervisorJob
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -46,7 +47,7 @@ class SagaMiddlewareTest : BaseMiddlewareTest() {
     val input = this.mockMiddlewareInput(0)
     outputs.forEachIndexed { i, o -> monitor.addOutputDispatcher(i.toLong(), o.onAction) }
 
-    val middleware = SagaMiddleware.create(context, monitor, effects)
+    val middleware = SagaMiddleware.create(context, monitor, Schedulers.computation(), effects)
     val wrappedDispatch = middleware.invoke(input)(this.mockDispatchWrapper()).dispatch
 
     // When

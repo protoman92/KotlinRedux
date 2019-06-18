@@ -21,7 +21,6 @@ import org.robolectric.annotation.Config
 import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeLiveData
 import org.swiften.redux.saga.common.CommonEffects.await
 import org.swiften.redux.saga.common.SagaInput
-import org.swiften.redux.saga.common.SagaMonitor
 import org.swiften.redux.saga.common.flatMap
 import java.util.Collections
 
@@ -37,13 +36,12 @@ class LiveDataEffectTest {
   @Test
   fun test_takeLiveDataEffect_shouldStreamLiveData() {
     // Setup
-    val monitor = SagaMonitor()
     val data = MutableLiveData<Int>()
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
     takeLiveData { data }
       .flatMap { v -> await { delay(500); v } }
-      .invoke(SagaInput(monitor))
+      .invoke(SagaInput())
       .subscribe({ finalValues.add(it) })
 
     // When

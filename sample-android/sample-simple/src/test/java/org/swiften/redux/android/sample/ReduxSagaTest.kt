@@ -37,7 +37,11 @@ class SearchSagaTest : ReduxSagaTest() {
     }
 
     Redux.Saga.searchSaga(api, debounce = 0)
-      .invoke(SagaInput({ a -> dispatched.add(a); EmptyJob }, { state }, monitor))
+      .invoke(SagaInput(
+        dispatch = { a -> dispatched.add(a); EmptyJob },
+        lastState = { state },
+        monitor = monitor)
+      )
       .subscribe({})
 
     // When
@@ -71,7 +75,11 @@ class SearchSagaTest : ReduxSagaTest() {
     }
 
     Redux.Saga.searchSaga(api, debounce = 0)
-      .invoke(SagaInput({ a -> dispatched.add(a); EmptyJob }, { state }, monitor))
+      .invoke(SagaInput(
+        dispatch = { a -> dispatched.add(a); EmptyJob },
+        lastState = { state },
+        monitor = monitor)
+      )
       .subscribe({})
 
     // When

@@ -9,7 +9,6 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.SupervisorJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IAsyncJob
@@ -19,6 +18,7 @@ import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.core.NoopActionDispatcher
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /** Created by haipham on 2019/01/07 */
 /**
@@ -43,30 +43,12 @@ typealias ISagaEffectTransformer<R, R2> = (SagaEffect<R>) -> SagaEffect<R2>
  * @param dispatch See [IReduxStore.dispatch].
  */
 class SagaInput(
-  private val context: CoroutineContext,
-  internal val dispatch: IActionDispatcher,
-  internal val lastState: IStateGetter<*>,
-  val monitor: ISagaMonitor,
+  private val context: CoroutineContext = EmptyCoroutineContext,
+  internal val dispatch: IActionDispatcher = NoopActionDispatcher,
+  internal val lastState: IStateGetter<*> = {},
+  val monitor: ISagaMonitor = SagaMonitor(),
   internal val scheduler: Scheduler = Schedulers.io()
 ) : CoroutineScope {
-  constructor(
-    dispatch: IActionDispatcher,
-    lastState: IStateGetter<*>,
-    monitor: ISagaMonitor,
-    scheduler: Scheduler = Schedulers.io()
-  ) : this(GlobalScope.coroutineContext, dispatch, lastState, monitor, scheduler)
-
-  constructor(
-    dispatch: IActionDispatcher,
-    monitor: ISagaMonitor,
-    scheduler: Scheduler = Schedulers.io()
-  ) : this(dispatch, {}, monitor, scheduler)
-
-  constructor(
-    monitor: ISagaMonitor,
-    scheduler: Scheduler = Schedulers.io()
-  ) : this(NoopActionDispatcher, monitor, scheduler)
-
   override val coroutineContext: CoroutineContext get() = this.context + SupervisorJob()
 }
 
