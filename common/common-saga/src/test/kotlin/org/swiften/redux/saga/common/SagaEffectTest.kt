@@ -207,9 +207,12 @@ class SagaEffectTest : OverridableSagaEffectTest() {
     val finalValues = synchronizedList(arrayListOf<Pair<State, State>>())
 
     val takeEffect = takeAction(Container::class) { it }.switchMap { action ->
-      val lastState = store!!.lastState()
-      val newState = reducer(lastState, action)
-      selectFromState(State::class) { s -> s to newState }.doOnValue { finalValues.add(it) }
+      await {
+        val lastState = store!!.lastState()
+        val newState = reducer(lastState, action)
+        val value = selectFromState(State::class) { s -> s to newState }.await(it)
+        finalValues.add(value)
+      }
     }
 
     store = applyMiddlewares<State>(

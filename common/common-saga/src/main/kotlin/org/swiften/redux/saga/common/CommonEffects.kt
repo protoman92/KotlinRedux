@@ -22,17 +22,6 @@ object CommonEffects {
   }
 
   /**
-   * Create a [DoOnValueEffect] instance.
-   * @param R The result emission type.
-   * @param performer See [DoOnValueEffect.performer].
-   * @return An [ISagaEffectTransformer] instance.
-   */
-  @JvmStatic
-  fun <R> doOnValue(performer: (R) -> Unit): ISagaEffectTransformer<R, R> where R : Any {
-    return { DoOnValueEffect(it, performer) }
-  }
-
-  /**
    * Create a [FlatMapEffect] instance with [FlatMapEffect.Mode.EVERY].
    * @param P The source emission type.
    * @param R The result emission type.

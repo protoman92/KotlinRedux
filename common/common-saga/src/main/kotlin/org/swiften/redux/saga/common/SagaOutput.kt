@@ -8,7 +8,6 @@ package org.swiften.redux.saga.common
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.rx2.rxSingle
 import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
@@ -97,36 +96,12 @@ class SagaOutput<T : Any>(
     return SagaOutput(this.context, this.monitor, newStream, { this.dispose() })
   }
 
-  override fun <T2> map(transform: (T) -> T2): ISagaOutput<T2> where T2 : Any {
-    return this.with(this.stream.map(transform))
-  }
-
-  override fun <T2> mapSuspend(transform: suspend CoroutineScope.(T) -> T2): ISagaOutput<T2> where T2 : Any {
-    return this.with(this.stream.flatMap { v ->
-      this@SagaOutput.rxSingle { transform(this, v) }.toFlowable()
-    })
-  }
-
-  override fun <T2> mapAsync(
-    transform: suspend CoroutineScope.(T) -> Deferred<T2>
-  ): ISagaOutput<T2> where T2 : Any {
-    return this.mapSuspend { transform(it).await() }
-  }
-
-  override fun doOnValue(performer: (T) -> Unit): ISagaOutput<T> {
-    return this.with(this.stream.doOnNext(performer))
-  }
-
   override fun <T2> flatMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any {
     return this.with(this.stream.flatMap { (transform(it) as SagaOutput<T2>).stream })
   }
 
   override fun <T2> switchMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any {
     return this.with(this.stream.switchMap { (transform(it) as SagaOutput<T2>).stream })
-  }
-
-  override fun filter(predicate: (T) -> Boolean): ISagaOutput<T> {
-    return this.with(this.stream.filter(predicate))
   }
 
   override fun delay(millis: Long): ISagaOutput<T> {
@@ -139,39 +114,9 @@ class SagaOutput<T : Any>(
     return this.with(this.stream.debounce(millis, TimeUnit.MILLISECONDS))
   }
 
-  override fun catchError(catcher: (Throwable) -> T): ISagaOutput<T> {
-    return this.with(this.stream.onErrorReturn(catcher))
-  }
-
-  override fun catchError(secondOutput: ISagaOutput<T>): ISagaOutput<T> {
-    return this.with(this.stream.onErrorResumeNext((secondOutput as SagaOutput<T>).stream))
-  }
-
-  override fun catchSuspend(catcher: suspend CoroutineScope.(Throwable) -> T): ISagaOutput<T> {
-    return this.with(this.stream.onErrorResumeNext { e: Throwable ->
-      this@SagaOutput.rxSingle { catcher(this, e) }.toFlowable()
-    })
-  }
-
-  override fun catchAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<T>): ISagaOutput<T> {
-    return this.catchSuspend { catcher(it).await() }
-  }
-
   override fun dispose() {
     this.disposable.clear(); this.onDispose()
   }
-
-  override fun ifEmpty(defaultValue: T): ISagaOutput<T> {
-    return this.with(this.stream.defaultIfEmpty(defaultValue))
-  }
-
-  override fun ifEmpty(secondOutput: ISagaOutput<T>): ISagaOutput<T> {
-    return this.with(this.stream.switchIfEmpty((secondOutput as SagaOutput<T>).stream))
-  }
-
-  override fun retry(times: Long) = this.with(this.stream.retry(times))
-
-  override fun timeout(millis: Long) = this.with(this.stream.timeout(millis, TimeUnit.MILLISECONDS))
 
   override fun await(): T = this.stream.blockingFirst()
 

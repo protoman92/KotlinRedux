@@ -6,7 +6,6 @@
 package org.swiften.redux.saga.common
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IAsyncJob
@@ -65,34 +64,6 @@ interface ISagaOutput<T> : IAsyncJob<T>, IUniqueIDProvider where T : Any {
   val onAction: IActionDispatcher
 
   /**
-   * Catch [Throwable] with [catcher].
-   * @param catcher Function that catches [Throwable] and returns [T].
-   * @return An [ISagaOutput] instance.
-   */
-  fun catchError(catcher: (Throwable) -> T): ISagaOutput<T>
-
-  /**
-   * Catch [Throwable] and switch to [secondOutput].
-   * @param secondOutput A fallback [ISagaOutput] instance.
-   * @return An [ISagaOutput] instance.
-   */
-  fun catchError(secondOutput: ISagaOutput<T>): ISagaOutput<T>
-
-  /**
-   * Catch [Throwable] with a suspending [catcher].
-   * @param catcher Function that catches [Throwable] in a [CoroutineScope] and returns [T].
-   * @return An [ISagaOutput] instance.
-   */
-  fun catchSuspend(catcher: suspend CoroutineScope.(Throwable) -> T): ISagaOutput<T>
-
-  /**
-   * Catch [Throwable] with an async [catcher].
-   * @param catcher Function that catches [Throwable] in a [CoroutineScope] and returns [T].
-   * @return An [ISagaOutput] instance.
-   */
-  fun catchAsync(catcher: suspend CoroutineScope.(Throwable) -> Deferred<T>): ISagaOutput<T>
-
-  /**
    * Delay each emission by [millis].
    * @param millis Delay time in milliseconds.
    * @return An [ISagaOutput] instance.
@@ -103,65 +74,12 @@ interface ISagaOutput<T> : IAsyncJob<T>, IUniqueIDProvider where T : Any {
   fun dispose()
 
   /**
-   * Perform some side effects with [performer] on each emission.
-   * @param performer Function that takes [T] to perform some side effects.
-   * @return An [ISagaOutput] instance.
-   */
-  fun doOnValue(performer: (T) -> Unit): ISagaOutput<T>
-
-  /**
    * Debounce emissions by [millis], i.e. accepting only values that are [millis] away from their
    * immediate predecessors.
    * @param millis Debounce time in milliseconds.
    * @return An [ISagaOutput] instance.
    */
   fun debounce(millis: Long): ISagaOutput<T>
-
-  /**
-   * Filter out values that do not pass [predicate].
-   * @param predicate Function that takes [T] and performs some logic checking, returning [Boolean].
-   * @return An [ISagaOutput] instance.
-   */
-  fun filter(predicate: (T) -> Boolean): ISagaOutput<T>
-
-  /**
-   * Emit [defaultValue] if the stream is empty.
-   * @param defaultValue A [T] instance.
-   * @return An [ISagaOutput] instance.
-   */
-  fun ifEmpty(defaultValue: T): ISagaOutput<T>
-
-  /**
-   * Switch to [secondOutput] if the stream is empty.
-   * @param secondOutput A fallback [ISagaOutput] instance.
-   * @return An [ISagaOutput] instance.
-   */
-  fun ifEmpty(secondOutput: ISagaOutput<T>): ISagaOutput<T>
-
-  /**
-   * Map emissions from [T] to [T2] with [transform].
-   * @param T2 The type of emission of the resulting [ISagaOutput].
-   * @param transform Function that maps from [T] to [T2].
-   * @return An [ISagaOutput] instance.
-   */
-  fun <T2> map(transform: (T) -> T2): ISagaOutput<T2> where T2 : Any
-
-  /**
-   * Map emissions from [T] to [T2] with suspending [transform].
-   * @param T2 The type of emission of the resulting [ISagaOutput].
-   * @param transform Function that maps from [T] to [T2] in a [CoroutineScope].
-   * @return An [ISagaOutput] instance.
-   */
-  fun <T2> mapSuspend(transform: suspend CoroutineScope.(T) -> T2): ISagaOutput<T2> where T2 : Any
-
-  /**
-   * Map emissions from [T] to [T2] with async [transform].
-   * @param T2 The type of emission of the resulting [ISagaOutput].
-   * @param transform Function that maps from [T] to [T2] in a [CoroutineScope].
-   * @return An [ISagaOutput] instance.
-   */
-  fun <T2> mapAsync(transform: suspend CoroutineScope.(T) -> Deferred<T2>): ISagaOutput<T2>
-    where T2 : Any
 
   /**
    * Flatten emissions from [ISagaOutput] produced by [transform].
@@ -172,13 +90,6 @@ interface ISagaOutput<T> : IAsyncJob<T>, IUniqueIDProvider where T : Any {
   fun <T2> flatMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any
 
   /**
-   * Retry [times] if a [Throwable] is encountered.
-   * @param times The number of times to retry.
-   * @return An [ISagaOutput] instance.
-   */
-  fun retry(times: Long): ISagaOutput<T>
-
-  /**
    * Flatten emissions from [ISagaOutput] produced by [transform], but accept only those from
    * the latest one.
    * @param T2 The type of emission of the resulting [ISagaOutput].
@@ -186,13 +97,6 @@ interface ISagaOutput<T> : IAsyncJob<T>, IUniqueIDProvider where T : Any {
    * @return An [ISagaOutput] instance.
    */
   fun <T2> switchMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any
-
-  /**
-   * Time out if no element is emitted within [millis].
-   * @param millis Timeout time in milliseconds.
-   * @return An [ISagaOutput] instance.
-   */
-  fun timeout(millis: Long): ISagaOutput<T>
 
   /**
    * Subscribe to values with [onValue], and error with [onError].
