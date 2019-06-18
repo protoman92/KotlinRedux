@@ -5,11 +5,9 @@
 
 package org.swiften.redux.saga.common
 
-import kotlinx.coroutines.CoroutineScope
-
 /** Created by viethai.pham on 2019/02/17 */
 /** Produces a value using [SagaInput] and [ISagaOutput.awaitFor]. */
-typealias IAwaitCreator<R> = suspend CoroutineScope.(SagaInput) -> R
+typealias IAwaitCreator<R> = suspend (SagaInput) -> R
 
 /**
  * [SagaEffect] whose [ISagaOutput] is created from [creator], which is a function that creates
@@ -20,6 +18,6 @@ typealias IAwaitCreator<R> = suspend CoroutineScope.(SagaInput) -> R
  */
 class AwaitEffect<R>(private val creator: IAwaitCreator<R>) : SingleSagaEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
-    return SagaOutput.from(p1.context, p1.monitor) { this@AwaitEffect.creator(this, p1) }
+    return SagaOutput.from(p1, p1.monitor) { this@AwaitEffect.creator(p1) }
   }
 }

@@ -151,7 +151,7 @@ abstract class OverridableSagaEffectTest : CommonSagaEffectTest() {
     val sourceOutput = createTakeEffect { a ->
       await {
         val value = (a as Action).value
-        this.async { value * 2 }.await()
+        it.async { value * 2 }.await()
         putInStore(DefaultReduxAction.Dummy).await(it)
       }
     }.invoke(SagaInput(monitor))
@@ -261,14 +261,14 @@ class SagaEffectTest : OverridableSagaEffectTest() {
     takeAction(Action::class) { it.query }.switchMap { query ->
       await {
         try {
-          this.searchMusicStoreAsync("unavailable$query").await()
+          it.searchMusicStoreAsync("unavailable$query").await()
         } catch (e: Exception) {
           "Failed for some reasons"
         }
       }
     }
       .invoke(SagaInput(monitor))
-      .subscribe({ finalValues.add(it) }, {println(it)})
+      .subscribe({ finalValues.add(it) })
 
     // When
     for (i in 0 until 20) { monitor.dispatch(Action("$i")) }
