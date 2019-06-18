@@ -17,7 +17,7 @@ import com.google.samples.apps.sunflower.data.PlantRepository
 import kotlinx.android.parcel.Parcelize
 import org.swiften.kotlinfp.Option
 import org.swiften.redux.android.saga.rx.core.CoreAndroidEffects.watchConnectivity
-import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeEveryData
+import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeLiveData
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
@@ -170,7 +170,7 @@ object Redux {
             is Screen.PlantListToPlantDetail -> it.plantId
           }
         }.switchMap { plantId ->
-          takeEveryData {
+          takeLiveData {
             Transformations.map(api.getGardenPlantingForPlant(plantId)) { Option.wrap(it) }
           }.flatMap { putInStore(Action.UpdateSelectedPlantStatus(it != null)) }
         }
@@ -191,7 +191,7 @@ object Redux {
 
       /** Bridge to sync [GardenPlanting] using [GardenPlantingRepository.getGardenPlantings] */
       private fun syncGardenPlantings(api: GardenPlantingRepository): SagaEffect<Any> {
-        return takeEveryData { api.getGardenPlantings() }.flatMap { putInStore(Action.UpdateGardenPlantings(it)) }
+        return takeLiveData { api.getGardenPlantings() }.flatMap { putInStore(Action.UpdateGardenPlantings(it)) }
       }
 
       /**
@@ -199,7 +199,7 @@ object Redux {
        * [GardenPlantingRepository.getPlantAndGardenPlantings]
        */
       private fun syncPlantAndGardenPlantings(api: GardenPlantingRepository): SagaEffect<Any> {
-        return takeEveryData { api.getPlantAndGardenPlantings() }.flatMap {
+        return takeLiveData { api.getPlantAndGardenPlantings() }.flatMap {
           val plantings = it.filter { it.gardenPlantings.isNotEmpty() }
           putInStore(Action.UpdatePlantAndGardenPlantings(plantings))
         }
@@ -234,7 +234,7 @@ object Redux {
        * the selected grow zone.
        */
       private fun syncPlants(api: PlantRepository): SagaEffect<Any> {
-        return takeEveryData { api.getPlants() }.flatMap { plants ->
+        return takeLiveData { api.getPlants() }.flatMap { plants ->
           await {
             val zone = selectFromState(State::class) { it.selectedGrowZone }.await(it)
 
@@ -254,9 +254,9 @@ object Redux {
       private fun syncPlantsOnGrowZone(api: PlantRepository): SagaEffect<Any> {
         return takeAction(Action.SelectGrowZone::class) { it.zone }.switchMap { zone ->
           if (zone == NO_GROW_ZONE) {
-            takeEveryData { api.getPlants() }
+            takeLiveData { api.getPlants() }
           } else {
-            takeEveryData { api.getPlantsWithGrowZoneNumber(zone) }
+            takeLiveData { api.getPlantsWithGrowZoneNumber(zone) }
           }.flatMap { putInStore(Action.UpdatePlants(it)) }
         }
       }
