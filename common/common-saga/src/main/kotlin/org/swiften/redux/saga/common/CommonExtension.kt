@@ -18,17 +18,6 @@ fun <R> SagaEffect<R>.delayUpstreamValue(millis: Long): SagaEffect<R> where R : 
 }
 
 /**
- * Invoke a [DoOnValueEffect] on [this].
- * @receiver See [DoOnValueEffect.source].
- * @param R The result emission type.
- * @param performer See [DoOnValueEffect.performer].
- * @return A [SagaEffect] instance.*
- */
-fun <R> SagaEffect<R>.doOnValue(performer: (R) -> Unit): SagaEffect<R> where R : Any {
-  return this.transform(CommonEffects.doOnValue(performer))
-}
-
-/**
  * Invoke a [FlatMapEffect] on the current [ISagaEffect] with [FlatMapEffect.Mode.EVERY].
  * @receiver See [FlatMapEffect.source].
  * @param P The source emission type.
