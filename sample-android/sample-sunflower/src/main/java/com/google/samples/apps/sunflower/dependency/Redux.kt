@@ -15,17 +15,16 @@ import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.data.PlantRepository
 import kotlinx.android.parcel.Parcelize
-import org.swiften.kotlinfp.Option
 import org.swiften.redux.android.saga.rx.core.CoreAndroidEffects.watchConnectivity
 import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeLiveData
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
-import org.swiften.redux.saga.common.CommonEffects.put
-import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.CommonEffects.await
+import org.swiften.redux.saga.common.CommonEffects.put
 import org.swiften.redux.saga.common.CommonEffects.select
 import org.swiften.redux.saga.common.CommonEffects.takeAction
+import org.swiften.redux.saga.common.SagaEffect
 import org.swiften.redux.saga.common.flatMap
 import org.swiften.redux.saga.common.switchMap
 import org.swiften.redux.thunk.IReduxThunkAction
@@ -34,6 +33,8 @@ import org.swiften.redux.thunk.ThunkFunction
 /** Created by haipham on 2019/01/16 */
 object Redux {
   const val NO_GROW_ZONE = -1
+
+  private class Boxed<T>(val value: T)
 
   @Parcelize
   data class SelectedPlant(val id: String, val isPlanted: Boolean? = null) : Parcelable
@@ -171,15 +172,15 @@ object Redux {
           }
         }.switchMap { plantId ->
           takeLiveData {
-            Transformations.map(api.getGardenPlantingForPlant(plantId)) { Option.wrap(it) }
-          }.flatMap { put(Action.UpdateSelectedPlantStatus(it != null)) }
+            Transformations.map(api.getGardenPlantingForPlant(plantId)) { Boxed(it) }
+          }.flatMap { put(Action.UpdateSelectedPlantStatus(it.value != null)) }
         }
       }
 
       private fun selectPlantFromGarden(): SagaEffect<Any> {
         return takeAction(Action.SelectPlantFromGarden::class) { it.index }.flatMap { index ->
           await {
-            val plantings = select(State::class) { Option.wrap(it.plantAndGardenPlantings) }.await(it)
+            val plantings = select(State::class) { Boxed(it.plantAndGardenPlantings) }.await(it)
             val planting = plantings.value?.elementAtOrNull(index)
 
             if (planting != null) {
@@ -218,7 +219,7 @@ object Redux {
       private fun selectPlantFromPlantList(): SagaEffect<Any> {
         return takeAction(Action.SelectPlantFromPlantList::class) { it.index }.flatMap { index ->
           await {
-            val plants = select(State::class) { Option.wrap(it.plants) }.await(it)
+            val plants = select(State::class) { Boxed(it.plants) }.await(it)
             val plant = plants.value?.elementAtOrNull(index)
 
             if (plant != null) {

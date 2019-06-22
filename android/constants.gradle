@@ -1,5 +1,5 @@
 project.ext {
-  gradle = "3.3.0"
+  gradle = "3.4.1"
   androidMavenGradle = "2.1"
   compileSdk = 28
   minSdk = 14

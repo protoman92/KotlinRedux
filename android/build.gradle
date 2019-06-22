@@ -8,10 +8,10 @@ buildscript {
   }
 
   dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
-    classpath 'com.android.tools.build:gradle:3.4.0'
-    classpath "com.github.dcendents:android-maven-gradle-plugin:$androidMavenGradle"
-    classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$project.ext.kotlin"
+    classpath "com.android.tools.build:gradle:$project.ext.gradle"
+    classpath "com.github.dcendents:android-maven-gradle-plugin:$project.ext.androidMavenGradle"
+    classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$project.ext.dokka"
   } 
 }
 
@@ -81,14 +81,14 @@ subprojects {
   dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin"
-    testImplementation "junit:junit:$junit"
-    testImplementation "androidx.test:runner:$testRunner"
-    testImplementation "androidx.test.ext:junit:$androidxJunit"
-    testImplementation "org.robolectric:robolectric:$robolectric"
-    androidTestImplementation "androidx.test:runner:$testRunner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
-    androidTestImplementation "androidx.test.ext:junit:$androidxJunit"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin"
+    testImplementation "junit:junit:$project.ext.junit"
+    testImplementation "androidx.test:runner:$project.ext.testRunner"
+    testImplementation "androidx.test.ext:junit:$project.ext.androidxJunit"
+    testImplementation "org.robolectric:robolectric:$project.ext.robolectric"
+    androidTestImplementation "androidx.test:runner:$project.ext.testRunner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$project.ext.espresso"
+    androidTestImplementation "androidx.test.ext:junit:$project.ext.androidxJunit"
   }
 }
 
@@ -99,7 +99,7 @@ project(':android:android-ui') {
     api project(':common:common-core')
     api project(':common:common-ui')
     api project(':android:android-util')
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.kotlinCoroutines"
     testImplementation project (path: ":common:common-ui", configuration: 'testArtifacts')
   }
 }
@@ -117,8 +117,8 @@ project(':android:android-recyclerview') {
   dependencies {
     api project(':android:android-ui')
     api project(':android:android-lifecycle')
-    implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle"
-    implementation "androidx.recyclerview:recyclerview:$recyclerView"
+    implementation "androidx.lifecycle:lifecycle-runtime:$project.ext.lifecycle"
+    implementation "androidx.recyclerview:recyclerview:$project.ext.recyclerView"
     testImplementation project (path: ":android:android-lifecycle", configuration: 'testArtifacts')
   }
 }
@@ -126,20 +126,20 @@ project(':android:android-recyclerview') {
 project(':android:android-saga') {
   dependencies {
     api project(':common:common-saga')
-    implementation "io.reactivex.rxjava2:rxjava:$rxJava"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
-    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
+    implementation "io.reactivex.rxjava2:rxjava:$project.ext.rxJava"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.kotlinCoroutines"
+    implementation "io.reactivex.rxjava2:rxkotlin:$project.ext.rxKotlin"
   }
 }
 
 project(':android:android-livedata-saga') {
   dependencies {
     api project(':common:common-saga')
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
-    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle"
-    implementation "io.reactivex.rxjava2:rxjava:$rxJava"
-    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid"
-    testImplementation "androidx.arch.core:core-testing:$androidxCoreTest"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$project.ext.kotlinCoroutines"
+    implementation "androidx.lifecycle:lifecycle-livedata:$project.ext.lifecycle"
+    implementation "io.reactivex.rxjava2:rxjava:$project.ext.rxJava"
+    implementation "io.reactivex.rxjava2:rxandroid:$project.ext.rxAndroid"
+    testImplementation "androidx.arch.core:core-testing:$project.ext.androidxCoreTest"
   }
 }
 
