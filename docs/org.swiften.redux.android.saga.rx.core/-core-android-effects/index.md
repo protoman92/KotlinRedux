@@ -2,7 +2,7 @@
 
 # CoreAndroidEffects
 
-`object CoreAndroidEffects` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-rx-saga/src/main/java/org/swiften/redux/android/saga/rx/core/CoreAndroidEffects.kt#L14)
+`object CoreAndroidEffects` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-saga/src/main/java/org/swiften/redux/android/saga/rx/core/CoreAndroidEffects.kt#L14)
 
 Core [ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) for Android.
 

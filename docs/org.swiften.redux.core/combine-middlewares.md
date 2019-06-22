@@ -16,7 +16,7 @@ produce a [DispatchWrapper](-dispatch-wrapper/index.md).
 **Return**
 Function that maps [IReduxStore.dispatch](-i-dispatcher-provider/dispatch.md) to a [DispatchMapper](-dispatch-mapper.md).
 
-`fun <GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> combineMiddlewares(vararg middlewares: `[`IMiddleware`](-i-middleware.md)`<`[`GState`](combine-middlewares.md#GState)`>): (`[`IReduxStore`](-i-redux-store.md)`<`[`GState`](combine-middlewares.md#GState)`>) -> `[`IActionDispatcher`](-i-action-dispatcher.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Middleware.kt#L93)
+`fun <GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> combineMiddlewares(vararg middlewares: `[`IMiddleware`](-i-middleware.md)`<`[`GState`](combine-middlewares.md#GState)`>): (`[`IReduxStore`](-i-redux-store.md)`<`[`GState`](combine-middlewares.md#GState)`>) -> `[`IActionDispatcher`](-i-action-dispatcher.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Middleware.kt#L91)
 
 Convenience [combineMiddlewares](./combine-middlewares.md) that takes varargs [middlewares](combine-middlewares.md#org.swiften.redux.core$combineMiddlewares(kotlin.Array((kotlin.Function1((org.swiften.redux.core.MiddlewareInput((org.swiften.redux.core.combineMiddlewares.GState)), kotlin.Function1((org.swiften.redux.core.DispatchWrapper, )))))))/middlewares).
 

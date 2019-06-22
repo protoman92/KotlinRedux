@@ -2,9 +2,9 @@
 
 # wrap
 
-`fun wrap(wrapper: `[`DispatchWrapper`](index.md)`, id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, dispatch: `[`IActionDispatcher`](../-i-action-dispatcher.md)`): `[`DispatchWrapper`](index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/DispatchWrapper.kt#L34)
+`fun wrap(wrapper: `[`DispatchWrapper`](index.md)`, id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, dispatch: (`[`IReduxAction`](../-i-redux-action.md)`) -> `[`IAwaitable`](../-i-awaitable/index.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>): `[`DispatchWrapper`](index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/DispatchWrapper.kt#L34)
 
-Wrap another [DispatchWrapper](index.md) with a new [id](wrap.md#org.swiften.redux.core.DispatchWrapper.Companion$wrap(org.swiften.redux.core.DispatchWrapper, kotlin.String, kotlin.Function1((org.swiften.redux.core.IReduxAction, org.swiften.redux.core.IAsyncJob((kotlin.Any)))))/id) and [dispatch](wrap.md#org.swiften.redux.core.DispatchWrapper.Companion$wrap(org.swiften.redux.core.DispatchWrapper, kotlin.String, kotlin.Function1((org.swiften.redux.core.IReduxAction, org.swiften.redux.core.IAsyncJob((kotlin.Any)))))/dispatch).
+Wrap another [DispatchWrapper](index.md) with a new [id](wrap.md#org.swiften.redux.core.DispatchWrapper.Companion$wrap(org.swiften.redux.core.DispatchWrapper, kotlin.String, kotlin.Function1((org.swiften.redux.core.IReduxAction, org.swiften.redux.core.IAwaitable((kotlin.Any)))))/id) and [dispatch](wrap.md#org.swiften.redux.core.DispatchWrapper.Companion$wrap(org.swiften.redux.core.DispatchWrapper, kotlin.String, kotlin.Function1((org.swiften.redux.core.IReduxAction, org.swiften.redux.core.IAwaitable((kotlin.Any)))))/dispatch).
 
 ### Parameters
 

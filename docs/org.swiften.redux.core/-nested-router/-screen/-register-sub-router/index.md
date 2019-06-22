@@ -8,10 +8,10 @@
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `RegisterSubRouter(subRouter: `[`IVetoableRouter`](../../../-i-vetoable-router/index.md)`)` |
+| [&lt;init&gt;](-init-.md) | `RegisterSubRouter(subRouter: `[`IVetoableSubRouter`](../../../-i-vetoable-sub-router/index.md)`)` |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
-| [subRouter](sub-router.md) | `val subRouter: `[`IVetoableRouter`](../../../-i-vetoable-router/index.md) |
+| [subRouter](sub-router.md) | `val subRouter: `[`IVetoableSubRouter`](../../../-i-vetoable-sub-router/index.md) |

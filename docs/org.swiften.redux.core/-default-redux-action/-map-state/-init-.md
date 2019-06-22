@@ -4,5 +4,5 @@
 
 `MapState(fn: (`[`GState`](index.md#GState)`) -> `[`GState`](index.md#GState)`)`
 
-Replace the current [GState](index.md#GState) with [fn](fn.md)
+Replace the current [GState](index.md#GState) with [fn](fn.md).
 

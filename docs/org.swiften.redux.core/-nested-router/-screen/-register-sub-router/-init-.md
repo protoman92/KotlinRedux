@@ -2,4 +2,4 @@
 
 # &lt;init&gt;
 
-`RegisterSubRouter(subRouter: `[`IVetoableRouter`](../../../-i-vetoable-router/index.md)`)`
+`RegisterSubRouter(subRouter: `[`IVetoableSubRouter`](../../../-i-vetoable-sub-router/index.md)`)`

@@ -4,5 +4,5 @@
 
 `ReplaceState(state: `[`State`](index.md#State)`)`
 
-Replace the current [State](index.md#State) with [state](state.md)
+Replace the current [State](index.md#State) with [state](state.md).
 

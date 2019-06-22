@@ -30,4 +30,4 @@ instances in a thread-safe manner.
 
 | Name | Summary |
 |---|---|
-| [invoke](invoke.md) | `fun invoke(p1: `[`IReduxAction`](../-i-redux-action.md)`): `[`IAsyncJob`](../-i-async-job/index.md)`<*>` |
+| [invoke](invoke.md) | `fun invoke(p1: `[`IReduxAction`](../-i-redux-action.md)`): `[`IAwaitable`](../-i-awaitable/index.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` |

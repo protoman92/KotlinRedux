@@ -2,15 +2,10 @@
 
 # &lt;init&gt;
 
-`PutEffect(source: `[`ISagaEffect`](../-i-saga-effect.md)`<`[`P`](index.md#P)`>, actionCreator: (`[`P`](index.md#P)`) -> `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`)`
+`PutEffect(action: `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`)`
 
-[ISagaEffect](../-i-saga-effect.md) whose [ISagaOutput](../-i-saga-output/index.md) deposits some values emitted by [source](source.md) into a [IReduxStore](../../org.swiften.redux.core/-i-redux-store.md)
-using [actionCreator](action-creator.md).
+[ISagaEffect](../-i-saga-effect.md) whose [ISagaOutput](../-i-saga-output/index.md) dispatches some [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md).
 
 ### Parameters
 
-`P` - The source emission type.
-
-`source` - The source [ISagaEffect](../-i-saga-effect.md).
-
-`actionCreator` - Function that creates [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) from [P](index.md#P).
+`action` - The [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) to be dispatched.

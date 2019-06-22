@@ -2,30 +2,36 @@
 
 # SagaMiddleware
 
-`class SagaMiddleware : `[`IMiddleware`](../../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/SagaMiddleware.kt#L30)
+`class SagaMiddleware : `[`IMiddleware`](../../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/SagaMiddleware.kt#L33)
 
 [IMiddleware](../../org.swiften.redux.core/-i-middleware.md) implementation for [ISagaEffect](../-i-saga-effect.md). Every time an [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) is received, call
 [ISagaOutput.onAction](../-i-saga-output/on-action.md).
 
 ### Parameters
 
-`effects` - The [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html) of [ISagaEffect](../-i-saga-effect.md) to run.
-
 `context` - The [CoroutineContext](#) with which to perform asynchronous work on.
+
+`monitor` - A [SagaMonitor](../-saga-monitor/index.md) instance.
+
+`scheduler` - A [Scheduler](#) instance.
+
+`effects` - The [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html) of [ISagaEffect](../-i-saga-effect.md) to run.
 
 ### Constructors
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `SagaMiddleware(context: <ERROR CLASS>, monitor: `[`SagaMonitor`](../-saga-monitor/index.md)`, effects: `[`Collection`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)`<`[`ISagaEffect`](../-i-saga-effect.md)`<*>>)`<br>[IMiddleware](../../org.swiften.redux.core/-i-middleware.md) implementation for [ISagaEffect](../-i-saga-effect.md). Every time an [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) is received, call [ISagaOutput.onAction](../-i-saga-output/on-action.md). |
+| [&lt;init&gt;](-init-.md) | `SagaMiddleware(context: <ERROR CLASS>, monitor: `[`SagaMonitor`](../-saga-monitor/index.md)`, scheduler: <ERROR CLASS>, effects: `[`Collection`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)`<`[`ISagaEffect`](../-i-saga-effect.md)`<*>>)`<br>[IMiddleware](../../org.swiften.redux.core/-i-middleware.md) implementation for [ISagaEffect](../-i-saga-effect.md). Every time an [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) is received, call [ISagaOutput.onAction](../-i-saga-output/on-action.md). |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
+| [composite](composite.md) | `internal val composite: <ERROR CLASS>` |
 | [context](context.md) | `val context: <ERROR CLASS>`<br>The [CoroutineContext](#) with which to perform asynchronous work on. |
 | [effects](effects.md) | `val effects: `[`Collection`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)`<`[`ISagaEffect`](../-i-saga-effect.md)`<*>>`<br>The [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html) of [ISagaEffect](../-i-saga-effect.md) to run. |
-| [monitor](monitor.md) | `val monitor: `[`SagaMonitor`](../-saga-monitor/index.md) |
+| [monitor](monitor.md) | `val monitor: `[`SagaMonitor`](../-saga-monitor/index.md)<br>A [SagaMonitor](../-saga-monitor/index.md) instance. |
+| [scheduler](scheduler.md) | `val scheduler: <ERROR CLASS>`<br>A [Scheduler](#) instance. |
 
 ### Functions
 
@@ -37,4 +43,4 @@
 
 | Name | Summary |
 |---|---|
-| [create](create.md) | `internal fun create(context: <ERROR CLASS>, monitor: `[`SagaMonitor`](../-saga-monitor/index.md)`, effects: `[`Collection`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)`<`[`ISagaEffect`](../-i-saga-effect.md)`<*>>): `[`IMiddleware`](../../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>`<br>Create a [SagaMiddleware](./index.md) with [effects](create.md#org.swiften.redux.saga.common.SagaMiddleware.Companion$create(, org.swiften.redux.saga.common.SagaMonitor, kotlin.collections.Collection((kotlin.Function1((org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.ISagaOutput((kotlin.Any)))))))/effects).`fun create(effects: `[`Collection`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)`<`[`ISagaEffect`](../-i-saga-effect.md)`<*>>): `[`IMiddleware`](../../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>`<br>Create a [SagaMiddleware](./index.md) with [effects](create.md#org.swiften.redux.saga.common.SagaMiddleware.Companion$create(kotlin.collections.Collection((kotlin.Function1((org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.ISagaOutput((kotlin.Any)))))))/effects) and a default [CoroutineContext](#) so this [SagaMiddleware](./index.md) does not have to share its [CoroutineContext](#) with any other user. |
+| [create](create.md) | `internal fun create(context: <ERROR CLASS>, monitor: `[`SagaMonitor`](../-saga-monitor/index.md)`, scheduler: <ERROR CLASS>, effects: `[`Collection`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)`<`[`ISagaEffect`](../-i-saga-effect.md)`<*>>): `[`SagaMiddleware`](./index.md)<br>Create a [SagaMiddleware](./index.md) with [effects](create.md#org.swiften.redux.saga.common.SagaMiddleware.Companion$create(, org.swiften.redux.saga.common.SagaMonitor, , kotlin.collections.Collection((kotlin.Function1((org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.ISagaOutput((kotlin.Any)))))))/effects).`fun create(scheduler: <ERROR CLASS> = Schedulers.computation(), effects: `[`Collection`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)`<`[`ISagaEffect`](../-i-saga-effect.md)`<*>>): `[`IMiddleware`](../../org.swiften.redux.core/-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>`<br>Create a [SagaMiddleware](./index.md) with [effects](create.md#org.swiften.redux.saga.common.SagaMiddleware.Companion$create(, kotlin.collections.Collection((kotlin.Function1((org.swiften.redux.saga.common.SagaInput, org.swiften.redux.saga.common.ISagaOutput((kotlin.Any)))))))/effects) and a default [CoroutineContext](#) so this [SagaMiddleware](./index.md) does not have to share its [CoroutineContext](#) with any other user. |

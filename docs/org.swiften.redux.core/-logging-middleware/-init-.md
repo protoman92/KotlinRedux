@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`LoggingMiddleware(logger: (`[`GState`](index.md#GState)`, `[`IReduxAction`](../-i-redux-action.md)`?) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`
+`internal LoggingMiddleware(logger: (`[`GState`](index.md#GState)`, `[`IReduxAction`](../-i-redux-action.md)`?) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`
 
 [IMiddleware](../-i-middleware.md) implementation that supports logging. Specify [logger](logger.md) to customize how events
 are formatted.
