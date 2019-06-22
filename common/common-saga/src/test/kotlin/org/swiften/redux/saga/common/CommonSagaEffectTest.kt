@@ -32,6 +32,8 @@ import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.saga.common.CommonEffects.await
 import org.swiften.redux.saga.common.CommonEffects.mergeAll
 import org.swiften.redux.saga.common.CommonEffects.put
+import org.swiften.redux.saga.common.CommonEffects.select
+import org.swiften.redux.saga.common.CommonEffects.takeAction
 import java.net.URL
 import java.util.Collections.synchronizedList
 import java.util.Random
@@ -235,31 +237,34 @@ class CommonSagaEffectTest {
   @Test
   fun `Take with selects should ensure thread-safety and that latest state is used`() {
     // Setup
-    data class State(val a1: Int? = null, val a2: Int? = null)
+    data class State(val a1: Int? = null, val a2: Int? = null, val lastAction: IReduxAction? = null)
 
     abstract class Container(val value: Int) : IReduxAction {
       override fun toString(): String = "${this.value}"
     }
 
-    class Action1(value: Int) : Container(value)
-    class Action2(value: Int) : Container(value)
+    class Action1(value: Int) : Container(value) {
+      override fun toString(): String = "A1 ${super.toString()}"
+    }
+
+    class Action2(value: Int) : Container(value) {
+      override fun toString(): String = "A2 ${super.toString()}"
+    }
 
     val reducer: IReducer<State, IReduxAction> = { state, action ->
       when (action) {
         is Action1 -> state.copy(a1 = action.value)
         is Action2 -> state.copy(a2 = action.value)
         else -> state
-      }
+      }.copy(lastAction = action)
     }
 
     var store: IReduxStore<State>? = null
     val finalValues = synchronizedList(arrayListOf<Pair<State, State>>())
 
-    val takeEffect = CommonEffects.takeAction(Container::class) { it }.flatMap { action ->
+    val takeEffect = takeAction(Container::class) { it }.flatMap { _ ->
       await {
-        val lastState = store!!.lastState()
-        val newState = reducer(lastState, action)
-        val value = CommonEffects.select(State::class) { s -> s to newState }.await(it)
+        val value = select(State::class) { s -> s to store!!.lastState() }.await(it)
         finalValues.add(value)
       }
     }
@@ -270,10 +275,10 @@ class CommonSagaEffectTest {
 
     // When
     val rand = Random()
-    val iteration = this.iteration
+    val iteration = 5
 
     (0 until iteration).map { i ->
-      GlobalScope.launch(Dispatchers.IO) {
+      GlobalScope.launch {
         if (rand.nextBoolean()) {
           store.dispatch(Action1(i)).await()
         } else {
@@ -288,7 +293,7 @@ class CommonSagaEffectTest {
       }
 
       // Then
-      assertEquals(finalValues.size, this@CommonSagaEffectTest.iteration)
+      assertEquals(finalValues.size, iteration)
       finalValues.forEach { assertEquals(it.first, it.second) }
     }
   }
