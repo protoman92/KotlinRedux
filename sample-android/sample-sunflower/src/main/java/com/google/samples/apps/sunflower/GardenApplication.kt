@@ -17,7 +17,6 @@ import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.ILifecycleInjectionHelper
 import org.swiften.redux.android.ui.lifecycle.injectActivityParcelable
 import org.swiften.redux.android.ui.lifecycle.injectLifecycle
-import org.swiften.redux.core.AsyncMiddleware
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.RouterMiddleware
 import org.swiften.redux.core.applyMiddlewares
@@ -37,7 +36,6 @@ class GardenApplication : Application() {
     }
 
     val store = applyMiddlewares<Redux.State>(
-      AsyncMiddleware.create(),
       RouterMiddleware.create(Router(this)),
       SagaMiddleware.create(
         effects = arrayListOf(
