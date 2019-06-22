@@ -74,7 +74,7 @@ sealed class Action : IReduxAction {
 }
 
 object Reducer : IReducer<GlobalState> {
-  override fun invoke(p1: GlobalState, p2: IReduxAction) -> GlobalState {
+  override fun invoke(p1: GlobalState, p2: IReduxAction): GlobalState {
     when (p2) {
       is Action -> when (p2) {
         is Action.SetQuery -> p1.copy(query = p2.query)
@@ -139,9 +139,9 @@ class Fragment1 : Fragment(),
   }
 
   // This is one of the only two lifecycle methods that you will need to worry about.
-  override fun beforePropInjectionStarts(...) {
+  override fun beforePropInjectionStarts(sp: StaticProp<State, Unit>) {
     this.search_query.addTextChangedListener(object : TextWatcher() {
-      override fun onTextChanged(s: CharSequence?, ...) {
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         this@Fragment1.reduxProps.action.updateQuery(s?.toString())
       }
     })
@@ -163,9 +163,7 @@ Now we can go to our custom **Application** class, **MainApplication**, to set u
 ```kotlin
 override fun onCreate() {
   super.onCreate()
-  val initialState = ...
-  val storeReducer = ...
-  val store = FinalStore(initialState, storeReducer)
+  val store = FinalStore(State(), Reducer)
   val injector = AndroidPropInjector(store)
 
   injector.injectActivitySerializable(this) { lifecycleOwner ->
@@ -226,9 +224,7 @@ class Fragment1 : Fragment(),
 class MainApplication : Application() {
   override fun onCreate() {
     super.onCreate()
-    val initialState = ...
-    val storeReducer = ...
-    val store = FinalStore(initialState, storeReducer)
+    val store = FinalStore(State(), Reducer)
     val injector = AndroidPropInjector(store)
 
     injector.injectActivitySerializable(this) { lifecycleOwner ->
@@ -249,34 +245,20 @@ As I was saying, every stroke on the keyboard now sends a **Redux.Action.SetSear
 // Imperative style. This style may be cleaner if the flow is complicated, and is preferred
 // because it allows clean try - catch - finally.
 fun performSearch(api: ISearchAPI): SagaEffect<Unit> {
-  // Catch all SetSearchQuery actions with a takeLatest (same idea as RxJava.switchMap),
-  // then perform async logic.
-  return takeLatest(Redux.Action.SetSearchQuery::class, { it.query }) { query ->
+  // Catch all SetSearchQuery actions, then perform async logic.
+  return takeAction(Redux.Action.SetSearchQuery::class, { it.query }).switchMap { query ->
     await { input ->
-      putInStore(Redux.Action.SetLoading(true)).await(input)
+      put(Redux.Action.SetLoading(true)).await(input)
 
       try {
         val results = api.search(query)
-        putInStore(Redux.Action.SetSearchResults(results)).await(input)
-      } catch (e) {
-        putInStore(Redux.Action.SetError(e)).await(input)
+        put(Redux.Action.SetSearchResults(results)).await(input)
+      } catch (e: Exception) {
+        put(Redux.Action.SetError(e)).await(input)
       } finally {
-        putInStore(Redux.Action.SetLoading(false)).await(input)
+        put(Redux.Action.SetLoading(false)).await(input)
       }
     }
-  }
-}
-
-// Declarative style. This is more suitable for simple logic.
-fun performSearch(api: ISearchAPI): SagaEffect<Any> {
-  // Catch all SetSearchQuery actions with a takeLatest (same idea as RxJava.switchMap),
-  // then perform async logic.
-  return takeLatest(Redux.Action.SetSearchQuery::class, { it.query }) { query ->
-    just(query)                                                     // Same as Flowable.just
-      .thenMightAsWell(putInStore(Redux.Action.SetLoading(true)))   // Put a true loading flag.
-      .mapAsync { q -> this.async { api.search(q) } }               // Perform a search.
-      .putInStore { Redux.Action.SetSearchResults(it) }             // Put results back in store.
-      .thenNoMatterWhat(putInStore(Redux.Action.SetLoading(false))) // Disable loading no matter what.
   }
 }
 ```
@@ -297,7 +279,6 @@ Apply the relevant middlewares like so:
 
 ```kotlin
 val store = applyMiddlewares<GlobalState>(
-  createAsyncMiddleware(),
   createRouterMiddleware(Router(this)),
   createSagaMiddleware(arrayListOf(Saga.performSearch(dependency))),
   createThunkMiddleware(dependency)
@@ -322,7 +303,6 @@ class Fragment2 : Fragment(),
   IPropContainer<State, Action>,
   IPropLifecycleOwner<GlobalState, IPicassoProvider> by NoopPropLifecycleOwner() {
   companion object : IPropMapper<GlobalState, IPicassoProvider, State, Action> {
-    ...
     override fun mapAction(dispatch: IActionDispatcher, outProp: IPicassoProvider): Action {
       return Action(outProp.picasso)
     }
@@ -340,14 +320,13 @@ class Fragment2 : Fragment(),
 class MainApplication : Application() {
   override fun onCreate() {
     super.onCreate()
-    ...
+    
     val dependency = object : IPicassoProvider {
       override val picasso get() = Picasso.get()
     }
 
     injector.injectActivitySerializable(this) { lifecycleOwner ->
       when (lifecycleOwner) {
-        ...
         is Fragment2 -> this.injectLifecycle(dependency, it, Fragment2)
       }
     }
