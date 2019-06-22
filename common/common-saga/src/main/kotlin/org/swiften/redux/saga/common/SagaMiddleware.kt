@@ -19,7 +19,6 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.JustJob
 import org.swiften.redux.core.MiddlewareInput
 import org.swiften.redux.core.ThreadSafeDispatcher
-import java.util.concurrent.locks.ReentrantLock
 import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2018/12/22 */
@@ -73,7 +72,6 @@ class SagaMiddleware private constructor (
 
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     return { wrapper ->
-      val lock = ReentrantLock()
       val monitor = this@SagaMiddleware.monitor
       val sagaInput = SagaInput(this@SagaMiddleware.context, p1.dispatch, p1.lastState, monitor)
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
@@ -83,7 +81,7 @@ class SagaMiddleware private constructor (
        * latest state by the time [ISagaOutput.onAction] happens, so that it is available for state
        * value selection.
        */
-      val newWrapper = DispatchWrapper.wrap(wrapper, "saga", ThreadSafeDispatcher(lock) { action ->
+      val newWrapper = DispatchWrapper.wrap(wrapper, "saga") { action ->
         val dispatchResult = wrapper.dispatch(action).await()
         monitor.dispatch(action).await()
 
@@ -94,7 +92,7 @@ class SagaMiddleware private constructor (
         }
 
         JustJob(dispatchResult)
-      })
+      }
 
       outputs.forEach { this@SagaMiddleware.composite.add(it.subscribe({})) }
       newWrapper

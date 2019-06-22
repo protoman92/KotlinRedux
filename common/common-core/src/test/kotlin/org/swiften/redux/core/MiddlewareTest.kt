@@ -50,7 +50,6 @@ class MiddlewareTest : BaseMiddlewareTest() {
     }
 
     val wrappedStore = applyMiddlewares<Int>(
-      AsyncMiddleware.create(),
       {
         { w ->
           DispatchWrapper.wrap(w, "1") {
@@ -59,8 +58,7 @@ class MiddlewareTest : BaseMiddlewareTest() {
             Assert.assertTrue(dispatched.contains(it)); EmptyJob
           }
         }
-      },
-      AsyncMiddleware.create()
+      }
     )(store)
 
     // When
@@ -110,7 +108,6 @@ class MiddlewareTest : BaseMiddlewareTest() {
     val baseStore = ThreadSafeStore(0) { s, a -> when (a) { is Action -> a.value; else -> s } }
 
     val store = applyMiddlewares<Int>(
-      AsyncMiddleware.create(),
       ThunkMiddleware.create(Unit),
       BatchDispatchMiddleware.create(),
       RouterMiddleware.create(object : IRouter<IRouterScreen> {
@@ -118,8 +115,7 @@ class MiddlewareTest : BaseMiddlewareTest() {
         override fun deinitialize() {}
       }),
       SagaMiddleware.create(effects = arrayListOf()),
-      LoggingMiddleware.create(),
-      AsyncMiddleware.create()
+      LoggingMiddleware.create()
     )(baseStore)
 
     val wrappedDispatch = store.dispatch

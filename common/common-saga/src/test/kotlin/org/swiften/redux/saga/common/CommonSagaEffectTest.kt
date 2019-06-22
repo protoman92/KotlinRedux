@@ -5,8 +5,8 @@
 
 package org.swiften.redux.saga.common
 
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -20,7 +20,6 @@ import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.swiften.redux.core.AsyncMiddleware
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.EmptyJob
 import org.swiften.redux.core.FinalStore
@@ -98,8 +97,7 @@ class CommonSagaEffectTest {
     val takeEffect = createTakeEffect { v -> await { delay(500); finalValues.add(v); v } }
 
     val store = applyMiddlewares<String>(
-      AsyncMiddleware.create(),
-      SagaMiddleware.create(effects = arrayListOf(takeEffect))
+      SagaMiddleware.create(Schedulers.computation(), arrayListOf(takeEffect))
     )(FinalStore(defaultState) { s, _ -> "${s.toInt() + 1}" })
 
     // When
@@ -235,7 +233,6 @@ class CommonSagaEffectTest {
   }
 
   @Test
-  @Suppress("RedundantLambdaArrow")
   fun `Take with selects should ensure thread-safety and that latest state is used`() {
     // Setup
     data class State(val a1: Int? = null, val a2: Int? = null)
@@ -255,12 +252,10 @@ class CommonSagaEffectTest {
       }
     }
 
-    val enhancedReducer: IReducer<State, IReduxAction> = { s, a -> reducer(s, a) }
-
     var store: IReduxStore<State>? = null
     val finalValues = synchronizedList(arrayListOf<Pair<State, State>>())
 
-    val takeEffect = CommonEffects.takeAction(Container::class) { it }.switchMap { action ->
+    val takeEffect = CommonEffects.takeAction(Container::class) { it }.flatMap { action ->
       await {
         val lastState = store!!.lastState()
         val newState = reducer(lastState, action)
@@ -270,28 +265,27 @@ class CommonSagaEffectTest {
     }
 
     store = applyMiddlewares<State>(
-      AsyncMiddleware.create(),
-      AsyncMiddleware.create(),
-      SagaMiddleware.create(effects = arrayListOf(takeEffect)),
-      AsyncMiddleware.create(),
-      AsyncMiddleware.create()
-    )(FinalStore(State(), enhancedReducer))
+      SagaMiddleware.create(Schedulers.io(), arrayListOf(takeEffect))
+    )(FinalStore(State(), reducer))
 
     // When
     val rand = Random()
+    val iteration = this.iteration
 
-    val jobs = (0 until this.iteration).map { _ ->
-      GlobalScope.launch(Dispatchers.IO, CoroutineStart.LAZY) {
+    (0 until iteration).map { i ->
+      GlobalScope.launch(Dispatchers.IO) {
         if (rand.nextBoolean()) {
-          store.dispatch(Action1(rand.nextInt(100))).await()
+          store.dispatch(Action1(i)).await()
         } else {
-          store.dispatch(Action2(rand.nextInt(100))).await()
+          store.dispatch(Action2(i)).await()
         }
       }
     }
 
     runBlocking {
-      jobs.forEach { it.join() }
+      withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
+        while (finalValues.size != iteration && this.isActive) { delay(500) }; Unit
+      }
 
       // Then
       assertEquals(finalValues.size, this@CommonSagaEffectTest.iteration)
