@@ -21,7 +21,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.EmptyJob
+import org.swiften.redux.core.EmptyAwaitable
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReducer
@@ -169,7 +169,7 @@ class CommonSagaEffectTest {
 
     val monitor = object : ISagaMonitor {
       override val dispatch: IActionDispatcher = { action ->
-        dispatchers.forEach { it.value(action) }; EmptyJob
+        dispatchers.forEach { it.value(action) }; EmptyAwaitable
       }
 
       override fun addOutputDispatcher(id: Long, dispatch: IActionDispatcher) {
@@ -213,7 +213,7 @@ class CommonSagaEffectTest {
     val dispatched = synchronizedList(arrayListOf<IReduxAction>())
 
     // When
-    put(Action(0)).invoke(SagaInput(dispatch = { dispatched.add(it); EmptyJob })).subscribe({})
+    put(Action(0)).invoke(SagaInput(dispatch = { dispatched.add(it); EmptyAwaitable })).subscribe({})
 
     runBlocking {
       withTimeoutOrNull(this@CommonSagaEffectTest.timeout) {
@@ -426,7 +426,7 @@ class CommonSagaEffectTest {
       put(ValueAction(newValue)).await(input)
       put(ProgressAction(false)).await(input)
     }
-      .invoke(SagaInput(dispatch = { dispatched.add(it); EmptyJob }, lastState = { State(10) }))
+      .invoke(SagaInput(dispatch = { dispatched.add(it); EmptyAwaitable }, lastState = { State(10) }))
       .subscribe({})
 
     runBlocking {

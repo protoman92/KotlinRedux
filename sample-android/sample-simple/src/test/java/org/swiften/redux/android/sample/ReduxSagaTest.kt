@@ -9,7 +9,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.swiften.redux.core.EmptyJob
+import org.swiften.redux.core.EmptyAwaitable
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.saga.common.SagaInput
 import org.swiften.redux.saga.common.SagaMonitor
@@ -38,7 +38,7 @@ class SearchSagaTest : ReduxSagaTest() {
 
     Redux.Saga.searchSaga(api, debounce = 0)
       .invoke(SagaInput(
-        dispatch = { a -> dispatched.add(a); EmptyJob },
+        dispatch = { a -> dispatched.add(a); EmptyAwaitable },
         lastState = { state },
         monitor = monitor)
       )
@@ -76,7 +76,7 @@ class SearchSagaTest : ReduxSagaTest() {
 
     Redux.Saga.searchSaga(api, debounce = 0)
       .invoke(SagaInput(
-        dispatch = { a -> dispatched.add(a); EmptyJob },
+        dispatch = { a -> dispatched.add(a); EmptyAwaitable },
         lastState = { state },
         monitor = monitor)
       )

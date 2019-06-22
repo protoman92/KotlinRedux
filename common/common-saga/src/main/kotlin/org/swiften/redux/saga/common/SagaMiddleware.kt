@@ -13,10 +13,10 @@ import kotlinx.coroutines.cancel
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.DispatchMapper
 import org.swiften.redux.core.DispatchWrapper
-import org.swiften.redux.core.IAsyncJob
+import org.swiften.redux.core.IAwaitable
 import org.swiften.redux.core.IMiddleware
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.core.JustJob
+import org.swiften.redux.core.JustAwaitable
 import org.swiften.redux.core.MiddlewareInput
 import org.swiften.redux.core.ThreadSafeDispatcher
 import kotlin.coroutines.CoroutineContext
@@ -77,7 +77,7 @@ class SagaMiddleware private constructor (
       val outputs = this@SagaMiddleware.effects.map { it(sagaInput) }
 
       /**
-       * We use a [ThreadSafeDispatcher] and [IAsyncJob.await] here to ensure the store receives the
+       * We use a [ThreadSafeDispatcher] and [IAwaitable.await] here to ensure the store receives the
        * latest state by the time [ISagaOutput.onAction] happens, so that it is available for state
        * value selection.
        */
@@ -91,7 +91,7 @@ class SagaMiddleware private constructor (
           this@SagaMiddleware.context.cancel()
         }
 
-        JustJob(dispatchResult)
+        JustAwaitable(dispatchResult)
       }
 
       outputs.forEach { this@SagaMiddleware.composite.add(it.subscribe({})) }

@@ -19,7 +19,7 @@ import kotlin.coroutines.CoroutineContext
  * Represents a job that does some asynchronous work and can be resolved synchronously.
  * @param T The return type of [await].
  */
-interface IAsyncJob<T> where T : Any {
+interface IAwaitable<T> where T : Any {
   /**
    * Wait until some asynchronous action finishes.
    * @return A [T] instance.
@@ -42,69 +42,68 @@ interface IAsyncJob<T> where T : Any {
   fun awaitFor(timeoutMillis: Long): T
 }
 
-/** Represents an empty [IAsyncJob] that does not do anything. */
-object EmptyJob : IAsyncJob<Any> {
+/** Represents an empty [IAwaitable] that does not do anything. */
+object EmptyAwaitable : IAwaitable<Any> {
   override fun await() = Unit
   override fun await(defaultValue: Any) = this.await()
   override fun awaitFor(timeoutMillis: Long) = this.await()
 }
 
 /**
- * Represents an [IAsyncJob] that returns some [value] on [await].
+ * Represents an [IAwaitable] that returns some [value] on [await].
  * @param T The return type of [await].
  * @param value A [T] instance.
  */
-data class JustJob<T>(private val value: T) : IAsyncJob<T> where T : Any {
+data class JustAwaitable<T>(private val value: T) : IAwaitable<T> where T : Any {
   override fun await() = this.value
   override fun await(defaultValue: T) = this.value
   override fun awaitFor(timeoutMillis: Long) = this.value
 }
 
 /**
- * Represents an [IAsyncJob] that handles [Job]. It waits for [job] to resolve synchronously with
+ * Represents an [IAwaitable] that handles [Job]. It waits for [job] to resolve synchronously with
  * [runBlocking]. If [awaitFor] is used, make sure [job] is cooperative with cancellation.
  * @param T The return type of [await].
  * @param context The [CoroutineContext] to perform waiting on.
  * @param job The [Job] to be resolved.
  */
-data class CoroutineJob<T>(
+data class CoroutineAwaitable<T>(
   private val context: CoroutineContext,
   private val job: Deferred<T>
-) : IAsyncJob<T> where T : Any {
+) : IAwaitable<T> where T : Any {
   override fun await(): T {
-    return runBlocking(this.context) { this@CoroutineJob.job.await() }
+    return runBlocking(this.context) { this@CoroutineAwaitable.job.await() }
   }
 
   override fun await(defaultValue: T) = try { this.await() } catch (e: Throwable) { defaultValue }
 
   @Throws(TimeoutCancellationException::class)
   override fun awaitFor(timeoutMillis: Long): T {
-    return runBlocking(this.context) { withTimeout(timeoutMillis) { this@CoroutineJob.await() } }
+    return runBlocking(this.context) { withTimeout(timeoutMillis) { this@CoroutineAwaitable.await() } }
   }
 }
 
 /**
- * Represents an [IAsyncJob] that waits for all [IAsyncJob] in [jobs] to finish, then return a
- * [Collection] of [jobs] return values. The [BatchJob] guarantees the order of the final results
- * based on the corresponding jobs' order.
- * @param jobs A [Collection] of [IAsyncJob].
+ * Represents an [IAwaitable] that waits for all [IAwaitable] in [jobs] to finish, then return a
+ * [Collection] of [jobs] return values.
+ * @param jobs A [Collection] of [IAwaitable].
  */
-data class BatchJob<T>(private val jobs: Collection<IAsyncJob<T>>) : IAsyncJob<List<T>> where T : Any {
-  constructor(vararg jobs: IAsyncJob<T>) : this(jobs.toList())
+data class BatchAwaitable<T>(private val jobs: Collection<IAwaitable<T>>) : IAwaitable<Collection<T>> where T : Any {
+  constructor(vararg jobs: IAwaitable<T>) : this(jobs.toList())
 
-  override fun await(): List<T> = this.jobs.map { it.await() }
+  override fun await(): Collection<T> = this.jobs.map { it.await() }
 
-  override fun await(defaultValue: List<T>): List<T> {
+  override fun await(defaultValue: Collection<T>): Collection<T> {
     return try { this.await() } catch (e: Throwable) { defaultValue }
   }
 
   @Throws(TimeoutCancellationException::class)
-  override fun awaitFor(timeoutMillis: Long): List<T> {
+  override fun awaitFor(timeoutMillis: Long): Collection<T> {
     return runBlocking {
       withTimeout(timeoutMillis) {
         val results = arrayListOf<T>()
 
-        for (job in this@BatchJob.jobs) {
+        for (job in this@BatchAwaitable.jobs) {
           if (this.isActive) {
             val jobResult = job.await()
 

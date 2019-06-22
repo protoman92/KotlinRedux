@@ -16,7 +16,7 @@ class BatchDispatchMiddlewareTest : BaseMiddlewareTest() {
     data class Action(val value: Int) : IReduxAction
     val iteration = 10000
     val dispatched = arrayListOf<IReduxAction>()
-    val input = this.mockMiddlewareInput({}) { dispatched.add(it); EmptyJob }
+    val input = this.mockMiddlewareInput({}) { dispatched.add(it); EmptyAwaitable }
     val wrappedDispatch = BatchDispatchMiddleware.create()(input)(this.mockDispatchWrapper())
 
     // When

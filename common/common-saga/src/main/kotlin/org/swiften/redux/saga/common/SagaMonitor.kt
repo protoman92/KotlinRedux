@@ -5,9 +5,9 @@
 
 package org.swiften.redux.saga.common
 
-import org.swiften.redux.core.BatchJob
+import org.swiften.redux.core.BatchAwaitable
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.IAsyncJob
+import org.swiften.redux.core.IAwaitable
 import org.swiften.redux.core.IDispatcherProvider
 import org.swiften.redux.core.NoopActionDispatcher
 import java.util.concurrent.locks.ReentrantLock
@@ -27,14 +27,14 @@ interface ISagaMonitor : IDispatcherProvider {
 }
 
 /** Default implementation of [ISagaMonitor]. */
-class SagaMonitor internal constructor(): ISagaMonitor {
+class SagaMonitor : ISagaMonitor {
   private val lock = ReentrantLock()
   private val dispatchers = HashMap<Long, IActionDispatcher>()
 
   override val dispatch: IActionDispatcher = { a ->
     this@SagaMonitor.lock.withLock {
       @Suppress("UNCHECKED_CAST")
-      BatchJob(this@SagaMonitor.dispatchers.map { it.value(a) }) as IAsyncJob<Any>
+      BatchAwaitable(this@SagaMonitor.dispatchers.map { it.value(a) }) as IAwaitable<Any>
     }
   }
 

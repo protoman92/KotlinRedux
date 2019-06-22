@@ -6,7 +6,7 @@
 package org.swiften.redux.saga.common
 
 import io.reactivex.processors.PublishProcessor
-import org.swiften.redux.core.EmptyJob
+import org.swiften.redux.core.EmptyAwaitable
 
 /** Created by viethai.pham on 2019/02/28 */
 /**
@@ -23,7 +23,7 @@ class TakeStateEffect<State>(private val cls: Class<State>) : SagaEffect<State>(
        * By the time [ISagaOutput.onAction] is called, the store would have reduced a new [State]
        * so [SagaInput.lastState] here will produce the latest [State].
        */
-      subject.onNext(this@TakeStateEffect.cls.cast(p1.lastState())); EmptyJob
+      subject.onNext(this@TakeStateEffect.cls.cast(p1.lastState())); EmptyAwaitable
     }
   }
 }

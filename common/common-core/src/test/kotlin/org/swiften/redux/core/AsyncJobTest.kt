@@ -25,9 +25,9 @@ class AsyncJobTest {
 
     val childJobs = (0 until iteration)
       .map { i -> GlobalScope.async(context, start = CoroutineStart.LAZY) { delay(800); i } }
-      .map { CoroutineJob(context, it) }
+      .map { CoroutineAwaitable(context, it) }
 
-    val batchJob = BatchJob(*childJobs.toTypedArray())
+    val batchJob = BatchAwaitable(*childJobs.toTypedArray())
 
     // When && Then
     assertThrows(TimeoutCancellationException::class.java) { batchJob.awaitFor(2000L) }
@@ -41,9 +41,9 @@ class AsyncJobTest {
 
     val childJobs = (0 until iteration)
       .map { i -> GlobalScope.async(context, start = CoroutineStart.LAZY) { i } }
-      .map { CoroutineJob(context, it) }
+      .map { CoroutineAwaitable(context, it) }
 
-    val batchJob = BatchJob(*childJobs.toTypedArray())
+    val batchJob = BatchAwaitable(*childJobs.toTypedArray())
 
     // When
     val results = batchJob.await()

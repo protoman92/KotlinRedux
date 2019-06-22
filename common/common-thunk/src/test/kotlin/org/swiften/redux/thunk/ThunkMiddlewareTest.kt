@@ -16,7 +16,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.swiften.redux.core.BaseMiddlewareTest
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.EmptyJob
+import org.swiften.redux.core.EmptyAwaitable
 import org.swiften.redux.core.EnhancedReduxStore
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IReduxAction
@@ -81,7 +81,7 @@ class ThunkMiddlewareTest : BaseMiddlewareTest() {
     }
 
     val dispatched = synchronizedList(arrayListOf<IReduxAction>())
-    val dispatch: IActionDispatcher = { dispatched.add(it); EmptyJob }
+    val dispatch: IActionDispatcher = { dispatched.add(it); EmptyAwaitable }
     val baseStore = ThreadSafeStore(0) { s, _ -> s }
     val enhancedStore = EnhancedReduxStore(baseStore, dispatch)
     val wrappedDispatch = combineMiddlewares<Int>(ThunkMiddleware.create(Unit))(enhancedStore)
@@ -104,7 +104,7 @@ class ThunkMiddlewareTest : BaseMiddlewareTest() {
     val dispatched = AtomicInteger(0)
     val job = Job()
     val middleware = ThunkMiddleware.create(Unit, job)
-    val dispatch: IActionDispatcher = { dispatched.incrementAndGet(); EmptyJob }
+    val dispatch: IActionDispatcher = { dispatched.incrementAndGet(); EmptyAwaitable }
     val dispatchWrapper = this.mockDispatchWrapper(dispatch)
     val input = mockMiddlewareInput(0)
     val wrappedDispatch = middleware(input)(dispatchWrapper).dispatch

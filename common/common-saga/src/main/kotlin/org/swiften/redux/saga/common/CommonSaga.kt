@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.IAsyncJob
+import org.swiften.redux.core.IAwaitable
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IStateGetter
@@ -57,7 +57,7 @@ class SagaInput(
  * emitted values.
  * @param T The emission value type.
  */
-interface ISagaOutput<T> : IAsyncJob<T>, IUniqueIDProvider where T : Any {
+interface ISagaOutput<T> : IAwaitable<T>, IUniqueIDProvider where T : Any {
   /** Trigger every time an [IReduxAction] arrives. */
   val onAction: IActionDispatcher
 

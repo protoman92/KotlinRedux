@@ -9,7 +9,7 @@ import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import kotlin.coroutines.EmptyCoroutineContext;
 import org.junit.Test;
-import org.swiften.redux.core.EmptyJob;
+import org.swiften.redux.core.EmptyAwaitable;
 
 import static org.junit.Assert.assertEquals;
 import static org.swiften.redux.saga.common.CommonEffects.await;
@@ -27,7 +27,7 @@ public final class ReduxSagaTest {
       .transform(flatMap(v -> await((c, input) -> v * 2)))
       .invoke(new SagaInput(
         EmptyCoroutineContext.INSTANCE,
-        a -> EmptyJob.INSTANCE,
+        a -> EmptyAwaitable.INSTANCE,
         () -> 0,
         new SagaMonitor(),
         Schedulers.computation())

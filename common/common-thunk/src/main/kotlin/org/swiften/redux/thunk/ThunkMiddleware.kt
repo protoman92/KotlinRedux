@@ -12,12 +12,12 @@ import kotlinx.coroutines.launch
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.DispatchMapper
 import org.swiften.redux.core.DispatchWrapper
-import org.swiften.redux.core.EmptyJob
+import org.swiften.redux.core.EmptyAwaitable
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IMiddleware
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IStateGetter
-import org.swiften.redux.core.JustJob
+import org.swiften.redux.core.JustAwaitable
 import org.swiften.redux.core.MiddlewareInput
 import org.swiften.redux.core.ThreadSafeDispatcher
 import java.util.concurrent.locks.ReentrantLock
@@ -102,10 +102,10 @@ class ThunkMiddleware<GExt>(
             castAction.payload(scope, p1.dispatch, p1.lastState, Unit)
           }
 
-          is DefaultReduxAction.Deinitialize -> { context.cancel(); EmptyJob }
+          is DefaultReduxAction.Deinitialize -> { context.cancel(); EmptyAwaitable }
         }
 
-        JustJob(dispatchResult)
+        JustAwaitable(dispatchResult)
       })
     }
   }

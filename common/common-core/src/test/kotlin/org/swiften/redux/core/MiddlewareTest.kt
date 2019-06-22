@@ -24,9 +24,9 @@ class MiddlewareTest : BaseMiddlewareTest() {
     val order = arrayListOf<Int>()
 
     val wrappedStore = applyMiddlewares<Int>(
-      { { w -> DispatchWrapper.wrap(w, "1") { w.dispatch(it); order.add(1); EmptyJob } } },
-      { { w -> DispatchWrapper.wrap(w, "2") { w.dispatch(it); order.add(2); EmptyJob } } },
-      { { w -> DispatchWrapper.wrap(w, "3") { w.dispatch(it); order.add(3); EmptyJob } } }
+      { { w -> DispatchWrapper.wrap(w, "1") { w.dispatch(it); order.add(1); EmptyAwaitable } } },
+      { { w -> DispatchWrapper.wrap(w, "2") { w.dispatch(it); order.add(2); EmptyAwaitable } } },
+      { { w -> DispatchWrapper.wrap(w, "3") { w.dispatch(it); order.add(3); EmptyAwaitable } } }
     )(store)
 
     // When
@@ -55,7 +55,7 @@ class MiddlewareTest : BaseMiddlewareTest() {
           DispatchWrapper.wrap(w, "1") {
             w.dispatch(it).await()
             println("Dispatching in middleware $it")
-            Assert.assertTrue(dispatched.contains(it)); EmptyJob
+            Assert.assertTrue(dispatched.contains(it)); EmptyAwaitable
           }
         }
       }
@@ -84,12 +84,12 @@ class MiddlewareTest : BaseMiddlewareTest() {
       { { w -> DispatchWrapper.wrap(w, "1") {
         w.dispatch(it)
         if (it is RepeatAction) repeatCount.incrementAndGet()
-        EmptyJob
+        EmptyAwaitable
       } } },
       { i -> { w -> DispatchWrapper.wrap(w, "2") {
         w.dispatch(it)
         if (it is TriggerAction) i.dispatch(RepeatAction())
-        EmptyJob
+        EmptyAwaitable
       } } }
     )(store)
 

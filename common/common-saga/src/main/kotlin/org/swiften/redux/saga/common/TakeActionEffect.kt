@@ -6,7 +6,7 @@
 package org.swiften.redux.saga.common
 
 import io.reactivex.processors.PublishProcessor
-import org.swiften.redux.core.EmptyJob
+import org.swiften.redux.core.EmptyAwaitable
 import org.swiften.redux.core.IReduxAction
 
 /** Created by haipham on 2018/12/23 */
@@ -30,7 +30,7 @@ class TakeActionEffect<Action, R>(
         this@TakeActionEffect.extractor(cls.cast(a))?.also { subject.onNext(it) }
       }
 
-      EmptyJob
+      EmptyAwaitable
     }
   }
 }

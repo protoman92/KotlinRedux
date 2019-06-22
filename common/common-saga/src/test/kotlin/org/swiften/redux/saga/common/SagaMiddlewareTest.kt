@@ -16,9 +16,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.swiften.redux.core.BaseMiddlewareTest
 import org.swiften.redux.core.DefaultReduxAction
-import org.swiften.redux.core.EmptyJob
+import org.swiften.redux.core.EmptyAwaitable
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.IAsyncJob
+import org.swiften.redux.core.IAwaitable
 import org.swiften.redux.core.IReduxAction
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -30,9 +30,9 @@ class SagaMiddlewareTest : BaseMiddlewareTest() {
     val dispatched = AtomicInteger()
 
     val dispatchers: List<IActionDispatcher> = (0 until 100).map {
-      fun(_: IReduxAction): IAsyncJob<Any> {
+      fun(_: IReduxAction): IAwaitable<Any> {
         dispatched.incrementAndGet()
-        return EmptyJob
+        return EmptyAwaitable
       }
     }
 
