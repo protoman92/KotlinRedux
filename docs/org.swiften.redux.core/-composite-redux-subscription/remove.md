@@ -2,7 +2,7 @@
 
 # remove
 
-`fun remove(subscribeId: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`IReduxSubscription`](../-i-redux-subscription/index.md)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L121)
+`fun remove(subscribeId: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)`): `[`IReduxSubscription`](../-i-redux-subscription/index.md)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Subscription.kt#L121)
 
 Overrides [ICompositeReduxSubscription.remove](../-i-composite-redux-subscription/remove.md)
 

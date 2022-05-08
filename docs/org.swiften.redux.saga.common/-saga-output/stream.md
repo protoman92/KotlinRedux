@@ -2,4 +2,4 @@
 
 # stream
 
-`private val stream: <ERROR CLASS><`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/SagaOutput.kt#L71)
+`private val stream: <ERROR CLASS><`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/SagaOutput.kt#L71)

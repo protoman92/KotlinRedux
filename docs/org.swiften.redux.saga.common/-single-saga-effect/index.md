@@ -2,7 +2,7 @@
 
 # SingleSagaEffect
 
-`abstract class SingleSagaEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L120)
+`abstract class SingleSagaEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L120)
 
 Represents a [SagaEffect](../-saga-effect/index.md) whose [ISagaOutput](../-i-saga-output/index.md) only produces a single [R](index.md#R) instance, instead of
 a stream.

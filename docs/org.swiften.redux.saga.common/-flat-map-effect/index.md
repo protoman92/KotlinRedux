@@ -2,7 +2,7 @@
 
 # FlatMapEffect
 
-`class FlatMapEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R2`](index.md#R2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/FlatMapEffect.kt#L15)
+`class FlatMapEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, R2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R2`](index.md#R2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/FlatMapEffect.kt#L15)
 
 [SagaEffect](../-saga-effect/index.md) whose [ISagaOutput](../-i-saga-output/index.md) flattens other [ISagaOutput](../-i-saga-output/index.md) produced by [transformer](transformer.md). There
 are a few [FlatMapEffect.Mode](-mode/index.md):

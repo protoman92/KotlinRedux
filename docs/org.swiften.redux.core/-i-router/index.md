@@ -2,7 +2,7 @@
 
 # IRouter
 
-`interface IRouter<in Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IDeinitializerProvider`](../-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Router.kt#L19)
+`interface IRouter<in Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IDeinitializerProvider`](../-i-deinitializer-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Router.kt#L19)
 
 Abstract the necessary work to navigate from one [Screen](index.md#Screen) to another.
 

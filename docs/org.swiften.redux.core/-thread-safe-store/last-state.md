@@ -2,7 +2,7 @@
 
 # lastState
 
-`val lastState: () -> <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/ThreadSafeStore.kt#L27)
+`val lastState: () -> <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/ThreadSafeStore.kt#L27)
 
 Overrides [IStateGetterProvider.lastState](../-i-state-getter-provider/last-state.md)
 

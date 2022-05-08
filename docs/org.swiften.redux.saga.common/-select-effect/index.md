@@ -2,7 +2,7 @@
 
 # SelectEffect
 
-`class SelectEffect<State, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SingleSagaEffect`](../-single-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/SelectEffect.kt#L18)
+`class SelectEffect<State, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SingleSagaEffect`](../-single-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/SelectEffect.kt#L18)
 
 [SagaEffect](../-saga-effect/index.md) whose [SagaOutput](../-saga-output/index.md) selects some value from an internal [State](index.md#State) using [selector](selector.md).
 

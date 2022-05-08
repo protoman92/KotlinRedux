@@ -2,7 +2,7 @@
 
 # CoroutineAwaitable
 
-`data class CoroutineAwaitable<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IAwaitable`](../-i-awaitable/index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Awaitable.kt#L70)
+`data class CoroutineAwaitable<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IAwaitable`](../-i-awaitable/index.md)`<`[`T`](index.md#T)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Awaitable.kt#L70)
 
 Represents an [IAwaitable](../-i-awaitable/index.md) that handles [Job](#). It waits for [job](job.md) to resolve synchronously with
 [runBlocking](#). If [awaitFor](await-for.md) is used, make sure [job](job.md) is cooperative with cancellation.

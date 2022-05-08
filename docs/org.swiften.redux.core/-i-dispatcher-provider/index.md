@@ -2,7 +2,7 @@
 
 # IDispatcherProvider
 
-`interface IDispatcherProvider` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L54)
+`interface IDispatcherProvider` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Core.kt#L54)
 
 Represents an object that provides [IActionDispatcher](../-i-action-dispatcher.md).
 

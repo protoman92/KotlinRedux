@@ -2,7 +2,7 @@
 
 # WatchConnectivityEffect
 
-`internal class WatchConnectivityEffect : `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-saga/src/main/java/org/swiften/redux/android/saga/rx/core/WatchConnectivityEffect.kt#L30)
+`internal class WatchConnectivityEffect : `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-saga\src\main\java/org/swiften/redux/android/saga/rx/core/WatchConnectivityEffect.kt#L30)
 
 [ISagaEffect](../../org.swiften.redux.saga.common/-i-saga-effect.md) whose [ISagaOutput](../../org.swiften.redux.saga.common/-i-saga-output/index.md) watches for network connectivity changes.
 

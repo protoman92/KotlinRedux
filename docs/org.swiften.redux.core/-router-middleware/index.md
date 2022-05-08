@@ -2,7 +2,7 @@
 
 # RouterMiddleware
 
-`class RouterMiddleware<out Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IMiddleware`](../-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/RouterMiddleware.kt#L17)
+`class RouterMiddleware<out Screen : `[`IRouterScreen`](../-i-router-screen.md)`> : `[`IMiddleware`](../-i-middleware.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/RouterMiddleware.kt#L17)
 
 [IMiddleware](../-i-middleware.md) implementation for [IRouter](../-i-router/index.md) middleware.
 

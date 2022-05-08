@@ -2,7 +2,7 @@
 
 # IReducer
 
-`typealias IReducer<GState, Action> = (`[`GState`](-i-reducer.md#GState)`, `[`Action`](-i-reducer.md#Action)`) -> `[`GState`](-i-reducer.md#GState) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L18)
+`typealias IReducer<GState, Action> = (`[`GState`](-i-reducer.md#GState)`, `[`Action`](-i-reducer.md#Action)`) -> `[`GState`](-i-reducer.md#GState) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Core.kt#L18)
 
 Represents a Redux reducer that reduce a [IReduxAction](-i-redux-action.md) onto a previous state to produce a new
 state.

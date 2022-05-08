@@ -2,7 +2,7 @@
 
 # root
 
-`fun root(dispatch: `[`IActionDispatcher`](../-i-action-dispatcher.md)`): `[`DispatchWrapper`](index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/DispatchWrapper.kt#L23)
+`fun root(dispatch: `[`IActionDispatcher`](../-i-action-dispatcher.md)`): `[`DispatchWrapper`](index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/DispatchWrapper.kt#L23)
 
 Create the root [DispatchWrapper](index.md) with an [IActionDispatcher](../-i-action-dispatcher.md).
 

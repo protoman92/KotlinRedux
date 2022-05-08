@@ -2,7 +2,7 @@
 
 # AndroidPropInjector
 
-`class AndroidPropInjector<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`PropInjector`](../../org.swiften.redux.ui/-prop-injector/index.md)`<`[`GState`](index.md#GState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-ui/src/main/java/org/swiften/redux/android/ui/AndroidPropInjector.kt#L27)
+`class AndroidPropInjector<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`PropInjector`](../../org.swiften.redux.ui/-prop-injector/index.md)`<`[`GState`](index.md#GState)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-ui\src\main\java/org/swiften/redux/android/ui/AndroidPropInjector.kt#L27)
 
 [PropInjector](../../org.swiften.redux.ui/-prop-injector/index.md) specifically for Android that calls [inject](inject.md) on the main thread. We use
 inheritance here to ensure [StaticProp.injector](../../org.swiften.redux.ui/-static-prop/injector.md) is set with this class instance.

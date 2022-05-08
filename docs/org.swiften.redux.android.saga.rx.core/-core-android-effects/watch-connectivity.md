@@ -2,7 +2,7 @@
 
 # watchConnectivity
 
-`fun watchConnectivity(context: <ERROR CLASS>): `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-saga/src/main/java/org/swiften/redux/android/saga/rx/core/CoreAndroidEffects.kt#L20)
+`fun watchConnectivity(context: <ERROR CLASS>): `[`SagaEffect`](../../org.swiften.redux.saga.common/-saga-effect/index.md)`<`[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-saga\src\main\java/org/swiften/redux/android/saga/rx/core/CoreAndroidEffects.kt#L20)
 
 Create a [WatchConnectivityEffect](../-watch-connectivity-effect/index.md).
 

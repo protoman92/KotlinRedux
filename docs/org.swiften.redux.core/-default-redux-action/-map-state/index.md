@@ -2,7 +2,7 @@
 
 # MapState
 
-`class MapState<GState> : `[`DefaultReduxAction`](../index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Preset.kt#L18)
+`class MapState<GState> : `[`DefaultReduxAction`](../index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Preset.kt#L18)
 
 Replace the current [GState](index.md#GState) with [fn](fn.md).
 

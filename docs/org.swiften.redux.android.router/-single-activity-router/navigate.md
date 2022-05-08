@@ -2,7 +2,7 @@
 
 # navigate
 
-`fun navigate(screen: `[`Screen`](index.md#Screen)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-router/src/main/java/org/swiften/redux/android/router/SingleActivityRouter.kt#L60)
+`fun navigate(screen: `[`Screen`](index.md#Screen)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-router\src\main\java/org/swiften/redux/android/router/SingleActivityRouter.kt#L60)
 
 Overrides [IRouter.navigate](../../org.swiften.redux.core/-i-router/navigate.md)
 
@@ -10,7 +10,7 @@ Navigate to an [IRouterScreen](../../org.swiften.redux.core/-i-router-screen.md)
 
 ### Parameters
 
-`screen` - The incoming [Screen](../../org.swiften.redux.core/-i-router/index.md#Screen) instance.`private val navigate: (`[`AT`](index.md#AT)`, `[`Screen`](index.md#Screen)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-router/src/main/java/org/swiften/redux/android/router/SingleActivityRouter.kt#L32)
+`screen` - The incoming [Screen](../../org.swiften.redux.core/-i-router/index.md#Screen) instance.`private val navigate: (`[`AT`](index.md#AT)`, `[`Screen`](index.md#Screen)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-router\src\main\java/org/swiften/redux/android/router/SingleActivityRouter.kt#L32)
 
 Function that performs the navigation.
 

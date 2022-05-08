@@ -2,7 +2,7 @@
 
 # IMiddleware
 
-`typealias IMiddleware<GState> = (`[`MiddlewareInput`](-middleware-input/index.md)`<`[`GState`](-i-middleware.md#GState)`>) -> `[`DispatchMapper`](-dispatch-mapper.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Middleware.kt#L17)
+`typealias IMiddleware<GState> = (`[`MiddlewareInput`](-middleware-input/index.md)`<`[`GState`](-i-middleware.md#GState)`>) -> `[`DispatchMapper`](-dispatch-mapper.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Middleware.kt#L17)
 
 Represents a Redux middleware that accepts an [MiddlewareInput](-middleware-input/index.md) and produces a
 [DispatchWrapper](-dispatch-wrapper/index.md).

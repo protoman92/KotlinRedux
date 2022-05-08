@@ -2,7 +2,7 @@
 
 # SingleActivityRouter
 
-`@PublishedApi internal class SingleActivityRouter<AT, Screen : `[`IRouterScreen`](../../org.swiften.redux.core/-i-router-screen.md)`> : `[`IRouter`](../../org.swiften.redux.core/-i-router/index.md)`<`[`Screen`](index.md#Screen)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-router/src/main/java/org/swiften/redux/android/router/SingleActivityRouter.kt#L28)
+`@PublishedApi internal class SingleActivityRouter<AT, Screen : `[`IRouterScreen`](../../org.swiften.redux.core/-i-router-screen.md)`> : `[`IRouter`](../../org.swiften.redux.core/-i-router/index.md)`<`[`Screen`](index.md#Screen)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-router\src\main\java/org/swiften/redux/android/router/SingleActivityRouter.kt#L28)
 
 [IRouter](../../org.swiften.redux.core/-i-router/index.md) that works for a single [AppCompatActivity](#) and multiple [Fragment](#).
 

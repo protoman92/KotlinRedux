@@ -2,7 +2,7 @@
 
 # monitor
 
-`private val monitor: `[`SagaMonitor`](../-saga-monitor/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/SagaMiddleware.kt#L35)
+`private val monitor: `[`SagaMonitor`](../-saga-monitor/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/SagaMiddleware.kt#L35)
 
 A [SagaMonitor](../-saga-monitor/index.md) instance.
 

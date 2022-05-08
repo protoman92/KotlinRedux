@@ -2,7 +2,7 @@
 
 # TakeActionEffect
 
-`class TakeActionEffect<Action : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/TakeActionEffect.kt#L21)
+`class TakeActionEffect<Action : `[`IReduxAction`](../../org.swiften.redux.core/-i-redux-action.md)`, R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/TakeActionEffect.kt#L21)
 
 [TakeActionEffect](./index.md) instances produces streams that filter [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md) with [extractor](extractor.md) and
 pluck out the appropriate ones to perform additional work.

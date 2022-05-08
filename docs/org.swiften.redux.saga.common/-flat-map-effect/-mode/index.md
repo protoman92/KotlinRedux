@@ -2,7 +2,7 @@
 
 # Mode
 
-`enum class Mode` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/FlatMapEffect.kt#L20)
+`enum class Mode` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/FlatMapEffect.kt#L20)
 
 ### Enum Values
 

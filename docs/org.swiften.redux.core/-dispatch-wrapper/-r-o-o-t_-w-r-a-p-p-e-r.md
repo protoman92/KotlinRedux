@@ -2,4 +2,4 @@
 
 # ROOT_WRAPPER
 
-`private const val ROOT_WRAPPER: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/DispatchWrapper.kt#L16)
+`private const val ROOT_WRAPPER: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/DispatchWrapper.kt#L16)

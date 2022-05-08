@@ -2,7 +2,7 @@
 
 # ReduxLifecycleObserver
 
-`open class ReduxLifecycleObserver : `[`ILifecycleCallback`](../-i-lifecycle-callback/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidLifecycle.kt#L43)
+`open class ReduxLifecycleObserver : `[`ILifecycleCallback`](../-i-lifecycle-callback/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-lifecycle\src\main\java/org/swiften/redux/android/ui/lifecycle/AndroidLifecycle.kt#L43)
 
 Use this [LifecycleObserver](#) to unsubscribe from a [IReduxSubscription](../../org.swiften.redux.core/-i-redux-subscription/index.md).
 

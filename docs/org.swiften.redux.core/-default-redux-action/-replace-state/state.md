@@ -2,4 +2,4 @@
 
 # state
 
-`val state: `[`State`](index.md#State) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Preset.kt#L15)
+`val state: `[`State`](index.md#State) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Preset.kt#L15)

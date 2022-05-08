@@ -2,7 +2,7 @@
 
 # cls
 
-`private val cls: `[`Class`](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html)`<`[`State`](index.md#State)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/TakeStateEffect.kt#L17)
+`private val cls: `[`Class`](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html)`<`[`State`](index.md#State)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/TakeStateEffect.kt#L17)
 
 The [Class](http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html) of [State](index.md#State).
 

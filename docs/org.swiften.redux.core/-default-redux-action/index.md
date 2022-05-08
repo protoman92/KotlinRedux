@@ -2,7 +2,7 @@
 
 # DefaultReduxAction
 
-`sealed class DefaultReduxAction : `[`IReduxAction`](../-i-redux-action.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Preset.kt#L10)
+`sealed class DefaultReduxAction : `[`IReduxAction`](../-i-redux-action.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Preset.kt#L10)
 
 Default [IReduxAction](../-i-redux-action.md) implementation
 

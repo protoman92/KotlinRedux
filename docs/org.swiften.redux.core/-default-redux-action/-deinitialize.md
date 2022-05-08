@@ -2,4 +2,4 @@
 
 # Deinitialize
 
-`object Deinitialize : `[`DefaultReduxAction`](index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Preset.kt#L12)
+`object Deinitialize : `[`DefaultReduxAction`](index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Preset.kt#L12)

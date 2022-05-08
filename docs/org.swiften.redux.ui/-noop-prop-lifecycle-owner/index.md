@@ -2,7 +2,7 @@
 
 # NoopPropLifecycleOwner
 
-`class NoopPropLifecycleOwner<LState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, OutProp> : `[`IPropLifecycleOwner`](../-i-prop-lifecycle-owner/index.md)`<`[`LState`](index.md#LState)`, `[`OutProp`](index.md#OutProp)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/Container.kt#L36)
+`class NoopPropLifecycleOwner<LState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`, OutProp> : `[`IPropLifecycleOwner`](../-i-prop-lifecycle-owner/index.md)`<`[`LState`](index.md#LState)`, `[`OutProp`](index.md#OutProp)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-ui\src\main\kotlin/org/swiften/redux/ui/Container.kt#L36)
 
 Use this class as a delegate for [IPropLifecycleOwner](../-i-prop-lifecycle-owner/index.md) if the target does not want to implement
 lifecycles.

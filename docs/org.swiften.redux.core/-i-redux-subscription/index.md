@@ -2,7 +2,7 @@
 
 # IReduxSubscription
 
-`interface IReduxSubscription : `[`IUniqueIDProvider`](../-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L17)
+`interface IReduxSubscription : `[`IUniqueIDProvider`](../-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Subscription.kt#L17)
 
 Represents a subscription object that can be unsubscribed from. Each [IReduxSubscription](./index.md)
 must also have an [uniqueID](../-i-unique-i-d-provider/unique-i-d.md) that can be used to perform selective unsubscription.

@@ -2,7 +2,7 @@
 
 # ISagaEffectTransformer
 
-`typealias ISagaEffectTransformer<R, R2> = (`[`SagaEffect`](-saga-effect/index.md)`<`[`R`](-i-saga-effect-transformer.md#R)`>) -> `[`SagaEffect`](-saga-effect/index.md)`<`[`R2`](-i-saga-effect-transformer.md#R2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L37)
+`typealias ISagaEffectTransformer<R, R2> = (`[`SagaEffect`](-saga-effect/index.md)`<`[`R`](-i-saga-effect-transformer.md#R)`>) -> `[`SagaEffect`](-saga-effect/index.md)`<`[`R2`](-i-saga-effect-transformer.md#R2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L37)
 
 Transform one [SagaEffect](-saga-effect/index.md) to another.
 

@@ -2,7 +2,7 @@
 
 # PutEffect
 
-`class PutEffect : `[`SingleSagaEffect`](../-single-saga-effect/index.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/PutEffect.kt#L16)
+`class PutEffect : `[`SingleSagaEffect`](../-single-saga-effect/index.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/PutEffect.kt#L16)
 
 [ISagaEffect](../-i-saga-effect.md) whose [ISagaOutput](../-i-saga-output/index.md) dispatches some [IReduxAction](../../org.swiften.redux.core/-i-redux-action.md).
 

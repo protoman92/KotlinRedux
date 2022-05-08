@@ -2,7 +2,7 @@
 
 # AndroidUtil
 
-`object AndroidUtil` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-util/src/main/java/org/swiften/redux/android/util/AndroidUtil.kt#L13)
+`object AndroidUtil` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-util\src\main\java/org/swiften/redux/android/util/AndroidUtil.kt#L13)
 
 Top level namespace for Android utilities
 

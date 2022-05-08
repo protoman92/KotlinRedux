@@ -2,7 +2,7 @@
 
 # remove
 
-`fun `[`ICompositeReduxSubscription`](-i-composite-redux-subscription/index.md)`.remove(subscription: `[`IReduxSubscription`](-i-redux-subscription/index.md)`): `[`IReduxSubscription`](-i-redux-subscription/index.md)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L132)
+`fun `[`ICompositeReduxSubscription`](-i-composite-redux-subscription/index.md)`.remove(subscription: `[`IReduxSubscription`](-i-redux-subscription/index.md)`): `[`IReduxSubscription`](-i-redux-subscription/index.md)`?` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Subscription.kt#L132)
 
 Remove an [IReduxSubscription](-i-redux-subscription/index.md).
 

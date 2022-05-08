@@ -2,4 +2,4 @@
 
 # subscribers
 
-`private val subscribers: <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/ThreadSafeStore.kt#L25)
+`private val subscribers: <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/ThreadSafeStore.kt#L25)

@@ -2,7 +2,7 @@
 
 # CommonEffects
 
-`object CommonEffects` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L14)
+`object CommonEffects` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L14)
 
 Top-level namespace for Rx-based [ISagaEffect](../-i-saga-effect.md)
 

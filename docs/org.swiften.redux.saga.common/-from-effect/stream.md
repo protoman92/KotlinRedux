@@ -2,7 +2,7 @@
 
 # stream
 
-`private val stream: <ERROR CLASS><`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/FromEffect.kt#L17)
+`private val stream: <ERROR CLASS><`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/FromEffect.kt#L17)
 
 A [Flowable](#) instance.
 

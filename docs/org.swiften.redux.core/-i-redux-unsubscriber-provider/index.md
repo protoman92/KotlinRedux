@@ -2,7 +2,7 @@
 
 # IReduxUnsubscriberProvider
 
-`interface IReduxUnsubscriberProvider` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L81)
+`interface IReduxUnsubscriberProvider` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Core.kt#L81)
 
 Represents an object that provides [IReduxUnsubscriber](../-i-redux-unsubscriber.md).
 

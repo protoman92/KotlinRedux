@@ -2,7 +2,7 @@
 
 # BatchAction
 
-`data class BatchAction : `[`IReduxAction`](../-i-redux-action.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/BatchDispatchMiddleware.kt#L13)
+`data class BatchAction : `[`IReduxAction`](../-i-redux-action.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/BatchDispatchMiddleware.kt#L13)
 
 An [IReduxAction](../-i-redux-action.md) that contains multiple other [IReduxAction](../-i-redux-action.md) instances that can be dispatched
 individually.

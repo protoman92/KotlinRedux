@@ -2,7 +2,7 @@
 
 # doNothing
 
-`fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> doNothing(): `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](do-nothing.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L53)
+`fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> doNothing(): `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](do-nothing.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L53)
 
 Create a [NothingEffect](../-nothing-effect/index.md) instance.
 

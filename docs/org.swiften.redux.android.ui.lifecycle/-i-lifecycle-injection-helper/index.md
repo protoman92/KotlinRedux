@@ -2,7 +2,7 @@
 
 # ILifecycleInjectionHelper
 
-`interface ILifecycleInjectionHelper<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/LifecycleInjector.kt#L19)
+`interface ILifecycleInjectionHelper<GState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-lifecycle\src\main\java/org/swiften/redux/android/ui/lifecycle/LifecycleInjector.kt#L19)
 
 Helps with [IPropInjector.inject](../../org.swiften.redux.ui/-i-prop-injector/inject.md) for [LifecycleOwner](#) instances. Use this to integrate with
 Dagger.

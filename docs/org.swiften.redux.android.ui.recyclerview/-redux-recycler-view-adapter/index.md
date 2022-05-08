@@ -2,7 +2,7 @@
 
 # ReduxRecyclerViewAdapter
 
-`abstract class ReduxRecyclerViewAdapter<VH>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-recyclerview/src/main/java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L32)
+`abstract class ReduxRecyclerViewAdapter<VH>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-recyclerview\src\main\java/org/swiften/redux/android/ui/recyclerview/RecyclerAdapter.kt#L32)
 
 Convenience [RecyclerView.Adapter](#) that implements some default methods to make working with
 [IFullPropInjector](../../org.swiften.redux.ui/-i-full-prop-injector.md) easier. Basically, [RecyclerView.Adapter.getItemCount](#) always returns 0

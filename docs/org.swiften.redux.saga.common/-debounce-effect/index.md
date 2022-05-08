@@ -2,7 +2,7 @@
 
 # DebounceEffect
 
-`internal class DebounceEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/DebounceEffect.kt#L15)
+`internal class DebounceEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/DebounceEffect.kt#L15)
 
 [SagaEffect](../-saga-effect/index.md) whose [ISagaOutput](../-i-saga-output/index.md) applies a debouncing effect on the resulting emission.
 

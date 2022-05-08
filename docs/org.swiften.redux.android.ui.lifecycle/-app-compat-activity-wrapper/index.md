@@ -2,7 +2,7 @@
 
 # AppCompatActivityWrapper
 
-`class AppCompatActivityWrapper : `[`IAppCompatActivity`](../-i-app-compat-activity/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L24)
+`class AppCompatActivityWrapper : `[`IAppCompatActivity`](../-i-app-compat-activity/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-lifecycle\src\main\java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L24)
 
 Wrap an [AppCompatActivity](#) to implement [IAppCompatActivity](../-i-app-compat-activity/index.md).
 

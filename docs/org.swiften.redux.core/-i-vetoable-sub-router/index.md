@@ -2,9 +2,9 @@
 
 # IVetoableSubRouter
 
-`interface IVetoableSubRouter : `[`IUniqueIDProvider`](../-i-unique-i-d-provider/index.md)`, `[`ISubRouterPriorityProvider`](../-i-sub-router-priority-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Router.kt#L42)
+`interface IVetoableSubRouter : `[`IUniqueIDProvider`](../-i-unique-i-d-provider/index.md)`, `[`ISubRouterPriorityProvider`](../-i-sub-router-priority-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Router.kt#L56)
 
-Represents a router whose [navigate](navigate.md) returns a [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) indicating whether a successful
+Represents a router whose [navigate](navigate.md) returns a [NavigationResult](../-navigation-result/index.md) indicating whether a successful
 navigation happened. This can be used in a main-sub router set-up whereby there is a [Collection](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html)
 of [IVetoableSubRouter](./index.md), and every time a [IRouterScreen](../-i-router-screen.md) arrives, the first [IVetoableSubRouter](./index.md)
 that returns true for [navigate](navigate.md) performs the navigation.
@@ -20,4 +20,4 @@ that returns true for [navigate](navigate.md) performs the navigation.
 
 | Name | Summary |
 |---|---|
-| [navigate](navigate.md) | `abstract fun navigate(screen: `[`IRouterScreen`](../-i-router-screen.md)`): `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)<br>Navigate to an [IRouterScreen](../-i-router-screen.md). How this is done is left to the app's specific implementation. |
+| [navigate](navigate.md) | `abstract fun navigate(screen: `[`IRouterScreen`](../-i-router-screen.md)`): `[`NavigationResult`](../-navigation-result/index.md)<br>Navigate to an [IRouterScreen](../-i-router-screen.md). How this is done is left to the app's specific implementation. |

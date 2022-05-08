@@ -2,4 +2,4 @@
 
 # _isUnsubscribed
 
-`private val _isUnsubscribed: `[`AtomicBoolean`](http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/atomic/AtomicBoolean.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L61)
+`private val _isUnsubscribed: `[`AtomicBoolean`](http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/atomic/AtomicBoolean.html) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Subscription.kt#L61)

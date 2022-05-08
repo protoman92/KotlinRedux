@@ -2,7 +2,7 @@
 
 # AwaitEffect
 
-`class AwaitEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SingleSagaEffect`](../-single-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/AwaitEffect.kt#L19)
+`class AwaitEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SingleSagaEffect`](../-single-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/AwaitEffect.kt#L19)
 
 [SagaEffect](../-saga-effect/index.md) whose [ISagaOutput](../-i-saga-output/index.md) is created from [creator](creator.md), which is a function that creates
 [R](index.md#R) using [ISagaOutput.awaitFor](../../org.swiften.redux.core/-i-awaitable/await-for.md). It is important that the resulting [SagaOutput.stream](../-saga-output/stream.md) emits only

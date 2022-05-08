@@ -2,7 +2,7 @@
 
 # MainThreadRunner
 
-`object MainThreadRunner : `[`IMainThreadRunner`](../-i-main-thread-runner/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-util/src/main/java/org/swiften/redux/android/util/AndroidUtil.kt#L33)
+`object MainThreadRunner : `[`IMainThreadRunner`](../-i-main-thread-runner/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-util\src\main\java/org/swiften/redux/android/util/AndroidUtil.kt#L33)
 
 Default implementation for [IMainThreadRunner](../-i-main-thread-runner/index.md).
 

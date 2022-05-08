@@ -2,7 +2,7 @@
 
 # Companion
 
-`companion object Companion : `[`IUniqueIDProvider`](../../-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt)
+`companion object Companion : `[`IUniqueIDProvider`](../../-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Subscription.kt)
 
 ### Companion Object Properties
 

@@ -2,7 +2,7 @@
 
 # NestedRouter
 
-`class NestedRouter : `[`IRouter`](../-i-router/index.md)`<`[`IRouterScreen`](../-i-router-screen.md)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L26)
+`class NestedRouter : `[`IRouter`](../-i-router/index.md)`<`[`IRouterScreen`](../-i-router-screen.md)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/NestedRouter.kt#L26)
 
 [IRouter](../-i-router/index.md) implementation that holds on to a [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html) of [IVetoableSubRouter](../-i-vetoable-sub-router/index.md), each of which will
 call [IVetoableSubRouter.navigate](../-i-vetoable-sub-router/navigate.md) to check if it can perform a successful navigation. If not, we

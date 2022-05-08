@@ -2,7 +2,7 @@
 
 # ISagaMonitor
 
-`interface ISagaMonitor : `[`IDispatcherProvider`](../../org.swiften.redux.core/-i-dispatcher-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/SagaMonitor.kt#L21)
+`interface ISagaMonitor : `[`IDispatcherProvider`](../../org.swiften.redux.core/-i-dispatcher-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/SagaMonitor.kt#L21)
 
 Monitors all [ISagaOutput](../-i-saga-output/index.md) and calls [ISagaOutput.onAction](../-i-saga-output/on-action.md) when an action arrives. This is
 the only way to notify all [ISagaOutput](../-i-saga-output/index.md) of new actions.

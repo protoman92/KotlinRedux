@@ -2,7 +2,7 @@
 
 # SagaOutput
 
-`class SagaOutput<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`T`](index.md#T)`>, `[`IUniqueIDProvider`](../../org.swiften.redux.core/-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/SagaOutput.kt#L37)
+`class SagaOutput<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`T`](index.md#T)`>, `[`IUniqueIDProvider`](../../org.swiften.redux.core/-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/SagaOutput.kt#L37)
 
 This is the default implementation of [ISagaOutput](../-i-saga-output/index.md). Every time a new [SagaOutput](./index.md) is created,
 [monitor](monitor.md) will keep track of its [onAction](on-action.md) to call on [ISagaMonitor.dispatch](../../org.swiften.redux.core/-i-dispatcher-provider/dispatch.md), and when said

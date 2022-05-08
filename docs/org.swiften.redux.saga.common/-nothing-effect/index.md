@@ -2,7 +2,7 @@
 
 # NothingEffect
 
-`internal class NothingEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/NothingEffect.kt#L16)
+`internal class NothingEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/NothingEffect.kt#L16)
 
 [SagaOutput](../-saga-output/index.md) whose [ISagaOutput](../-i-saga-output/index.md) does not emit anything. This can be used to perform clean-up
 for streams such as [RxTakeActionEffect](#).

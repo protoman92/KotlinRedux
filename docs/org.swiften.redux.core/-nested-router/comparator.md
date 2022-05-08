@@ -2,7 +2,7 @@
 
 # comparator
 
-`private val comparator: <ERROR CLASS><`[`IVetoableSubRouter`](../-i-vetoable-sub-router/index.md)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/NestedRouter.kt#L28)
+`private val comparator: <ERROR CLASS><`[`IVetoableSubRouter`](../-i-vetoable-sub-router/index.md)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/NestedRouter.kt#L28)
 
 A [Comparator](#) that will be used to sort [subRouters](sub-routers.md). This will be done to
 determine which [IVetoableSubRouter](../-i-vetoable-sub-router/index.md) should be invoked first, and should be used in conjunction

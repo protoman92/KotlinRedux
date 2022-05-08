@@ -2,7 +2,7 @@
 
 # MiddlewareInput
 
-`class MiddlewareInput<out GState>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Middleware.kt#L32)
+`class MiddlewareInput<out GState>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Middleware.kt#L32)
 
 Input for middlewares that includes some functionalities from [IReduxStore](../-i-redux-store.md). Beware that
 [dispatch](dispatch.md) represents the entire wrapper chain, so it may cause a recursion problem if we do

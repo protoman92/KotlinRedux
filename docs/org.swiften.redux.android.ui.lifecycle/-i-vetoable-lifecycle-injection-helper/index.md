@@ -2,7 +2,7 @@
 
 # IVetoableLifecycleInjectionHelper
 
-`interface IVetoableLifecycleInjectionHelper<GState : `[`LState`](index.md#LState)`, LState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/LifecycleInjector.kt#L41)
+`interface IVetoableLifecycleInjectionHelper<GState : `[`LState`](index.md#LState)`, LState : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-lifecycle\src\main\java/org/swiften/redux/android/ui/lifecycle/LifecycleInjector.kt#L41)
 
 A variant of [ILifecycleInjectionHelper](../-i-lifecycle-injection-helper/index.md) whose [inject](inject.md) invocation can be vetoed.
 

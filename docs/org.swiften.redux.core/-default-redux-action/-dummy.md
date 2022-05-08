@@ -2,4 +2,4 @@
 
 # Dummy
 
-`object Dummy : `[`DefaultReduxAction`](index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Preset.kt#L11)
+`object Dummy : `[`DefaultReduxAction`](index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Preset.kt#L11)

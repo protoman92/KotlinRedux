@@ -2,7 +2,7 @@
 
 # IMainThreadRunner
 
-`interface IMainThreadRunner` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-util/src/main/java/org/swiften/redux/android/util/AndroidUtil.kt#L28)
+`interface IMainThreadRunner` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-util\src\main\java/org/swiften/redux/android/util/AndroidUtil.kt#L28)
 
 [invoke](invoke.md) some tasks on the main thread.
 

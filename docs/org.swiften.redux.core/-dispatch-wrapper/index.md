@@ -2,7 +2,7 @@
 
 # DispatchWrapper
 
-`class DispatchWrapper` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/DispatchWrapper.kt#L14)
+`class DispatchWrapper` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/DispatchWrapper.kt#L14)
 
 Use this [DispatchWrapper](./index.md) to track the ordering of [dispatch](dispatch.md) wrapping using [id](id.md).
 

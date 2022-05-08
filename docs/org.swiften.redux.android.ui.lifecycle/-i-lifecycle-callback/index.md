@@ -2,7 +2,7 @@
 
 # ILifecycleCallback
 
-`interface ILifecycleCallback` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidLifecycle.kt#L23)
+`interface ILifecycleCallback` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-lifecycle\src\main\java/org/swiften/redux/android/ui/lifecycle/AndroidLifecycle.kt#L23)
 
 Callback for use with [LifecycleObserver](#).
 

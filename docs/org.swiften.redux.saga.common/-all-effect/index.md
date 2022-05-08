@@ -2,7 +2,7 @@
 
 # AllEffect
 
-`internal class AllEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/AllEffect.kt#L15)
+`internal class AllEffect<R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](index.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/AllEffect.kt#L15)
 
 [SagaEffect](../-saga-effect/index.md) whose [ISagaOutput](../-i-saga-output/index.md) merges the emissions from [ISagaOutput](../-i-saga-output/index.md) instances produced
 by [sources](sources.md).

@@ -2,7 +2,7 @@
 
 # IAppCompatActivity
 
-`internal interface IAppCompatActivity` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L16)
+`internal interface IAppCompatActivity` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-lifecycle\src\main\java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L16)
 
 Interface to wrap some functionalities for [AppCompatActivity](#).
 

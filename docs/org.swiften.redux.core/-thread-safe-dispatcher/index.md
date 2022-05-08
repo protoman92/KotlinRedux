@@ -2,7 +2,7 @@
 
 # ThreadSafeDispatcher
 
-`class ThreadSafeDispatcher : `[`IActionDispatcher`](../-i-action-dispatcher.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/ThreadSafeDispatcher.kt#L18)
+`class ThreadSafeDispatcher : `[`IActionDispatcher`](../-i-action-dispatcher.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/ThreadSafeDispatcher.kt#L18)
 
 Use this [IActionDispatcher](../-i-action-dispatcher.md) to wrap a base [IActionDispatcher](../-i-action-dispatcher.md) and dispatch [IReduxAction](../-i-redux-action.md)
 instances in a thread-safe manner.

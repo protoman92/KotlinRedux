@@ -2,7 +2,7 @@
 
 # ISagaOutput
 
-`interface ISagaOutput<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IAwaitable`](../../org.swiften.redux.core/-i-awaitable/index.md)`<`[`T`](index.md#T)`>, `[`IUniqueIDProvider`](../../org.swiften.redux.core/-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L60)
+`interface ISagaOutput<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`IAwaitable`](../../org.swiften.redux.core/-i-awaitable/index.md)`<`[`T`](index.md#T)`>, `[`IUniqueIDProvider`](../../org.swiften.redux.core/-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/CommonSaga.kt#L60)
 
 Stream values for a [ISagaEffect](../-i-saga-effect.md). This stream has functional operators that can transform
 emitted values.

@@ -2,7 +2,7 @@
 
 # flatMap
 
-`fun <T2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> flatMap(transform: (`[`T`](index.md#T)`) -> `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`T2`](flat-map.md#T2)`>): `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`T2`](flat-map.md#T2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/SagaOutput.kt#L90)
+`fun <T2 : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> flatMap(transform: (`[`T`](index.md#T)`) -> `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`T2`](flat-map.md#T2)`>): `[`ISagaOutput`](../-i-saga-output/index.md)`<`[`T2`](flat-map.md#T2)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/SagaOutput.kt#L90)
 
 Overrides [ISagaOutput.flatMap](../-i-saga-output/flat-map.md)
 

@@ -2,7 +2,7 @@
 
 # from
 
-`fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> from(stream: <ERROR CLASS><`[`R`](from.md#R)`>): `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](from.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L74)
+`fun <R : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> from(stream: <ERROR CLASS><`[`R`](from.md#R)`>): `[`SagaEffect`](../-saga-effect/index.md)`<`[`R`](from.md#R)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/CommonEffects.kt#L74)
 
 Create a [FromEffect](../-from-effect/index.md).
 

@@ -2,7 +2,7 @@
 
 # activity
 
-`private val activity: <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android/android-lifecycle/src/main/java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L24)
+`private val activity: <ERROR CLASS>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/android\android-lifecycle\src\main\java/org/swiften/redux/android/ui/lifecycle/AndroidFragment.kt#L24)
 
 An [AppCompatActivity](#) instance.
 

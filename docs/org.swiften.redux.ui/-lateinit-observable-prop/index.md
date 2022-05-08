@@ -2,7 +2,7 @@
 
 # LateinitObservableProp
 
-`open class LateinitObservableProp<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-ui/src/main/kotlin/org/swiften/redux/ui/ObservableProp.kt#L20)
+`open class LateinitObservableProp<T : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-ui\src\main\kotlin/org/swiften/redux/ui/ObservableProp.kt#L20)
 
 Note that [notifier](notifier.md) passes along both the previous and upcoming [T](index.md#T) values
 

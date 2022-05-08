@@ -2,7 +2,7 @@
 
 # DelayEffect
 
-`class DelayEffect : `[`SagaEffect`](../-saga-effect/index.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/DelayEffect.kt#L17)
+`class DelayEffect : `[`SagaEffect`](../-saga-effect/index.md)`<`[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/DelayEffect.kt#L17)
 
 [ISagaEffect](../-i-saga-effect.md) whose [ISagaOutput](../-i-saga-output/index.md) delays emissions by [millis](millis.md).
 

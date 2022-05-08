@@ -2,7 +2,7 @@
 
 # DefaultUniqueIDProvider
 
-`class DefaultUniqueIDProvider : `[`IUniqueIDProvider`](../-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/SubscriberID.kt#L19)
+`class DefaultUniqueIDProvider : `[`IUniqueIDProvider`](../-i-unique-i-d-provider/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/SubscriberID.kt#L19)
 
 Default implementation of [IUniqueIDProvider](../-i-unique-i-d-provider/index.md) that simply uses incrementing [CURRENT_ID](-c-u-r-r-e-n-t_-i-d.md).
 

@@ -2,7 +2,7 @@
 
 # TakeStateEffect
 
-`class TakeStateEffect<State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`State`](index.md#State)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-saga/src/main/kotlin/org/swiften/redux/saga/common/TakeStateEffect.kt#L17)
+`class TakeStateEffect<State : `[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)`> : `[`SagaEffect`](../-saga-effect/index.md)`<`[`State`](index.md#State)`>` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-saga\src\main\kotlin/org/swiften/redux/saga/common/TakeStateEffect.kt#L17)
 
 [TakeStateEffect](./index.md) instances produces streams that emits [State](index.md#State).
 

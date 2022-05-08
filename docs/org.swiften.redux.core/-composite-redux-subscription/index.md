@@ -2,7 +2,7 @@
 
 # CompositeReduxSubscription
 
-`class CompositeReduxSubscription : `[`ICompositeReduxSubscription`](../-i-composite-redux-subscription/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Subscription.kt#L72)
+`class CompositeReduxSubscription : `[`ICompositeReduxSubscription`](../-i-composite-redux-subscription/index.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Subscription.kt#L72)
 
 Composite [IReduxSubscription](../-i-redux-subscription/index.md) that may contain other [IReduxSubscription](../-i-redux-subscription/index.md), and when
 [IReduxSubscription.unsubscribe](../-i-redux-subscription/unsubscribe.md) is called, all the children [IReduxSubscription](../-i-redux-subscription/index.md) will also

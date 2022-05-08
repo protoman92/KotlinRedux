@@ -2,7 +2,7 @@
 
 # IReduxAction
 
-`interface IReduxAction` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L37)
+`interface IReduxAction` [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Core.kt#L37)
 
 Represents a Redux action.
 

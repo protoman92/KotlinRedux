@@ -2,7 +2,7 @@
 
 # IReduxActionWithKey
 
-`interface IReduxActionWithKey : `[`IReduxAction`](../-i-redux-action.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common/common-core/src/main/kotlin/org/swiften/redux/core/Core.kt#L40)
+`interface IReduxActionWithKey : `[`IReduxAction`](../-i-redux-action.md) [(source)](https://github.com/protoman92/KotlinRedux/tree/master/common\common-core\src\main\kotlin/org/swiften/redux/core/Core.kt#L40)
 
 Represents a [IReduxAction](../-i-redux-action.md) that is identifiable by [key](key.md).
 
