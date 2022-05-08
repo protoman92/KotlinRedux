@@ -18,6 +18,7 @@ import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IRouterScreen
 import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.core.IVetoableSubRouter
+import org.swiften.redux.core.NavigationResult
 import org.swiften.redux.core.NestedRouter
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
@@ -99,15 +100,15 @@ class MainFragment : Fragment(),
 
   override val subRouterPriority: Long get() = this.uniqueID
 
-  override fun navigate(screen: IRouterScreen): Boolean {
+  override fun navigate(screen: IRouterScreen): NavigationResult {
     return when (screen) {
       is Redux.Screen.Back -> {
         if (this.reduxProp.state.selectedPage == 1) {
-          this.reduxProp.action.selectPage(0); true
-        } else false
+          this.reduxProp.action.selectPage(0); NavigationResult.Break
+        } else NavigationResult.Fallthrough
       }
 
-      else -> false
+      else -> NavigationResult.Fallthrough
     }
   }
 }

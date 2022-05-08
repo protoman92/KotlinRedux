@@ -33,8 +33,22 @@ interface ISubRouterPriorityProvider {
   val subRouterPriority: Long
 }
 
+sealed class NavigationResult {
+  /**
+   * If this is returned from [IVetoableSubRouter.navigate], allow the router to call the next
+   * sub-router's [IVetoableSubRouter.navigate].
+   */
+  object Fallthrough : NavigationResult()
+
+  /**
+   * If this is returned from [IVetoableSubRouter.navigate], prevent the router from calling the
+   * next sub-router's [IVetoableSubRouter.navigate].
+   */
+  object Break : NavigationResult()
+}
+
 /**
- * Represents a router whose [navigate] returns a [Boolean] indicating whether a successful
+ * Represents a router whose [navigate] returns a [NavigationResult] indicating whether a successful
  * navigation happened. This can be used in a main-sub router set-up whereby there is a [Collection]
  * of [IVetoableSubRouter], and every time a [IRouterScreen] arrives, the first [IVetoableSubRouter]
  * that returns true for [navigate] performs the navigation.
@@ -43,7 +57,7 @@ interface IVetoableSubRouter : IUniqueIDProvider, ISubRouterPriorityProvider {
   /**
    * Navigate to an [IRouterScreen]. How this is done is left to the app's specific implementation.
    * @param screen The incoming [IRouterScreen] instance.
-   * @return A [Boolean] value.
+   * @return A [NavigationResult] value.
    */
-  fun navigate(screen: IRouterScreen): Boolean
+  fun navigate(screen: IRouterScreen): NavigationResult
 }

@@ -85,7 +85,14 @@ class NestedRouter private constructor (
     }
 
     if (this.navigator(screen)) return
-    for (subRouter in this.subRouters) { if (subRouter.navigate(screen)) return }
+
+    for (subRouter in this.subRouters) {
+      if (subRouter.navigate(screen) != NavigationResult.Break) {
+        continue
+      }
+
+      return
+    }
   }
 
   override fun deinitialize() {

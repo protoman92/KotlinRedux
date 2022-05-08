@@ -22,13 +22,13 @@ class NestedRouterTest {
   ) : IUniqueIDProvider by DefaultUniqueIDProvider(), IVetoableSubRouter {
     val navigationCount = AtomicInteger()
 
-    override fun navigate(screen: IRouterScreen): Boolean {
+    override fun navigate(screen: IRouterScreen): NavigationResult {
       if (this.navigator(screen)) {
         this.navigationCount.incrementAndGet()
-        return true
+        return NavigationResult.Break
       }
 
-      return false
+      return NavigationResult.Fallthrough
     }
   }
 
