@@ -50,6 +50,7 @@ class MainFragment : Fragment(),
   }
 
   data class S(val selectedPage: Int = 0) : Serializable
+
   class A(
     val registerSubRouter: (IVetoableSubRouter) -> Unit,
     val unregisterSubRouter: (IVetoableSubRouter) -> Unit,

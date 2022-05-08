@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../../Gradle/gradle-6.3" />
+        <option name="gradleJvm" value="jbr-11" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/android" />
+            <option value="$PROJECT_DIR$/android/android-all" />
+            <option value="$PROJECT_DIR$/android/android-lifecycle" />
+            <option value="$PROJECT_DIR$/android/android-livedata-saga" />
+            <option value="$PROJECT_DIR$/android/android-recyclerview" />
+            <option value="$PROJECT_DIR$/android/android-router" />
+            <option value="$PROJECT_DIR$/android/android-saga" />
+            <option value="$PROJECT_DIR$/android/android-ui" />
+            <option value="$PROJECT_DIR$/android/android-util" />
+            <option value="$PROJECT_DIR$/common" />
+            <option value="$PROJECT_DIR$/common/common-all" />
+            <option value="$PROJECT_DIR$/common/common-core" />
+            <option value="$PROJECT_DIR$/common/common-saga" />
+            <option value="$PROJECT_DIR$/common/common-thunk" />
+            <option value="$PROJECT_DIR$/common/common-ui" />
+            <option value="$PROJECT_DIR$/sample-android" />
+            <option value="$PROJECT_DIR$/sample-android/sample-dagger" />
+            <option value="$PROJECT_DIR$/sample-android/sample-simple" />
+            <option value="$PROJECT_DIR$/sample-android/sample-sunflower" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
