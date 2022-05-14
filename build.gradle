@@ -1,9 +1,12 @@
 buildscript {
   def rootAbsolutePath = projectDir.getAbsolutePath()
-  project.apply from: "$rootAbsolutePath/constants.gradle"
+
+  allprojects {
+    project.apply from: "$rootAbsolutePath/constants.gradle"
+  }
 
   repositories {
-    jcenter()
+    mavenCentral()
   }
 
   dependencies {
@@ -13,8 +16,8 @@ buildscript {
 
 
 apply plugin: 'org.jetbrains.dokka'
+
 def rootAbsolutePath = projectDir.getAbsolutePath()
-project.apply from: "$rootAbsolutePath/constants.gradle"
 
 dokka {
   moduleName = dokkaOutputDir
@@ -54,9 +57,17 @@ dokka {
   }
 }
 
-subprojects {
-  project.apply from: "$rootAbsolutePath/constants.gradle"
+allprojects {
+  repositories {
+    google()
+    mavenCentral()
+    maven { url = "https://jitpack.io" }
+  }
 
+  project.apply from: "$rootAbsolutePath/constants.gradle"
+}
+
+subprojects {
   configurations.all {
     // Make sure the latest JitPack releases are used.
     resolutionStrategy.cacheChangingModulesFor 24, 'hours'

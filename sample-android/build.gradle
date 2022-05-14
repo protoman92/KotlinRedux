@@ -1,14 +1,12 @@
 buildscript {
-  def rootAbsolutePath = projectDir.parent
-  project.apply from: "$rootAbsolutePath/constants.gradle"
-  project.apply from: "$project.projectDir/constants.gradle"
-  project.apply from: "$rootAbsolutePath/android/constants.gradle"
-
   repositories {
     google()
-    jcenter()
-    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
+    mavenCentral()
   }
+
+  def rootAbsolutePath = projectDir.parent
+  project.apply from: "$project.projectDir/constants.gradle"
+  project.apply from: "$rootAbsolutePath/android/constants.gradle"
 
   dependencies {
     classpath "com.android.tools.build:gradle:$project.ext.gradle"
@@ -16,19 +14,9 @@ buildscript {
   }
 }
 
-allprojects {
-  repositories {
-    google()
-    jcenter()
-    maven { url = "https://jitpack.io" }
-    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
-  }
-}
-
 def rootAbsolutePath = projectDir.parent
 
 subprojects {
-  project.apply from: "$rootAbsolutePath/constants.gradle"
   project.apply from: "$rootAbsolutePath/android/constants.gradle"
   project.apply from: "$rootAbsolutePath/sample-android/constants.gradle"
 }
