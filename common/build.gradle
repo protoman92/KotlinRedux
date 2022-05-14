@@ -10,7 +10,6 @@ plugins {
 }
 
 subprojects {
-  apply plugin: "maven"
   apply plugin: "kotlin"
   group = 'com.github.protoman92'
   version '1.0-SNAPSHOT'
