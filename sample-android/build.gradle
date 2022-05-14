@@ -52,6 +52,11 @@ configure(subprojects - project(':sample-android:sample-sunflower')) {
     }
   }
 
+  repositories {
+    /** This is just used for klaxon */
+    jcenter()
+  }
+
   dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':android:android-all')

@@ -10,7 +10,6 @@ buildscript {
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$project.ext.kotlin"
     classpath "com.android.tools.build:gradle:$project.ext.gradle"
-    classpath "com.github.dcendents:android-maven-gradle-plugin:$project.ext.androidMavenGradle"
     classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$project.ext.dokka"
   } 
 }
@@ -20,7 +19,6 @@ def rootAbsolutePath = projectDir.parent
 subprojects {
   apply plugin: 'com.android.library'
   apply plugin: 'kotlin-android'
-  apply plugin: 'com.github.dcendents.android-maven'
 
   project.apply from: "$rootAbsolutePath/android/constants.gradle"
   group = 'com.github.protoman92'
@@ -40,13 +38,13 @@ subprojects {
   }
 
   android {
-    compileSdkVersion compileSdk
+    compileSdkVersion project.ext.compileSdk
 
     defaultConfig {
-      minSdkVersion minSdk
-      targetSdkVersion targetSdk
-      versionCode versionCode
-      versionName versionName
+      minSdkVersion project.ext.minSdk
+      targetSdkVersion project.ext.targetSdk
+      versionCode project.ext.versionCode
+      versionName project.ext.versionName
 
       testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
