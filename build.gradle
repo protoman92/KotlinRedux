@@ -1,5 +1,6 @@
 buildscript {
-  project.apply from: "$rootDir/constants.gradle"
+  def rootAbsolutePath = projectDir.getAbsolutePath()
+  project.apply from: "$rootAbsolutePath/constants.gradle"
 
   repositories {
     jcenter()
@@ -12,12 +13,13 @@ buildscript {
 
 
 apply plugin: 'org.jetbrains.dokka'
-project.apply from: "$rootDir/constants.gradle"
+def rootAbsolutePath = projectDir.getAbsolutePath()
+project.apply from: "$rootAbsolutePath/constants.gradle"
 
 dokka {
   moduleName = dokkaOutputDir
   outputFormat = dokkaOutputFormat
-  outputDirectory = rootDir
+  outputDirectory = rootAbsolutePath
   includeNonPublic = true
   skipEmptyPackages = true
 
@@ -37,7 +39,10 @@ dokka {
       path = new File(p.projectDir, "/src/main/kotlin")
     }
 
-    def relativePath = rootDir.toPath().relativize(path.toPath()).toString()
+    def relativePath = new File(rootAbsolutePath)
+      .toPath()
+      .relativize(path.toPath())
+      .toString()
 
     linkMapping {
       dir = path
@@ -50,7 +55,7 @@ dokka {
 }
 
 subprojects {
-  project.apply from: "$rootDir/constants.gradle"
+  project.apply from: "$rootAbsolutePath/constants.gradle"
 
   configurations.all {
     // Make sure the latest JitPack releases are used.

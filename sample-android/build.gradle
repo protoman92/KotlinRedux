@@ -1,7 +1,8 @@
 buildscript {
-  project.apply from: "$rootDir/constants.gradle"
+  def rootAbsolutePath = projectDir.parent
+  project.apply from: "$rootAbsolutePath/constants.gradle"
   project.apply from: "$project.projectDir/constants.gradle"
-  project.apply from: "$rootDir/android/constants.gradle"
+  project.apply from: "$rootAbsolutePath/android/constants.gradle"
 
   repositories {
     google()
@@ -24,14 +25,18 @@ allprojects {
   }
 }
 
+def rootAbsolutePath = projectDir.parent
+
+subprojects {
+  project.apply from: "$rootAbsolutePath/constants.gradle"
+  project.apply from: "$rootAbsolutePath/android/constants.gradle"
+  project.apply from: "$rootAbsolutePath/sample-android/constants.gradle"
+}
+
 configure(subprojects - project(':sample-android:sample-sunflower')) {
   apply plugin: 'com.android.application'
   apply plugin: 'kotlin-android'
   apply plugin: 'kotlin-android-extensions'
-
-  project.apply from: "$rootDir/constants.gradle"
-  project.apply from: "$rootDir/android/constants.gradle"
-  project.apply from: "$rootDir/sample-android/constants.gradle"
 
   configurations.all {
     // Make sure the latest JitPack releases are used.
@@ -73,7 +78,7 @@ configure(subprojects - project(':sample-android:sample-sunflower')) {
     debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$project.ext.leakCanary"
   }
 
-  project.apply from: "$rootDir/sample-android/skipped.gradle"
+  project.apply from: "$rootAbsolutePath/sample-android/skipped.gradle"
 }
 
 configure(project(':sample-android:sample-dagger')) {
@@ -101,9 +106,6 @@ configure(project(':sample-android:sample-sunflower')) {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  project.apply from: "$rootDir/constants.gradle"
-  project.apply from: "$rootDir/android/constants.gradle"
-  project.apply from: "$rootDir/sample-android/constants.gradle"
   project.apply from: "$project.projectDir/constants.gradle"
 
   apply plugin: 'com.android.application'
@@ -172,5 +174,5 @@ configure(project(':sample-android:sample-sunflower')) {
     debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$project.ext.leakCanary"
   }
 
-  project.apply from: "$rootDir/sample-android/skipped.gradle"
+  project.apply from: "$rootAbsolutePath/sample-android/skipped.gradle"
 }
