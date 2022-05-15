@@ -14,17 +14,18 @@ buildscript {
   } 
 }
 
+plugins {
+  /** This is needed for publishing (e.g. jitpack.io */
+  id 'maven-publish'
+}
+
 def rootAbsolutePath = projectDir.parent
 
-subprojects {
+subprojects {project ->
   apply plugin: 'com.android.library'
   apply plugin: 'kotlin-android'
-  /** This is needed for publishing (e.g. jitpack.io */
-  apply plugin: 'maven-publish'
 
   project.apply from: "$rootAbsolutePath/android/constants.gradle"
-  group = 'com.github.protoman92'
-  version '1.0-SNAPSHOT'
 
   configurations {
     testArtifacts
@@ -40,9 +41,14 @@ subprojects {
   }
 
   android {
+    namespace = "org.swiften.redux.android"
     compileSdkVersion project.ext.compileSdk
 
     defaultConfig {
+      aarMetadata {
+        minCompileSdk = project.ext.minSdk
+      }
+
       minSdkVersion project.ext.minSdk
       targetSdkVersion project.ext.targetSdk
       versionCode project.ext.versionCode
@@ -64,6 +70,20 @@ subprojects {
     androidTestImplementation "androidx.test:runner:$project.ext.testRunner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$project.ext.espresso"
     androidTestImplementation "androidx.test.ext:junit:$project.ext.androidxJunit"
+  }
+
+  afterEvaluate {
+    publishing {
+      publications {
+        "${project.name}"(MavenPublication) {
+          groupId = 'com.github.protoman92.KotlinRedux'
+          artifactId = project.name
+          version = '1.0-SNAPSHOT'
+
+          from components.release
+        }
+      }
+    }
   }
 }
 
