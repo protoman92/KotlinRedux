@@ -7,11 +7,11 @@ package com.google.samples.apps.sunflower
 
 import android.app.Application
 import androidx.lifecycle.LifecycleOwner
+import androidx.multidex.MultiDexApplication
 import com.google.samples.apps.sunflower.dependency.IDependency
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.dependency.Router
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
-import com.squareup.leakcanary.LeakCanary
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.ILifecycleInjectionHelper
@@ -25,11 +25,9 @@ import org.swiften.redux.thunk.ThunkMiddleware
 import org.swiften.redux.ui.IPropInjector
 
 /** Created by haipham on 2019/01/17 */
-class GardenApplication : Application() {
+class GardenApplication : MultiDexApplication() {
   override fun onCreate() {
     super.onCreate()
-    if (LeakCanary.isInAnalyzerProcess(this)) { return }
-    LeakCanary.install(this)
 
     val dependency: IDependency = object : IDependency {
       override val picasso = Picasso.get()

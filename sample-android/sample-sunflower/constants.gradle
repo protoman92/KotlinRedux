@@ -3,7 +3,7 @@ project.ext {
   ktxVersion = "1.0.1"
   materialVersion = "1.0.0"
   navigationVersion = "1.0.0-beta02"
-  roomVersion = "2.1.0-alpha04"
+  roomVersion = "2.4.2"
   runnerVersion = "1.0.1"
   uiAutomatorVersion = "2.2.0-alpha4"
   workVersion = "1.0.0-rc01"

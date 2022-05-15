@@ -35,23 +35,23 @@ internal class SingleActivityRouter<AT, Screen>(
 
   private val callbacks by lazy {
     object : Application.ActivityLifecycleCallbacks {
-      override fun onActivityPaused(activity: Activity?) {}
-      override fun onActivityResumed(activity: Activity?) {}
+      override fun onActivityPaused(activity: Activity) {}
+      override fun onActivityResumed(activity: Activity) {}
 
-      override fun onActivityStarted(activity: Activity?) {
-        activity?.also {
+      override fun onActivityStarted(activity: Activity) {
+        activity.also {
           require(this@SingleActivityRouter.cls.isInstance(activity))
           this@SingleActivityRouter.activity = this@SingleActivityRouter.cls.cast(it)
         }
       }
 
-      override fun onActivityStopped(activity: Activity?) {
+      override fun onActivityStopped(activity: Activity) {
         this@SingleActivityRouter.activity = null
       }
 
-      override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-      override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
-      override fun onActivityDestroyed(activity: Activity?) {}
+      override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+      override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+      override fun onActivityDestroyed(activity: Activity) {}
     }
   }
 

@@ -1,8 +1,8 @@
 project.ext {
   gradle = "7.2.0"
-  compileSdk = 28
+  compileSdk = 31
   minSdk = 14
-  targetSdk = 28
+  targetSdk = 31
   versionCode = 1
   versionName = "1.0"
   appCompat = "1.1.0-alpha02"

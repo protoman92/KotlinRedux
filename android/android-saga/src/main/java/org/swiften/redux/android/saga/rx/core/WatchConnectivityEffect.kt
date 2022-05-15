@@ -50,12 +50,12 @@ internal class WatchConnectivityEffect(private val context: Context) : SagaEffec
           .build()
 
         val callback = object : ConnectivityManager.NetworkCallback() {
-          override fun onAvailable(network: Network?) {
+          override fun onAvailable(network: Network) {
             super.onAvailable(network)
             emitter.onNext(true)
           }
 
-          override fun onLost(network: Network?) {
+          override fun onLost(network: Network) {
             super.onLost(network)
             emitter.onNext(false)
           }

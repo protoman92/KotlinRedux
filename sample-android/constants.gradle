@@ -3,5 +3,5 @@ project.ext {
   constraintlayout = "2.0.0-alpha3"
   dagger = "2.13"
   picasso = "2.71828"
-  leakCanary = "1.6.3"
+  leakCanary = "2.9.1"
 }

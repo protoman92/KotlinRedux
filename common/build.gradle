@@ -1,12 +1,11 @@
 buildscript {
+  repositories {
+    mavenCentral()
+  }
+
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$project.ext.kotlin"
-    classpath "org.jetbrains.dokka:dokka-gradle-plugin:$project.ext.dokka"
   }
-}
-
-plugins {
-  id 'org.jetbrains.kotlin.jvm' version '1.3.20'
 }
 
 subprojects {
@@ -55,7 +54,7 @@ project(':common:common-core') {
 
 project(':common:common-thunk') {
   dependencies {
-    api project(':common:common-core')
+    implementation project(':common:common-core')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     testImplementation project (path: ":common:common-core", configuration: 'testArtifacts')
   }

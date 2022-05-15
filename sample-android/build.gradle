@@ -26,11 +26,6 @@ configure(subprojects - project(':sample-android:sample-sunflower')) {
   apply plugin: 'kotlin-android'
   apply plugin: 'kotlin-android-extensions'
 
-  configurations.all {
-    // Make sure the latest JitPack releases are used.
-    resolutionStrategy.cacheChangingModulesFor 24, 'hours'
-  }
-
   android {
     compileSdkVersion project.ext.compileSdk
 
@@ -108,6 +103,8 @@ configure(project(':sample-android:sample-sunflower')) {
       applicationId "com.google.samples.apps.sunflower"
       minSdkVersion 18
       targetSdkVersion project.ext.targetSdk
+
+      multiDexEnabled = true
       testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
       versionCode 1
       versionName "0.1.6"
@@ -132,14 +129,15 @@ configure(project(':sample-android:sample-sunflower')) {
   }
 
   dependencies {
-    kapt "androidx.room:room-compiler:$project.ext.roomVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rxJava"
     implementation "android.arch.navigation:navigation-fragment-ktx:$project.ext.navigationVersion"
     implementation "android.arch.navigation:navigation-ui-ktx:$project.ext.navigationVersion"
     implementation "android.arch.work:work-runtime-ktx:$project.ext.workVersion"
     implementation "androidx.constraintlayout:constraintlayout:$project.ext.constraintlayout"
     implementation "androidx.core:core-ktx:$project.ext.ktxVersion"
+    implementation "androidx.multidex:multidex:2.0.1"
     implementation "androidx.room:room-runtime:$project.ext.roomVersion"
+    kapt "androidx.room:room-compiler:$project.ext.roomVersion"
     implementation "com.squareup.picasso:picasso:$project.ext.picasso"
     implementation "com.google.android.material:material:$project.ext.materialVersion"
     implementation "com.google.code.gson:gson:$project.ext.gsonVersion"
@@ -158,8 +156,6 @@ configure(project(':sample-android:sample-sunflower')) {
     testImplementation "junit:junit:$junit"
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$project.ext.leakCanary"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$project.ext.leakCanary"
-    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$project.ext.leakCanary"
   }
 
   project.apply from: "$rootAbsolutePath/sample-android/skipped.gradle"

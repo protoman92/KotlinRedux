@@ -61,41 +61,41 @@ fun <GState> IFullPropInjector<GState>.injectActivity(
   injectionHelper: ILifecycleInjectionHelper<GState>
 ): Application.ActivityLifecycleCallbacks where GState : Any {
   val callback = object : Application.ActivityLifecycleCallbacks {
-    override fun onActivityPaused(activity: Activity?) {}
-    override fun onActivityResumed(activity: Activity?) {}
+    override fun onActivityPaused(activity: Activity) {}
+    override fun onActivityResumed(activity: Activity) {}
 
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
-      outState?.also { saver.saveState(it, this@injectActivity.lastState()) }
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+      outState.also { saver.saveState(it, this@injectActivity.lastState()) }
     }
 
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
       try {
         savedInstanceState
           ?.run { saver.restoreState(this) }
           ?.apply { this@injectActivity.dispatch(DefaultReduxAction.ReplaceState(this)) }
       } catch (e: Throwable) { }
 
-      activity?.also {
+      activity.also {
         require(it is AppCompatActivity)
         this@injectActivity.injectFragment(it, injectionHelper)
       }
     }
 
-    override fun onActivityStarted(activity: Activity?) {
-      activity?.also {
+    override fun onActivityStarted(activity: Activity) {
+      activity.also {
         require(it is AppCompatActivity)
         injectionHelper.inject(this@injectActivity, it)
       }
     }
 
-    override fun onActivityStopped(activity: Activity?) {
-      activity?.also {
+    override fun onActivityStopped(activity: Activity) {
+      activity.also {
         require(it is AppCompatActivity)
         injectionHelper.deinitialize(it)
       }
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {}
+    override fun onActivityDestroyed(activity: Activity) {}
   }
 
   application.registerActivityLifecycleCallbacks(callback)
