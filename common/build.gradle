@@ -10,6 +10,8 @@ buildscript {
 
 subprojects {
   apply plugin: "kotlin"
+  /** This is needed for publishing (e.g. jitpack.io */
+  apply plugin: 'maven-publish'
   group = 'com.github.protoman92'
   version '1.0-SNAPSHOT'
 

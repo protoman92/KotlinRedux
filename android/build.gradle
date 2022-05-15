@@ -19,6 +19,8 @@ def rootAbsolutePath = projectDir.parent
 subprojects {
   apply plugin: 'com.android.library'
   apply plugin: 'kotlin-android'
+  /** This is needed for publishing (e.g. jitpack.io */
+  apply plugin: 'maven-publish'
 
   project.apply from: "$rootAbsolutePath/android/constants.gradle"
   group = 'com.github.protoman92'
