@@ -6,7 +6,6 @@
 package org.swiften.redux.android.dagger
 
 import android.app.Application
-import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
 import org.swiften.redux.core.FinalStore
@@ -18,8 +17,6 @@ import org.swiften.redux.saga.common.SagaMiddleware
 class MainApplication : Application() {
   override fun onCreate() {
     super.onCreate()
-    if (LeakCanary.isInAnalyzerProcess(this)) { return }
-    LeakCanary.install(this)
 
     val component = DaggerMainComponent.builder()
       .dependencyLevel2Module(DependencyLevel2Module())

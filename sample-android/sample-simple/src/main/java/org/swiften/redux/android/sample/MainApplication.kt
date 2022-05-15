@@ -8,7 +8,6 @@ package org.swiften.redux.android.sample
 import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import com.beust.klaxon.Klaxon
-import com.squareup.leakcanary.LeakCanary
 import org.swiften.redux.android.sample.Redux.State
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.ui.lifecycle.ILifecycleInjectionHelper
@@ -25,8 +24,6 @@ import org.swiften.redux.ui.IPropInjector
 class MainApplication : Application() {
   override fun onCreate() {
     super.onCreate()
-    if (LeakCanary.isInAnalyzerProcess(this)) { return }
-    LeakCanary.install(this)
     val api = API()
     val repository = Repository(Klaxon(), api)
 

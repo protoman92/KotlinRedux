@@ -55,6 +55,7 @@ subprojects {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin"
     testImplementation "junit:junit:$project.ext.junit"
+    testImplementation "androidx.test:core:$project.ext.androidxTestCore"
     testImplementation "androidx.test:runner:$project.ext.testRunner"
     testImplementation "androidx.test.ext:junit:$project.ext.androidxJunit"
     testImplementation "org.robolectric:robolectric:$project.ext.robolectric"
@@ -72,7 +73,7 @@ project(':android:android-ui') {
     api project(':common:common-ui')
     api project(':android:android-util')
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.kotlinCoroutines"
-    testImplementation project (path: ":common:common-ui", configuration: 'testArtifacts')
+    testImplementation project(path: ':common:common-ui', configuration: 'testArtifacts')
   }
 }
 
@@ -91,7 +92,7 @@ project(':android:android-recyclerview') {
     api project(':android:android-lifecycle')
     implementation "androidx.lifecycle:lifecycle-runtime:$project.ext.lifecycle"
     implementation "androidx.recyclerview:recyclerview:$project.ext.recyclerView"
-    testImplementation project (path: ":android:android-lifecycle", configuration: 'testArtifacts')
+    testImplementation project(path: ':android:android-lifecycle', configuration: 'testArtifacts')
   }
 }
 
@@ -111,7 +112,7 @@ project(':android:android-livedata-saga') {
     implementation "androidx.lifecycle:lifecycle-livedata:$project.ext.lifecycle"
     implementation "io.reactivex.rxjava2:rxjava:$project.ext.rxJava"
     implementation "io.reactivex.rxjava2:rxandroid:$project.ext.rxAndroid"
-    testImplementation "androidx.arch.core:core-testing:$project.ext.androidxCoreTest"
+    testImplementation "androidx.arch.core:core-testing:$project.ext.androidxArchCoreTest"
   }
 }
 
