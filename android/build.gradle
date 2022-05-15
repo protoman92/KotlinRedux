@@ -10,7 +10,6 @@ buildscript {
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$project.ext.kotlin"
     classpath "com.android.tools.build:gradle:$project.ext.gradle"
-    classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$project.ext.dokka"
   } 
 }
 
@@ -75,7 +74,7 @@ subprojects {project ->
   afterEvaluate {
     publishing {
       publications {
-        "${project.name}"(MavenPublication) {
+        "$project.name"(MavenPublication) {
           groupId = 'com.github.protoman92.KotlinRedux'
           artifactId = project.name
           version = '1.0-SNAPSHOT'

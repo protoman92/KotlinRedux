@@ -49,7 +49,7 @@ subprojects {project ->
   afterEvaluate {
     publishing {
       publications {
-        "${project.name}"(MavenPublication) {
+        "$project.name"(MavenPublication) {
           groupId = 'com.github.protoman92.KotlinRedux'
           artifactId = project.name
           version = '1.0-SNAPSHOT'

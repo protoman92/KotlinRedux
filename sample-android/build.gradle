@@ -5,8 +5,8 @@ buildscript {
   }
 
   def rootAbsolutePath = projectDir.parent
-  project.apply from: "$project.projectDir/constants.gradle"
   project.apply from: "$rootAbsolutePath/android/constants.gradle"
+  project.apply from: "$rootAbsolutePath/sample-android/constants.gradle"
 
   dependencies {
     classpath "com.android.tools.build:gradle:$project.ext.gradle"

@@ -1,5 +1,5 @@
 buildscript {
-  def rootAbsolutePath = projectDir.getAbsolutePath()
+  def rootAbsolutePath = projectDir.absolutePath
 
   allprojects {
     project.apply from: "$rootAbsolutePath/constants.gradle"
@@ -10,14 +10,14 @@ buildscript {
   }
 
   dependencies {
-    classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka"
+    classpath "org.jetbrains.dokka:dokka-gradle-plugin:$project.ext.dokka"
   }
 }
 
 
-apply plugin: 'org.jetbrains.dokka'
+apply plugin: "org.jetbrains.dokka"
 
-def rootAbsolutePath = projectDir.getAbsolutePath()
+def rootAbsolutePath = projectDir.absolutePath
 
 dokka {
   moduleName = dokkaOutputDir
@@ -48,7 +48,7 @@ dokka {
       .toString()
 
     linkMapping {
-      dir = path
+      dir = path.absolutePath.split(File.pathSeparator)
       url = "https://github.com/protoman92/KotlinRedux/tree/master/$relativePath"
       suffix = "#L"
     }
@@ -64,6 +64,6 @@ allprojects {
 subprojects {
   configurations.all {
     // Make sure the latest JitPack releases are used.
-    resolutionStrategy.cacheChangingModulesFor 24, 'hours'
+    resolutionStrategy.cacheChangingModulesFor 24, "hours"
   }
 }
