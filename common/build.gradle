@@ -57,6 +57,8 @@ subprojects { thisProject ->
     publishing {
       publications {
         "$thisProject.name"(MavenPublication) {
+          groupId = thisProject.group
+          version = thisProject.version
           artifactId = thisProject.name
           from components.kotlin
         }
