@@ -5,7 +5,6 @@
 
 package com.google.samples.apps.sunflower
 
-import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import androidx.multidex.MultiDexApplication
 import com.google.samples.apps.sunflower.dependency.IDependency
@@ -14,9 +13,9 @@ import com.google.samples.apps.sunflower.dependency.Router
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.squareup.picasso.Picasso
 import org.swiften.redux.android.ui.AndroidPropInjector
-import org.swiften.redux.android.ui.lifecycle.ILifecycleInjectionHelper
-import org.swiften.redux.android.ui.lifecycle.injectActivityParcelable
-import org.swiften.redux.android.ui.lifecycle.injectLifecycle
+import org.swiften.redux.android.lifecycle.ILifecycleInjectionHelper
+import org.swiften.redux.android.lifecycle.injectActivityParcelable
+import org.swiften.redux.android.lifecycle.injectLifecycle
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.RouterMiddleware
 import org.swiften.redux.core.applyMiddlewares

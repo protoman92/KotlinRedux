@@ -7,7 +7,7 @@ package org.swiften.redux.android.dagger
 
 import android.app.Application
 import org.swiften.redux.android.ui.AndroidPropInjector
-import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
+import org.swiften.redux.android.lifecycle.injectActivitySerializable
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.RouterMiddleware
 import org.swiften.redux.core.applyMiddlewares

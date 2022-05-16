@@ -3,13 +3,13 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.ui.recyclerview
+package org.swiften.redux.android.recyclerview
 
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import org.swiften.redux.android.ui.lifecycle.ILifecycleCallback
-import org.swiften.redux.android.ui.lifecycle.ReduxLifecycleObserver
+import org.swiften.redux.android.lifecycle.ILifecycleCallback
+import org.swiften.redux.android.lifecycle.ReduxLifecycleObserver
 import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropContainer

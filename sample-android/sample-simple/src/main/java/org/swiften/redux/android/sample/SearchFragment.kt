@@ -21,9 +21,9 @@ import kotlinx.android.synthetic.main.search_fragment.progress_bar
 import kotlinx.android.synthetic.main.search_fragment.search_query
 import kotlinx.android.synthetic.main.search_fragment.search_result
 import kotlinx.android.synthetic.main.search_fragment.select_result_limit
-import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
-import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
+import org.swiften.redux.android.recyclerview.IDiffItemCallback
+import org.swiften.redux.android.recyclerview.ReduxRecyclerViewAdapter
+import org.swiften.redux.android.recyclerview.injectDiffedAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.core.DefaultUniqueIDProvider

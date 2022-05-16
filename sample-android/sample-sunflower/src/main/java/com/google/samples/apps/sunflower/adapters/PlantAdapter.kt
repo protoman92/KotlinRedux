@@ -29,8 +29,8 @@ import com.google.samples.apps.sunflower.dependency.IPicassoProvider
 import com.google.samples.apps.sunflower.dependency.Redux
 import com.google.samples.apps.sunflower.utilities.SMALL_IMAGE_DIMEN
 import com.squareup.picasso.Picasso
-import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
-import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
+import org.swiften.redux.android.recyclerview.IDiffItemCallback
+import org.swiften.redux.android.recyclerview.ReduxRecyclerViewAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner

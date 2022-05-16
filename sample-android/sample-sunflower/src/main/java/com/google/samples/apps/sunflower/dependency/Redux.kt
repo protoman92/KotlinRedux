@@ -15,8 +15,8 @@ import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.data.PlantRepository
 import kotlinx.android.parcel.Parcelize
-import org.swiften.redux.android.saga.rx.core.CoreAndroidEffects.watchConnectivity
-import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeLiveData
+import org.swiften.redux.android.livedata.saga.LiveDataEffects.takeLiveData
+import org.swiften.redux.android.saga.CoreAndroidEffects.watchConnectivity
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
@@ -129,7 +129,6 @@ object Redux {
         is Screen -> when (p2) {
           is Screen.GardenToPlantDetail -> p1.copy(selectedPlant = SelectedPlant(p2.plantId))
           is Screen.PlantListToPlantDetail -> p1.copy(selectedPlant = SelectedPlant(p2.plantId))
-          else -> p1
         }
 
         else -> p1

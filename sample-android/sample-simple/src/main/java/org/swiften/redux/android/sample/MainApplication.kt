@@ -10,9 +10,9 @@ import androidx.lifecycle.LifecycleOwner
 import com.beust.klaxon.Klaxon
 import org.swiften.redux.android.sample.Redux.State
 import org.swiften.redux.android.ui.AndroidPropInjector
-import org.swiften.redux.android.ui.lifecycle.ILifecycleInjectionHelper
-import org.swiften.redux.android.ui.lifecycle.injectActivitySerializable
-import org.swiften.redux.android.ui.lifecycle.injectLifecycle
+import org.swiften.redux.android.lifecycle.ILifecycleInjectionHelper
+import org.swiften.redux.android.lifecycle.injectActivitySerializable
+import org.swiften.redux.android.lifecycle.injectLifecycle
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.NestedRouter
 import org.swiften.redux.core.RouterMiddleware

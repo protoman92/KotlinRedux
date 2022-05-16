@@ -15,7 +15,7 @@ import org.swiften.redux.android.dagger.business2.Business2Module
 import org.swiften.redux.android.dagger.business3.Business3HostFragment
 import org.swiften.redux.android.dagger.business3.Business3InjectionHelper
 import org.swiften.redux.android.dagger.business3.Business3Module
-import org.swiften.redux.android.ui.lifecycle.ILifecycleInjectionHelper
+import org.swiften.redux.android.lifecycle.ILifecycleInjectionHelper
 import org.swiften.redux.ui.IPropInjector
 
 /** Created by viethai.pham on 2019/02/21 */

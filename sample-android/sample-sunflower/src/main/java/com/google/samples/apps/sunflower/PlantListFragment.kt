@@ -27,7 +27,7 @@ import androidx.fragment.app.Fragment
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_plant_list.plant_list
-import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
+import org.swiften.redux.android.recyclerview.injectDiffedAdapter
 import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IUniqueIDProvider

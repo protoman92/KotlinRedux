@@ -15,32 +15,56 @@ buildscript {
 
 plugins {
   /** This is needed for publishing (e.g. jitpack.io */
-  id 'maven-publish'
+  id "maven-publish"
 }
 
 def rootAbsolutePath = projectDir.parent
 
-subprojects {project ->
-  apply plugin: 'com.android.library'
-  apply plugin: 'kotlin-android'
+subprojects { thisProject ->
+  apply plugin: "com.android.library"
+  apply plugin: "kotlin-android"
+  apply from: "$rootAbsolutePath/android/constants.gradle"
 
-  project.apply from: "$rootAbsolutePath/android/constants.gradle"
+  /**
+   * This task needs to depend on compileDebugUnitTestJavaWithJavac, otherwise the
+   * /tmp/kotlin-classes/debugUnitTest directory will not be generated, leading to failures in
+   * dependents' tests.
+   */
+  task packageTestJar(type: Jar, dependsOn: "compileDebugUnitTestJavaWithJavac") {
+    archiveFileName.set("${thisProject.name}-test.jar")
+
+    from(new File(String.join("/", [
+      thisProject.buildDir.absolutePath,
+      "tmp",
+      "kotlin-classes",
+      "debugUnitTest"
+    ])))
+  }
 
   configurations {
     testArtifacts
   }
 
-  task testJar(type: Jar, dependsOn: "assembleDebugUnitTest") {
-    classifier = 'test'
-    from "$project.buildDir/tmp/kotlin-classes/debugUnitTest"
-  }
-
   artifacts {
-    testArtifacts testJar
+    testArtifacts packageTestJar
   }
 
   android {
-    namespace = "org.swiften.redux.android"
+    def namespaceComponents = new ArrayList([
+      "org",
+      "swiften",
+      "redux",
+      "android"
+    ])
+
+    /**
+     * Remove the "android" prefix, so if the project name is android-livedata-saga, the namespace
+     * will be org.swiften.redux.android.livedata.saga.
+     */
+    def namespaceSuffixes = project.name.split("-") as List<String>
+    namespaceComponents.addAll(namespaceSuffixes.subList(1, namespaceSuffixes.size()))
+
+    namespace = String.join(".", namespaceComponents)
     compileSdkVersion project.ext.compileSdk
 
     defaultConfig {
@@ -58,27 +82,31 @@ subprojects {project ->
   }
 
   dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: "libs", include: ["*.jar"])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin"
-    testImplementation "junit:junit:$project.ext.junit"
-    testImplementation "androidx.test:core:$project.ext.androidxTestCore"
-    testImplementation "androidx.test:runner:$project.ext.testRunner"
-    testImplementation "androidx.test.ext:junit:$project.ext.androidxJunit"
-    testImplementation "org.robolectric:robolectric:$project.ext.robolectric"
-    androidTestImplementation "androidx.test:runner:$project.ext.testRunner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$project.ext.espresso"
-    androidTestImplementation "androidx.test.ext:junit:$project.ext.androidxJunit"
+    testImplementation "junit:junit:$thisProject.ext.junit"
+    testImplementation "androidx.test:core:$thisProject.ext.androidxTestCore"
+    testImplementation "androidx.test:runner:$thisProject.ext.testRunner"
+    testImplementation "androidx.test.ext:junit:$thisProject.ext.androidxJunit"
+    testImplementation "org.robolectric:robolectric:$thisProject.ext.robolectric"
+    androidTestImplementation "androidx.test:runner:$thisProject.ext.testRunner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$thisProject.ext.espresso"
+    androidTestImplementation "androidx.test.ext:junit:$thisProject.ext.androidxJunit"
   }
 
+  /**
+   * The group and version settings must be outside the publications block, otherwise the generated
+   * POM files will not have the correct groupId and version.
+   */
   afterEvaluate {
+    group = "com.github.protoman92.KotlinRedux"
+    version = "1.0-SNAPSHOT"
+
     publishing {
       publications {
-        "$project.name"(MavenPublication) {
-          groupId = 'com.github.protoman92.KotlinRedux'
+        "$thisProject.name"(MavenPublication) {
           artifactId = project.name
-          version = '1.0-SNAPSHOT'
-
           from components.release
         }
       }
@@ -86,73 +114,74 @@ subprojects {project ->
   }
 }
 
-project(':android:android-util') {}
+project(":android:android-util") {}
 
-project(':android:android-ui') {
+project(":android:android-ui") {thisProject ->
   dependencies {
-    api project(':common:common-core')
-    api project(':common:common-ui')
-    api project(':android:android-util')
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.kotlinCoroutines"
-    testImplementation project(path: ':common:common-ui', configuration: 'testArtifacts')
+    api project(":common:common-core")
+    api project(":common:common-ui")
+    api project(":android:android-util")
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$thisProject.ext.kotlinCoroutines"
+    testImplementation project(path: ":common:common-ui", configuration: 'testArtifacts')
   }
 }
 
-project(':android:android-lifecycle') {
+project(":android:android-lifecycle") { thisProject ->
   dependencies {
-    api project(':common:common-core')
-    api project(':common:common-ui')
-    implementation "androidx.appcompat:appcompat:$appCompat"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    api project(":common:common-core")
+    api project(":common:common-ui")
+    implementation "androidx.appcompat:appcompat:$thisProject.ext.appCompat"
+    testImplementation "androidx.appcompat:appcompat:$thisProject.ext.appCompat"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$thisProject.ext.kotlinCoroutines"
   }
 }
 
-project(':android:android-recyclerview') {
+project(":android:android-recyclerview") {thisProject ->
   dependencies {
-    api project(':android:android-ui')
-    api project(':android:android-lifecycle')
-    implementation "androidx.lifecycle:lifecycle-runtime:$project.ext.lifecycle"
-    implementation "androidx.recyclerview:recyclerview:$project.ext.recyclerView"
-    testImplementation project(path: ':android:android-lifecycle', configuration: 'testArtifacts')
+    api project(":android:android-ui")
+    api project(":android:android-lifecycle")
+    implementation "androidx.lifecycle:lifecycle-runtime:$thisProject.ext.lifecycle"
+    implementation "androidx.recyclerview:recyclerview:$thisProject.ext.recyclerView"
+    testImplementation project(path: ":android:android-lifecycle", configuration: 'testArtifacts')
   }
 }
 
-project(':android:android-saga') {
+project(":android:android-saga") {
   dependencies {
-    api project(':common:common-saga')
+    api project(":common:common-saga")
     implementation "io.reactivex.rxjava2:rxjava:$project.ext.rxJava"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.kotlinCoroutines"
     implementation "io.reactivex.rxjava2:rxkotlin:$project.ext.rxKotlin"
   }
 }
 
-project(':android:android-livedata-saga') {
+project(":android:android-livedata-saga") {thisProject ->
   dependencies {
-    api project(':common:common-saga')
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$project.ext.kotlinCoroutines"
-    implementation "androidx.lifecycle:lifecycle-livedata:$project.ext.lifecycle"
-    implementation "io.reactivex.rxjava2:rxjava:$project.ext.rxJava"
-    implementation "io.reactivex.rxjava2:rxandroid:$project.ext.rxAndroid"
-    testImplementation "androidx.arch.core:core-testing:$project.ext.androidxArchCoreTest"
+    api project(":common:common-saga")
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$thisProject.ext.kotlinCoroutines"
+    implementation "androidx.lifecycle:lifecycle-livedata:$thisProject.ext.lifecycle"
+    implementation "io.reactivex.rxjava2:rxjava:$thisProject.ext.rxJava"
+    implementation "io.reactivex.rxjava2:rxandroid:$thisProject.ext.rxAndroid"
+    testImplementation "androidx.arch.core:core-testing:$thisProject.ext.androidxArchCoreTest"
   }
 }
 
-project(':android:android-router') {
+project(":android:android-router") { thisProject ->
   dependencies {
-    api project(':common:common-core')
-    api project(':android:android-util')
-    implementation "androidx.appcompat:appcompat:$appCompat"
+    api project(":common:common-core")
+    api project(":android:android-util")
+    implementation "androidx.appcompat:appcompat:$thisProject.ext.appCompat"
   }
 }
 
-project(':android:android-all') {
+project(":android:android-all") {
   dependencies {
-    api project(':common:common-all')
-    api project(':android:android-ui')
-    api project(':android:android-lifecycle')
-    api project(':android:android-recyclerview')
-    api project(':android:android-router')
-    api project(':android:android-saga')
-    api project(':android:android-livedata-saga')
+    api project(":common:common-all")
+    api project(":android:android-ui")
+    api project(":android:android-lifecycle")
+    api project(":android:android-recyclerview")
+    api project(":android:android-router")
+    api project(":android:android-saga")
+    api project(":android:android-livedata-saga")
   }
 }

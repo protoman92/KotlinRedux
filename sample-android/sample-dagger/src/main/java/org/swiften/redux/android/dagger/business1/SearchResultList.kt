@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.swiften.redux.android.dagger.R
 import org.swiften.redux.android.dagger.Redux
-import org.swiften.redux.android.ui.recyclerview.IDiffItemCallback
-import org.swiften.redux.android.ui.recyclerview.ReduxRecyclerViewAdapter
-import org.swiften.redux.android.ui.recyclerview.injectDiffedAdapter
+import org.swiften.redux.android.recyclerview.IDiffItemCallback
+import org.swiften.redux.android.recyclerview.ReduxRecyclerViewAdapter
+import org.swiften.redux.android.recyclerview.injectDiffedAdapter
 import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IUniqueIDProvider

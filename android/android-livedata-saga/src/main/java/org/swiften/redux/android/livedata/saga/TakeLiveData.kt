@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.saga.rx.livedata
+package org.swiften.redux.android.livedata.saga
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer

@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.ui.recyclerview
+package org.swiften.redux.android.recyclerview
 
 import android.view.View
 import android.view.ViewGroup
@@ -18,54 +18,52 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import org.swiften.redux.android.ui.lifecycle.BaseLifecycleTest
-import org.swiften.redux.core.DefaultUniqueIDProvider
+import org.swiften.redux.android.lifecycle.BaseLifecycleTest
 import org.swiften.redux.core.IActionDispatcher
-import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.ui.IPropContainer
 import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
-import org.swiften.redux.ui.IStateMapper
-import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
 import org.swiften.redux.ui.StaticProp
 import java.util.concurrent.atomic.AtomicInteger
 
-/** Created by haipham on 2019/02/02 */
+/** Created by haipham on 2019/02/03 */
 @Config(manifest = Config.NONE)
 @RunWith(RobolectricTestRunner::class)
-class RecycleAdapterTest : BaseLifecycleTest() {
+class DiffedAdapterTest : BaseLifecycleTest() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    IUniqueIDProvider by DefaultUniqueIDProvider(),
-    IPropContainer<Int, Unit>,
-    IPropLifecycleOwner<Int, PositionProp<Unit>> by NoopPropLifecycleOwner() {
-    companion object : IPropMapper<Int, PositionProp<Unit>, Int, Unit> {
-      override fun mapState(state: Int, outProp: PositionProp<Unit>) = state
-      override fun mapAction(dispatch: IActionDispatcher, outProp: PositionProp<Unit>) = Unit
-    }
+    IPropContainer<Int, ViewHolder.A>,
+    IPropLifecycleOwner<Int, Unit> {
+    class A
 
-    override var reduxProp by ObservableReduxProp<Int, Unit> { _, _ -> }
     val beforeInjection = AtomicInteger()
     val afterInjection = AtomicInteger()
 
-    override fun beforePropInjectionStarts(sp: StaticProp<Int, PositionProp<Unit>>) {
+    override var reduxProp by ObservableReduxProp<Int, A> { _, _ -> }
+
+    override fun beforePropInjectionStarts(sp: StaticProp<Int, Unit>) {
       this.beforeInjection.incrementAndGet()
     }
 
-    override fun afterPropInjectionEnds(sp: StaticProp<Int, PositionProp<Unit>>) {
+    override fun afterPropInjectionEnds(sp: StaticProp<Int, Unit>) {
       this.afterInjection.incrementAndGet()
     }
   }
 
   class Adapter : ReduxRecyclerViewAdapter<ViewHolder>(),
-    IStateMapper<Int, Unit, Int> by Adapter {
-    companion object : IStateMapper<Int, Unit, Int> {
-      val mapCount = AtomicInteger()
-
-      override fun mapState(state: Int, outProp: Unit): Int {
-        this.mapCount.incrementAndGet()
-        return state
+    IPropMapper<Int, Unit, List<Int>, ViewHolder.A> by Adapter,
+    IDiffItemCallback<Int> by Adapter {
+    companion object : IPropMapper<Int, Unit, List<Int>, ViewHolder.A>, IDiffItemCallback<Int> {
+      override fun mapState(state: Int, outProp: Unit): List<Int> {
+        return (0 until state).map { it }
       }
+
+      override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): ViewHolder.A {
+        return ViewHolder.A()
+      }
+
+      override fun areItemsTheSame(oldItem: Int, newItem: Int) = oldItem == newItem
+      override fun areContentsTheSame(oldItem: Int, newItem: Int) = oldItem == newItem
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -74,38 +72,45 @@ class RecycleAdapterTest : BaseLifecycleTest() {
   }
 
   @Test
-  fun `Injecting prop for recycle adapter view holder should work`() {
+  fun `Injecting prop for diffed adapter should work`() {
     // Setup
-    val injector = BaseLifecycleTest.TestInjector()
+    val totalItemCount = 3
+
+    /**
+     * Override [BaseLifecycleTest.TestInjector.lastState] to avoid calling
+     * [ReduxListAdapter.submitList]. This allows us to specify how many [ViewHolder] to create.
+     */
+    val injector = BaseLifecycleTest.TestInjector { totalItemCount }
     val lc = BaseLifecycleTest.TestLifecycleOwner()
     val adapter = Adapter()
-    val viewHolderCount = 100
 
     // When
-    val wrappedAdapter = injector.injectRecyclerAdapter(Unit, lc, adapter, Adapter, ViewHolder)
+    val wrappedAdapter = injector.injectDiffedAdapter(Unit, lc, adapter, Adapter, Adapter)
 
-    // When - adapter mapper
-    /** Every time itemCount is accessed, the adapter's state mapper should be triggered */
-    wrappedAdapter.itemCount
-    wrappedAdapter.itemCount
-    wrappedAdapter.itemCount
-
-    // Then - adapter mapper
-    assertEquals(Adapter.mapCount.get(), 3)
+    // Then - adapter injection
+    assertEquals(injector.injectionCount, 1)
 
     // When - view holder injection
+    /** Submit new items to ensure view holders binding do not throw index exception. */
     val viewGroup = LinearLayout(InstrumentationRegistry.getInstrumentation().context)
-    val viewHolders = (0 until viewHolderCount).map { wrappedAdapter.onCreateViewHolder(viewGroup, 0) }
+    val viewHolders = mutableListOf<ViewHolder>()
 
-    /** On view holder binding, injections will happen. */
-    viewHolders.forEachIndexed { i, vh -> wrappedAdapter.bindViewHolder(vh, i) }
+    (0 until totalItemCount).forEachIndexed { i, _ ->
+      val viewHolder = wrappedAdapter.onCreateViewHolder(viewGroup, 0)
+      viewHolders.add(viewHolder)
+
+      /** No injections here, just manually setting of prop, so injection count remains the same. */
+      wrappedAdapter.bindViewHolder(viewHolder, i)
+    }
+
+    viewHolders.forEach { assertEquals(it.beforeInjection.get(), 1) }
 
     // Then - view holder injection
-    assertEquals(injector.injectionCount, viewHolderCount)
+    assertEquals(injector.injectionCount, 1)
     injector.subscriptions.forEach { _, v -> assertFalse(v.isUnsubscribed()) }
 
     // When - lifecycle ending
-    /** When state is destroyed, all subscriptions should have been disposed of. */
+    /** When state is destroyed, all subscriptions should have been disposed of */
     lc.registry.markState(Lifecycle.State.CREATED)
     lc.registry.markState(Lifecycle.State.STARTED)
     lc.registry.markState(Lifecycle.State.RESUMED)
@@ -113,6 +118,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
 
     // Then - lifecycle ending
     injector.subscriptions.forEach { _, v -> assertTrue(v.isUnsubscribed()) }
+    viewHolders.forEach { assertEquals(it.afterInjection.get(), 1) }
   }
 
   @Test
@@ -121,7 +127,7 @@ class RecycleAdapterTest : BaseLifecycleTest() {
     val totalItemCount = 3
     val injector = BaseLifecycleTest.TestInjector { totalItemCount }
     val adapter = Adapter()
-    val wrappedAdapter = injector.injectRecyclerAdapter(Unit, adapter, Adapter, ViewHolder)
+    val wrappedAdapter = injector.injectDiffedAdapter(Unit, adapter, Adapter, Adapter)
     val viewGroup = LinearLayout(InstrumentationRegistry.getInstrumentation().context)
     val viewHolders = mutableListOf<ViewHolder>()
 

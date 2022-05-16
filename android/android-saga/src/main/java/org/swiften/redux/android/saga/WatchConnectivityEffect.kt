@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.saga.rx.core
+package org.swiften.redux.android.saga
 
 import android.content.BroadcastReceiver
 import android.content.Context

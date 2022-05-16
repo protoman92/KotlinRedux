@@ -25,7 +25,7 @@ import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
 import com.google.samples.apps.sunflower.dependency.Redux
 import kotlinx.android.synthetic.main.fragment_garden.empty_garden
 import kotlinx.android.synthetic.main.fragment_garden.garden_list
-import org.swiften.redux.android.ui.recyclerview.injectRecyclerAdapter
+import org.swiften.redux.android.recyclerview.injectRecyclerAdapter
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.core.DefaultUniqueIDProvider

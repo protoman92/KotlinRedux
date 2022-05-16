@@ -7,8 +7,8 @@ package org.swiften.redux.android.dagger.business3
 
 import androidx.lifecycle.LifecycleOwner
 import org.swiften.redux.android.dagger.Redux
-import org.swiften.redux.android.ui.lifecycle.ILifecycleInjectionHelper
-import org.swiften.redux.android.ui.lifecycle.injectLifecycle
+import org.swiften.redux.android.lifecycle.ILifecycleInjectionHelper
+import org.swiften.redux.android.lifecycle.injectLifecycle
 import org.swiften.redux.ui.IPropInjector
 
 /** Created by viethai.pham on 2019/02/21 */

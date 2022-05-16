@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.android.saga.rx.livedata
+package org.swiften.redux.android.livedata.saga
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
@@ -18,7 +18,7 @@ import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import org.swiften.redux.android.saga.rx.livedata.LiveDataEffects.takeLiveData
+import org.swiften.redux.android.livedata.saga.LiveDataEffects.takeLiveData
 import org.swiften.redux.saga.common.CommonEffects.await
 import org.swiften.redux.saga.common.SagaInput
 import org.swiften.redux.saga.common.flatMap

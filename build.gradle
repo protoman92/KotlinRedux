@@ -67,3 +67,9 @@ subprojects {
     resolutionStrategy.cacheChangingModulesFor 24, "hours"
   }
 }
+
+task clean(type: Delete) {
+  allprojects {
+    delete it.buildDir
+  }
+}
