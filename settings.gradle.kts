@@ -1,14 +1,3 @@
-dependencyResolutionManagement {
-  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-
-  repositories {
-    google()
-    jcenter() /** This is just used for klaxon */
-    mavenCentral()
-    maven { url = java.net.URI("https://jitpack.io") }
-  }
-}
-
 rootProject.name = "redux-jvm"
 include(":common")
 include(":common:common-core")

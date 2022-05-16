@@ -1,5 +1,5 @@
 project.ext {
-  gradle = "7.2.0"
+  gradle = "3.4.1"
   compileSdk = 31
   minSdk = 14
   targetSdk = 31

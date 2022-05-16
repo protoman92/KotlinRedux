@@ -57,21 +57,9 @@ subprojects { thisProject ->
       "android"
     ])
 
-    /**
-     * Remove the "android" prefix, so if the project name is android-livedata-saga, the namespace
-     * will be org.swiften.redux.android.livedata.saga.
-     */
-    def namespaceSuffixes = project.name.split("-") as List<String>
-    namespaceComponents.addAll(namespaceSuffixes.subList(1, namespaceSuffixes.size()))
-
-    namespace = String.join(".", namespaceComponents)
     compileSdkVersion project.ext.compileSdk
 
     defaultConfig {
-      aarMetadata {
-        minCompileSdk = project.ext.minSdk
-      }
-
       minSdkVersion project.ext.minSdk
       targetSdkVersion project.ext.targetSdk
       versionCode project.ext.versionCode
@@ -93,24 +81,6 @@ subprojects { thisProject ->
     androidTestImplementation "androidx.test:runner:$thisProject.ext.testRunner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$thisProject.ext.espresso"
     androidTestImplementation "androidx.test.ext:junit:$thisProject.ext.androidxJunit"
-  }
-
-  /**
-   * The group and version settings must be outside the publications block, otherwise the generated
-   * POM files will not have the correct groupId and version.
-   */
-  afterEvaluate {
-    group = "com.github.protoman92.KotlinRedux"
-    version = "1.0-SNAPSHOT"
-
-    publishing {
-      publications {
-        "$thisProject.name"(MavenPublication) {
-          artifactId = project.name
-          from components.release
-        }
-      }
-    }
   }
 }
 

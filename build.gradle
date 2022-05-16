@@ -58,6 +58,13 @@ dokka {
 }
 
 allprojects {
+  repositories {
+    google()
+    jcenter() /** This is just used for klaxon */
+    mavenCentral()
+    maven { url = "https://jitpack.io" }
+  }
+
   project.apply from: "$rootAbsolutePath/constants.gradle"
 }
 
