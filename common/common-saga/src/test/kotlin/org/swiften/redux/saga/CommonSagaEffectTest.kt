@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga.common
+package org.swiften.redux.saga
 
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope

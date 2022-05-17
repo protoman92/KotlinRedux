@@ -6,8 +6,8 @@
 package org.swiften.redux.android.saga
 
 import android.content.Context
-import org.swiften.redux.saga.common.ISagaEffect
-import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.ISagaEffect
+import org.swiften.redux.saga.SagaEffect
 
 /** Created by haipham on 2019/01/21 */
 /** Core [ISagaEffect] for Android. */

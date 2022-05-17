@@ -6,7 +6,7 @@
 package org.swiften.redux.android.livedata.saga
 
 import androidx.lifecycle.LiveData
-import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.SagaEffect
 
 /** Created by haipham on 2019/01/19 */
 /** Top level namespace for [LiveData] related [SagaEffect]. */

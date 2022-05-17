@@ -7,14 +7,14 @@ package org.swiften.redux.android.dagger.business1
 
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.common.CommonEffects.put
-import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.CommonEffects.await
-import org.swiften.redux.saga.common.CommonEffects.doNothing
-import org.swiften.redux.saga.common.CommonEffects.mergeAll
-import org.swiften.redux.saga.common.CommonEffects.takeAction
-import org.swiften.redux.saga.common.debounce
-import org.swiften.redux.saga.common.switchMap
+import org.swiften.redux.saga.CommonEffects.put
+import org.swiften.redux.saga.SagaEffect
+import org.swiften.redux.saga.CommonEffects.await
+import org.swiften.redux.saga.CommonEffects.doNothing
+import org.swiften.redux.saga.CommonEffects.mergeAll
+import org.swiften.redux.saga.CommonEffects.takeAction
+import org.swiften.redux.saga.debounce
+import org.swiften.redux.saga.switchMap
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21 */

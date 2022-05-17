@@ -10,10 +10,10 @@ import androidx.lifecycle.Observer
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import org.swiften.redux.saga.common.ISagaOutput
-import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.SagaInput
-import org.swiften.redux.saga.common.SagaOutput
+import org.swiften.redux.saga.ISagaOutput
+import org.swiften.redux.saga.SagaEffect
+import org.swiften.redux.saga.SagaInput
+import org.swiften.redux.saga.SagaOutput
 
 /** Created by haipham on 2019/01/17 */
 /**

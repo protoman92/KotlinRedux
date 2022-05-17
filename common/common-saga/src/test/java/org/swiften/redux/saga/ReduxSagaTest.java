@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga.common;
+package org.swiften.redux.saga;
 
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
@@ -12,9 +12,9 @@ import org.junit.Test;
 import org.swiften.redux.core.EmptyAwaitable;
 
 import static org.junit.Assert.assertEquals;
-import static org.swiften.redux.saga.common.CommonEffects.await;
-import static org.swiften.redux.saga.common.CommonEffects.flatMap;
-import static org.swiften.redux.saga.common.CommonEffects.from;
+import static org.swiften.redux.saga.CommonEffects.await;
+import static org.swiften.redux.saga.CommonEffects.flatMap;
+import static org.swiften.redux.saga.CommonEffects.from;
 
 /**
  * Created by haipham on 2019/01/14

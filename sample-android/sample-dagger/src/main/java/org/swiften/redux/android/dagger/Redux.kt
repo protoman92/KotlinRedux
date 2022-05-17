@@ -11,7 +11,7 @@ import org.swiften.redux.android.dagger.business3.Business3Redux
 import org.swiften.redux.core.IReducer
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IRouterScreen
-import org.swiften.redux.saga.common.SagaEffect
+import org.swiften.redux.saga.SagaEffect
 import java.io.Serializable
 
 /** Created by viethai.pham on 2019/02/21/2 */

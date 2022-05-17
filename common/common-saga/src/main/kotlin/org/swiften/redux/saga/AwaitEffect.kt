@@ -3,7 +3,7 @@
  * Any attempt to reproduce this source code in any form shall be met with legal actions.
  */
 
-package org.swiften.redux.saga.common
+package org.swiften.redux.saga
 
 /** Created by viethai.pham on 2019/02/17 */
 /** Produces a value using [SagaInput] and [ISagaOutput.awaitFor]. */

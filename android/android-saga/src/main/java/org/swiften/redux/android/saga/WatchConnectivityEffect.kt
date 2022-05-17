@@ -16,11 +16,11 @@ import android.net.NetworkRequest
 import android.os.Build
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
-import org.swiften.redux.saga.common.ISagaEffect
-import org.swiften.redux.saga.common.ISagaOutput
-import org.swiften.redux.saga.common.SagaEffect
-import org.swiften.redux.saga.common.SagaInput
-import org.swiften.redux.saga.common.SagaOutput
+import org.swiften.redux.saga.ISagaEffect
+import org.swiften.redux.saga.ISagaOutput
+import org.swiften.redux.saga.SagaEffect
+import org.swiften.redux.saga.SagaInput
+import org.swiften.redux.saga.SagaOutput
 
 /** Created by haipham on 2019/01/21/1/ */
 /**

@@ -19,7 +19,7 @@ import org.swiften.redux.android.lifecycle.injectLifecycle
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.RouterMiddleware
 import org.swiften.redux.core.applyMiddlewares
-import org.swiften.redux.saga.common.SagaMiddleware
+import org.swiften.redux.saga.SagaMiddleware
 import org.swiften.redux.thunk.ThunkMiddleware
 import org.swiften.redux.ui.IPropInjector
 

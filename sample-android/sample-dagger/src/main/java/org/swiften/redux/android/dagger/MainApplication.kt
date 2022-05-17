@@ -11,7 +11,7 @@ import org.swiften.redux.android.lifecycle.injectActivitySerializable
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.RouterMiddleware
 import org.swiften.redux.core.applyMiddlewares
-import org.swiften.redux.saga.common.SagaMiddleware
+import org.swiften.redux.saga.SagaMiddleware
 
 /** Created by haipham on 26/1/19 */
 class MainApplication : Application() {
