@@ -10,7 +10,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.swiften.redux.saga.common.SagaMiddleware
+import org.swiften.redux.saga.SagaMiddleware
 import org.swiften.redux.thunk.ThunkMiddleware
 import java.util.Collections.synchronizedList
 import java.util.concurrent.atomic.AtomicInteger

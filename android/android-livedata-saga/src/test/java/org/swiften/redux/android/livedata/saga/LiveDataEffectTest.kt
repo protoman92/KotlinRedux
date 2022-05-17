@@ -19,9 +19,9 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.livedata.saga.LiveDataEffects.takeLiveData
-import org.swiften.redux.saga.common.CommonEffects.await
-import org.swiften.redux.saga.common.SagaInput
-import org.swiften.redux.saga.common.flatMap
+import org.swiften.redux.saga.CommonEffects.await
+import org.swiften.redux.saga.SagaInput
+import org.swiften.redux.saga.flatMap
 import java.util.Collections
 
 /** Created by haipham on 2019/01/17 */

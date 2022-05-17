@@ -11,8 +11,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.swiften.redux.core.EmptyAwaitable
 import org.swiften.redux.core.IReduxAction
-import org.swiften.redux.saga.common.SagaInput
-import org.swiften.redux.saga.common.SagaMonitor
+import org.swiften.redux.saga.SagaInput
+import org.swiften.redux.saga.SagaMonitor
 import java.util.Collections.synchronizedList
 
 /** Created by viethai.pham on 2019/02/20 */

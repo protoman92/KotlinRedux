@@ -29,11 +29,11 @@ import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.NoopActionDispatcher
 import org.swiften.redux.core.applyMiddlewares
-import org.swiften.redux.saga.common.CommonEffects.await
-import org.swiften.redux.saga.common.CommonEffects.mergeAll
-import org.swiften.redux.saga.common.CommonEffects.put
-import org.swiften.redux.saga.common.CommonEffects.select
-import org.swiften.redux.saga.common.CommonEffects.takeAction
+import org.swiften.redux.saga.CommonEffects.await
+import org.swiften.redux.saga.CommonEffects.mergeAll
+import org.swiften.redux.saga.CommonEffects.put
+import org.swiften.redux.saga.CommonEffects.select
+import org.swiften.redux.saga.CommonEffects.takeAction
 import java.net.URL
 import java.util.Collections.synchronizedList
 import java.util.Random
