@@ -17,15 +17,33 @@ buildscript {
 def rootAbsolutePath = projectDir.parent
 
 subprojects {
+  apply plugin: "com.android.application"
+  apply plugin: "kotlin-android"
+  apply plugin: "kotlin-android-extensions"
+
   project.apply from: "$rootAbsolutePath/android/constants.gradle"
   project.apply from: "$rootAbsolutePath/sample-android/constants.gradle"
+
+//  afterEvaluate {
+//    tasks.findByName("compileDebugKotlin")
+//      .dependsOn(":common:common-all:assemble")
+//      .dependsOn(":android:android-all:assembleRelease")
+//  }
+
+  dependencies {
+    implementation(fileTree(
+      dir: "${project(":common:common-all").buildDir.absolutePath}/libs",
+      include: ["*.jar"]
+    ))
+
+    implementation(fileTree(
+      dir: "${project(":android:android-all").buildDir.absolutePath}/outputs/aar",
+      include: ["*-release.aar"]
+    ))
+  }
 }
 
-configure(subprojects - project(':sample-android:sample-sunflower')) {
-  apply plugin: 'com.android.application'
-  apply plugin: 'kotlin-android'
-  apply plugin: 'kotlin-android-extensions'
-
+configure(subprojects - project(":sample-android:sample-sunflower")) {
   android {
     compileSdkVersion project.ext.compileSdk
 
@@ -42,15 +60,13 @@ configure(subprojects - project(':sample-android:sample-sunflower')) {
     buildTypes {
       release {
         minifyEnabled false
-        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
       }
     }
   }
 
   dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':android:android-all')
-    implementation "io.reactivex.rxjava2:rxjava:$rxJava"
+    implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin"
     implementation "androidx.constraintlayout:constraintlayout:$project.ext.constraintlayout"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$project.ext.kotlinCoroutines"
@@ -62,8 +78,8 @@ configure(subprojects - project(':sample-android:sample-sunflower')) {
   project.apply from: "$rootAbsolutePath/sample-android/skipped.gradle"
 }
 
-configure(project(':sample-android:sample-dagger')) {
-  apply plugin: 'kotlin-kapt'
+configure(project(":sample-android:sample-dagger")) {
+  apply plugin: "kotlin-kapt"
 
   dependencies {
     implementation "com.google.dagger:dagger:$project.ext.dagger"
@@ -71,7 +87,7 @@ configure(project(':sample-android:sample-dagger')) {
   }
 }
 
-configure(project(':sample-android:sample-sunflower')) {
+configure(project(":sample-android:sample-sunflower")) {
   /*
    * Copyright 2018 Google LLC
    *
@@ -89,10 +105,7 @@ configure(project(':sample-android:sample-sunflower')) {
    */
   project.apply from: "$project.projectDir/constants.gradle"
 
-  apply plugin: 'com.android.application'
-  apply plugin: 'kotlin-android'
-  apply plugin: 'kotlin-android-extensions'
-  apply plugin: 'kotlin-kapt'
+  apply plugin: "kotlin-kapt"
 
   android {
     compileSdkVersion project.ext.compileSdk
@@ -112,7 +125,7 @@ configure(project(':sample-android:sample-sunflower')) {
     buildTypes {
       release {
         minifyEnabled false
-        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
       }
     }
 
@@ -142,8 +155,6 @@ configure(project(':sample-android:sample-sunflower')) {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$project.ext.kotlin"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$project.ext.kotlinCoroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.kotlinCoroutines"
-
-    implementation project(':android:android-all')
 
     // Testing dependencies
     androidTestImplementation "androidx.arch.core:core-testing:$project.ext.androidxArchCoreTest"

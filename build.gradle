@@ -68,8 +68,10 @@ subprojects {
   }
 }
 
-task clean(type: Delete) {
-  allprojects {
-    delete it.buildDir
-  }
-}
+//task clean(type: Delete) {
+//  description = "Delete all build folders in all projects"
+//
+//  allprojects {
+//    delete(project.buildDir)
+//  }
+//}

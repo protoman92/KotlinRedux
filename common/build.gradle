@@ -1,24 +1,39 @@
+import java.util.stream.Collectors
+
 buildscript {
   repositories {
     mavenCentral()
+    maven { url = "https://jitpack.io" }
   }
 
   dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$project.ext.kotlin"
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${project.ext.kotlin}")
+    /**
+     * It seems that we are not able to download this plugin from gradle plugin
+     * repository, so we shall use jitpack.io instead.
+     */
+    classpath("com.github.johnrengelman:shadow:7.1.2")
   }
 }
 
 plugins {
   /** This is needed for publishing (e.g. jitpack.io */
-  id 'maven-publish'
+  id("maven-publish")
 }
 
-subprojects { thisProject ->
-  apply plugin: 'kotlin'
+subprojects {
+  apply(plugin: "kotlin")
+  group = "com.github.protoman92.KotlinRedux"
+  version = "1.0-SNAPSHOT"
 
   task packageTestJar(type: Jar) {
-    archiveFileName.set("${thisProject.name}-test.jar")
-    from(thisProject.sourceSets.test.output)
+    description = """
+Package test jar so that other projects can depend on test code from this project
+("${project.name}")
+    """.trim()
+
+    archiveFileName.set("${project.name}-test.jar")
+    from(project.sourceSets.test.output)
   }
 
   configurations {
@@ -31,19 +46,19 @@ subprojects { thisProject ->
 
   compileKotlin {
     kotlinOptions {
-      jvmTarget = thisProject.ext.jvmTarget
+      jvmTarget = project.ext.jvmTarget
     }
   }
 
   compileTestKotlin {
     kotlinOptions {
-      jvmTarget = '1.8'
+      jvmTarget = "1.8"
     }
   }
 
   dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
-    testImplementation "junit:junit:$junit"
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7")
+    testImplementation("junit:junit:${project.ext.junit}")
   }
 
   /**
@@ -51,15 +66,12 @@ subprojects { thisProject ->
    * POM files will not have the correct groupId and version.
    */
   afterEvaluate {
-    group = 'com.github.protoman92.KotlinRedux'
-    version = '1.0-SNAPSHOT'
-
     publishing {
       publications {
-        "$thisProject.name"(MavenPublication) {
-          groupId = thisProject.group
-          version = thisProject.version
-          artifactId = thisProject.name
+        "${project.name}"(MavenPublication) {
+          groupId = project.group
+          version = project.version
+          artifactId = project.name
           from components.kotlin
         }
       }
@@ -67,47 +79,107 @@ subprojects { thisProject ->
   }
 }
 
-project(':common:common-core') {
+project(":common:common-core") {
   dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.ext.kotlinCoroutines}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.ext.kotlinCoroutines}"
     testImplementation project(":common:common-thunk")
     testImplementation project(":common:common-saga")
-    testImplementation "io.reactivex.rxjava2:rxjava:$rxJava"
+    testImplementation "io.reactivex.rxjava2:rxjava:${project.ext.rxJava}"
   }
 }
 
-project(':common:common-thunk') {
+project(":common:common-thunk") {
   dependencies {
-    implementation project(':common:common-core')
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
-    testImplementation project (path: ":common:common-core", configuration: 'testArtifacts')
+    implementation project(":common:common-core")
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.ext.kotlinCoroutines}"
+    testImplementation project (path: ":common:common-core", configuration: "testArtifacts")
   }
 }
 
-project(':common:common-saga') {
+project(":common:common-saga") {
   dependencies {
-    api project(':common:common-core')
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
-    implementation "io.reactivex.rxjava2:rxjava:$rxJava"
-    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlinCoroutines"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito"
-    testImplementation project (path: ":common:common-core", configuration: 'testArtifacts')
+    api project(":common:common-core")
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.ext.kotlinCoroutines}"
+    implementation "io.reactivex.rxjava2:rxjava:${project.ext.rxJava}"
+    implementation "io.reactivex.rxjava2:rxkotlin:${project.ext.rxKotlin}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${project.ext.kotlinCoroutines}"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${project.ext.mockito}"
+    testImplementation project (path: ":common:common-core", configuration: "testArtifacts")
   }
 }
 
-project(':common:common-ui') {
+project(":common:common-ui") {
   dependencies {
-    api project(':common:common-core')
+    api project(":common:common-core")
   }
 }
 
-project(':common:common-all') {
-  dependencies {
-    api project(':common:common-core')
-    api project(':common:common-thunk')
-    api project(':common:common-saga')
-    api project(':common:common-ui')
+project(":common:common-all") {
+  apply(plugin: "com.github.johnrengelman.shadow")
+
+  def allDependencyNames = new ArrayList<String>([
+    ":common:common-core",
+    ":common:common-thunk",
+    ":common:common-saga",
+    ":common:common-ui"
+  ])
+
+  def allDependencies = allDependencyNames
+    .stream()
+    .map { dependencyName -> project(dependencyName) }
+    .collect(Collectors.toList())
+
+  allDependencyNames.forEach { dependencyName ->
+    project.evaluationDependsOn(dependencyName)
   }
+
+  dependencies {
+    allDependencies.forEach { dependency ->
+      implementation(dependency)
+    }
+  }
+
+  task replaceNormalJarWithFatJar {
+    doLast {
+      def jarDirectory = "${project.buildDir.absolutePath}/libs"
+      def jarPrefix = "${project.name}-${project.version}"
+      def finalJarName = "${jarPrefix}.jar"
+      new File("$jarDirectory/$finalJarName").delete()
+      new File("$jarDirectory/$jarPrefix-all.jar").renameTo(new File("$jarDirectory/$finalJarName"))
+    }
+  }
+
+  shadowJar {
+    dependencies {
+      /**
+       * Exclude Kotlin stdlib:
+       * https://thelyfsoshort.io/kotlin-reflection-shadow-jars-minimize-9bd74964c74
+       */
+      exclude(dependency("org.jetbrains.kotlin:.*"))
+      exclude(dependency("org.jetbrains.kotlinx:kotlinx-coroutines-core:.*"))
+      exclude("org/intellij/lang/annotations/**/*")
+      exclude("org/jetbrains/annotations/**/*")
+    }
+  }
+
+  tasks.findByName("shadowJar")
+    .dependsOn(tasks.findByName("clean"))
+
+  tasks.findByName("jar")
+    .dependsOn(tasks.findByName("shadowJar"))
+    .finalizedBy(replaceNormalJarWithFatJar)
+
+//  /** Include all dependencies' jar contents into the final jar archive */
+//  def jarTask = tasks.findByName("jar").configure { Jar task ->
+//    allDependencies.each { dependency ->
+//      from(dependency.configurations.archives.artifacts.files.collect {
+//        zipTree(it)
+//      })
+//    }
+//  }
+//
+//  allDependencies.each { dependency ->
+//    jarTask.dependsOn(dependency.jar)
+//  }
 }

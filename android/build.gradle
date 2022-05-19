@@ -1,3 +1,5 @@
+import java.util.stream.Collectors
+
 buildscript {
   repositories {
     google()
@@ -10,6 +12,7 @@ buildscript {
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$project.ext.kotlin"
     classpath "com.android.tools.build:gradle:$project.ext.gradle"
+    classpath "com.github.kezong:fat-aar:1.3.8"
   } 
 }
 
@@ -24,6 +27,9 @@ subprojects { thisProject ->
   apply plugin: "com.android.library"
   apply plugin: "kotlin-android"
   apply from: "$rootAbsolutePath/android/constants.gradle"
+
+  group = "com.github.protoman92.KotlinRedux"
+  version = "1.0-SNAPSHOT"
 
   /**
    * This task needs to depend on compileDebugUnitTestJavaWithJavac, otherwise the
@@ -85,14 +91,14 @@ subprojects { thisProject ->
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin"
-    testImplementation "junit:junit:$thisProject.ext.junit"
-    testImplementation "androidx.test:core:$thisProject.ext.androidxTestCore"
-    testImplementation "androidx.test:runner:$thisProject.ext.testRunner"
-    testImplementation "androidx.test.ext:junit:$thisProject.ext.androidxJunit"
-    testImplementation "org.robolectric:robolectric:$thisProject.ext.robolectric"
-    androidTestImplementation "androidx.test:runner:$thisProject.ext.testRunner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$thisProject.ext.espresso"
-    androidTestImplementation "androidx.test.ext:junit:$thisProject.ext.androidxJunit"
+    testImplementation "junit:junit:$project.ext.junit"
+    testImplementation "androidx.test:core:$project.ext.androidxTestCore"
+    testImplementation "androidx.test:runner:$project.ext.testRunner"
+    testImplementation "androidx.test.ext:junit:$project.ext.androidxJunit"
+    testImplementation "org.robolectric:robolectric:$project.ext.robolectric"
+    androidTestImplementation "androidx.test:runner:$project.ext.testRunner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$project.ext.espresso"
+    androidTestImplementation "androidx.test.ext:junit:$project.ext.androidxJunit"
   }
 
   /**
@@ -100,12 +106,9 @@ subprojects { thisProject ->
    * POM files will not have the correct groupId and version.
    */
   afterEvaluate {
-    group = "com.github.protoman92.KotlinRedux"
-    version = "1.0-SNAPSHOT"
-
     publishing {
       publications {
-        "$thisProject.name"(MavenPublication) {
+        "$project.name"(MavenPublication) {
           groupId = thisProject.group
           version = thisProject.version
           artifactId = project.name
@@ -118,32 +121,32 @@ subprojects { thisProject ->
 
 project(":android:android-util") {}
 
-project(":android:android-ui") {thisProject ->
+project(":android:android-ui") {
   dependencies {
     api project(":common:common-core")
     api project(":common:common-ui")
     api project(":android:android-util")
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$thisProject.ext.kotlinCoroutines"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.kotlinCoroutines"
     testImplementation project(path: ":common:common-ui", configuration: 'testArtifacts')
   }
 }
 
-project(":android:android-lifecycle") { thisProject ->
+project(":android:android-lifecycle") {
   dependencies {
     api project(":common:common-core")
     api project(":common:common-ui")
-    implementation "androidx.appcompat:appcompat:$thisProject.ext.appCompat"
-    testImplementation "androidx.appcompat:appcompat:$thisProject.ext.appCompat"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$thisProject.ext.kotlinCoroutines"
+    implementation "androidx.appcompat:appcompat:$project.ext.appCompat"
+    testImplementation "androidx.appcompat:appcompat:$project.ext.appCompat"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.kotlinCoroutines"
   }
 }
 
-project(":android:android-recyclerview") {thisProject ->
+project(":android:android-recyclerview") {
   dependencies {
     api project(":android:android-ui")
     api project(":android:android-lifecycle")
-    implementation "androidx.lifecycle:lifecycle-runtime:$thisProject.ext.lifecycle"
-    implementation "androidx.recyclerview:recyclerview:$thisProject.ext.recyclerView"
+    implementation "androidx.lifecycle:lifecycle-runtime:$project.ext.lifecycle"
+    implementation "androidx.recyclerview:recyclerview:$project.ext.recyclerView"
     testImplementation project(path: ":android:android-lifecycle", configuration: 'testArtifacts')
   }
 }
@@ -157,33 +160,71 @@ project(":android:android-saga") {
   }
 }
 
-project(":android:android-livedata-saga") {thisProject ->
+project(":android:android-livedata-saga") {
   dependencies {
     api project(":common:common-saga")
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$thisProject.ext.kotlinCoroutines"
-    implementation "androidx.lifecycle:lifecycle-livedata:$thisProject.ext.lifecycle"
-    implementation "io.reactivex.rxjava2:rxjava:$thisProject.ext.rxJava"
-    implementation "io.reactivex.rxjava2:rxandroid:$thisProject.ext.rxAndroid"
-    testImplementation "androidx.arch.core:core-testing:$thisProject.ext.androidxArchCoreTest"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$project.ext.kotlinCoroutines"
+    implementation "androidx.lifecycle:lifecycle-livedata:$project.ext.lifecycle"
+    implementation "io.reactivex.rxjava2:rxjava:$project.ext.rxJava"
+    implementation "io.reactivex.rxjava2:rxandroid:$project.ext.rxAndroid"
+    testImplementation "androidx.arch.core:core-testing:$project.ext.androidxArchCoreTest"
   }
 }
 
-project(":android:android-router") { thisProject ->
+project(":android:android-router") {
   dependencies {
     api project(":common:common-core")
     api project(":android:android-util")
-    implementation "androidx.appcompat:appcompat:$thisProject.ext.appCompat"
+    implementation "androidx.appcompat:appcompat:$project.ext.appCompat"
   }
 }
 
 project(":android:android-all") {
+  apply plugin: "com.kezong.fat-aar"
+
+  def allDependencyNames = new ArrayList<String>([
+//    ":common:common-all",
+    ":android:android-util",
+    ":android:android-ui",
+    ":android:android-lifecycle",
+    ":android:android-recyclerview",
+    ":android:android-router",
+    ":android:android-saga",
+    ":android:android-livedata-saga"
+  ])
+
+  def allDependencies = allDependencyNames
+    .stream()
+    .map { dependencyName -> project(dependencyName) }
+    .collect(Collectors.toList())
+
+  allDependencyNames.forEach { dependencyName ->
+    if (!project(dependencyName).hasProperty("android")) {
+      return
+    }
+
+    project.evaluationDependsOn(dependencyName)
+  }
+
+  afterEvaluate {
+    project.android.buildTypes.forEach { variant ->
+      def assembleTaskName = "assemble${variant.name.capitalize()}"
+
+      allDependencies.forEach {dependency ->
+        def assembleTask = project.tasks.findByName(assembleTaskName)
+
+        if (dependency.hasProperty("android")) {
+          assembleTask.dependsOn(dependency.tasks.findByName(assembleTaskName))
+        } else {
+          assembleTask.dependsOn(dependency.tasks.findByName("assemble"))
+        }
+      }
+    }
+  }
+
   dependencies {
-    api project(":common:common-all")
-    api project(":android:android-ui")
-    api project(":android:android-lifecycle")
-    api project(":android:android-recyclerview")
-    api project(":android:android-router")
-    api project(":android:android-saga")
-    api project(":android:android-livedata-saga")
+    allDependencies.forEach { dependency ->
+      embed(dependency)
+    }
   }
 }

@@ -1,3 +1,5 @@
+import java.net.URI
+
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 
@@ -5,7 +7,7 @@ dependencyResolutionManagement {
     google()
     jcenter() /** This is just used for klaxon */
     mavenCentral()
-    maven { url = java.net.URI("https://jitpack.io") }
+    maven { url = URI("https://jitpack.io") }
   }
 }
 
