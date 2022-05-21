@@ -50,7 +50,7 @@ class CommonSagaEffectTest {
   protected val iteration = 1000
 
   private fun <T> fromEffect(vararg values: T): SagaEffect<T> where T : Any {
-    return CommonEffects.from(GlobalScope.rxFlowable { values.forEach { this.send(it) } })
+    return CommonEffects.from(rxFlowable { values.forEach { this.send(it) } })
   }
 
   private fun test_takeEffect_shouldTakeCorrectActions(

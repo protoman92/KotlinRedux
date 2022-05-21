@@ -1,5 +1,13 @@
 import java.net.URI
 
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    google()
+    mavenCentral()
+  }
+}
+
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 
@@ -28,6 +36,7 @@ include(":android:android-saga")
 include(":android:android-livedata-saga")
 include(":android:android-all")
 include(":sample-android")
+include(":sample-android:sample-no-android")
 include(":sample-android:sample-simple")
 include(":sample-android:sample-dagger")
 include(":sample-android:sample-sunflower")

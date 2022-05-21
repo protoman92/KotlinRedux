@@ -53,7 +53,7 @@ class SagaOutput<T : Any>(
       monitor: ISagaMonitor,
       creator: suspend CoroutineScope.() -> T
     ): ISagaOutput<T> where T : Any {
-      return SagaOutput(monitor, scope.rxSingle { creator() }.toFlowable())
+      return SagaOutput(monitor, rxSingle { creator() }.toFlowable())
     }
 
     /**

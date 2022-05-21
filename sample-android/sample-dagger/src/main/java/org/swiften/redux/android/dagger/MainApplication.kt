@@ -5,7 +5,7 @@
 
 package org.swiften.redux.android.dagger
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.lifecycle.injectActivitySerializable
 import org.swiften.redux.core.FinalStore
@@ -14,7 +14,7 @@ import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.saga.SagaMiddleware
 
 /** Created by haipham on 26/1/19 */
-class MainApplication : Application() {
+class MainApplication : MultiDexApplication() {
   override fun onCreate() {
     super.onCreate()
 

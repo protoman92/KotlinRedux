@@ -183,7 +183,6 @@ project(":android:android-all") {
   apply plugin: "com.kezong.fat-aar"
 
   def allDependencyNames = new ArrayList<String>([
-//    ":common:common-all",
     ":android:android-util",
     ":android:android-ui",
     ":android:android-lifecycle",

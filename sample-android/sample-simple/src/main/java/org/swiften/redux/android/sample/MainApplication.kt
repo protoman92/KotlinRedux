@@ -5,14 +5,14 @@
 
 package org.swiften.redux.android.sample
 
-import android.app.Application
 import androidx.lifecycle.LifecycleOwner
+import androidx.multidex.MultiDexApplication
 import com.beust.klaxon.Klaxon
-import org.swiften.redux.android.sample.Redux.State
-import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.android.lifecycle.ILifecycleInjectionHelper
 import org.swiften.redux.android.lifecycle.injectActivitySerializable
 import org.swiften.redux.android.lifecycle.injectLifecycle
+import org.swiften.redux.android.sample.Redux.State
+import org.swiften.redux.android.ui.AndroidPropInjector
 import org.swiften.redux.core.FinalStore
 import org.swiften.redux.core.NestedRouter
 import org.swiften.redux.core.RouterMiddleware
@@ -21,7 +21,7 @@ import org.swiften.redux.saga.SagaMiddleware
 import org.swiften.redux.ui.IPropInjector
 
 /** Created by haipham on 26/1/19 */
-class MainApplication : Application() {
+class MainApplication : MultiDexApplication() {
   override fun onCreate() {
     super.onCreate()
     val api = API()

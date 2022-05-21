@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/DELL/Desktop/document-organizer/android/libs/KotlinRedux/sample-android/sample-no-android/src/main/res/layout/main_activity.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/DELL/Desktop/document-organizer/android/libs/KotlinRedux/sample-android/sample-no-android/src/main/res/layout/main_fragment.xml" value="0.36666666666666664" />
+      </map>
+    </option>
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>
