@@ -1,3 +1,13 @@
+import java.net.URI
+
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    google()
+    mavenCentral()
+  }
+}
+
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 
@@ -5,7 +15,7 @@ dependencyResolutionManagement {
     google()
     jcenter() /** This is just used for klaxon */
     mavenCentral()
-    maven { url = java.net.URI("https://jitpack.io") }
+    maven { url = URI("https://jitpack.io") }
   }
 }
 
@@ -26,6 +36,7 @@ include(":android:android-saga")
 include(":android:android-livedata-saga")
 include(":android:android-all")
 include(":sample-android")
+include(":sample-android:sample-no-android")
 include(":sample-android:sample-simple")
 include(":sample-android:sample-dagger")
 include(":sample-android:sample-sunflower")

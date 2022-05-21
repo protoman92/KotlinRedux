@@ -1,9 +1,6 @@
 buildscript {
   def rootAbsolutePath = projectDir.absolutePath
-
-  allprojects {
-    project.apply from: "$rootAbsolutePath/constants.gradle"
-  }
+  project.apply from: "$rootAbsolutePath/constants.gradle"
 
   repositories {
     mavenCentral()
@@ -69,7 +66,11 @@ subprojects {
 }
 
 task clean(type: Delete) {
-  allprojects {
-    delete it.buildDir
+  description = "Delete all build folders in all projects"
+
+  doLast {
+    allprojects {
+      delete(project.buildDir)
+    }
   }
 }

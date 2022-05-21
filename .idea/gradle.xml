@@ -29,6 +29,7 @@
             <option value="$PROJECT_DIR$/common/common-ui" />
             <option value="$PROJECT_DIR$/sample-android" />
             <option value="$PROJECT_DIR$/sample-android/sample-dagger" />
+            <option value="$PROJECT_DIR$/sample-android/sample-no-android" />
             <option value="$PROJECT_DIR$/sample-android/sample-simple" />
             <option value="$PROJECT_DIR$/sample-android/sample-sunflower" />
           </set>
