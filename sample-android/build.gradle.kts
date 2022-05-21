@@ -9,8 +9,8 @@ buildscript {
   }
 
   val rootAbsolutePath = projectDir.parent
-  project.apply(from = "$rootAbsolutePath/android/constants.gradle")
-  project.apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
+  apply(from = "$rootAbsolutePath/android/constants.gradle")
+  apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
 
   dependencies {
     classpath("com.android.tools.build:gradle:${project.extra["gradle"]}")
@@ -24,58 +24,84 @@ subprojects {
   apply(plugin = "com.android.application")
   apply(plugin = "kotlin-android")
   apply(plugin = "kotlin-android-extensions")
+  apply(from = "$rootAbsolutePath/android/constants.gradle")
+  apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
+}
 
-  project.apply(from = "$rootAbsolutePath/android/constants.gradle")
-  project.apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
+fun Project.dependOnLibJar(vararg dependencyNames: String) {
+  data class DependencyDetails(
+    val name: String,
+    val outputDir: String,
+    val outputGlob: String,
+    val outputTask: String,
+  )
+
+  dependencyNames
+    .map { dependencyName ->
+      val dependency = project(dependencyName)
+
+      if (dependency.hasProperty("android")) {
+        DependencyDetails(
+          name = dependencyName,
+          outputDir = "${dependency.buildDir.absolutePath}/outputs/aar",
+          outputGlob = "*-release.aar",
+          outputTask = "bundleReleaseAar",
+        )
+      } else {
+        DependencyDetails(
+          name = dependencyName,
+          outputDir = "${dependency.buildDir.absolutePath}/libs",
+          outputGlob = "*.jar",
+          outputTask = "jar",
+        )
+      }
+    }.forEach { dependencyDetails ->
+      afterEvaluate {
+        tasks {
+          "compileDebugKotlin" {
+            doFirst {
+              if (!File(dependencyDetails.outputDir).exists()) {
+                throw Exception(
+                  """
+                  Must run task \"${dependencyDetails.name}:${dependencyDetails.outputTask}\"
+                  first before proceeding with the build
+                  """.trimIndent())
+              }
+            }
+          }
+        }
+      }
+
+      dependencies {
+        val implementation by configurations
+
+        implementation(fileTree(
+          dependencyDetails.outputDir,
+        ).include(dependencyDetails.outputGlob))
+      }
+    }
 }
 
 configure(arrayListOf(
   project(":sample-android:sample-no-android")
 )) {
-//  afterEvaluate {
-//    tasks {
-//      "compileDebugKotlin" {
-//        dependsOn(":common:common-all:jar")
-//      }
-//    }
-//  }
-
-  dependencies {
-    val implementation by configurations
-
-    implementation(fileTree(
-      "${project(":common:common-all").dependencyProject.buildDir.absolutePath}/libs",
-    ).include("*.jar"))
-  }
+  dependOnLibJar(":common:common-all")
 }
 
 configure(subprojects - project(":sample-android:sample-no-android")) {
-//  afterEvaluate {
-//    tasks.findByName("compileDebugKotlin")
-//      .dependsOn(":common:common-all:assemble")
-//      .dependsOn(":android:android-all:assembleRelease")
-//  }
   configure<AppExtension> {
     defaultConfig {
       multiDexEnabled = true
     }
   }
 
+  dependOnLibJar(
+    ":common:common-all",
+    ":android:android-all",
+  )
+
   dependencies {
     val implementation by configurations
-
-    implementation(
-      fileTree(
-        "${project(":common:common-all").dependencyProject.buildDir.absolutePath}/libs",
-      ).include("*.jar")
-    )
-
-    implementation(
-      fileTree(
-        "${project(":android:android-all").dependencyProject.buildDir.absolutePath}/outputs/aar",
-      ).include("*-release.aar")
-    )
-
     implementation("androidx.multidex:multidex:${project.extra["multidex"]}")
     implementation("io.reactivex.rxjava2:rxjava:${project.extra["rxJava"]}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${project.extra["kotlinCoroutines"]}")

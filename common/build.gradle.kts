@@ -26,27 +26,19 @@ subprojects {
   group = "com.github.protoman92.KotlinRedux"
   version = "1.0-SNAPSHOT"
 
-  tasks.register(name = "packageTestJar", type = Jar::class) {
-    description = """
+  tasks {
+    register(name = "packageTestJar", type = Jar::class) {
+      description = """
 Package test jar so that other projects can depend on test code from this project
 ("${project.name}")
     """.trim()
 
-    doLast {
-      archiveFileName.set("${project.name}-test.jar")
-      from(project.the(extensionType = SourceSetContainer::class)["test"].output)
+      doLast {
+        archiveFileName.set("${project.name}-test.jar")
+        from(project.the(extensionType = SourceSetContainer::class)["test"].output)
+      }
     }
-  }
 
-  configurations {
-    create(name = "testArtifacts")
-  }
-
-  artifacts {
-    add("testArtifacts", tasks["packageTestJar"])
-  }
-
-  tasks {
     "compileKotlin"(KotlinCompile::class) {
       kotlinOptions {
         jvmTarget = project.extra["jvmTarget"] as String
@@ -58,6 +50,14 @@ Package test jar so that other projects can depend on test code from this projec
         jvmTarget = project.extra["jvmTarget"] as String
       }
     }
+  }
+
+  configurations {
+    create(name = "testArtifacts")
+  }
+
+  artifacts {
+    add("testArtifacts", tasks["packageTestJar"])
   }
 
   dependencies {
