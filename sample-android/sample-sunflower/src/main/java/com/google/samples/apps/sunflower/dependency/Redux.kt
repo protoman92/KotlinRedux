@@ -162,8 +162,7 @@ object Redux {
        * Every time the user navigates to plant detail screen, update planted status for
        * [State.selectedPlant] so show/hide the FAB.
        */
-      @Suppress("SENSELESS_COMPARISON")
-      fun checkSelectedPlantStatus(api: GardenPlantingRepository): SagaEffect<Any> {
+      private fun checkSelectedPlantStatus(api: GardenPlantingRepository): SagaEffect<Any> {
         return takeAction(Screen::class) {
           when (it) {
             is Screen.GardenToPlantDetail -> it.plantId
@@ -184,7 +183,7 @@ object Redux {
 
             if (planting != null) {
               put(Screen.GardenToPlantDetail(planting.plant.plantId)).await(it)
-            } else { }
+            }
           }
         }
       }

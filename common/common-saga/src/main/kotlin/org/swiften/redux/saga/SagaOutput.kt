@@ -41,7 +41,7 @@ class SagaOutput<T : Any>(
 ) : ISagaOutput<T>, IUniqueIDProvider by DefaultUniqueIDProvider() {
   companion object {
     /**
-     * Create a [ISagaOutput] from [creator] using [CoroutineScope.rxSingle].
+     * Create a [ISagaOutput] from [creator] using [rxSingle].
      * @param T The emission value type.
      * @param scope A [CoroutineScope] instance.
      * @param monitor See [SagaOutput.monitor].
