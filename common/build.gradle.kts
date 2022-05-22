@@ -93,7 +93,6 @@ project(":common:common-core") {
   dependencies {
     val implementation by configurations
     val testImplementation by configurations
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
     testImplementation(project(path = ":common:common-thunk"))
     testImplementation(project(path = ":common:common-saga"))

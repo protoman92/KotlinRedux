@@ -65,6 +65,14 @@ subprojects {
     // Make sure the latest JitPack releases are used.
     resolutionStrategy.cacheChangingModulesFor(24, "hours")
   }
+
+  tasks {
+    withType(Test::class) {
+      testLogging {
+        showStandardStreams = true
+      }
+    }
+  }
 }
 
 val clean by tasks.registering(type = Delete::class) {

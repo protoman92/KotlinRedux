@@ -5,14 +5,9 @@
 
 package org.swiften.redux.core
 
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.yield
-import kotlin.coroutines.CoroutineContext
+import java.util.concurrent.Semaphore
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 /** Created by haipham on 2019/02/16 */
 /**
@@ -61,63 +56,89 @@ data class JustAwaitable<T>(private val value: T) : IAwaitable<T> where T : Any 
 }
 
 /**
- * Represents an [IAwaitable] that handles [Job]. It waits for [job] to resolve synchronously with
- * [runBlocking]. If [awaitFor] is used, make sure [job] is cooperative with cancellation.
- * @param T The return type of [await].
- * @param context The [CoroutineContext] to perform waiting on.
- * @param job The [Job] to be resolved.
+ * Represents an [IAwaitable] that waits for all [IAwaitable] in [awaitables] to finish, then return
+ * a [Collection] of [awaitables] return values.
+ * @param awaitables A [Collection] of [IAwaitable].
  */
-data class CoroutineAwaitable<T>(
-  private val context: CoroutineContext,
-  private val job: Deferred<T>
-) : IAwaitable<T> where T : Any {
-  override fun await(): T {
-    return runBlocking(this.context) { this@CoroutineAwaitable.job.await() }
+class BatchAwaitable<T>(
+  private val awaitables: Collection<IAwaitable<T>>,
+  private val executor: IExecutor
+) : IAwaitable<Collection<T>> where T : Any {
+  /** Execute a function on another thread. The exact implementation is left to the caller */
+  fun interface IExecutor {
+    fun invoke(runnable: Runnable)
   }
 
-  override fun await(defaultValue: T) = try { this.await() } catch (e: Throwable) { defaultValue }
+  class DeadlockException(message: String? = null) : Exception(message) {}
 
-  @Throws(TimeoutCancellationException::class)
-  override fun awaitFor(timeoutMillis: Long): T {
-    return runBlocking(this.context) { withTimeout(timeoutMillis) { this@CoroutineAwaitable.await() } }
-  }
-}
+  constructor(
+    executor: IExecutor,
+    vararg awaitables: IAwaitable<T>,
+  ) : this(awaitables = awaitables.toList(), executor = executor)
 
-/**
- * Represents an [IAwaitable] that waits for all [IAwaitable] in [jobs] to finish, then return a
- * [Collection] of [jobs] return values.
- * @param jobs A [Collection] of [IAwaitable].
- */
-data class BatchAwaitable<T>(private val jobs: Collection<IAwaitable<T>>) : IAwaitable<Collection<T>> where T : Any {
-  constructor(vararg jobs: IAwaitable<T>) : this(jobs.toList())
-
-  override fun await(): Collection<T> = this.jobs.map { it.await() }
+  override fun await(): Collection<T> = this.awaitables.map { it.await() }
 
   override fun await(defaultValue: Collection<T>): Collection<T> {
     return try { this.await() } catch (e: Throwable) { defaultValue }
   }
 
-  @Throws(TimeoutCancellationException::class)
+  @Throws(
+    DeadlockException::class,
+    InterruptedException::class,
+    TimeoutException::class
+  )
   override fun awaitFor(timeoutMillis: Long): Collection<T> {
-    return runBlocking {
-      withTimeout(timeoutMillis) {
-        val results = arrayListOf<T>()
+    val semaphore = Semaphore(1)
+    var awaitableResults: Collection<T> = arrayListOf()
+    var awaitableException: Exception? = null
+    semaphore.tryAcquire()
 
-        for (job in this@BatchAwaitable.jobs) {
-          if (this.isActive) {
-            val jobResult = job.await()
+    val originalThread = Thread.currentThread()
 
-            if (this.isActive) {
-              results.add(jobResult)
-              continue
-            }
-          }
-
-          yield()
+    this.executor.invoke {
+      if (originalThread == Thread.currentThread()) {
+        awaitableException = DeadlockException("Must invoke await on a different thread")
+      } else {
+        try {
+          awaitableResults = this@BatchAwaitable.await()
+        } catch (exception: Exception) {
+          awaitableException = exception
         }
-
-        results
       }
+
+      semaphore.release()
     }
+
+    val didNotTimeout = semaphore.tryAcquire(timeoutMillis, TimeUnit.MILLISECONDS)
+
+    if (awaitableException != null) {
+      throw awaitableException as Exception
+    }
+
+    if (!didNotTimeout) {
+      throw TimeoutException()
+    }
+
+    return awaitableResults
+
+//    return runBlocking {
+//      withTimeout(timeoutMillis) {
+//        val results = arrayListOf<T>()
+//
+//        for (job in this@BatchAwaitable.awaitables) {
+//          if (this.isActive) {
+//            val jobResult = job.await()
+//
+//            if (this.isActive) {
+//              results.add(jobResult)
+//              continue
+//            }
+//          }
+//
+//          yield()
+//        }
+//
+//        results
+//      }
   }
 }
