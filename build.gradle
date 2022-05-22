@@ -7,7 +7,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "org.jetbrains.dokka:dokka-gradle-plugin:$project.ext.dokka"
+    classpath("org.jetbrains.dokka:dokka-gradle-plugin:${project.ext.dokka}")
   }
 }
 

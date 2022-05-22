@@ -3,18 +3,21 @@ import com.android.builder.model.ApiVersion
 import org.jetbrains.kotlin.gradle.internal.AndroidExtensionsExtension
 
 buildscript {
+  val rootAbsolutePath = projectDir.parent
+  apply(from = "$rootAbsolutePath/constants.gradle")
+  apply(from = "$rootAbsolutePath/android/constants.gradle")
+  apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
+
   repositories {
     google()
     mavenCentral()
+    maven { url = java.net.URI(project.extra["ktlintGradleMavenRepository"].toString()) }
   }
-
-  val rootAbsolutePath = projectDir.parent
-  apply(from = "$rootAbsolutePath/android/constants.gradle")
-  apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
 
   dependencies {
     classpath("com.android.tools.build:gradle:${project.extra["gradle"]}")
     classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${project.extra["kotlin"]}")
+    classpath("org.jlleitschuh.gradle:ktlint-gradle:${project.extra["ktlintGradle"]}")
   }
 }
 
@@ -24,6 +27,7 @@ subprojects {
   apply(plugin = "com.android.application")
   apply(plugin = "kotlin-android")
   apply(plugin = "kotlin-android-extensions")
+  apply(plugin = "org.jlleitschuh.gradle.ktlint")
   apply(from = "$rootAbsolutePath/android/constants.gradle")
   apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
 }
@@ -225,38 +229,6 @@ configure(arrayListOf(
   configure<AndroidExtensionsExtension> {
     isExperimental = true
   }
-
-//  android {
-//    compileSdkVersion = project.ext.compileSdk
-//
-//    defaultConfig {
-//      applicationId = "com.google.samples.apps.sunflower"
-//      minSdkVersion 18
-//      targetSdkVersion project.ext.targetSdk
-//
-//      multiDexEnabled = true
-//      testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-//      versionCode = 1
-//      versionName = "0.1.6"
-//      vectorDrawables.useSupportLibrary = true
-//    }
-//
-//    buildTypes {
-//      release {
-//        minifyEnabled = false
-//        proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-//      }
-//    }
-//
-//    compileOptions {
-//      sourceCompatibility JavaVersion.VERSION_1_8
-//      targetCompatibility JavaVersion.VERSION_1_8
-//    }
-//  }
-
-//  androidExtensions {
-//    experimental = true
-//  }
 
   dependencies {
     val implementation by configurations

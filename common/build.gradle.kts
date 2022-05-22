@@ -5,6 +5,7 @@ buildscript {
   repositories {
     mavenCentral()
     maven { url = java.net.URI("https://jitpack.io") }
+    maven { url = java.net.URI(project.extra["ktlintGradleMavenRepository"].toString()) }
   }
 
   val rootAbsolutePath = projectDir.parent
@@ -16,29 +17,19 @@ buildscript {
      * It seems that we are not able to download this plugin from gradle plugin repository, so we
      * shall use jitpack.io instead.
      */
-    classpath("com.github.johnrengelman:shadow:7.1.2")
+    classpath("com.github.johnrengelman:shadow:${project.extra["shadowJar"]}")
+    classpath("org.jlleitschuh.gradle:ktlint-gradle:${project.extra["ktlintGradle"]}")
   }
 }
 
 subprojects {
   apply(plugin = "kotlin")
   apply(plugin = "maven-publish")
+  apply(plugin = "org.jlleitschuh.gradle.ktlint")
   group = "com.github.protoman92.KotlinRedux"
   version = "1.0-SNAPSHOT"
 
   tasks {
-    register(name = "packageTestJar", type = Jar::class) {
-      description = """
-Package test jar so that other projects can depend on test code from this project
-("${project.name}")
-    """.trim()
-
-      doLast {
-        archiveFileName.set("${project.name}-test.jar")
-        from(project.the(extensionType = SourceSetContainer::class)["test"].output)
-      }
-    }
-
     "compileKotlin"(KotlinCompile::class) {
       kotlinOptions {
         jvmTarget = project.extra["jvmTarget"] as String
@@ -52,12 +43,25 @@ Package test jar so that other projects can depend on test code from this projec
     }
   }
 
-  configurations {
-    create(name = "testArtifacts")
+  /**
+   * If we use doLast, the task does not seem to work - therefore, we register it normally here and
+   * let the execution takes place every build cycle.
+   */
+  val packageTestJar by tasks.registering(Jar::class) {
+    description = """
+Package test jar so that other projects can depend on test code from this project
+("${project.name}")
+    """.trimIndent()
+
+    println("Packing test jar for project \"${project.name}\"")
+    archiveFileName.set("${project.name}-test.jar")
+    from(project.the(extensionType = SourceSetContainer::class)["test"].output)
   }
 
+  val testArtifacts by configurations.creating
+
   artifacts {
-    add("testArtifacts", tasks["packageTestJar"])
+    add(testArtifacts.name, packageTestJar)
   }
 
   dependencies {
@@ -101,9 +105,10 @@ project(":common:common-thunk") {
   dependencies {
     val implementation by configurations
     val testImplementation by configurations
+    val testArtifacts by configurations
     implementation(project(path = ":common:common-core"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
-    testImplementation(project (path = ":common:common-core", configuration = "testArtifacts"))
+    testImplementation(project(path = ":common:common-core", configuration = testArtifacts.name))
   }
 }
 
@@ -112,13 +117,14 @@ project(":common:common-saga") {
     val api by configurations
     val implementation by configurations
     val testImplementation by configurations
+    val testArtifacts by configurations
     api(project(path = ":common:common-core"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
     implementation("io.reactivex.rxjava2:rxjava:${project.extra["rxJava"]}")
     implementation("io.reactivex.rxjava2:rxkotlin:${project.extra["rxKotlin"]}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${project.extra["kotlinCoroutines"]}")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:${project.extra["mockito"]}")
-    testImplementation(project (path = ":common:common-core", configuration = "testArtifacts"))
+    testImplementation(project(path = ":common:common-core", configuration = testArtifacts.name))
   }
 }
 

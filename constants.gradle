@@ -1,5 +1,7 @@
 project.ext {
   kotlin = "1.6.21"
+  ktlintGradle = "10.3.0"
+  ktlintGradleMavenRepository = "https://plugins.gradle.org/m2/"
   jvmTarget = "1.6"
   dokka = "0.9.17"
   dokkaOutputDir = "docs"
@@ -7,6 +9,7 @@ project.ext {
   kotlinCoroutines = "1.6.1"
   rxKotlin = "2.4.0"
   rxJava = "2.2.21"
+  shadowJar = "7.1.2"
   junit = "4.13.2"
   mockito = "2.1.0"
   testHeapSize = "4g"
