@@ -165,11 +165,11 @@ project(":android:android-saga") {
 project(":android:android-livedata-saga") {
   dependencies {
     api project(":common:common-saga")
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$project.ext.kotlinCoroutines"
     implementation "androidx.lifecycle:lifecycle-livedata:$project.ext.lifecycle"
     implementation "io.reactivex.rxjava2:rxjava:$project.ext.rxJava"
     implementation "io.reactivex.rxjava2:rxandroid:$project.ext.rxAndroid"
     testImplementation "androidx.arch.core:core-testing:$project.ext.androidxArchCoreTest"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$project.ext.kotlinCoroutines"
   }
 }
 

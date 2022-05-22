@@ -7,7 +7,7 @@ package org.swiften.redux.saga
 
 /** Created by viethai.pham on 2019/02/17 */
 /** Produces a value using [SagaInput] and [ISagaOutput.awaitFor]. */
-typealias IAwaitCreator<R> = suspend (SagaInput) -> R
+typealias IAwaitCreator<R> = (SagaInput) -> R
 
 /**
  * [SagaEffect] whose [ISagaOutput] is created from [creator], which is a function that creates
@@ -16,8 +16,8 @@ typealias IAwaitCreator<R> = suspend (SagaInput) -> R
  * @param R The result emission type.
  * @param creator An [IAwaitCreator] instance.
  */
-class AwaitEffect<R>(private val creator: IAwaitCreator<R>) : SingleSagaEffect<R>() where R : Any {
+class AwaitEffect<R>(private val creator: IAwaitCreator<R>) : SingleEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
-    return SagaOutput.from(p1, p1.monitor) { this@AwaitEffect.creator(p1) }
+    return SagaOutput.from(p1.monitor) { this@AwaitEffect.creator(p1) }
   }
 }

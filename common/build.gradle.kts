@@ -119,11 +119,12 @@ project(":common:common-saga") {
     val testImplementation by configurations
     val testArtifacts by configurations
     api(project(path = ":common:common-core"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
     implementation("io.reactivex.rxjava2:rxjava:${project.extra["rxJava"]}")
     implementation("io.reactivex.rxjava2:rxkotlin:${project.extra["rxKotlin"]}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${project.extra["kotlinCoroutines"]}")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:${project.extra["mockito"]}")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${project.extra["kotlinCoroutines"]}")
+    testImplementation(project(path = ":common:common-core"))
     testImplementation(project(path = ":common:common-core", configuration = testArtifacts.name))
   }
 }

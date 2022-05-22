@@ -8,8 +8,6 @@ package org.swiften.redux.saga
 import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IAwaitable
 import org.swiften.redux.core.IReduxAction
@@ -17,8 +15,6 @@ import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.IUniqueIDProvider
 import org.swiften.redux.core.NoopActionDispatcher
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 /** Created by haipham on 2019/01/07 */
 /**
@@ -38,19 +34,15 @@ typealias ISagaEffectTransformer<R, R2> = (SagaEffect<R>) -> SagaEffect<R2>
 
 /**
  * [SagaInput] for an [ISagaEffect], which exposes a [IReduxStore]'s internal functionalities.
- * @param context A [CoroutineScope] instance.
  * @param lastState See [IReduxStore.lastState].
  * @param dispatch See [IReduxStore.dispatch].
  */
 class SagaInput(
-  private val context: CoroutineContext = EmptyCoroutineContext,
   internal val dispatch: IActionDispatcher = NoopActionDispatcher,
   internal val lastState: IStateGetter<*> = {},
   val monitor: ISagaMonitor = SagaMonitor(),
   internal val scheduler: Scheduler = Schedulers.io()
-) : CoroutineScope {
-  override val coroutineContext: CoroutineContext get() = this.context + SupervisorJob()
-}
+)
 
 /**
  * Stream values for a [ISagaEffect]. This stream has functional operators that can transform
@@ -73,7 +65,7 @@ interface ISagaOutput<T> : IAwaitable<T>, IUniqueIDProvider where T : Any {
   /**
    * Flatten emissions from [ISagaOutput] produced by [transform].
    * @param T2 The type of emission of the resulting [ISagaOutput].
-   * @param transform Function that flat maps from [T] to [ISagaOutput] in a [CoroutineScope].
+   * @param transform Function that flat maps from [T] to [ISagaOutput].
    * @return An [ISagaOutput] instance.
    */
   fun <T2> flatMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any
@@ -82,7 +74,7 @@ interface ISagaOutput<T> : IAwaitable<T>, IUniqueIDProvider where T : Any {
    * Flatten emissions from [ISagaOutput] produced by [transform], but accept only those from
    * the latest one.
    * @param T2 The type of emission of the resulting [ISagaOutput].
-   * @param transform Function that switch maps from [T] to [ISagaOutput] in a [CoroutineScope].
+   * @param transform Function that switch maps from [T] to [ISagaOutput].
    * @return An [ISagaOutput] instance.
    */
   fun <T2> switchMap(transform: (T) -> ISagaOutput<T2>): ISagaOutput<T2> where T2 : Any
@@ -117,9 +109,9 @@ abstract class SagaEffect<R> : ISagaEffect<R> where R : Any {
  * a stream.
  * @param R The result emission type.
  */
-abstract class SingleSagaEffect<R> : SagaEffect<R>() where R : Any {
+abstract class SingleEffect<R> : SagaEffect<R>() where R : Any {
   /**
-   * See [ISagaOutput.await]. We invoke this [SingleSagaEffect] with [input] then call
+   * See [ISagaOutput.await]. We invoke this [SingleEffect] with [input] then call
    * [ISagaOutput.await].
    * @param input A [SagaInput] instance.
    * @param defaultValue A [R] instance.
@@ -130,7 +122,7 @@ abstract class SingleSagaEffect<R> : SagaEffect<R>() where R : Any {
   }
 
   /**
-   * See [ISagaOutput.await]. We invoke this [SingleSagaEffect] with [input] then call
+   * See [ISagaOutput.await]. We invoke this [SingleEffect] with [input] then call
    * [ISagaOutput.await].
    * @param input A [SagaInput] instance.
    * @param timeoutMillis Timeout time in milliseconds.

@@ -9,8 +9,6 @@ import io.reactivex.Flowable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.rx2.rxSingle
 import org.swiften.redux.core.DefaultUniqueIDProvider
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IUniqueIDProvider
@@ -41,19 +39,14 @@ class SagaOutput<T : Any>(
 ) : ISagaOutput<T>, IUniqueIDProvider by DefaultUniqueIDProvider() {
   companion object {
     /**
-     * Create a [ISagaOutput] from [creator] using [rxSingle].
+     * Create a [ISagaOutput] from [creator] using [Flowable.defer].
      * @param T The emission value type.
-     * @param scope A [CoroutineScope] instance.
      * @param monitor See [SagaOutput.monitor].
      * @param creator Suspending function that produces [T].
      * @return An [ISagaOutput] instance.
      */
-    fun <T> from(
-      scope: CoroutineScope,
-      monitor: ISagaMonitor,
-      creator: suspend CoroutineScope.() -> T
-    ): ISagaOutput<T> where T : Any {
-      return SagaOutput(monitor, rxSingle { creator() }.toFlowable())
+    fun <T> from(monitor: ISagaMonitor, creator: () -> T): ISagaOutput<T> where T : Any {
+      return SagaOutput(monitor, Flowable.defer { Flowable.just(creator()) })
     }
 
     /**

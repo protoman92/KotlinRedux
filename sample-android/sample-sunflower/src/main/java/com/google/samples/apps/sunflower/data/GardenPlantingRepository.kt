@@ -23,12 +23,9 @@ import kotlinx.coroutines.withContext
 class GardenPlantingRepository private constructor(
   private val gardenPlantingDao: GardenPlantingDao
 ) {
-
-  suspend fun createGardenPlanting(plantId: String) {
-    withContext(IO) {
-      val gardenPlanting = GardenPlanting(plantId)
-      gardenPlantingDao.insertGardenPlanting(gardenPlanting)
-    }
+  fun createGardenPlanting(plantId: String) {
+    val gardenPlanting = GardenPlanting(plantId)
+    gardenPlantingDao.insertGardenPlanting(gardenPlanting)
   }
 
   suspend fun removeGardenPlanting(gardenPlanting: GardenPlanting) {

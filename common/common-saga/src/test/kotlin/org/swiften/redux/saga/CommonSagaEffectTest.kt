@@ -5,17 +5,17 @@
 
 package org.swiften.redux.saga
 
+import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxFlowable
+import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -30,6 +30,7 @@ import org.swiften.redux.core.IReduxStore
 import org.swiften.redux.core.NoopActionDispatcher
 import org.swiften.redux.core.applyMiddlewares
 import org.swiften.redux.saga.CommonEffects.await
+import org.swiften.redux.saga.CommonEffects.from
 import org.swiften.redux.saga.CommonEffects.mergeAll
 import org.swiften.redux.saga.CommonEffects.put
 import org.swiften.redux.saga.CommonEffects.select
@@ -42,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/07 */
 /** Use this test class for common [ISagaEffect] tests */
-@ExperimentalCoroutinesApi
+@OptIn(DelicateCoroutinesApi::class)
 class CommonSagaEffectTest {
   private class State
 
@@ -50,7 +51,7 @@ class CommonSagaEffectTest {
   protected val iteration = 1000
 
   private fun <T> fromEffect(vararg values: T): SagaEffect<T> where T : Any {
-    return CommonEffects.from(rxFlowable { values.forEach { this.send(it) } })
+    return CommonEffects.from(Flowable.defer { Flowable.fromArray(*values) })
   }
 
   private fun test_takeEffect_shouldTakeCorrectActions(
@@ -67,7 +68,7 @@ class CommonSagaEffectTest {
 
     createTakeEffect(
       { when (it) { is Action -> it.value; else -> null } },
-      { v -> await { delay(1000); v } }
+      { v -> from(rxSingle { delay(1000); v }) }
     )
       .invoke(SagaInput(monitor = monitor))
       .subscribe({ finalValues.add(it as Int) })
@@ -96,7 +97,10 @@ class CommonSagaEffectTest {
     data class Action(val value: Int) : IReduxAction
     val defaultState = "0"
     val finalValues = synchronizedList(arrayListOf<String>())
-    val takeEffect = createTakeEffect { v -> await { delay(500); finalValues.add(v); v } }
+
+    val takeEffect = createTakeEffect { v ->
+      await { CommonEffects.delay(500); finalValues.add(v); v }
+    }
 
     val store = applyMiddlewares<String>(
       SagaMiddleware.create(Schedulers.computation(), arrayListOf(takeEffect))
@@ -188,7 +192,7 @@ class CommonSagaEffectTest {
     val sourceOutput = createTakeEffect { a ->
       await {
         val value = (a as Action).value
-        it.async { value * 2 }.await()
+        await { value * 2 }.await(it, 0)
         put(DefaultReduxAction.Dummy).await(it)
       }
     }.invoke(SagaInput(monitor = monitor))
@@ -230,7 +234,7 @@ class CommonSagaEffectTest {
   @Test
   fun `Take effect debounce should emit correct values`() {
     test_takeEffectDebounce_shouldEmitCorrectValues {
-      CommonEffects.takeAction(IReduxAction::class, it)
+      takeAction(IReduxAction::class, it)
     }
   }
 
@@ -305,20 +309,14 @@ class CommonSagaEffectTest {
     val monitor = SagaMonitor()
     val finalValues = synchronizedList(arrayListOf<Any>())
 
-    fun CoroutineScope.searchMusicStoreAsync(q: String) = this.async {
-      val url = "https://itunes.apple.com/search?term=$q&limit=5&media=music"
-      val result = URL(url).readText().replace("\n", "")
-      "Input: $q, Result: $result"
-    }
-
-    CommonEffects.takeAction(Action::class) { it.query }.switchMap { query ->
-      await {
-        try {
-          it.searchMusicStoreAsync("unavailable$query").await()
-        } catch (e: Exception) {
-          "Failed for some reasons"
+    takeAction(Action::class) { it.query }.switchMap { query ->
+      from(rxSingle {
+        async {
+          val url = "https://itunes.apple.com/search?term=unavailable$query&limit=5&media=music"
+          val result = URL(url).readText().replace("\n", "")
+          "Input: $query, Result: $result"
         }
-      }
+      })
     }
       .invoke(SagaInput(monitor = monitor))
       .subscribe({ finalValues.add(it) })
@@ -332,12 +330,11 @@ class CommonSagaEffectTest {
       }
 
       // Then
-      assertEquals(finalValues.size, 1)
+      assertEquals(1, finalValues.size)
     }
   }
 
   @Test
-  @ExperimentalCoroutinesApi
   fun `All effect should merge emissions from all sources`() {
     // Setup
     val finalValues = synchronizedList(arrayListOf<Int>())
@@ -371,9 +368,9 @@ class CommonSagaEffectTest {
     val correctValues = (0 until 3).map { arrayListOf(it, it * 2, it * 3) }.flatten().sorted()
 
     CommonEffects.mergeAll(
-      CommonEffects.takeAction(Action::class) { it.value }.flatMap { v -> await { v } },
-      CommonEffects.takeAction(Action::class) { it.value }.flatMap { v -> await { v * 2 } },
-      CommonEffects.takeAction(Action::class) { it.value }.flatMap { v -> await { v * 3 } }
+      takeAction(Action::class) { it.value }.flatMap { v -> await { v } },
+      takeAction(Action::class) { it.value }.flatMap { v -> await { v * 2 } },
+      takeAction(Action::class) { it.value }.flatMap { v -> await { v * 3 } }
     )
       .invoke(SagaInput(monitor = monitor))
       .subscribe({ finalValues.add(it) })
@@ -449,7 +446,7 @@ class CommonSagaEffectTest {
   @Test
   fun `Stream disposition should remove entry from monitor`() {
     test_streamDisposition_shouldRemoveEntryFromMonitor { creator ->
-      CommonEffects.takeAction(IReduxAction::class) { it }.switchMap(creator)
+      takeAction(IReduxAction::class) { it }.switchMap(creator)
     }
   }
 
@@ -458,14 +455,14 @@ class CommonSagaEffectTest {
     val actualValues = (0 until this.iteration).toList()
 
     test_takeEffect_shouldTakeCorrectActions({ a, b ->
-      CommonEffects.takeAction(IReduxAction::class, a).flatMap(b)
+      takeAction(IReduxAction::class, a).flatMap(b)
     }) { it == actualValues.sorted() }
   }
 
   @Test
   fun `Take latest effect should take latest actions`() {
     test_takeEffect_shouldTakeCorrectActions({ a, b ->
-      CommonEffects.takeAction(IReduxAction::class, a).switchMap(b)
+      takeAction(IReduxAction::class, a).switchMap(b)
     }) { it.size == 1 }
   }
 

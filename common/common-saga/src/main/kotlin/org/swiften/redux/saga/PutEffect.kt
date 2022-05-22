@@ -13,7 +13,7 @@ import org.swiften.redux.core.IReduxAction
  * [ISagaEffect] whose [ISagaOutput] dispatches some [IReduxAction].
  * @param action The [IReduxAction] to be dispatched.
  */
-class PutEffect(private val action: IReduxAction) : SingleSagaEffect<Any>() {
+class PutEffect(private val action: IReduxAction) : SingleEffect<Any>() {
   override fun invoke(p1: SagaInput): ISagaOutput<Any> {
     return SagaOutput(p1.monitor, Single.create<Any> {
       p1.dispatch(this@PutEffect.action).await()
@@ -22,7 +22,7 @@ class PutEffect(private val action: IReduxAction) : SingleSagaEffect<Any>() {
   }
 
   /**
-   * Since the result type of this [SingleSagaEffect] is [Any], we can have an [await] method that
+   * Since the result type of this [SingleEffect] is [Any], we can have an [await] method that
    * does not require default value.
    * @param input A [SagaInput] instance.
    * @return [Any] value.

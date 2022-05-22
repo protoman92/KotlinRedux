@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -20,6 +21,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.swiften.redux.android.livedata.saga.LiveDataEffects.takeLiveData
 import org.swiften.redux.saga.CommonEffects.await
+import org.swiften.redux.saga.CommonEffects.from
 import org.swiften.redux.saga.SagaInput
 import org.swiften.redux.saga.flatMap
 import java.util.Collections
@@ -40,7 +42,7 @@ class LiveDataEffectTest {
     val finalValues = Collections.synchronizedList(arrayListOf<Int>())
 
     takeLiveData { data }
-      .flatMap { v -> await { delay(500); v } }
+      .flatMap { v -> from(rxSingle { delay(500); v }) }
       .invoke(SagaInput())
       .subscribe({ finalValues.add(it) })
 
