@@ -1,6 +1,7 @@
 import com.android.build.gradle.AppExtension
 import com.android.builder.model.ApiVersion
 import org.jetbrains.kotlin.gradle.internal.AndroidExtensionsExtension
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 buildscript {
   val rootAbsolutePath = projectDir.parent
@@ -109,6 +110,15 @@ configure(subprojects - project(":sample-android:sample-no-android")) {
     implementation("androidx.multidex:multidex:${project.extra["multidex"]}")
     implementation("io.reactivex.rxjava2:rxjava:${project.extra["rxJava"]}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${project.extra["kotlinCoroutines"]}")
+  }
+}
+
+configure(arrayListOf(
+  project(":sample-android:sample-dagger")
+)) {
+  configure<KtlintExtension> {
+    /** https://github.com/pinterest/ktlint */
+    disabledRules.set(setOf("filename"))
   }
 }
 
