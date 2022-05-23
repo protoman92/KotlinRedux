@@ -24,7 +24,7 @@ import kotlin.concurrent.write
  * Inject state and actions into an [IPropContainer].
  * @param GState The global state type.
  */
-interface IPropInjector<GState> : IStateGetterProvider<GState>, IReduxUnsubscriberProvider where GState : Any {
+interface IPropInjector<GState> : IStateGetterProvider<GState>, IReduxUnsubscriberProvider {
   /**
    * Inject [State] and [Action] into [view].
    *
@@ -46,12 +46,9 @@ interface IPropInjector<GState> : IStateGetterProvider<GState>, IReduxUnsubscrib
     view: View,
     mapper: IPropMapper<LState, OutProp, State, Action>
   ): IReduxSubscription where
-    LState : Any,
     View : IUniqueIDProvider,
     View : IPropContainer<State, Action>,
-    View : IPropLifecycleOwner<LState, OutProp>,
-    State : Any,
-    Action : Any
+    View : IPropLifecycleOwner<LState, OutProp>
 }
 
 /**
@@ -62,7 +59,7 @@ interface IPropInjector<GState> : IStateGetterProvider<GState>, IReduxUnsubscrib
 interface IFullPropInjector<GState> :
   IPropInjector<GState>,
   IDispatcherProvider,
-  IDeinitializerProvider where GState : Any
+  IDeinitializerProvider
 
 /**
  * A [IFullPropInjector] implementation that handles [inject] in a thread-safe manner. It also
@@ -71,7 +68,7 @@ interface IFullPropInjector<GState> :
  * @param GState The global state type.
  * @param store An [IReduxStore] instance.
  */
-open class PropInjector<GState : Any> protected constructor(
+open class PropInjector<GState> protected constructor(
   private val store: IReduxStore<GState>
 ) : IFullPropInjector<GState>,
   IDispatcherProvider by store,
@@ -90,12 +87,10 @@ open class PropInjector<GState : Any> protected constructor(
     view: View,
     mapper: IPropMapper<LState, OutProp, State, Action>
   ): IReduxSubscription where
-    LState : Any,
     View : IUniqueIDProvider,
     View : IPropContainer<State, Action>,
-    View : IPropLifecycleOwner<LState, OutProp>,
-    State : Any,
-    Action : Any {
+    View : IPropLifecycleOwner<LState, OutProp>
+  {
     val subscriberId = view.uniqueID
 
     /** If [view] has received an injection before, unsubscribe from that. */

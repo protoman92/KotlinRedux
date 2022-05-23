@@ -27,18 +27,16 @@ import org.swiften.redux.ui.StaticProp
 class AndroidPropInjector<GState>(
   store: IReduxStore<GState>,
   private val runner: AndroidUtil.IMainThreadRunner = AndroidUtil.MainThreadRunner
-) : PropInjector<GState>(store) where GState : Any {
+) : PropInjector<GState>(store) {
   override fun <LState, OutProp, View, State, Action> inject(
     outProp: OutProp,
     view: View,
     mapper: IPropMapper<LState, OutProp, State, Action>
   ): IReduxSubscription where
-    LState : Any,
     View : IUniqueIDProvider,
     View : IPropContainer<State, Action>,
-    View : IPropLifecycleOwner<LState, OutProp>,
-    State : Any,
-    Action : Any {
+    View : IPropLifecycleOwner<LState, OutProp>
+  {
     return super.inject(outProp, object :
       IUniqueIDProvider by view,
       IPropContainer<State, Action>,

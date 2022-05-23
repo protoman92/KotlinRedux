@@ -29,7 +29,7 @@ open class PropInjectorTest {
     data class SetQuery(val query: String) : Action()
   }
 
-  class TestInjector<GState>(store: IReduxStore<GState>) : PropInjector<GState>(store) where GState : Any
+  class TestInjector<GState>(store: IReduxStore<GState>) : PropInjector<GState>(store)
 
   class StoreWrapper(private val store: IReduxStore<S>) : IReduxStore<S> by store {
     val unsubscribeCount = AtomicInteger()
