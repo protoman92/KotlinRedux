@@ -16,7 +16,7 @@ import kotlin.concurrent.withLock
  * Dagger.
  * @param GState The global state type.
  */
-interface ILifecycleInjectionHelper<GState> where GState : Any {
+interface ILifecycleInjectionHelper<GState> {
   /**
    * Perform injection for [owner].
    * @param injector An [IPropInjector] instance.
@@ -38,7 +38,7 @@ interface ILifecycleInjectionHelper<GState> where GState : Any {
  * develop an app using multiple modules that do not have access to [GState]. [LState] can therefore
  * be an interface that [GState] extends from.
  */
-interface IVetoableLifecycleInjectionHelper<GState, LState> where LState : Any, GState : LState {
+interface IVetoableLifecycleInjectionHelper<GState, LState> where GState : LState {
   /**
    * Perform injection for [owner]. Return false if [owner] cannot receive injection from this
    * [IVetoableLifecycleInjectionHelper].
@@ -64,7 +64,7 @@ interface IVetoableLifecycleInjectionHelper<GState, LState> where LState : Any, 
  */
 fun <GState> combineLifecycleInjectionHelpers(
   injectionHelpers: Collection<IVetoableLifecycleInjectionHelper<GState, *>>
-): ILifecycleInjectionHelper<GState> where GState : Any {
+): ILifecycleInjectionHelper<GState> {
   return object : ILifecycleInjectionHelper<GState> {
     private val lock = ReentrantLock()
 
@@ -97,6 +97,6 @@ fun <GState> combineLifecycleInjectionHelpers(
  */
 fun <GState> combineLifecycleInjectionHelpers(
   vararg injectionHelpers: IVetoableLifecycleInjectionHelper<GState, *>
-): ILifecycleInjectionHelper<GState> where GState : Any {
+): ILifecycleInjectionHelper<GState> {
   return combineLifecycleInjectionHelpers(injectionHelpers.asList())
 }

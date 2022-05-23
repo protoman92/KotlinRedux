@@ -101,13 +101,11 @@ fun <GState, LState, Owner, OutProp, State, Action> IPropInjector<GState>.inject
   mapper: IPropMapper<LState, OutProp, State, Action>
 ): Owner where
   GState : LState,
-  LState : Any,
   Owner : LifecycleOwner,
   Owner : IUniqueIDProvider,
   Owner : IPropContainer<State, Action>,
-  Owner : IPropLifecycleOwner<LState, OutProp>,
-  State : Any,
-  Action : Any {
+  Owner : IPropLifecycleOwner<LState, OutProp>
+{
   var subscription: IReduxSubscription? = null
 
   /**

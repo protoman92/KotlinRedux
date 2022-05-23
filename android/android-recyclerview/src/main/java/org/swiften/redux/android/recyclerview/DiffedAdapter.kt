@@ -56,10 +56,8 @@ abstract class ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(
   IPropLifecycleOwner<LState, OutProp> by NoopPropLifecycleOwner(),
   IPropContainer<List<VHState>, VHAction> where
   GState : LState,
-  LState : Any,
-  VH : RecyclerView.ViewHolder,
-  VHState : Any,
-  VHAction : Any {
+  VH : RecyclerView.ViewHolder
+{
   internal lateinit var staticProp: StaticProp<LState, OutProp>
   private val uniqueIDProvider = DefaultUniqueIDProvider()
   final override val uniqueID: Long get() = this.uniqueIDProvider.uniqueID
@@ -179,12 +177,10 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   diffCallback: DiffUtil.ItemCallback<VHState>
 ): ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction> where
   GState : LState,
-  LState : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<LState, OutProp>,
-  VHState : Any,
-  VHAction : Any {
+  VH : IPropLifecycleOwner<LState, OutProp>
+{
   val listAdapter = object : ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction>(adapter, diffCallback) {
     override fun onBindViewHolder(holder: VH, position: Int) {
       adapter.onBindViewHolder(holder, position)
@@ -243,12 +239,11 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   diffCallback: IDiffItemCallback<VHState>
 ): ReduxListAdapter<GState, LState, OutProp, VH, VHState, VHAction> where
   GState : LState,
-  LState : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
   VH : IPropLifecycleOwner<LState, OutProp>,
-  VHState : Any,
-  VHAction : Any {
+  VHState : Any
+{
   return this.injectDiffedAdapter(outProp, adapter, adapterMapper, object : DiffUtil.ItemCallback<VHState>() {
     override fun areItemsTheSame(oldItem: VHState, newItem: VHState): Boolean {
       return diffCallback.areItemsTheSame(oldItem, newItem)
@@ -284,12 +279,10 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   diffCallback: DiffUtil.ItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
   GState : LState,
-  LState : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<LState, OutProp>,
-  VHState : Any,
-  VHAction : Any {
+  VH : IPropLifecycleOwner<LState, OutProp>
+{
   val wrappedAdapter = this.injectDiffedAdapter(outProp, adapter, adapterMapper, diffCallback)
 
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {
@@ -327,12 +320,11 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   diffCallback: IDiffItemCallback<VHState>
 ): ListAdapter<VHState, VH> where
   GState : LState,
-  LState : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
   VH : IPropLifecycleOwner<LState, OutProp>,
-  VHState : Any,
-  VHAction : Any {
+  VHState : Any
+{
   return this.injectDiffedAdapter(outProp, lifecycleOwner, adapter, adapterMapper,
     object : DiffUtil.ItemCallback<VHState>() {
       override fun areItemsTheSame(oldItem: VHState, newItem: VHState): Boolean {

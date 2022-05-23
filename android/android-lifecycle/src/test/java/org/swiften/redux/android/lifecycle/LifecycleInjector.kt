@@ -50,7 +50,7 @@ class LifecycleInjector {
     val deinitializeCount = AtomicInteger()
 
     val propInjector = object : IPropInjector<GState> {
-      override fun <LState : Any, OutProp, View, State : Any, Action : Any> inject(
+      override fun <LState, OutProp, View, State, Action> inject(
         outProp: OutProp,
         view: View,
         mapper: IPropMapper<LState, OutProp, State, Action>

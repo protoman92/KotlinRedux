@@ -56,12 +56,10 @@ abstract class DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHA
   private val adapter: RecyclerView.Adapter<VH>
 ) : RecyclerView.Adapter<VH>() where
   GState : LState,
-  LState : Any,
   VH : RecyclerView.ViewHolder,
   VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
-  VHState : Any,
-  VHAction : Any {
+  VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>
+{
   /**
    * Keep track of all injected [VH] subscriber IDs here for sweeping unsubscription. Unlike
    * [ReduxListAdapter.composite], we need to keep track of these IDs because otherwise there is
@@ -153,13 +151,11 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   vhMapper: IPropMapper<LState, PositionProp<OutProp>, VHState, VHAction>
 ): DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHAction> where
   GState : LState,
-  LState : Any,
   VH : RecyclerView.ViewHolder,
   VH : IUniqueIDProvider,
   VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
-  VHState : Any,
-  VHAction : Any {
+  VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>
+{
   return object : DelegateRecyclerAdapter<GState, LState, OutProp, VH, VHState, VHAction>(adapter) {
     override fun getItemCount(): Int {
       return adapterMapper.mapState(this@injectRecyclerAdapter.lastState(), Unit)
@@ -209,13 +205,11 @@ fun <GState, LState, OutProp, VH, VHState, VHAction> IPropInjector<GState>.injec
   vhMapper: IPropMapper<LState, PositionProp<OutProp>, VHState, VHAction>
 ): RecyclerView.Adapter<VH> where
   GState : LState,
-  LState : Any,
   VH : RecyclerView.ViewHolder,
   VH : IUniqueIDProvider,
   VH : IPropContainer<VHState, VHAction>,
-  VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>,
-  VHState : Any,
-  VHAction : Any {
+  VH : IPropLifecycleOwner<LState, PositionProp<OutProp>>
+{
   val wrappedAdapter = this.injectRecyclerAdapter(outProp, adapter, adapterMapper, vhMapper)
 
   ReduxLifecycleObserver(lifecycleOwner, object : ILifecycleCallback {

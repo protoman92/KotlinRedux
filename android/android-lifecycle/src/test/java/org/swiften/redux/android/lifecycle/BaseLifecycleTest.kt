@@ -73,12 +73,9 @@ open class BaseLifecycleTest {
       view: View,
       mapper: IPropMapper<LState, OutProp, State, Action>
     ): IReduxSubscription where
-      LState : Any,
       View : IUniqueIDProvider,
       View : IPropContainer<State, Action>,
-      View : IPropLifecycleOwner<LState, OutProp>,
-      State : Any,
-      Action : Any {
+      View : IPropLifecycleOwner<LState, OutProp> {
       val lastState = this.lastState()
       val sp = StaticProp(this as IFullPropInjector<LState>, outProp)
       val subscription = ReduxSubscription(view.uniqueID) { view.afterPropInjectionEnds(sp) }

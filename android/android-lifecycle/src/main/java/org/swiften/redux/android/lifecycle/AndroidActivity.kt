@@ -59,7 +59,7 @@ fun <GState> IFullPropInjector<GState>.injectActivity(
   application: Application,
   saver: IBundleStateSaver<GState>,
   injectionHelper: ILifecycleInjectionHelper<GState>
-): Application.ActivityLifecycleCallbacks where GState : Any {
+): Application.ActivityLifecycleCallbacks {
   val callback = object : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity) {}
     override fun onActivityResumed(activity: Activity) {}
@@ -114,7 +114,7 @@ fun <GState> IFullPropInjector<GState>.injectActivity(
 inline fun <reified GState> IFullPropInjector<GState>.injectActivitySerializable(
   application: Application,
   injectionHelper: ILifecycleInjectionHelper<GState>
-): Application.ActivityLifecycleCallbacks where GState : Any, GState : Serializable {
+): Application.ActivityLifecycleCallbacks where GState : Serializable {
   val key = "REDUX_STATE_${Date().time}"
 
   return this.injectActivity(application, object : IBundleStateSaver<GState> {
@@ -138,7 +138,7 @@ inline fun <reified GState> IFullPropInjector<GState>.injectActivitySerializable
 inline fun <reified GState> IFullPropInjector<GState>.injectActivityParcelable(
   application: Application,
   injectionHelper: ILifecycleInjectionHelper<GState>
-): Application.ActivityLifecycleCallbacks where GState : Any, GState : Parcelable {
+): Application.ActivityLifecycleCallbacks where GState : Parcelable {
   val key = "REDUX_STATE_${Date().time}"
 
   return this.injectActivity(application, object : IBundleStateSaver<GState> {
