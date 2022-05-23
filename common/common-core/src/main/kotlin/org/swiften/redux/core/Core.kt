@@ -7,7 +7,7 @@ package org.swiften.redux.core
 
 /** Created by haipham on 2018/03/31 */
 /** Represents an [IReduxAction] dispatcher. */
-typealias IActionDispatcher = (IReduxAction) -> IAwaitable<Any>
+typealias IActionDispatcher = (IReduxAction) -> IAwaitable<*>
 
 /**
  * Represents a Redux reducer that reduce a [IReduxAction] onto a previous state to produce a new
@@ -46,7 +46,7 @@ interface IReduxActionWithKey : IReduxAction {
  * @param GState The global state type.
  * @param Action The [IReduxAction] type.
  */
-interface IReducerProvider<GState, Action> where GState : Any, Action : IReduxAction {
+interface IReducerProvider<GState, Action> where Action : IReduxAction {
   val reducer: IReducer<GState, Action>
 }
 
@@ -59,7 +59,7 @@ interface IDispatcherProvider {
  * Represents an object that provides [IStateGetter].
  * @param GState The global state type.
  */
-interface IStateGetterProvider<out GState> where GState : Any {
+interface IStateGetterProvider<out GState> {
   val lastState: IStateGetter<GState>
 }
 
@@ -73,7 +73,7 @@ interface IDeinitializerProvider {
  * Represents an object that provides [IReduxSubscriber].
  * @param GState The global state type.
  */
-interface IReduxSubscriberProvider<out GState> where GState : Any {
+interface IReduxSubscriberProvider<out GState> {
   val subscribe: IReduxSubscriber<GState>
 }
 
@@ -94,9 +94,8 @@ interface IReduxStore<GState> :
   IReduxSubscriberProvider<GState>,
   IReduxUnsubscriberProvider,
   IDeinitializerProvider
-  where GState : Any
 
 /** [IActionDispatcher] that does not do any dispatching and simply returns [EmptyAwaitable]. */
 object NoopActionDispatcher : IActionDispatcher {
-  override fun invoke(p1: IReduxAction): IAwaitable<Any> = EmptyAwaitable
+  override fun invoke(p1: IReduxAction): IAwaitable<*> = EmptyAwaitable
 }

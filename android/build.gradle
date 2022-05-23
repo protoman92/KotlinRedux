@@ -147,8 +147,8 @@ project(":android:android-recyclerview") {
   dependencies {
     api project(":android:android-ui")
     api project(":android:android-lifecycle")
-    implementation "androidx.lifecycle:lifecycle-runtime:$project.ext.lifecycle"
-    implementation "androidx.recyclerview:recyclerview:$project.ext.recyclerView"
+    implementation "androidx.lifecycle:lifecycle-runtime:${project.ext.lifecycle}"
+    implementation "androidx.recyclerview:recyclerview:${project.ext.recyclerView}"
     testImplementation project(path: ":android:android-lifecycle", configuration: 'testArtifacts')
   }
 }
@@ -156,20 +156,19 @@ project(":android:android-recyclerview") {
 project(":android:android-saga") {
   dependencies {
     api project(":common:common-saga")
-    implementation "io.reactivex.rxjava2:rxjava:$project.ext.rxJava"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$project.ext.kotlinCoroutines"
-    implementation "io.reactivex.rxjava2:rxkotlin:$project.ext.rxKotlin"
+    implementation "io.reactivex.rxjava2:rxjava:${project.ext.rxJava}"
+    implementation "io.reactivex.rxjava2:rxkotlin:${project.ext.rxKotlin}"
   }
 }
 
 project(":android:android-livedata-saga") {
   dependencies {
     api project(":common:common-saga")
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$project.ext.kotlinCoroutines"
-    implementation "androidx.lifecycle:lifecycle-livedata:$project.ext.lifecycle"
-    implementation "io.reactivex.rxjava2:rxjava:$project.ext.rxJava"
-    implementation "io.reactivex.rxjava2:rxandroid:$project.ext.rxAndroid"
-    testImplementation "androidx.arch.core:core-testing:$project.ext.androidxArchCoreTest"
+    implementation "androidx.lifecycle:lifecycle-livedata:${project.ext.lifecycle}"
+    implementation "io.reactivex.rxjava2:rxjava:${project.ext.rxJava}"
+    implementation "io.reactivex.rxjava2:rxandroid:${project.ext.rxAndroid}"
+    testImplementation "androidx.arch.core:core-testing:${project.ext.androidxArchCoreTest}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${project.ext.kotlinCoroutines}"
   }
 }
 
@@ -177,7 +176,7 @@ project(":android:android-router") {
   dependencies {
     api project(":common:common-core")
     api project(":android:android-util")
-    implementation "androidx.appcompat:appcompat:$project.ext.appCompat"
+    implementation "androidx.appcompat:appcompat:${project.ext.appCompat}"
   }
 }
 

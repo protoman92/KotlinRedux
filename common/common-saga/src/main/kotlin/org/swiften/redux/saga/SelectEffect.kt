@@ -18,7 +18,7 @@ import io.reactivex.Single
 class SelectEffect<State, R>(
   private val cls: Class<State>,
   private val selector: (State) -> R
-) : SingleSagaEffect<R>() where R : Any {
+) : SingleEffect<R>() where R : Any {
   override fun invoke(p1: SagaInput): ISagaOutput<R> {
     return SagaOutput(p1.monitor, Single.create<R> {
       val lastState = p1.lastState()

@@ -11,7 +11,7 @@ package org.swiften.redux.ui
  * @param State State type that contains view information.
  * @param Action Action type that handles view interactions.
  */
-interface IVariableProp<out State, out Action> where State : Any, Action : Any {
+interface IVariableProp<out State, out Action> {
   val firstTime: Boolean
   val state: State
   val action: Action
@@ -25,7 +25,7 @@ interface IVariableProp<out State, out Action> where State : Any, Action : Any {
 data class StaticProp<LState, OutProp>(
   val injector: IPropInjector<LState>,
   val outProp: OutProp
-) where LState : Any
+)
 
 /**
  * Container for [state] and [action].
@@ -39,4 +39,4 @@ data class ReduxProp<State, Action>(
   override val firstTime: Boolean,
   override val state: State,
   override val action: Action
-) : IVariableProp<State, Action> where State : Any, Action : Any
+) : IVariableProp<State, Action>

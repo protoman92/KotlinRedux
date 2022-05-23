@@ -5,6 +5,11 @@
 
 package org.swiften.redux.saga
 
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import org.swiften.redux.core.BatchAwaitable
 import org.swiften.redux.core.IActionDispatcher
 import org.swiften.redux.core.IAwaitable
@@ -27,22 +32,34 @@ interface ISagaMonitor : IDispatcherProvider {
 }
 
 /** Default implementation of [ISagaMonitor]. */
-class SagaMonitor : ISagaMonitor {
+class SagaMonitor(private val scheduler: Scheduler) : ISagaMonitor {
+  constructor() : this(scheduler = Schedulers.computation())
+
   private val lock = ReentrantLock()
   private val dispatchers = HashMap<Long, IActionDispatcher>()
+  private val disposable = CompositeDisposable()
 
   override val dispatch: IActionDispatcher = { a ->
     this@SagaMonitor.lock.withLock {
       @Suppress("UNCHECKED_CAST")
-      BatchAwaitable(this@SagaMonitor.dispatchers.map { it.value(a) }) as IAwaitable<Any>
+      BatchAwaitable(awaitables = this@SagaMonitor.dispatchers.map { it.value(a) }) { runnable ->
+        Single.create<Unit> { runnable.run(); it.onSuccess(Unit) }
+          .subscribeOn(this@SagaMonitor.scheduler)
+          .subscribe()
+          .also { this@SagaMonitor.disposable.add(it) }
+      } as IAwaitable<Any>
     }
   }
 
   override fun addOutputDispatcher(id: Long, dispatch: IActionDispatcher) {
-    this.lock.withLock { if (dispatch != NoopActionDispatcher) { this.dispatchers[id] = dispatch } }
+    this.lock.withLock {
+      if (dispatch != NoopActionDispatcher) { this.dispatchers[id] = dispatch }
+    }
   }
 
   override fun removeOutputDispatcher(id: Long) {
-    this.lock.withLock { this.dispatchers.remove(id) }
+    this.lock.withLock {
+      this.dispatchers.remove(id)
+    }
   }
 }

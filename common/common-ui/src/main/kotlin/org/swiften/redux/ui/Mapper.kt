@@ -14,7 +14,7 @@ import org.swiften.redux.core.IActionDispatcher
  * @param OutProp Property as defined by a view's parent.
  * @param State The container state.
  */
-interface IStateMapper<in LState, in OutProp, out State> where LState : Any, State : Any {
+interface IStateMapper<in LState, in OutProp, out State> {
   /**
    * Map [LState] to [State] using [OutProp]
    * @param state The latest [LState] instance.
@@ -34,7 +34,7 @@ interface IStateMapper<in LState, in OutProp, out State> where LState : Any, Sta
  * @param OutProp Property as defined by a view's parent.
  * @param Action See [ReduxProp.action].
  */
-interface IActionMapper<in OutProp, out Action> where Action : Any {
+interface IActionMapper<in OutProp, out Action> {
   /**
    * Map [IActionDispatcher] to [Action] using [OutProp].
    * @param dispatch An [IActionDispatcher] instance.
@@ -59,4 +59,3 @@ interface IActionMapper<in OutProp, out Action> where Action : Any {
 interface IPropMapper<in LState, in OutProp, out State, out Action> :
   IStateMapper<LState, OutProp, State>,
   IActionMapper<OutProp, Action>
-  where LState : Any, State : Any, Action : Any

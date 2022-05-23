@@ -10,7 +10,6 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.SupervisorJob
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -30,7 +29,7 @@ class SagaMiddlewareTest : BaseMiddlewareTest() {
     val dispatched = AtomicInteger()
 
     val dispatchers: List<IActionDispatcher> = (0 until 100).map {
-      fun(_: IReduxAction): IAwaitable<Any> {
+      fun(_: IReduxAction): IAwaitable<*> {
         dispatched.incrementAndGet()
         return EmptyAwaitable
       }
@@ -41,13 +40,12 @@ class SagaMiddlewareTest : BaseMiddlewareTest() {
       on { this.subscribe(any(), any()) } doReturn Disposables.fromAction {}
     } }
 
-    val context = SupervisorJob()
     val monitor = SagaMonitor()
     val effects = outputs.map<ISagaOutput<Any>, ISagaEffect<Any>> { o -> { o } }
     val input = this.mockMiddlewareInput(0)
     outputs.forEachIndexed { i, o -> monitor.addOutputDispatcher(i.toLong(), o.onAction) }
 
-    val middleware = SagaMiddleware.create(context, monitor, Schedulers.computation(), effects)
+    val middleware = SagaMiddleware.create(monitor, Schedulers.computation(), effects)
     val wrappedDispatch = middleware.invoke(input)(this.mockDispatchWrapper()).dispatch
 
     // When
@@ -58,7 +56,6 @@ class SagaMiddlewareTest : BaseMiddlewareTest() {
 
     // Then
     assertEquals(dispatched.get(), dispatchers.size * 4)
-    assertTrue(context.isCancelled)
     assertTrue(middleware.composite.isDisposed)
   }
 }

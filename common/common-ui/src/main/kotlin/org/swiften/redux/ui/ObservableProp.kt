@@ -17,7 +17,7 @@ import kotlin.reflect.KProperty
  * @param T The property type to be observed.
  * @param notifier Broadcast the latest [T] instance.
  */
-open class LateinitObservableProp<T>(private val notifier: (T?, T) -> Unit) : ReadWriteProperty<Any?, T> where T : Any {
+open class LateinitObservableProp<T : Any>(private val notifier: (T?, T) -> Unit) : ReadWriteProperty<Any?, T> {
   private lateinit var value: T
   private val lock by lazy { ReentrantReadWriteLock() }
 
@@ -37,6 +37,6 @@ open class LateinitObservableProp<T>(private val notifier: (T?, T) -> Unit) : Re
  * @param Action See [ReduxProp.action].
  * @param notifier See [LateinitObservableProp.notifier].
  */
-class ObservableReduxProp<State : Any, Action : Any>(
+class ObservableReduxProp<State, Action>(
   notifier: (IVariableProp<State, Action>?, IVariableProp<State, Action>) -> Unit
 ) : ReadWriteProperty<Any?, ReduxProp<State, Action>> by LateinitObservableProp(notifier)

@@ -109,16 +109,6 @@ configure(subprojects - project(":sample-android:sample-no-android")) {
     val implementation by configurations
     implementation("androidx.multidex:multidex:${project.extra["multidex"]}")
     implementation("io.reactivex.rxjava2:rxjava:${project.extra["rxJava"]}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${project.extra["kotlinCoroutines"]}")
-  }
-}
-
-configure(arrayListOf(
-  project(":sample-android:sample-dagger")
-)) {
-  configure<KtlintExtension> {
-    /** https://github.com/pinterest/ktlint */
-    disabledRules.set(setOf("filename"))
   }
 }
 
@@ -165,7 +155,6 @@ configure(subprojects - project(":sample-android:sample-sunflower")) {
     implementation(fileTree("libs").include("*.jar"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${project.extra["kotlin"]}")
     implementation("androidx.constraintlayout:constraintlayout:${project.ext["constraintlayout"]}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${project.ext["kotlinCoroutines"]}")
     implementation("com.beust:klaxon:5.0.1")
     testImplementation("junit:junit:${project.ext["junit"]}")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:${project.ext["leakCanary"]}")
@@ -175,9 +164,23 @@ configure(subprojects - project(":sample-android:sample-sunflower")) {
 }
 
 configure(arrayListOf(
+  project(":sample-android:sample-simple")
+)) {
+  dependencies {
+    val testImplementation by configurations
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
+  }
+}
+
+configure(arrayListOf(
   project(":sample-android:sample-dagger")
 )) {
   apply(plugin = "kotlin-kapt")
+
+  configure<KtlintExtension> {
+    /** https://github.com/pinterest/ktlint */
+    disabledRules.set(setOf("filename"))
+  }
 
   dependencies {
     val implementation by configurations
@@ -259,8 +262,9 @@ configure(arrayListOf(
     implementation("com.google.android.material:material:${project.extra["materialVersion"]}")
     implementation("com.google.code.gson:gson:${project.extra["gsonVersion"]}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${project.extra["kotlin"]}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${project.extra["kotlinCoroutines"]}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${project.extra["kotlinCoroutines"]}")
+
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:${project.extra["androidxArchCoreTest"]}")

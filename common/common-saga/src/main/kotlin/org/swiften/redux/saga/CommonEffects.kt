@@ -6,6 +6,8 @@
 package org.swiften.redux.saga
 
 import io.reactivex.Flowable
+import io.reactivex.Maybe
+import io.reactivex.Single
 import org.swiften.redux.core.IReduxAction
 import kotlin.reflect.KClass
 
@@ -16,7 +18,7 @@ object CommonEffects {
    * Create an [AwaitEffect] instance.
    * @param R The result emission type.
    * @param creator See [AwaitEffect.creator].
-   * @return A [SingleSagaEffect] instance.
+   * @return A [SingleEffect] instance.
    */
   @JvmStatic
   fun <R> await(creator: IAwaitCreator<R>): AwaitEffect<R> where R : Any {
@@ -72,6 +74,22 @@ object CommonEffects {
    */
   @JvmStatic
   fun <R> from(stream: Flowable<R>): SagaEffect<R> where R : Any = FromEffect(stream)
+
+  /**
+   * Create a [FromEffect].
+   * @param R The result emission type.
+   * @param stream See [FromEffect.stream].
+   * @return A [SagaEffect] instance.
+   */
+  fun <R> from(stream: Single<R>): SagaEffect<R> where R : Any = this.from(stream.toFlowable())
+
+  /**
+   * Create a [FromEffect].
+   * @param R The result emission type.
+   * @param stream See [FromEffect.stream].
+   * @return A [SagaEffect] instance.
+   */
+  fun <R> from(stream: Maybe<R>): SagaEffect<R> where R : Any = this.from(stream.toFlowable())
 
   /**
    * Create an [AllEffect] instance.

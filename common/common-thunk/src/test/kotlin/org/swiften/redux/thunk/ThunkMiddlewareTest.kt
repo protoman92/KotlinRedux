@@ -5,8 +5,7 @@
 
 package org.swiften.redux.thunk
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -24,6 +23,7 @@ import org.swiften.redux.core.NoopActionDispatcher
 import org.swiften.redux.core.ThreadSafeStore
 import org.swiften.redux.core.combineMiddlewares
 import java.util.Collections.synchronizedList
+import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
 /** Created by haipham on 2019/01/26 */
@@ -48,16 +48,13 @@ class ThunkMiddlewareTest : BaseMiddlewareTest() {
     val failureCast = thunkAction as IReduxThunkAction<Any, Int, Any>
 
     // Then
-    runBlocking {
-      assertTrue(thunkAction is IReduxThunkAction<*, *, *>)
-      assertTrue(successCast.payload(GlobalScope, NoopActionDispatcher, { 0 }, object :
-        IDependency {}) is Unit)
+    assertTrue(thunkAction is IReduxThunkAction<*, *, *>)
+    assertTrue(successCast.payload(NoopActionDispatcher, { 0 }, object : IDependency {}) is Unit)
 
-      try {
-        failureCast.payload(GlobalScope, NoopActionDispatcher, {}, 0)
-        fail("Should not have completed")
-      } catch (e: Throwable) { }
-    }
+    try {
+      failureCast.payload(NoopActionDispatcher, {}, 0)
+      fail("Should not have completed")
+    } catch (e: Throwable) { }
   }
 
   @Test
@@ -65,11 +62,12 @@ class ThunkMiddlewareTest : BaseMiddlewareTest() {
     // Setup
     data class Action(val value: Int) : IReduxAction
 
-    class ThunkAction(override val params: Int) :
-      IReduxThunkAction<Int, Unit, Int> {
+    class ThunkAction(override val params: Int) : IReduxThunkAction<Int, Unit, Int> {
       override val payload: ThunkFunction<Int, Unit> = { dispatch, _, _ ->
-        val result = withContext(this.coroutineContext) { delay(1000); 2 }
-        dispatch(Action(result))
+        runBlocking {
+          val result = withContext(Dispatchers.IO) { delay(1000); 2 }
+          dispatch(Action(result))
+        }
       }
 
       override fun hashCode() = this.params.hashCode()
@@ -99,11 +97,11 @@ class ThunkMiddlewareTest : BaseMiddlewareTest() {
   }
 
   @Test
-  fun `Sending deinitialize action should deinitialize context`() {
+  fun `Sending deinitialize action should deinitialize executor service`() {
     // Setup
     val dispatched = AtomicInteger(0)
-    val job = Job()
-    val middleware = ThunkMiddleware.create(Unit, job)
+    val executorService = Executors.newFixedThreadPool(1)
+    val middleware = ThunkMiddleware.create(executorService = executorService, external = Unit)
     val dispatch: IActionDispatcher = { dispatched.incrementAndGet(); EmptyAwaitable }
     val dispatchWrapper = this.mockDispatchWrapper(dispatch)
     val input = mockMiddlewareInput(0)
@@ -121,7 +119,7 @@ class ThunkMiddlewareTest : BaseMiddlewareTest() {
 
       // Then
       assertEquals(dispatched.get(), 5)
-      assertTrue(job.isCancelled)
+      assertTrue(executorService.isShutdown)
     }
   }
 }

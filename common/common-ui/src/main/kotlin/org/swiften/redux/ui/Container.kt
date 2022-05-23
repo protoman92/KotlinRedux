@@ -13,7 +13,7 @@ import org.swiften.redux.core.IReduxSubscription
  * @param LState The local state type that the global state must extend from.
  * @param OutProp Property as defined by a view's parent.
  */
-interface IPropLifecycleOwner<LState, OutProp> where LState : Any {
+interface IPropLifecycleOwner<LState, OutProp> {
   /**
    * This is called before [IFullPropInjector.inject] is called.
    * @param sp A [StaticProp] instance.
@@ -33,7 +33,7 @@ interface IPropLifecycleOwner<LState, OutProp> where LState : Any {
  * @param LState The local state type that the global state must extend from.
  * @param OutProp Property as defined by a view's parent.
  */
-class NoopPropLifecycleOwner<LState, OutProp> : IPropLifecycleOwner<LState, OutProp> where LState : Any {
+class NoopPropLifecycleOwner<LState, OutProp> : IPropLifecycleOwner<LState, OutProp> {
   override fun beforePropInjectionStarts(sp: StaticProp<LState, OutProp>) {}
   override fun afterPropInjectionEnds(sp: StaticProp<LState, OutProp>) {}
 }
@@ -43,6 +43,6 @@ class NoopPropLifecycleOwner<LState, OutProp> : IPropLifecycleOwner<LState, OutP
  * @param State See [ReduxProp.state].
  * @param Action See [ReduxProp.action].
  */
-interface IPropContainer<State, Action> where State : Any, Action : Any {
+interface IPropContainer<State, Action> {
   var reduxProp: ReduxProp<State, Action>
 }
