@@ -41,7 +41,7 @@ class MiddlewareInput<out GState>(
  * @param store An [IReduxStore] instance.
  * @param dispatch An overriding [IActionDispatcher] instance.
  */
-class EnhancedReduxStore<GState : Any>(
+class EnhancedReduxStore<GState>(
   private val store: IReduxStore<GState>,
   override val dispatch: IActionDispatcher
 ) : IReduxStore<GState> by store
@@ -55,7 +55,7 @@ class EnhancedReduxStore<GState : Any>(
  */
 fun <GState> combineMiddlewares(
   middlewares: Collection<IMiddleware<GState>>
-): (IReduxStore<GState>) -> IActionDispatcher where GState : Any {
+): (IReduxStore<GState>) -> IActionDispatcher {
   /**
    * Use a lazy [IActionDispatcher] to ensure that a [MiddlewareInput] has access to the master
    * [IActionDispatcher]. This is done so that invoking [IActionDispatcher] within an [IMiddleware]
@@ -90,7 +90,7 @@ fun <GState> combineMiddlewares(
  */
 fun <GState> combineMiddlewares(
   vararg middlewares: IMiddleware<GState>
-): (IReduxStore<GState>) -> IActionDispatcher where GState : Any {
+): (IReduxStore<GState>) -> IActionDispatcher {
   return combineMiddlewares(middlewares.asList())
 }
 
@@ -102,7 +102,7 @@ fun <GState> combineMiddlewares(
  */
 fun <GState> applyMiddlewares(
   middlewares: Collection<IMiddleware<GState>>
-): (IReduxStore<GState>) -> IReduxStore<GState> where GState : Any =
+): (IReduxStore<GState>) -> IReduxStore<GState> =
   fun(store): IReduxStore<GState> {
     val wrappedDispatch = combineMiddlewares(middlewares)(store)
     return EnhancedReduxStore(store, wrappedDispatch)
@@ -116,6 +116,6 @@ fun <GState> applyMiddlewares(
  */
 fun <GState> applyMiddlewares(
   vararg middlewares: IMiddleware<GState>
-): (IReduxStore<GState>) -> IReduxStore<GState> where GState : Any {
+): (IReduxStore<GState>) -> IReduxStore<GState> {
   return applyMiddlewares(middlewares.asList())
 }

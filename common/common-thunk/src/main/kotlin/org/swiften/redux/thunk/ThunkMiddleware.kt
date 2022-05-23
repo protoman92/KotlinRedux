@@ -19,6 +19,7 @@ import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.JustAwaitable
 import org.swiften.redux.core.MiddlewareInput
 import org.swiften.redux.core.ThreadSafeDispatcher
+import org.swiften.redux.core.map
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -111,27 +112,26 @@ class ThunkMiddleware<GExt> internal constructor(
 
     return { wrapper ->
       DispatchWrapper.wrap(wrapper, "thunk", ThreadSafeDispatcher(lock) { action ->
-        val dispatchResult = wrapper.dispatch(action).await()
+        BatchAwaitable(
+          executor = { runnable -> executorService.submit(runnable) },
+          wrapper.dispatch(action) as IAwaitable<Any>,
+          when (action) {
+            is IReduxThunkAction<*, *, *> -> {
+              val castAction = action as IReduxThunkAction<Any, Any, Any>
 
-        val thunkAwaitable: IAwaitable<Any> = when (action) {
-          is IReduxThunkAction<*, *, *> -> {
-            val castAction = action as IReduxThunkAction<Any, Any, Any>
+              this@ThunkMiddleware.executorService.submit {
+                castAction.payload(p1.dispatch, p1.lastState, Unit)
+              }.let { FutureAwaitable(it as Future<Any>) }
+            }
 
-            this@ThunkMiddleware.executorService.submit {
-              castAction.payload(p1.dispatch, p1.lastState, Unit)
-            }.let { FutureAwaitable(it as Future<Any>) }
-          }
+            is DefaultReduxAction.Deinitialize -> {
+              this@ThunkMiddleware.executorService.shutdownNow()
+              EmptyAwaitable
+            }
 
-          is DefaultReduxAction.Deinitialize -> {
-            this@ThunkMiddleware.executorService.shutdownNow()
-            EmptyAwaitable
-          }
-
-          else -> EmptyAwaitable
-        }
-
-        thunkAwaitable.await()
-        JustAwaitable(dispatchResult)
+            else -> EmptyAwaitable
+          } as IAwaitable<Any>
+        ).map { it.first() }
       })
     }
   }

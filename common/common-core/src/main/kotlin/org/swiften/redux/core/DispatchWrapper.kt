@@ -31,7 +31,7 @@ class DispatchWrapper private constructor (val id: String, val dispatch: IAction
      * @param dispatch The [DispatchWrapper.dispatch] of the resulting [DispatchWrapper].
      * @return A [DispatchWrapper] instance.
      */
-    fun wrap(wrapper: DispatchWrapper, id: String, dispatch: (IReduxAction) -> IAwaitable<Any>): DispatchWrapper {
+    fun wrap(wrapper: DispatchWrapper, id: String, dispatch: (IReduxAction) -> IAwaitable<*>): DispatchWrapper {
       return DispatchWrapper("$id -> ${wrapper.id}", dispatch)
     }
   }

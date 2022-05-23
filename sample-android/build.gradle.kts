@@ -112,15 +112,6 @@ configure(subprojects - project(":sample-android:sample-no-android")) {
   }
 }
 
-configure(arrayListOf(
-  project(":sample-android:sample-dagger")
-)) {
-  configure<KtlintExtension> {
-    /** https://github.com/pinterest/ktlint */
-    disabledRules.set(setOf("filename"))
-  }
-}
-
 data class ApiVersionImpl(private val apiLevel: Int) : ApiVersion {
   override fun getApiLevel(): Int {
     return this.apiLevel
@@ -173,9 +164,23 @@ configure(subprojects - project(":sample-android:sample-sunflower")) {
 }
 
 configure(arrayListOf(
+  project(":sample-android:sample-simple")
+)) {
+  dependencies {
+    val testImplementation by configurations
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
+  }
+}
+
+configure(arrayListOf(
   project(":sample-android:sample-dagger")
 )) {
   apply(plugin = "kotlin-kapt")
+
+  configure<KtlintExtension> {
+    /** https://github.com/pinterest/ktlint */
+    disabledRules.set(setOf("filename"))
+  }
 
   dependencies {
     val implementation by configurations

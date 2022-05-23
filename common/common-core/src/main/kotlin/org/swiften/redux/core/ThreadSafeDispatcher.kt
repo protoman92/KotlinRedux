@@ -19,7 +19,7 @@ class ThreadSafeDispatcher(
   private val lock: ReentrantLock = ReentrantLock(),
   private val dispatch: IActionDispatcher
 ) : IActionDispatcher by dispatch {
-  override fun invoke(p1: IReduxAction): IAwaitable<Any> {
+  override fun invoke(p1: IReduxAction): IAwaitable<*> {
     return this.lock.withLock { this@ThreadSafeDispatcher.dispatch(p1) }
   }
 }

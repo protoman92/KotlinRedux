@@ -39,9 +39,9 @@ interface IAwaitable<T> {
 }
 
 /** Represents an empty [IAwaitable] that does not do anything. */
-object EmptyAwaitable : IAwaitable<Any> {
+object EmptyAwaitable : IAwaitable<Unit> {
   override fun await() = Unit
-  override fun await(defaultValue: Any) = this.await()
+  override fun await(defaultValue: Unit) = this.await()
   override fun awaitFor(timeoutMillis: Long) = this.await()
 }
 
@@ -159,5 +159,26 @@ class BatchAwaitable<T>(
 //
 //        results
 //      }
+  }
+}
+
+/**
+ * Map [T] to [R] by creating a new [IAwaitable].
+ * @param T The receiver's inner type.
+ * @param R The resulting inner type.
+ * @param mapper A function that maps [T] to [R].
+ * @return [IAwaitable] with inner type [R].
+ */
+fun <T, R> IAwaitable<T>.map(mapper: (T) -> R): IAwaitable<R> {
+  return object : IAwaitable<R> {
+    override fun await(): R = mapper(this@map.await())
+
+    override fun await(defaultValue: R): R {
+      return try { mapper(this@map.await()) } catch (error: Exception) { defaultValue }
+    }
+
+    override fun awaitFor(timeoutMillis: Long): R {
+      return mapper(this@map.awaitFor(timeoutMillis = timeoutMillis))
+    }
   }
 }

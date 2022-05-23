@@ -29,7 +29,7 @@ class SagaMiddlewareTest : BaseMiddlewareTest() {
     val dispatched = AtomicInteger()
 
     val dispatchers: List<IActionDispatcher> = (0 until 100).map {
-      fun(_: IReduxAction): IAwaitable<Any> {
+      fun(_: IReduxAction): IAwaitable<*> {
         dispatched.incrementAndGet()
         return EmptyAwaitable
       }

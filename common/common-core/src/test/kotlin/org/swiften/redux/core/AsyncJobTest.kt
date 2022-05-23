@@ -35,7 +35,7 @@ class AsyncJobTest {
   data class CoroutineAwaitable<T>(
     private val context: CoroutineContext,
     private val job: Deferred<T>
-  ) : IAwaitable<T> where T : Any {
+  ) : IAwaitable<T> {
     override fun await(): T {
       return runBlocking(this.context) { this@CoroutineAwaitable.job.await() }
     }
