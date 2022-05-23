@@ -5,23 +5,25 @@
 
 package org.swiften.redux.thunk
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import org.swiften.redux.core.BatchAwaitable
 import org.swiften.redux.core.DefaultReduxAction
 import org.swiften.redux.core.DispatchMapper
 import org.swiften.redux.core.DispatchWrapper
 import org.swiften.redux.core.EmptyAwaitable
+import org.swiften.redux.core.FutureAwaitable
 import org.swiften.redux.core.IActionDispatcher
+import org.swiften.redux.core.IAwaitable
 import org.swiften.redux.core.IMiddleware
 import org.swiften.redux.core.IReduxAction
 import org.swiften.redux.core.IStateGetter
 import org.swiften.redux.core.JustAwaitable
 import org.swiften.redux.core.MiddlewareInput
 import org.swiften.redux.core.ThreadSafeDispatcher
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import java.util.concurrent.locks.ReentrantLock
-import kotlin.coroutines.CoroutineContext
 
 /** Created by haipham on 2019/02/05 */
 /**
@@ -30,8 +32,7 @@ import kotlin.coroutines.CoroutineContext
  * @param GState The global state type.
  * @param GExt The external argument type.
  */
-typealias ThunkFunction<GState, GExt> =
-  suspend CoroutineScope.(IActionDispatcher, IStateGetter<GState>, GExt) -> Unit
+typealias ThunkFunction<GState, GExt> = (IActionDispatcher, IStateGetter<GState>, GExt) -> Unit
 
 /**
  * A thunk action represents an [IReduxAction] whose [payload] is a function that can be resolved
@@ -55,56 +56,81 @@ interface IReduxThunkAction<GState, GExt, Param> : IReduxAction {
 /**
  * [IMiddleware] implementation that handles [IReduxThunkAction].
  * @param GExt The external argument type.
+ * @param executorService The [ExecutorService] that will be used to schedule concurrent work.
  * @param external The external [GExt] argument.
- * @param context The [CoroutineContext] with which to perform async work.
  */
-class ThunkMiddleware<GExt>(
+class ThunkMiddleware<GExt> internal constructor(
+  private val executorService: ExecutorService,
   private val external: GExt,
-  private val context: CoroutineContext
-) : IMiddleware<Any> where GExt : Any {
+) : IMiddleware<Any> {
   companion object {
+    private const val DEFAULT_THREAD_POOL_THREAD_COUNT = 5
+
     /**
-     * Create a [ThunkMiddleware] with [context].
+     * Create a [ThunkMiddleware].
      * @param GExt The external argument type.
+     * @param executorService The [ExecutorService] that will be used to schedule concurrent work.
      * @param external The external [GExt] argument.
-     * @param context See [ThunkMiddleware.context].
      * @return A [ThunkMiddleware] instance.
      */
-    internal fun <GExt> create(external: GExt, context: CoroutineContext): IMiddleware<Any> where GExt : Any {
-      return ThunkMiddleware(external, context)
+    fun <GExt> create(executorService: ExecutorService, external: GExt, ): IMiddleware<Any> {
+      return ThunkMiddleware(executorService = executorService, external = external)
     }
 
     /**
-     * Create a [ThunkMiddleware] with a default [CoroutineContext]. This is made public so that users
-     * of this [ThunkMiddleware] cannot share its [CoroutineContext] with other users.
+     * Create a [ThunkMiddleware] with a default fixed-thread pool [ExecutorService].
+     * @param GExt The external argument type.
+     * @param threadPoolThreadCount The number of threads to use for the thread pool.
+     * @param external The external [GExt] argument.
+     * @return A [ThunkMiddleware] instance.
+     */
+    fun <GExt> create(threadPoolThreadCount: Int, external: GExt): IMiddleware<Any> {
+      return create(
+        executorService = Executors.newFixedThreadPool(threadPoolThreadCount),
+        external = external,
+      )
+    }
+
+    /**
+     * Create a [ThunkMiddleware] with a default thread pool thread count.
      * @param GExt The external argument type.
      * @param external The external [GExt] argument.
      * @return A [ThunkMiddleware] instance.
      */
-    fun <GExt> create(external: GExt): IMiddleware<Any> where GExt : Any {
-      return this.create(external, SupervisorJob())
+    fun <GExt> create(external: GExt): IMiddleware<Any> {
+      return create(
+        external = external,
+        threadPoolThreadCount = DEFAULT_THREAD_POOL_THREAD_COUNT
+      )
     }
   }
 
   @Suppress("UNCHECKED_CAST")
   override fun invoke(p1: MiddlewareInput<Any>): DispatchMapper {
     val lock = ReentrantLock()
-    val context = this@ThunkMiddleware.context
-    val scope = object : CoroutineScope { override val coroutineContext get() = context }
 
     return { wrapper ->
       DispatchWrapper.wrap(wrapper, "thunk", ThreadSafeDispatcher(lock) { action ->
         val dispatchResult = wrapper.dispatch(action).await()
 
-        when (action) {
-          is IReduxThunkAction<*, *, *> -> scope.launch {
+        val thunkAwaitable: IAwaitable<Any> = when (action) {
+          is IReduxThunkAction<*, *, *> -> {
             val castAction = action as IReduxThunkAction<Any, Any, Any>
-            castAction.payload(scope, p1.dispatch, p1.lastState, Unit)
+
+            this@ThunkMiddleware.executorService.submit {
+              castAction.payload(p1.dispatch, p1.lastState, Unit)
+            }.let { FutureAwaitable(it as Future<Any>) }
           }
 
-          is DefaultReduxAction.Deinitialize -> { context.cancel(); EmptyAwaitable }
+          is DefaultReduxAction.Deinitialize -> {
+            this@ThunkMiddleware.executorService.shutdownNow()
+            EmptyAwaitable
+          }
+
+          else -> EmptyAwaitable
         }
 
+        thunkAwaitable.await()
         JustAwaitable(dispatchResult)
       })
     }

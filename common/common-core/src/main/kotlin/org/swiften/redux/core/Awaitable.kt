@@ -5,6 +5,7 @@
 
 package org.swiften.redux.core
 
+import java.util.concurrent.Future
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeoutException
  * Represents a job that does some asynchronous work and can be resolved synchronously.
  * @param T The return type of [await].
  */
-interface IAwaitable<T> where T : Any {
+interface IAwaitable<T> {
   /**
    * Wait until some asynchronous action finishes.
    * @return A [T] instance.
@@ -45,11 +46,29 @@ object EmptyAwaitable : IAwaitable<Any> {
 }
 
 /**
+ * Represents an [IAwaitable] that wraps a [Future], which has a nice set of methods that interface
+ * well with [IAwaitable].
+ * @param T The return type of [await].
+ * @param future A [Future] instance.
+ */
+class FutureAwaitable<T>(private val future: Future<T>) : IAwaitable<T> {
+  override fun await(): T = this.future.get()
+
+  override fun await(defaultValue: T): T {
+    return try { this.await() } catch (error: Exception) { defaultValue }
+  }
+
+  override fun awaitFor(timeoutMillis: Long): T {
+    return this.future.get(timeoutMillis, TimeUnit.MILLISECONDS)
+  }
+}
+
+/**
  * Represents an [IAwaitable] that returns some [value] on [await].
  * @param T The return type of [await].
  * @param value A [T] instance.
  */
-data class JustAwaitable<T>(private val value: T) : IAwaitable<T> where T : Any {
+data class JustAwaitable<T>(private val value: T) : IAwaitable<T> {
   override fun await() = this.value
   override fun await(defaultValue: T) = this.value
   override fun awaitFor(timeoutMillis: Long) = this.value
@@ -63,7 +82,7 @@ data class JustAwaitable<T>(private val value: T) : IAwaitable<T> where T : Any 
 class BatchAwaitable<T>(
   private val awaitables: Collection<IAwaitable<T>>,
   private val executor: IExecutor
-) : IAwaitable<Collection<T>> where T : Any {
+) : IAwaitable<Collection<T>> {
   /** Execute a function on another thread. The exact implementation is left to the caller */
   fun interface IExecutor {
     fun invoke(runnable: Runnable)
