@@ -154,10 +154,10 @@ configure(subprojects - project(":sample-android:sample-sunflower")) {
     val debugImplementation by configurations
     implementation(fileTree("libs").include("*.jar"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${project.extra["kotlin"]}")
-    implementation("androidx.constraintlayout:constraintlayout:${project.ext["constraintlayout"]}")
+    implementation("androidx.constraintlayout:constraintlayout:${project.extra["constraintlayout"]}")
     implementation("com.beust:klaxon:5.0.1")
-    testImplementation("junit:junit:${project.ext["junit"]}")
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:${project.ext["leakCanary"]}")
+    testImplementation("junit:junit:${project.extra["junit"]}")
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:${project.extra["leakCanary"]}")
   }
 
   apply(from = "$rootAbsolutePath/sample-android/skipped.gradle")
@@ -250,7 +250,7 @@ configure(arrayListOf(
     val androidTestImplementation by configurations
     val kapt by configurations
 
-    implementation("io.reactivex.rxjava2:rxandroid:${project.ext["rxAndroid"]}")
+    implementation("io.reactivex.rxjava2:rxandroid:${project.extra["rxAndroid"]}")
     implementation("android.arch.navigation:navigation-fragment-ktx:${project.extra["navigationVersion"]}")
     implementation("android.arch.navigation:navigation-ui-ktx:${project.extra["navigationVersion"]}")
     implementation("android.arch.work:work-runtime-ktx:${project.extra["workVersion"]}")
@@ -264,7 +264,6 @@ configure(arrayListOf(
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${project.extra["kotlin"]}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${project.extra["kotlinCoroutines"]}")
-
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:${project.extra["androidxArchCoreTest"]}")
