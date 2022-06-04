@@ -34,6 +34,18 @@ subprojects {
   apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
 }
 
+allprojects {
+  tasks.whenTaskAdded(delegateClosureOf<Task> {
+    /**
+     * In Jitpack build environment, we do not want sample projects to be assembled, because that
+     * increases both the complexity of our gradle configurations and the build duration.
+     */
+    if (System.getenv("JITPACK") == "true") {
+      onlyIf { false }
+    }
+  })
+}
+
 fun Project.dependOnLocalLib(
   useLibJar: Boolean,
   vararg dependencyNames: String,
@@ -61,7 +73,7 @@ fun Project.dependOnLocalLib(
           name = dependencyName,
           outputDir = "${dependency.buildDir.absolutePath}/libs",
           outputGlob = "*.jar",
-          outputTask = "packageFatJar",
+          outputTask = "jar",
         )
       }
     }.forEach { dependencyDetails ->
@@ -70,9 +82,7 @@ fun Project.dependOnLocalLib(
       if (useLibJar) {
         afterEvaluate {
           tasks {
-            val compileTaskName = "compileDebugKotlin"
-
-            compileTaskName {
+            "compileDebugKotlin" {
               doFirst {
                 if (!File(dependencyDetails.outputDir).exists()) {
                   throw Exception(
@@ -84,11 +94,6 @@ fun Project.dependOnLocalLib(
                 }
               }
             }
-
-            getByName(compileTaskName).dependsOn(dependency.tasks[dependencyDetails.outputTask])
-
-            /** Seems that this is needed for the maven-publish plugin */
-            getByName(compileTaskName).mustRunAfter(dependency.tasks[dependencyDetails.outputTask])
           }
         }
 

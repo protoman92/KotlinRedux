@@ -150,14 +150,6 @@ project(":common:common-all") {
     project.evaluationDependsOn(dependencyName)
   }
 
-  dependencies {
-    val implementation by configurations
-
-    allDependencies.forEach { dependency ->
-      implementation(dependency)
-    }
-  }
-
   tasks {
     val replaceNormalJarWithFatJar by registering {
       doLast {
@@ -184,18 +176,12 @@ project(":common:common-all") {
 
       dependsOn(project.tasks["clean"])
     }
-  }
 
-  afterEvaluate {
     /**
      * Include all dependencies' jar contents into the final jar archive. Use this task instead of
      * the ones defined above (which are mainly for experimenting).
-     *
-     * We do not put this logic in the default jar task because it might break the sample projects
-     * if said projects depend on this using "implementation project" (instead of directly on the
-     * output jar). For example, an error that could arise is "Duplicate classes" in classes.dex.
      */
-    tasks.register("packageFatJar", Jar::class) {
+    "jar"(Jar::class) {
       duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
       allDependencies.forEach { dependency ->
@@ -207,20 +193,10 @@ project(":common:common-all") {
       }
     }
 
-    tasks {
-      val jar by getting
-      val packageFatJar by getting
+    val jar by getting
 
-      allDependencies.forEach { dependency ->
-        packageFatJar.dependsOn(dependency.tasks["jar"])
-      }
-
-      /** Make sure packageFatJar runs after jar to produce the correct jar */
-      packageFatJar.mustRunAfter(jar)
-
-      "assemble" {
-        dependsOn(packageFatJar)
-      }
+    allDependencies.forEach { dependency ->
+      jar.dependsOn(dependency.tasks["jar"])
     }
   }
 }
