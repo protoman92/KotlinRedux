@@ -4,6 +4,8 @@ import com.android.builder.model.ApiVersion
 import org.jetbrains.kotlin.gradle.internal.AndroidExtensionsExtension
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
+println(System.getenv())
+
 buildscript {
   val rootAbsolutePath = projectDir.parent
   apply(from = "$rootAbsolutePath/constants.gradle")
@@ -32,6 +34,10 @@ subprojects {
   apply(plugin = "org.jlleitschuh.gradle.ktlint")
   apply(from = "$rootAbsolutePath/android/constants.gradle")
   apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
+
+  tasks.whenTaskAdded(delegateClosureOf<Task> {
+    onlyIf { false }
+  })
 }
 
 fun Project.dependOnLocalLib(
