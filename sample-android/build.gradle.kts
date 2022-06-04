@@ -1,4 +1,5 @@
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.android.builder.model.ApiVersion
 import org.jetbrains.kotlin.gradle.internal.AndroidExtensionsExtension
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
@@ -33,8 +34,8 @@ subprojects {
   apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
 }
 
-fun Project.dependOnLibJar(
-  throwErrorOnMissingJar: Boolean,
+fun Project.dependOnLocalLib(
+  useLibJar: Boolean,
   vararg dependencyNames: String,
 ) {
   data class DependencyDetails(
@@ -60,50 +61,63 @@ fun Project.dependOnLibJar(
           name = dependencyName,
           outputDir = "${dependency.buildDir.absolutePath}/libs",
           outputGlob = "*.jar",
-          outputTask = "jar",
+          outputTask = "packageFatJar",
         )
       }
     }.forEach { dependencyDetails ->
-      afterEvaluate {
-        tasks {
-          "compileDebugKotlin" {
-            if (throwErrorOnMissingJar) {
+      val dependency = project(dependencyDetails.name)
+
+      if (useLibJar) {
+        afterEvaluate {
+          tasks {
+            val compileTaskName = "compileDebugKotlin"
+
+            compileTaskName {
               doFirst {
                 if (!File(dependencyDetails.outputDir).exists()) {
                   throw Exception(
                     """
-                    Must run task \"${dependencyDetails.name}:${dependencyDetails.outputTask}\"
-                    first before proceeding with the build
-                    """.trimIndent()
+                      Must run task \"${dependencyDetails.name}:${dependencyDetails.outputTask}\"
+                      first before proceeding with the build
+                      """.trimIndent()
                   )
                 }
               }
-            } else {
-              val dependency = project(dependencyDetails.name)
-              dependsOn(dependency.tasks[dependencyDetails.outputTask])
             }
+
+            getByName(compileTaskName).dependsOn(dependency.tasks[dependencyDetails.outputTask])
           }
         }
-      }
 
-      dependencies {
-        val implementation by configurations
+        dependencies {
+          val implementation by configurations
 
-        implementation(fileTree(
-          dependencyDetails.outputDir,
-        ).include(dependencyDetails.outputGlob))
+          /**
+           * Since the dependency resolution happens before the jars are built, so the first run
+           * will fail with NoClassDefFound. The second run should then work.
+           */
+          implementation(fileTree(
+            dependencyDetails.outputDir,
+          ).include(dependencyDetails.outputGlob))
+        }
+      } else {
+        dependencies {
+          val implementation by configurations
+
+          implementation(dependency)
+        }
       }
     }
 }
 
-fun Project.dependOnLibJar(vararg dependencyNames: String) {
-  this.dependOnLibJar(throwErrorOnMissingJar = false, *dependencyNames)
+fun Project.dependOnLocalLib(vararg dependencyNames: String) {
+  this.dependOnLocalLib(useLibJar = true, *dependencyNames)
 }
 
 configure(arrayListOf(
   project(":sample-android:sample-no-android")
 )) {
-  dependOnLibJar(":common:common-all")
+  dependOnLocalLib(":common:common-all")
 }
 
 configure(subprojects - project(":sample-android:sample-no-android")) {
@@ -113,7 +127,7 @@ configure(subprojects - project(":sample-android:sample-no-android")) {
     }
   }
 
-  dependOnLibJar(
+  dependOnLocalLib(
     ":common:common-all",
     ":android:android-all",
   )
@@ -264,9 +278,9 @@ configure(arrayListOf(
     val kapt by configurations
 
     implementation("io.reactivex.rxjava2:rxandroid:${project.extra["rxAndroid"]}")
-    implementation("android.arch.navigation:navigation-fragment-ktx:${project.extra["navigationVersion"]}")
-    implementation("android.arch.navigation:navigation-ui-ktx:${project.extra["navigationVersion"]}")
-    implementation("android.arch.work:work-runtime-ktx:${project.extra["workVersion"]}")
+    implementation("androidx.navigation:navigation-fragment-ktx:${project.extra["navigationVersion"]}")
+    implementation("androidx.navigation:navigation-ui-ktx:${project.extra["navigationVersion"]}")
+    implementation("androidx.work:work-runtime-ktx:${project.extra["workVersion"]}")
     implementation("androidx.constraintlayout:constraintlayout:${project.extra["constraintlayout"]}")
     implementation("androidx.core:core-ktx:${project.extra["ktxVersion"]}")
     implementation("androidx.room:room-runtime:${project.extra["roomVersion"]}")

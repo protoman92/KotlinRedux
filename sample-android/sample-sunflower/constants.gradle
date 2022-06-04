@@ -1,10 +1,10 @@
 project.ext {
   gsonVersion = "2.8.2"
-  ktxVersion = "1.0.1"
-  materialVersion = "1.0.0"
-  navigationVersion = "1.0.0-beta02"
+  ktxVersion = "1.7.0"
+  materialVersion = "1.5.0"
+  navigationVersion = "2.4.1"
   roomVersion = "2.4.2"
   runnerVersion = "1.0.1"
-  uiAutomatorVersion = "2.2.0-alpha4"
-  workVersion = "1.0.0-rc01"
+  uiAutomatorVersion = "2.2.0"
+  workVersion = "2.7.1"
 }

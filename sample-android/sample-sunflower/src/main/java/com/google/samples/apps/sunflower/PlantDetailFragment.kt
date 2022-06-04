@@ -61,7 +61,8 @@ import org.swiften.redux.ui.StaticProp
 class PlantDetailFragment : Fragment(),
   IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<PlantDetailFragment.S, PlantDetailFragment.A>,
-  IPropLifecycleOwner<Redux.State, PlantDetailFragment.IDependency> by NoopPropLifecycleOwner() {
+  IPropLifecycleOwner<Redux.State, PlantDetailFragment.IDependency> by NoopPropLifecycleOwner()
+{
   interface IDependency : IPicassoProvider
 
   data class S(val plant: Plant? = null, val isPlanted: Boolean? = null)
@@ -118,7 +119,7 @@ class PlantDetailFragment : Fragment(),
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
       R.id.action_share -> {
-        val shareIntent = ShareCompat.IntentBuilder.from(activity)
+        val shareIntent = ShareCompat.IntentBuilder.from(requireActivity())
           .setText(shareText)
           .setType("text/plain")
           .createChooserIntent()

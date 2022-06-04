@@ -3,6 +3,6 @@ project.ext {
   constraintlayout = "2.0.0-alpha3"
   dagger = "2.13"
   multidex = "2.0.1"
-  picasso = "2.71828"
+  picasso = "2.8"
   leakCanary = "2.9.1"
 }

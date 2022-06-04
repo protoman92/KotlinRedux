@@ -49,11 +49,10 @@ subprojects {
    */
   val packageTestJar by tasks.registering(Jar::class) {
     description = """
-Package test jar so that other projects can depend on test code from this project
-("${project.name}")
-    """.trimIndent()
+      Package test jar so that other projects can depend on test code from this project
+      ("${project.name}")
+      """.trimIndent()
 
-    println("Packing test jar for project \"${project.name}\"")
     archiveFileName.set("${project.name}-test.jar")
     from(project.the(extensionType = SourceSetContainer::class)["test"].output)
   }
@@ -93,8 +92,8 @@ project(":common:common-core") {
   dependencies {
     val testImplementation by configurations
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
-    testImplementation(project(path = ":common:common-thunk"))
-    testImplementation(project(path = ":common:common-saga"))
+    testImplementation(project(":common:common-thunk"))
+    testImplementation(project(":common:common-saga"))
     testImplementation("io.reactivex.rxjava2:rxjava:${project.extra["rxJava"]}")
   }
 }
@@ -104,9 +103,9 @@ project(":common:common-thunk") {
     val implementation by configurations
     val testImplementation by configurations
     val testArtifacts by configurations
-    implementation(project(path = ":common:common-core"))
-    testImplementation(project(path = ":common:common-core"))
-    testImplementation(project(path = ":common:common-core", configuration = testArtifacts.name))
+    implementation(project(":common:common-core"))
+    testImplementation(project(":common:common-core"))
+    testImplementation(project(":common:common-core", configuration = testArtifacts.name))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
   }
 }
@@ -117,21 +116,21 @@ project(":common:common-saga") {
     val implementation by configurations
     val testImplementation by configurations
     val testArtifacts by configurations
-    api(project(path = ":common:common-core"))
+    api(project(":common:common-core"))
     implementation("io.reactivex.rxjava2:rxjava:${project.extra["rxJava"]}")
     implementation("io.reactivex.rxjava2:rxkotlin:${project.extra["rxKotlin"]}")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:${project.extra["mockito"]}")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.extra["kotlinCoroutines"]}")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${project.extra["kotlinCoroutines"]}")
-    testImplementation(project(path = ":common:common-core"))
-    testImplementation(project(path = ":common:common-core", configuration = testArtifacts.name))
+    testImplementation(project(":common:common-core"))
+    testImplementation(project(":common:common-core", configuration = testArtifacts.name))
   }
 }
 
 project(":common:common-ui") {
   dependencies {
     val api by configurations
-    api(project(path = ":common:common-core"))
+    api(project(":common:common-core"))
   }
 }
 
@@ -153,15 +152,15 @@ project(":common:common-all") {
   }
 
   dependencies {
-    val implementation by configurations
+    val api by configurations
 
     allDependencies.forEach { dependency ->
-      implementation(dependency)
+      api(dependency)
     }
   }
 
   tasks {
-    register("replaceNormalJarWithFatJar") {
+    val replaceNormalJarWithFatJar by registering {
       doLast {
         val jarDirectory = "${project.buildDir.absolutePath}/libs"
         val jarPrefix = "${project.name}-${project.version}"
@@ -186,17 +185,42 @@ project(":common:common-all") {
 
       dependsOn(project.tasks["clean"])
     }
+  }
 
-    /** Include all dependencies' jar contents into the final jar archive */
-    "jar"(Jar::class) {
+  afterEvaluate {
+    /**
+     * Include all dependencies' jar contents into the final jar archive. Use this task instead of
+     * the ones defined above (which are mainly for experimenting).
+     *
+     * We do not put this logic in the default jar task because it might break the sample projects
+     * if said projects depend on this using "implementation project" (instead of directly on the
+     * output jar). For example, an error that could arise is "Duplicate classes" in classes.dex.
+     */
+    tasks.register("packageFatJar", Jar::class) {
       duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
       allDependencies.forEach { dependency ->
         val filesToInclude = dependency.configurations
           .getByName("archives").artifacts.files.files
-          .map { file -> zipTree(file) }
+          .map { zipTree(it) }
 
         from(filesToInclude)
+      }
+    }
+
+    tasks {
+      val jar by getting
+      val packageFatJar by getting
+
+      allDependencies.forEach { dependency ->
+        packageFatJar.dependsOn(dependency.tasks["jar"])
+      }
+
+      /** Make sure packageFatJar runs after jar to produce the correct jar */
+      packageFatJar.mustRunAfter(jar)
+
+      "assemble" {
+        dependsOn(packageFatJar)
       }
     }
   }
