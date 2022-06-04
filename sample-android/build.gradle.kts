@@ -33,7 +33,10 @@ subprojects {
   apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
 }
 
-fun Project.dependOnLibJar(vararg dependencyNames: String) {
+fun Project.dependOnLibJar(
+  throwErrorOnMissingJar: Boolean,
+  vararg dependencyNames: String,
+) {
   data class DependencyDetails(
     val name: String,
     val outputDir: String,
@@ -64,14 +67,20 @@ fun Project.dependOnLibJar(vararg dependencyNames: String) {
       afterEvaluate {
         tasks {
           "compileDebugKotlin" {
-            doFirst {
-              if (!File(dependencyDetails.outputDir).exists()) {
-                throw Exception(
-                  """
-                  Must run task \"${dependencyDetails.name}:${dependencyDetails.outputTask}\"
-                  first before proceeding with the build
-                  """.trimIndent())
+            if (throwErrorOnMissingJar) {
+              doFirst {
+                if (!File(dependencyDetails.outputDir).exists()) {
+                  throw Exception(
+                    """
+                    Must run task \"${dependencyDetails.name}:${dependencyDetails.outputTask}\"
+                    first before proceeding with the build
+                    """.trimIndent()
+                  )
+                }
               }
+            } else {
+              val dependency = project(dependencyDetails.name)
+              dependsOn(dependency.tasks[dependencyDetails.outputTask])
             }
           }
         }
@@ -85,6 +94,10 @@ fun Project.dependOnLibJar(vararg dependencyNames: String) {
         ).include(dependencyDetails.outputGlob))
       }
     }
+}
+
+fun Project.dependOnLibJar(vararg dependencyNames: String) {
+  this.dependOnLibJar(throwErrorOnMissingJar = false, *dependencyNames)
 }
 
 configure(arrayListOf(

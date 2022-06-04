@@ -75,7 +75,7 @@ subprojects {
   }
 }
 
-val clean by tasks.registering(type = Delete::class) {
+val cleanAll by tasks.registering(type = Delete::class) {
   description = "Delete all build folders in all projects"
 
   doLast {
