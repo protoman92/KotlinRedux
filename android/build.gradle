@@ -125,9 +125,9 @@ project(":android:android-util") {}
 
 project(":android:android-ui") {
   dependencies {
-    api(project(":common:common-core"))
-    api(project(":common:common-ui"))
-    api(project(":android:android-util"))
+    implementation(project(":common:common-core"))
+    implementation(project(":common:common-ui"))
+    implementation(project(":android:android-util"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.ext.kotlinCoroutines}")
     testImplementation(project(path: ":common:common-ui", configuration: 'testArtifacts'))
   }
@@ -135,8 +135,8 @@ project(":android:android-ui") {
 
 project(":android:android-lifecycle") {
   dependencies {
-    api(project(":common:common-core"))
-    api(project(":common:common-ui"))
+    implementation(project(":common:common-core"))
+    implementation(project(":common:common-ui"))
     implementation("androidx.appcompat:appcompat:${project.ext.appCompat}")
     testImplementation("androidx.appcompat:appcompat:${project.ext.appCompat}")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.ext.kotlinCoroutines}")
@@ -145,25 +145,31 @@ project(":android:android-lifecycle") {
 
 project(":android:android-recyclerview") {
   dependencies {
-    api project(":android:android-ui")
-    api project(":android:android-lifecycle")
-    implementation "androidx.lifecycle:lifecycle-runtime:${project.ext.lifecycle}"
-    implementation "androidx.recyclerview:recyclerview:${project.ext.recyclerView}"
-    testImplementation project(path: ":android:android-lifecycle", configuration: 'testArtifacts')
+    implementation(project(":common:common-core"))
+    implementation(project(":common:common-ui"))
+    implementation(project(":android:android-ui"))
+    implementation(project(":android:android-lifecycle"))
+    implementation("androidx.lifecycle:lifecycle-runtime:${project.ext.lifecycle}")
+    implementation("androidx.recyclerview:recyclerview:${project.ext.recyclerView}")
+    testImplementation(project(path: ":android:android-lifecycle", configuration: 'testArtifacts'))
   }
 }
 
 project(":android:android-saga") {
   dependencies {
-    api project(":common:common-saga")
-    implementation "io.reactivex.rxjava2:rxjava:${project.ext.rxJava}"
-    implementation "io.reactivex.rxjava2:rxkotlin:${project.ext.rxKotlin}"
+    implementation(project(":common:common-core"))
+    implementation(project(":common:common-ui"))
+    implementation(project(":common:common-saga"))
+    implementation("io.reactivex.rxjava2:rxjava:${project.ext.rxJava}")
+    implementation("io.reactivex.rxjava2:rxkotlin:${project.ext.rxKotlin}")
   }
 }
 
 project(":android:android-livedata-saga") {
   dependencies {
-    api project(":common:common-saga")
+    implementation(project(":common:common-core"))
+    implementation(project(":common:common-ui"))
+    implementation project(":common:common-saga")
     implementation "androidx.lifecycle:lifecycle-livedata:${project.ext.lifecycle}"
     implementation "io.reactivex.rxjava2:rxjava:${project.ext.rxJava}"
     implementation "io.reactivex.rxjava2:rxandroid:${project.ext.rxAndroid}"
@@ -174,8 +180,8 @@ project(":android:android-livedata-saga") {
 
 project(":android:android-router") {
   dependencies {
-    api project(":common:common-core")
-    api project(":android:android-util")
+    implementation project(":common:common-core")
+    implementation project(":android:android-util")
     implementation "androidx.appcompat:appcompat:${project.ext.appCompat}"
   }
 }

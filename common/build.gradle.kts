@@ -112,11 +112,10 @@ project(":common:common-thunk") {
 
 project(":common:common-saga") {
   dependencies {
-    val api by configurations
     val implementation by configurations
     val testImplementation by configurations
     val testArtifacts by configurations
-    api(project(":common:common-core"))
+    implementation(project(":common:common-core"))
     implementation("io.reactivex.rxjava2:rxjava:${project.extra["rxJava"]}")
     implementation("io.reactivex.rxjava2:rxkotlin:${project.extra["rxKotlin"]}")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:${project.extra["mockito"]}")
@@ -129,8 +128,8 @@ project(":common:common-saga") {
 
 project(":common:common-ui") {
   dependencies {
-    val api by configurations
-    api(project(":common:common-core"))
+    val implementation by configurations
+    implementation(project(":common:common-core"))
   }
 }
 
@@ -152,10 +151,10 @@ project(":common:common-all") {
   }
 
   dependencies {
-    val api by configurations
+    val implementation by configurations
 
     allDependencies.forEach { dependency ->
-      api(dependency)
+      implementation(dependency)
     }
   }
 

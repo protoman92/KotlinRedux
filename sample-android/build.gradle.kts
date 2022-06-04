@@ -86,6 +86,9 @@ fun Project.dependOnLocalLib(
             }
 
             getByName(compileTaskName).dependsOn(dependency.tasks[dependencyDetails.outputTask])
+
+            /** Seems that this is needed for the maven-publish plugin */
+            getByName(compileTaskName).mustRunAfter(dependency.tasks[dependencyDetails.outputTask])
           }
         }
 
