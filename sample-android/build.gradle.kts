@@ -4,8 +4,6 @@ import com.android.builder.model.ApiVersion
 import org.jetbrains.kotlin.gradle.internal.AndroidExtensionsExtension
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
-println(System.getenv())
-
 buildscript {
   val rootAbsolutePath = projectDir.parent
   apply(from = "$rootAbsolutePath/constants.gradle")
@@ -34,9 +32,17 @@ subprojects {
   apply(plugin = "org.jlleitschuh.gradle.ktlint")
   apply(from = "$rootAbsolutePath/android/constants.gradle")
   apply(from = "$rootAbsolutePath/sample-android/constants.gradle")
+}
 
+allprojects {
   tasks.whenTaskAdded(delegateClosureOf<Task> {
-    onlyIf { false }
+    /**
+     * In Jitpack build environment, we do not want sample projects to be assembled, because that
+     * increases both the complexity of our gradle configurations and the build duration.
+     */
+    if (System.getenv("JITPACK") == "true") {
+      onlyIf { false }
+    }
   })
 }
 
@@ -76,9 +82,7 @@ fun Project.dependOnLocalLib(
       if (useLibJar) {
         afterEvaluate {
           tasks {
-            val compileTaskName = "compileDebugKotlin"
-
-            compileTaskName {
+            "compileDebugKotlin" {
               doFirst {
                 if (!File(dependencyDetails.outputDir).exists()) {
                   throw Exception(
@@ -90,11 +94,6 @@ fun Project.dependOnLocalLib(
                 }
               }
             }
-
-            getByName(compileTaskName).dependsOn(dependency.tasks[dependencyDetails.outputTask])
-
-            /** Seems that this is needed for the maven-publish plugin */
-            getByName(compileTaskName).mustRunAfter(dependency.tasks[dependencyDetails.outputTask])
           }
         }
 

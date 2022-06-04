@@ -150,14 +150,6 @@ project(":common:common-all") {
     project.evaluationDependsOn(dependencyName)
   }
 
-  dependencies {
-    val implementation by configurations
-
-    allDependencies.forEach { dependency ->
-      implementation(dependency)
-    }
-  }
-
   tasks {
     val replaceNormalJarWithFatJar by registering {
       doLast {
