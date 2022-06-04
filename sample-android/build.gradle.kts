@@ -73,7 +73,7 @@ fun Project.dependOnLocalLib(
           name = dependencyName,
           outputDir = "${dependency.buildDir.absolutePath}/libs",
           outputGlob = "*.jar",
-          outputTask = "packageFatJar",
+          outputTask = "jar",
         )
       }
     }.forEach { dependencyDetails ->
