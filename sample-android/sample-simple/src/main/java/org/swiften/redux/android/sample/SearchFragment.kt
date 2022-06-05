@@ -88,16 +88,18 @@ class SearchAdapter : ReduxRecyclerViewAdapter<SearchAdapter.ViewHolder>() {
 }
 
 class SearchFragment : Fragment(),
+  TextWatcher,
   IUniqueIDProvider by DefaultUniqueIDProvider(),
   IPropContainer<SearchFragment.S, SearchFragment.A>,
-  IPropLifecycleOwner<SearchFragment.ILocalState, Unit> by NoopPropLifecycleOwner() {
+  IPropLifecycleOwner<SearchFragment.ILocalState, Unit> by NoopPropLifecycleOwner()
+{
   companion object : IPropMapper<ILocalState, Unit, S, A> {
     override fun mapState(state: ILocalState, outProp: Unit) = state.search
 
     override fun mapAction(dispatch: IActionDispatcher, outProp: Unit): A {
       return A(
         updateQuery = { dispatch(Redux.Action.Search.UpdateQuery(it)) },
-        updateLimit = { dispatch(Redux.Action.Search.UpdateLimit(it)) }
+        updateLimit = { dispatch(Redux.Action.Search.UpdateLimit(it)) },
       )
     }
   }
@@ -116,23 +118,10 @@ class SearchFragment : Fragment(),
     this.progress_bar.visibility = if (next.state.loading) View.VISIBLE else View.INVISIBLE
   }
 
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? = inflater.inflate(R.layout.search_fragment, container, false)
-
+  //region IPropLifecycleOwner
   override fun beforePropInjectionStarts(sp: StaticProp<ILocalState, Unit>) {
     val selectableLimits = ResultLimit.values()
-
-    this.search_query.addTextChangedListener(object : TextWatcher {
-      override fun afterTextChanged(s: Editable?) {
-        this@SearchFragment.reduxProp.action.updateQuery(s?.toString())
-      }
-
-      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-    })
+    this.search_query.addTextChangedListener(this)
 
     this.search_result.also { recyclerView ->
       recyclerView.setHasFixedSize(true)
@@ -164,4 +153,24 @@ class SearchFragment : Fragment(),
       }
     }
   }
+
+  override fun afterPropInjectionEnds(sp: StaticProp<ILocalState, Unit>) {
+    this.search_query.removeTextChangedListener(this)
+  }
+  //endregion
+
+  //region TextWatcher
+  override fun afterTextChanged(s: Editable?) {
+    this.reduxProp.action.updateQuery(s?.toString())
+  }
+
+  override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+  override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+  //endregion
+
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? = inflater.inflate(R.layout.search_fragment, container, false)
 }

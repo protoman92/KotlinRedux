@@ -8,25 +8,11 @@ package org.swiften.redux.android.lifecycle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleOwner
+import org.swiften.redux.ui.IFullPropInjector
 import org.swiften.redux.ui.IPropInjector
+import org.swiften.redux.ui.IPropLifecycleOwner
 
 /** Created by haipham on 2018/12/17 */
-/** Interface to wrap some functionalities for [AppCompatActivity]. */
-internal interface IAppCompatActivity : LifecycleOwner {
-  val supportFragmentManager: FragmentManager
-}
-
-/**
- * Wrap an [AppCompatActivity] to implement [IAppCompatActivity].
- * @param activity An [AppCompatActivity] instance.
- */
-class AppCompatActivityWrapper(private val activity: AppCompatActivity) : IAppCompatActivity {
-  override val supportFragmentManager: FragmentManager = this.activity.supportFragmentManager
-  override fun getLifecycle() = this.activity.lifecycle
-  override fun toString() = this.activity.toString()
-}
-
 /**
  * Listen to [Fragment] lifecycle callbacks and perform [injectionHelper] when necessary. This injection
  * session automatically disposes of itself when [ReduxLifecycleObserver.onDestroy] is called.
@@ -41,6 +27,12 @@ internal fun <GState> IPropInjector<GState>.injectFragment(
   injectionHelper: ILifecycleInjectionHelper<GState>
 ): FragmentManager.FragmentLifecycleCallbacks {
   val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
+    /**
+     * We perform [IFullPropInjector.inject] in [onFragmentStarted] because by then the views
+     * would have been initialized, and thus can be accessed in
+     * [IPropLifecycleOwner.beforePropInjectionStarts]. To mirror this, unsubscription is done in
+     * [onFragmentStopped] because said views are not destroyed yet.
+     */
     override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
       super.onFragmentStarted(fm, f)
       injectionHelper.inject(this@injectFragment, f)
@@ -52,10 +44,7 @@ internal fun <GState> IPropInjector<GState>.injectFragment(
     }
   }
 
-  object : ReduxLifecycleObserver(activity, object : ILifecycleCallback {
-    override fun onSafeForStartingLifecycleAwareTasks() {}
-    override fun onSafeForEndingLifecycleAwareTasks() {}
-  }) {
+  object : ReduxLifecycleObserver(activity, NoopLifecycleCallback) {
     override fun onCreate() {
       super.onCreate()
       activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)

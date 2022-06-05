@@ -21,28 +21,8 @@ import java.util.Date
 
 /** Created by haipham on 2018/12/17 */
 /**
- * Handle saving/restoring [GState] instances.
- * @param GState The global state type.
- */
-interface IBundleStateSaver<GState> {
-  /**
-   * Save [state] to [bundle].
-   * @param bundle A [Bundle] instance.
-   * @param state A [GState] instance.
-   */
-  fun saveState(bundle: Bundle, state: GState)
-
-  /**
-   * Restore a [GState] from [bundle].
-   * @param bundle A [Bundle] instance.
-   * @return A [GState] instance.
-   */
-  fun restoreState(bundle: Bundle): GState?
-}
-
-/**
- * Listen to [Activity] lifecycle callbacks and perform [injectionHelper] when necessary. We can also declare
- * [saveState] and [restoreState] to handle [GState] persistence.
+ * Listen to [Activity] lifecycle callbacks and perform [injectionHelper] when necessary. We can
+ * also declare [saveState] and [restoreState] to handle [GState] persistence.
  *
  * When [Application.ActivityLifecycleCallbacks.onActivityCreated] is called, perform
  * [injectionHelper] on the [AppCompatActivity] being created, and also call [injectFragment]. This
