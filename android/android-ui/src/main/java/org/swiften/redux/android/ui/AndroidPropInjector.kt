@@ -40,7 +40,8 @@ class AndroidPropInjector<GState>(
     return super.inject(outProp, object :
       IUniqueIDProvider by view,
       IPropContainer<State, Action>,
-      IPropLifecycleOwner<LState, OutProp> {
+      IPropLifecycleOwner<LState, OutProp>
+    {
       override var reduxProp: ReduxProp<State, Action>
         get() = view.reduxProp
         set(value) { this@AndroidPropInjector.runner { view.reduxProp = value } }

@@ -129,7 +129,7 @@ project(":android:android-ui") {
     implementation(project(":common:common-ui"))
     implementation(project(":android:android-util"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.ext.kotlinCoroutines}")
-    testImplementation(project(path: ":common:common-ui", configuration: 'testArtifacts'))
+    testImplementation(project(path: ":common:common-ui", configuration: "testArtifacts"))
   }
 }
 
@@ -151,7 +151,7 @@ project(":android:android-recyclerview") {
     implementation(project(":android:android-lifecycle"))
     implementation("androidx.lifecycle:lifecycle-runtime:${project.ext.lifecycle}")
     implementation("androidx.recyclerview:recyclerview:${project.ext.recyclerView}")
-    testImplementation(project(path: ":android:android-lifecycle", configuration: 'testArtifacts'))
+    testImplementation(project(path: ":android:android-lifecycle", configuration: "testArtifacts"))
   }
 }
 

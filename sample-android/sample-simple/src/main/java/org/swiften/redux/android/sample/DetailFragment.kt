@@ -20,6 +20,7 @@ import org.swiften.redux.ui.IPropLifecycleOwner
 import org.swiften.redux.ui.IPropMapper
 import org.swiften.redux.ui.NoopPropLifecycleOwner
 import org.swiften.redux.ui.ObservableReduxProp
+import org.swiften.redux.ui.StaticProp
 import java.io.Serializable
 
 /** Created by haipham on 27/1/19 */
